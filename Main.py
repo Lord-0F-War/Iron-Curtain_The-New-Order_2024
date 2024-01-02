@@ -213,7 +213,15 @@ catastrophic maelstrom."""
 				    self.flags_image_dic['CHI'],
 					"People's Republic of China",
 					'Command_Socialism',
-					[self.music_files_dic['red_sun_in_the_sky']])	
+					[self.music_files_dic['red_sun_in_the_sky']])
+
+		self.CHI2 = CountriesManager.Country(
+			'Mao Zedong',
+			self.leaders_image_dic['Portrait_CHI_Mao_Zedong'], 
+			self.flags_image_dic['CHI'],
+			"People's Republic of China",
+			'Command_Socialism',
+			[self.music_files_dic['red_sun_in_the_sky']])	
 		
 		self.GNW = CountriesManager.Country(
 					'Ernst Thalmann',
@@ -657,8 +665,8 @@ your shoulders.
 									   self.hovered_green_button_menu_image, self.hovered_red_button_menu_image, self.Options_Menu)
 
 		self.Main_Menu = MenuManager.Main_Menu(self.screen_width, self.screen_height, self.pygame, self.game_logo, self.python_logo, self.main_menu_menu_gui, self.main_menu_options_gui, 
-										 self.hovered_green_button_menu_image, self.hovered_red_button_menu_image, 
-										 self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.click_main_menu_sound, self.Sounds_Manager)
+										 self.hovered_green_button_menu_image, self.hovered_red_button_menu_image, self.Sounds_Manager.generic_hover_over_button_menu_sound, 
+										 self.Sounds_Manager.click_main_menu_sound)
 	
 		
 		self.Scenario_Selection_Menu = MenuManager.Scenario_Selection_Menu(self.screen_width, self.screen_height, self.pygame, self.game_logo, self.python_logo,
@@ -681,7 +689,6 @@ your shoulders.
 		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.player_country, self.Main_Menu, self.Country_Selection_Menu,
 											self.Scenario_Selection_Menu, self.ESC_Menu, self.main_menu_backgound, 
 											self.python_logo)
-
 	def setup_variables(self):
 		self.screen_center = (self.screen_width/2, self.screen_height/2)
 
@@ -725,30 +732,40 @@ your shoulders.
 					if event.type == FPS_update:
 						self.pygame.display.set_caption(str(round(clock.get_fps(), 2)))							
 					if event.type == screen_update:
-						self.Screen_Manager.render_main_menu(self.Main_Menu.brightness_slider.value)	
+						self.Screen_Manager.render_main_menu(self.Options_Menu.brightness_slider.value, self.is_options_menu_open)
 
-					self.mouse_pos = self.pygame.mouse.get_pos()
-					
-					self.Main_Menu.interacting_with_UI_slides(event)	
+					if self.is_options_menu_open == True:
+						self.Options_Menu.interacting_with_UI_slides(event)							
+
+					self.mouse_pos = self.pygame.mouse.get_pos()	
 					
 					if event.type == self.pygame.MOUSEBUTTONUP:	
 						pass
 					
 					elif event.type == self.pygame.MOUSEBUTTONDOWN:
 						self.mouse_rect = self.pygame.Rect(self.mouse_pos, (2, 2))
-						self.clicked_button = self.Main_Menu.get_clicked_button(self.mouse_rect)
-						if self.clicked_button != 'none':
+						
+						if self.is_options_menu_open == False:
+							self.clicked_button = self.Main_Menu.get_clicked_button(self.mouse_rect)
+							if self.clicked_button != 'none':
+								if self.clicked_button == 'start':
+									self.pygame.time.delay(100)
+									self.is_in_scenario_selection_screen = True
+									self.is_in_main_menu_screen = False
+								elif self.clicked_button == 'quit':
+									self.pygame.time.delay(200)
+									self.starting_the_game = False
+								elif self.clicked_button == 'options':
+									self.pygame.time.delay(200)
+									self.is_options_menu_open = True									
+						else:
+							self.clicked_button = self.ESC_Menu.get_clicked_button(self.mouse_rect, self.is_options_menu_open)
+							
+							if self.clicked_button == 'back':
+								self.is_options_menu_open = False
+
 							resolution_to_save = None
-
-							if self.clicked_button == 'start':
-								self.pygame.time.delay(100)
-								self.is_in_scenario_selection_screen = True
-								self.is_in_main_menu_screen = False
-							elif self.clicked_button == 'quit':
-								self.pygame.time.delay(200)
-								self.starting_the_game = False
-
-							elif self.clicked_button == 'resolution_2560x1440':
+							if self.clicked_button == 'resolution_2560x1440':
 								resolution_to_save = (2560,1440)
 							elif self.clicked_button == 'resolution_1920x1080':
 								resolution_to_save = (1920,1080)
@@ -770,8 +787,14 @@ your shoulders.
 
 
 				self.mouse_rect = self.pygame.Rect(self.mouse_pos, (2, 2))
-				self.hovered_button = self.Main_Menu.get_hovered_button(self.mouse_rect)
-				self.Main_Menu.hovered_button = self.hovered_button			
+
+				if self.is_options_menu_open == False:				
+					self.hovered_button = self.Main_Menu.get_hovered_button(self.mouse_rect)
+					self.Main_Menu.hovered_button = self.hovered_button
+				else:
+					self.hovered_button = self.ESC_Menu.get_hovered_button(self.mouse_rect, self.is_options_menu_open)
+					self.ESC_Menu.hovered_button = self.hovered_button
+					self.Options_Menu.hovered_button = self.hovered_button
 
 
 			if self.is_in_scenario_selection_screen == True:
@@ -787,7 +810,15 @@ your shoulders.
 					if event.type == FPS_update:
 						self.pygame.display.set_caption(str(round(clock.get_fps(), 2)))							
 					if event.type == screen_update:
-						self.Screen_Manager.render_select_scenario_menu()	
+						self.Screen_Manager.render_select_scenario_menu(self.Options_Menu.brightness_slider.value, self.is_in_esc_menu, self.is_options_menu_open)	
+
+					if self.is_options_menu_open == True:
+						self.Options_Menu.interacting_with_UI_slides(event)	
+
+					if event.type == self.pygame.KEYDOWN:
+						if keys[self.pygame.K_ESCAPE]:
+							self.is_in_esc_menu = not self.is_in_esc_menu
+							self.is_options_menu_open = False											
 
 					self.mouse_pos = self.pygame.mouse.get_pos()	
 					if event.type == self.pygame.MOUSEBUTTONUP:	
@@ -795,21 +826,70 @@ your shoulders.
 					
 					elif event.type == self.pygame.MOUSEBUTTONDOWN:
 						self.mouse_rect = self.pygame.Rect(self.mouse_pos, (2, 2))
-						self.clicked_button = self.Scenario_Selection_Menu.get_clicked_button(self.mouse_rect)
-						if self.clicked_button != 'none':
-							if self.clicked_button == 'start':
-								self.pygame.time.delay(100)
-								self.is_in_country_selection_screen = True
-								self.is_in_scenario_selection_screen = False
-							if 	self.clicked_button == 'back':
-								self.pygame.time.delay(50)
-								self.is_in_scenario_selection_screen = False
-								self.is_in_main_menu_screen = True
+
+						if self.is_in_esc_menu == False:						
+							self.clicked_button = self.Scenario_Selection_Menu.get_clicked_button(self.mouse_rect)
+							if self.clicked_button != 'none':
+								if self.clicked_button == 'start':
+									self.pygame.time.delay(100)
+									self.is_in_country_selection_screen = True
+									self.is_in_scenario_selection_screen = False
+								if 	self.clicked_button == 'back':
+									self.pygame.time.delay(50)
+									self.is_in_scenario_selection_screen = False
+									self.is_in_main_menu_screen = True
+						else:
+							self.clicked_button = self.ESC_Menu.get_clicked_button(self.mouse_rect, self.is_options_menu_open)
+							if self.clicked_button != 'none' and self.clicked_button != None:
+								if self.is_options_menu_open == False:
+									if self.clicked_button == 'options':
+										self.is_options_menu_open = True
+
+									elif self.clicked_button == 'main_menu':
+										self.is_in_scenario_selection_screen = False
+										self.is_in_main_menu_screen = True
+										self.is_in_esc_menu = False
+
+									elif self.clicked_button == 'quit':
+										self.starting_the_game = False
+										self.is_in_game_screen = False
+										self.is_in_scenario_selection_screen = False
+										self.pygame.time.delay(200)	
+								else:
+									if self.clicked_button == 'back':
+										self.is_options_menu_open = False
+
+									resolution_to_save = None
+									if self.clicked_button == 'resolution_2560x1440':
+										resolution_to_save = (2560,1440)
+									elif self.clicked_button == 'resolution_1920x1080':
+										resolution_to_save = (1920,1080)
+									elif self.clicked_button == 'resolution_1600x900':
+										resolution_to_save = (1600,900)
+									elif self.clicked_button == 'resolution_1440x900':
+										resolution_to_save = (1440,900)
+									elif self.clicked_button == 'resolution_1280x1024':
+										resolution_to_save = (1280,1024)
+
+									if resolution_to_save != None:
+										with open(f'{self.exe_folder}\\settings.txt', 'r') as file:
+											configs = json_load(file)
+
+										configs["screen_width"], configs["screen_height"] = resolution_to_save
+
+										with open(f'{self.exe_folder}\\settings.txt', 'w') as file:
+											json_dump(configs, file)								
 
 				self.mouse_rect = self.pygame.Rect(self.mouse_pos, (2, 2))
-				self.hovered_button = self.Scenario_Selection_Menu.get_hovered_button(self.mouse_rect)
-				self.Scenario_Selection_Menu.hovered_button = self.hovered_button					
 				
+				if self.is_in_esc_menu == False:
+					self.hovered_button = self.Scenario_Selection_Menu.get_hovered_button(self.mouse_rect)
+					self.Scenario_Selection_Menu.hovered_button = self.hovered_button
+				else:
+					self.hovered_button = self.ESC_Menu.get_hovered_button(self.mouse_rect, self.is_options_menu_open)
+					self.ESC_Menu.hovered_button = self.hovered_button
+					self.Options_Menu.hovered_button = self.hovered_button
+
 
 			if self.is_in_country_selection_screen == True:
 				for event in self.pygame.event.get():
@@ -830,9 +910,8 @@ your shoulders.
 							self.is_in_esc_menu = not self.is_in_esc_menu
 							self.is_options_menu_open = False
 
-
 					self.mouse_pos = self.pygame.mouse.get_pos()
-					self.Country_Selection_Menu.mouse_pos = self.mouse_pos
+
 					if event.type == self.pygame.MOUSEBUTTONUP:	
 						pass
 					
@@ -889,7 +968,8 @@ your shoulders.
 									if self.clicked_button == 'back':
 										self.is_options_menu_open = False
 
-									elif self.clicked_button == 'resolution_2560x1440':
+									resolution_to_save = None
+									if self.clicked_button == 'resolution_2560x1440':
 										resolution_to_save = (2560,1440)
 									elif self.clicked_button == 'resolution_1920x1080':
 										resolution_to_save = (1920,1080)
@@ -913,6 +993,9 @@ your shoulders.
 				
 
 				if self.is_in_esc_menu == False:
+					self.Country_Selection_Menu.mouse_pos = self.mouse_pos
+					self.Country_Selection_Flag_Selection_Menu.mouse_rect = self.mouse_rect
+					
 					self.hovered_button = self.Country_Selection_Menu.get_hovered_button(self.mouse_rect)
 					self.Country_Selection_Menu.hovered_button = self.hovered_button
 
@@ -932,17 +1015,12 @@ your shoulders.
 
 				self.Country_Selection_Menu.music_player()
 
-				self.Country_Selection_Flag_Selection_Menu.mouse_rect = self.mouse_rect
-
 				if self.main_menu_music_started == False or self.pygame.mixer.music.get_busy() == False:
 					self.main_menu_music_started = True
 					self.pygame.mixer.music.play()				
 
 
-
 			clock.tick()
-
-
 
 		self.pygame.quit()
 

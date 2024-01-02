@@ -101,7 +101,6 @@ class ESC_Menu:
 					surface_alfa.blit(self.hovered_red_button_menu_image, self.quit_button.rect)
 		else:
 			self.Options_Menu.draw(surface_alfa)			
-
 class Options_Menu:
 	def __init__(self, screen_width, screen_height, options_menu_background, generic_hover_over_button_menu_sound, generic_click_menu_sound, 
 			  hovered_green_button_menu_image, hovered_red_button_menu_image, Sounds_Manager) -> None:
@@ -160,10 +159,12 @@ class Options_Menu:
 
 		self.brightness_slider = GenericUtilitys.Slide(self.options_menu_gui_middle_x + 457* self.factor_x, self.options_menu_gui_middle_y + 135* self.factor_y, 374* self.factor_x, 10* self.factor_y, 0, 180, 0)
 		
-		self.music_slider = GenericUtilitys.Slide(self.options_menu_gui_middle_x + 852* self.factor_x, self.options_menu_gui_middle_y + 135* self.factor_y, 374* self.factor_x, 10* self.factor_y, 0, 100, 50)
-		self.sound_slider = GenericUtilitys.Slide(self.options_menu_gui_middle_x + 852* self.factor_x, self.options_menu_gui_middle_y + 270* self.factor_y, 374* self.factor_x, 10* self.factor_y, 0, 100, 30)				
-				
+		self.music_slider = GenericUtilitys.Slide(self.options_menu_gui_middle_x + 852* self.factor_x, self.options_menu_gui_middle_y + 135* self.factor_y, 374* self.factor_x, 10* self.factor_y, 0, max_value = 100, initial_value = 60)
+		self.sound_slider = GenericUtilitys.Slide(self.options_menu_gui_middle_x + 852* self.factor_x, self.options_menu_gui_middle_y + 270* self.factor_y, 374* self.factor_x, 10* self.factor_y, 0, max_value = 100, initial_value = 10)
 		
+		pygame.mixer.music.set_volume(self.music_slider.value/100)	
+		self.Sounds_Manager.change_volume(self.sound_slider.value/100)
+
 	def get_button_by_interaction(self, mouse_rect):
 		if self.back_button.rect.colliderect(mouse_rect):
 			return 'back'
@@ -212,8 +213,7 @@ class Options_Menu:
 		self.music_slider.update()
 		self.sound_slider.update()	
 
-		pygame.mixer.music.set_volume(self.music_slider.value/100)	
-
+		pygame.mixer.music.set_volume(self.music_slider.value/100)
 		self.Sounds_Manager.change_volume(self.sound_slider.value/100)
 
 
@@ -250,16 +250,15 @@ class Options_Menu:
 		elif self.clicked_resolution_button == 'resolution_1280x1024':
 			surface_alfa.blit(self.hovered_green_button_menu_image, self.resolution_1280x1024_button.rect)	
 
+
 class Main_Menu:
-	def __init__(self, screen_width, screen_height, pygame, game_logo, python_logo, menu_gui, main_menu_options_gui, hovered_green_button_menu_image, hovered_red_button_menu_image,
-	      	 hover_over_button_sound, generic_click_menu_sound, Sounds_Manager):
-		
-
-		self.Sounds_Manager = Sounds_Manager
-
-
+	def __init__(self, screen_width, screen_height, pygame, game_logo, python_logo, menu_gui, main_menu_options_gui, hovered_green_button_menu_image, hovered_red_button_menu_image, 
+			  hover_over_button_sound, click_menu_sound):
 		self.hovered_button = 'none'
 		self.last_hovered_button ='none'
+
+		self.hover_over_button_sound = hover_over_button_sound
+		self.click_menu_sound = click_menu_sound
 
 		
 		self.screen_width = screen_width
@@ -314,80 +313,19 @@ class Main_Menu:
 		options_button_height = int(35 * self.factor_y)
 		options_button_x_offset = 515 * self.factor_x
 		options_button_y_offset = 403 * self.factor_y
-		self.options_button = GenericUtilitys.Button(self.menu_gui_middle_x + options_button_x_offset, self.menu_gui_middle_y + options_button_y_offset, options_button_width, options_button_height)			
-
-
-		# OPTIONS MENU
-
-		back_button_width = 374 * self.factor_x
-		back_button_height = int(35 * self.factor_y)
-		back_button_x_offset = 62 * self.factor_x
-		back_button_y_offset = 886 * self.factor_y
-		self.back_button = GenericUtilitys.Button(self.options_menu_gui_middle_x + back_button_x_offset, self.options_menu_gui_middle_y + back_button_y_offset, back_button_width, back_button_height)	
-
-		resolution_button_width = 374 * self.factor_x
-		resolution_button_height = int(35 * self.factor_y)
-		resolution_button_x_offset = 62 * self.factor_x
-		resolution_button_y_offset = 886 * self.factor_y
-		self.resolution_button = GenericUtilitys.Button(self.options_menu_gui_middle_x + resolution_button_x_offset, self.options_menu_gui_middle_y + resolution_button_y_offset,
-												  resolution_button_width, resolution_button_height)
-		
-		resolutions_button_width = 374 * self.factor_x
-		resolutions_button_height = int(35 * self.factor_y)
-		resolutions_button_x_offset = 62 * self.factor_x
-		
-		self.resolution_2560x1440_button = GenericUtilitys.Button(self.options_menu_gui_middle_x + resolutions_button_x_offset, self.options_menu_gui_middle_y + 100 * self.factor_y,
-												  resolutions_button_width, resolutions_button_height)	
-		self.resolution_1920x1080_button = GenericUtilitys.Button(self.options_menu_gui_middle_x + resolutions_button_x_offset, self.options_menu_gui_middle_y + 145 * self.factor_y,
-												  resolutions_button_width, resolutions_button_height)	
-		self.resolution_1600x900_button = GenericUtilitys.Button(self.options_menu_gui_middle_x + resolutions_button_x_offset, self.options_menu_gui_middle_y + 190 * self.factor_y,
-												  resolutions_button_width, resolutions_button_height)	
-		self.resolution_1440x900_button = GenericUtilitys.Button(self.options_menu_gui_middle_x + resolutions_button_x_offset, self.options_menu_gui_middle_y + 235 * self.factor_y,
-												  resolutions_button_width, resolutions_button_height)	
-		self.resolution_1280x1024_button = GenericUtilitys.Button(self.options_menu_gui_middle_x + resolutions_button_x_offset, self.options_menu_gui_middle_y + 280 * self.factor_y,
-												  resolutions_button_width, resolutions_button_height)										
-
-		self.clicked_resolution_button = 'resolution_1920x1080'
-
-
-		self.brightness_slider = GenericUtilitys.Slide(self.options_menu_gui_middle_x + 457* self.factor_x, self.options_menu_gui_middle_y + 135* self.factor_y, 374* self.factor_x, 10* self.factor_y, 0, 180, 0)
-		
-		self.music_slider = GenericUtilitys.Slide(self.options_menu_gui_middle_x + 852* self.factor_x, self.options_menu_gui_middle_y + 135* self.factor_y, 374* self.factor_x, 10* self.factor_y, 0, 100, 50)
-		self.sound_slider = GenericUtilitys.Slide(self.options_menu_gui_middle_x + 852* self.factor_x, self.options_menu_gui_middle_y + 270* self.factor_y, 374* self.factor_x, 10* self.factor_y, 0, 100, 30)				
-
-
-		self.hover_over_button_sound = hover_over_button_sound
-
-		self.click_menu_sound = generic_click_menu_sound
+		self.options_button = GenericUtilitys.Button(self.menu_gui_middle_x + options_button_x_offset, self.menu_gui_middle_y + options_button_y_offset, options_button_width, options_button_height)
 
 
 	def get_button_by_interaction(self, mouse_rect):
-		if self.is_options_menu_open == False:
-			if self.start_button.rect.colliderect(mouse_rect):
-				return 'start'
-			elif self.quit_button.rect.colliderect(mouse_rect):
-				return 'quit'
-			elif self.options_button.rect.colliderect(mouse_rect):
-				return 'options'
-			else:
-				return 'none'
+		if self.start_button.rect.colliderect(mouse_rect):
+			return 'start'
+		elif self.quit_button.rect.colliderect(mouse_rect):
+			return 'quit'
+		elif self.options_button.rect.colliderect(mouse_rect):
+			return 'options'
 		else:
-			if self.back_button.rect.colliderect(mouse_rect):
-				return 'back'
-			
-			elif self.resolution_2560x1440_button.rect.colliderect(mouse_rect):
-				return 'resolution_2560x1440'	
-			elif self.resolution_1920x1080_button.rect.colliderect(mouse_rect):
-				return 'resolution_1920x1080'
-			elif self.resolution_1600x900_button.rect.colliderect(mouse_rect):
-				return 'resolution_1600x900'
-			elif self.resolution_1440x900_button.rect.colliderect(mouse_rect):
-				return 'resolution_1440x900'
-			elif self.resolution_1280x1024_button.rect.colliderect(mouse_rect):
-				return 'resolution_1280x1024'
-																	
-			else:
-				return 'none'
+			return 'none'
+
 
 
 	def get_clicked_button(self, mouse_rect):
@@ -398,19 +336,7 @@ class Main_Menu:
 			if clicked_button == 'options':
 				self.is_options_menu_open = True
 			elif clicked_button == 'back':
-				self.is_options_menu_open = False
-
-			if self.is_options_menu_open == True:
-				if clicked_button == 'resolution_2560x1440':
-					self.clicked_resolution_button = 'resolution_2560x1440'
-				elif clicked_button == 'resolution_1920x1080':
-					self.clicked_resolution_button = 'resolution_1920x1080'
-				elif clicked_button == 'resolution_1600x900':
-					self.clicked_resolution_button = 'resolution_1600x900'
-				elif clicked_button == 'resolution_1440x900':
-					self.clicked_resolution_button = 'resolution_1440x900'
-				elif clicked_button == 'resolution_1280x1024':
-					self.clicked_resolution_button = 'resolution_1280x1024'				
+				self.is_options_menu_open = False			
 
 		return clicked_button
 
@@ -428,70 +354,23 @@ class Main_Menu:
 			return 'none'
 
 
-	def interacting_with_UI_slides(self, key_event):
-		self.brightness_slider.dragging_slide(key_event)
-		self.music_slider.dragging_slide(key_event)
-		self.sound_slider.dragging_slide(key_event)		
-
-		self.brightness_slider.update()
-		self.music_slider.update()
-		self.sound_slider.update()	
-
-		pygame.mixer.music.set_volume(self.music_slider.value/100)	
-
-		self.Sounds_Manager.change_volume(self.sound_slider.value/100)
-
-
 	def draw(self, screen):
 		screen.blit(self.python_logo, (0, self.screen_height - self.python_logo.get_height()))
 
 		screen.blit(self.game_logo, (70 * self.factor_x, 0))
 		
-		if self.is_options_menu_open == False:
-			screen.blit(self.menu_gui, (self.menu_gui_middle_x, self.menu_gui_middle_y))
+		screen.blit(self.menu_gui, (self.menu_gui_middle_x, self.menu_gui_middle_y))
 
-			if self.hovered_button != 'none':
-				if self.hovered_button == 'start':
-					screen.blit(self.hovered_green_button_menu_image, self.start_button.rect)
-				elif self.hovered_button == 'quit':
-					screen.blit(self.hovered_red_button_menu_image, self.quit_button.rect)
-				elif self.hovered_button == 'options':
-					screen.blit(self.hovered_green_button_menu_image, self.options_button.rect)
-			else:
-				self.hover_over_button_sound.fadeout(200)
-
+		if self.hovered_button != 'none':
+			if self.hovered_button == 'start':
+				screen.blit(self.hovered_green_button_menu_image, self.start_button.rect)
+			elif self.hovered_button == 'quit':
+				screen.blit(self.hovered_red_button_menu_image, self.quit_button.rect)
+			elif self.hovered_button == 'options':
+				screen.blit(self.hovered_green_button_menu_image, self.options_button.rect)
 		else:
-			screen.blit(self.main_menu_options_gui, (self.options_menu_gui_middle_x, self.options_menu_gui_middle_y))
+			self.hover_over_button_sound.fadeout(200)
 
-			self.brightness_slider.draw(screen)
-			self.music_slider.draw(screen)
-			self.sound_slider.draw(screen)
-
-			if self.hovered_button != 'none':
-				if self.hovered_button == 'back':
-					screen.blit(self.hovered_red_button_menu_image, self.back_button.rect)			
-
-				elif self.hovered_button == 'resolution_2560x1440':
-					screen.blit(self.hovered_green_button_menu_image, self.resolution_2560x1440_button.rect)	
-				elif self.hovered_button == 'resolution_1920x1080':
-					screen.blit(self.hovered_green_button_menu_image, self.resolution_1920x1080_button.rect)	
-				elif self.hovered_button == 'resolution_1600x900':
-					screen.blit(self.hovered_green_button_menu_image, self.resolution_1600x900_button.rect)	
-				elif self.hovered_button == 'resolution_1440x900':
-					screen.blit(self.hovered_green_button_menu_image, self.resolution_1440x900_button.rect)	
-				elif self.hovered_button == 'resolution_1280x1024':
-					screen.blit(self.hovered_green_button_menu_image, self.resolution_1280x1024_button.rect)
-
-			if self.clicked_resolution_button == 'resolution_2560x1440':
-				screen.blit(self.hovered_green_button_menu_image, self.resolution_2560x1440_button.rect)	
-			elif self.clicked_resolution_button == 'resolution_1920x1080':
-				screen.blit(self.hovered_green_button_menu_image, self.resolution_1920x1080_button.rect)	
-			elif self.clicked_resolution_button == 'resolution_1600x900':
-				screen.blit(self.hovered_green_button_menu_image, self.resolution_1600x900_button.rect)	
-			elif self.clicked_resolution_button == 'resolution_1440x900':
-				screen.blit(self.hovered_green_button_menu_image, self.resolution_1440x900_button.rect)	
-			elif self.clicked_resolution_button == 'resolution_1280x1024':
-				screen.blit(self.hovered_green_button_menu_image, self.resolution_1280x1024_button.rect)					
 
 class Scenario_Selection_Menu:
 	def __init__(self, screen_width, screen_height, pygame, game_logo, python_logo, menu_gui, hovered_select_scenario_button_menu_image, hovered_back_button_menu_image,
@@ -583,6 +462,7 @@ class Scenario_Selection_Menu:
 			self.hover_over_button_sound.fadeout(200)	
 
 			self.hovered = False		
+
 
 class Country_Selection_Menu:
 	def __init__(self, Country_Selection_Flag_Selection_Menu, Country_Selection_National_Spirits_Selection_Menu, screen_width, screen_height, pygame, 
@@ -1099,6 +979,7 @@ class Country_Selection_Menu:
 		if self.is_flag_national_spirits_selection_menu_open == True:
 			self.Country_Selection_National_Spirits_Selection_Menu.draw(screen)
 
+
 class Country_Selection_Flag_Selection_Menu:
 	def __init__(self, screen_width, screen_height, countries, generic_hover_over_button_menu_sound, generic_click_menu_sound) -> None:
 		self.countries = countries
@@ -1280,6 +1161,7 @@ class Country_Selection_Flag_Selection_Menu:
 
 				screen.blit(flag, flag_position)
 
+
 class Country_Selection_National_Spirits_Selection_Menu:
 	def __init__(self, screen_width, screen_height, national_spirits_background, selectable_national_spirits_list, hover_over_button_sound, click_sound) -> None:
 		self.screen_width = screen_width
@@ -1403,31 +1285,4 @@ class Country_Selection_National_Spirits_Selection_Menu:
 			pygame.draw.rect(screen, (43,219,211), (525 * self.factor_x, 125 * self.factor_y, 495 * self.factor_x, national_spirit_description_text.get_height() + 10 * self.factor_y), 2)
 
 			screen.blit(national_spirit_description_text, text_position)
-
-
-
-def resize_and_save_image(input_path, output_path, new_size):
-	image = Image.open(input_path)
-	
-	resized_image = image.resize(new_size, Image.AFFINE)
-	
-	resized_image.save(output_path)
-def modify_colors(image_path, target_color):
-    img = Image.open(image_path)
-    img_array = numpy_array(img)
-
-    target_r, target_g, target_b = target_color
-
-    mask = (img_array[:, :, 0] != target_r) | (img_array[:, :, 1] != target_g) | (img_array[:, :, 2] != target_b)
-
-    img_array[mask, 0] = 43  
-    img_array[mask, 1] = 219  
-    img_array[mask, 2] = 211  
-
-    img_array[~mask, 0] = 6  # Set target red channel
-    img_array[~mask, 1] = 15  # Set target green channel
-    img_array[~mask, 2] = 20  # Set target blue channel
-
-    result_img = Image.fromarray(img_array)
-    result_img.save(image_path)
 
