@@ -469,9 +469,9 @@ class Country_Selection_Menu:
 	      
 		  generic_hover_over_button_menu_sound, generic_click_menu_sound, country_selection_background, country_info_display_background, political_compass_image, 
 		  
-		  ideologies_CRT_overlay_effect, hovered_create_map_button, hovered_select_national_spirit_button_image, hovered_select_flag_style_button_image, 
+		  ideologies_CRT_overlay_effect, hovered_start_game_button, hovered_select_national_spirit_button_image, hovered_select_flag_style_button_image, 
 		  
-		  hovered_laws_button_image, generic_leader, CRT_flag_overlay_effect, blocked_select_national_spirit_button, blocked_select_flag_style_button, blocked_create_map_button, 
+		  hovered_laws_button_image, generic_leader, CRT_flag_overlay_effect, blocked_select_national_spirit_button, blocked_select_flag_style_button, blocked_start_game_button, 
 		  
 		  blocked_full_right_side, blocked_all_laws):
 		
@@ -515,14 +515,14 @@ class Country_Selection_Menu:
 		self.country_info_display_background = pygame.transform.smoothscale_by(country_info_display_background, (self.factor_x, self.factor_y))
 		self.Country_Selection_Flag_Selection_Menu.country_info_display_background = self.country_info_display_background
 
-		self.hovered_create_map_button = pygame.transform.smoothscale_by(hovered_create_map_button, (self.factor_x, self.factor_y))
+		self.hovered_start_game_button = pygame.transform.smoothscale_by(hovered_start_game_button, (self.factor_x, self.factor_y))
 		self.hovered_select_national_spirit_button_image = pygame.transform.smoothscale_by(hovered_select_national_spirit_button_image, (self.factor_x, self.factor_y))
 		self.hovered_select_flag_style_button_image = pygame.transform.smoothscale_by(hovered_select_flag_style_button_image, (self.factor_x, self.factor_y))
 		self.hovered_laws_button_image = pygame.transform.smoothscale_by(hovered_laws_button_image, (self.factor_x, self.factor_y))
 
 		self.blocked_select_national_spirit_button = pygame.transform.smoothscale_by(blocked_select_national_spirit_button, (self.factor_x, self.factor_y))
 		self.blocked_select_flag_style_button = pygame.transform.smoothscale_by(blocked_select_flag_style_button, (self.factor_x, self.factor_y))
-		self.blocked_create_map_button = pygame.transform.smoothscale_by(blocked_create_map_button, (self.factor_x, self.factor_y))
+		self.blocked_start_game_button = pygame.transform.smoothscale_by(blocked_start_game_button, (self.factor_x, self.factor_y))
 
 		self.blocked_full_right_side = pygame.transform.smoothscale_by(blocked_full_right_side, (self.factor_x, self.factor_y))
 		self.blocked_all_laws = pygame.transform.smoothscale_by(blocked_all_laws, (self.factor_x, self.factor_y))
@@ -535,23 +535,29 @@ class Country_Selection_Menu:
 		political_compass_image_rect[1] += 31 * self.factor_y
 		self.Country_Selection_National_Spirits_Selection_Menu.background_position = [political_compass_image_rect[0]*0.65, political_compass_image_rect[1]*0.95]
 
-		#### MAIN BUTTONS
-		create_map_button_width = 270 * self.factor_x
-		create_map_button_height = 71 * self.factor_y
-		self.create_map_button_x_offset = 1641 * self.factor_x
-		self.create_map_button_y_offset = 277 * self.factor_y		
-		self.create_map_button = GenericUtilitys.Button(self.create_map_button_x_offset, self.create_map_button_y_offset, create_map_button_width, create_map_button_height)	
+		self.leader_portrait_position = (1057 * self.factor_x, 55 * self.factor_y)
+		self.country_flag_position = (1211 * self.factor_x, 129 * self.factor_y)
 
-		select_national_spirit_button_width = 213 * self.factor_x
-		select_national_spirit_button_height = 72 * self.factor_y
-		self.select_national_spirit_button_x_offset = 1426 * self.factor_x
-		self.select_national_spirit_button_y_offset = 277 * self.factor_y		
+		self.country_name_position = (1218 * self.factor_x, 78 * self.factor_y)
+		self.leader_name_position = (1074 * self.factor_x, 257 * self.factor_y)
+
+		#### MAIN BUTTONS
+		start_game_button_width = 268 * self.factor_x
+		start_game_button_height = 70 * self.factor_y
+		self.start_game_button_x_offset = 1643 * self.factor_x
+		self.start_game_button_y_offset = 278 * self.factor_y		
+		self.start_game_button = GenericUtilitys.Button(self.start_game_button_x_offset, self.start_game_button_y_offset, start_game_button_width, start_game_button_height)	
+
+		select_national_spirit_button_width = 211 * self.factor_x
+		select_national_spirit_button_height = 70 * self.factor_y
+		self.select_national_spirit_button_x_offset = 1428 * self.factor_x
+		self.select_national_spirit_button_y_offset = 278 * self.factor_y		
 		self.select_national_spirit_button = GenericUtilitys.Button(self.select_national_spirit_button_x_offset, self.select_national_spirit_button_y_offset, select_national_spirit_button_width, select_national_spirit_button_height)	
 
-		select_flag_style_button_width = 364 * self.factor_x
-		select_flag_style_button_height = 72 * self.factor_y
-		self.select_flag_style_button_x_offset = 1061 * self.factor_x
-		self.select_flag_style_button_y_offset = 277 * self.factor_y		
+		select_flag_style_button_width = 362 * self.factor_x
+		select_flag_style_button_height = 70 * self.factor_y
+		self.select_flag_style_button_x_offset = 1063 * self.factor_x
+		self.select_flag_style_button_y_offset = 278 * self.factor_y		
 		self.select_flag_style_button = GenericUtilitys.Button(self.select_flag_style_button_x_offset, self.select_flag_style_button_y_offset, select_flag_style_button_width, select_flag_style_button_height)					
 		####
 
@@ -693,14 +699,14 @@ class Country_Selection_Menu:
 
 		}	
 
-		self.country_name_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(26 * self.factor_y))
-		self.smaller_country_name_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(20 * self.factor_y))
-		self.tiny_country_name_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(26 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
 
 
 	def get_button_by_interaction(self, mouse_rect):
-		if self.create_map_button.rect.colliderect(mouse_rect) and self.selected_flag_image != None:
-			return 'create_map'
+		if self.start_game_button.rect.colliderect(mouse_rect) and self.selected_flag_image != None:
+			return 'start_game'
 		elif self.select_national_spirit_button.rect.colliderect(mouse_rect) and self.selected_flag_image != None:
 			return 'select_national_spirit'
 		elif self.select_flag_style_button.rect.colliderect(mouse_rect) and self.clicked_ideology != None:
@@ -807,125 +813,122 @@ class Country_Selection_Menu:
 
 		screen.blit(self.political_compass_image, (15 * self.factor_x, 31 * self.factor_y))
 		
-
+		# Leader Portrait
 		if self.Country_Selection_Flag_Selection_Menu.selected_country != None and self.is_flag_selection_menu_open == False and self.selected_flag_image != None:
 			self.selected_leader_image = self.Country_Selection_Flag_Selection_Menu.selected_country.country_leader_image
-			screen.blit(self.selected_leader_image, (1051 * self.factor_x, 53 * self.factor_y))
+			screen.blit(self.selected_leader_image, self.leader_portrait_position)
 		else:
-			screen.blit(self.generic_leader_image, (1051 * self.factor_x, 53 * self.factor_y))
+			screen.blit(self.generic_leader_image, self.leader_portrait_position)
 		
-		screen.blit(self.country_selection_background, (0, 0))
-
-		if self.selected_flag_image != None: # Country Name | Leader Name | National Spirits | Flag
+		# Flag
+		if self.selected_flag_image != None:
 			if self.flag_size == None:
-				self.selected_flag_image = pygame.transform.scale(self.selected_flag_image, (192, 113))
+				self.selected_flag_image = pygame.transform.scale(self.selected_flag_image, (208, 126))
 				self.selected_flag_image = pygame.transform.smoothscale_by(self.selected_flag_image, (self.factor_x, self.factor_y))
 				self.flag_size = self.selected_flag_image.get_size()
-			
-			screen.blit(self.selected_flag_image, (1215 * self.factor_x, 122 * self.factor_y))
+			screen.blit(self.selected_flag_image, self.country_flag_position)	
+			screen.blit(self.CRT_flag_overlay_effect, self.country_flag_position)	
 		
-			if self.is_flag_selection_menu_open == False: # Country Name | Leader Name | National Spirits
-				if  self.Country_Selection_Flag_Selection_Menu.selected_country != None:
-					country_name_text = self.smaller_country_name_scalable_font.render(self.Country_Selection_Flag_Selection_Menu.selected_country.country_name, True, (255, 255, 255))
-					text_position = (1390 * self.factor_x, 78 * self.factor_y)
-					screen.blit(country_name_text, text_position)	
+		# BEHIND BACKGROUND
+		screen.blit(self.country_selection_background, (0, 0))
+		# IN FRONT OF BACKGROUND
 
-					leader_name = self.Country_Selection_Flag_Selection_Menu.selected_country.country_leader_name
+		# Country Name | Leader Name | National Spirits
+		if self.is_flag_selection_menu_open == False and self.selected_flag_image != None:
+			if  self.Country_Selection_Flag_Selection_Menu.selected_country != None:
+				country_name_text = self.medium_scalable_font.render(self.Country_Selection_Flag_Selection_Menu.selected_country.country_name, True, (255, 255, 255))
+				screen.blit(country_name_text, self.country_name_position)	
 
-					leader_name_text = self.country_name_scalable_font.render(leader_name, True, (255, 255, 255))
-					text_position = (1074 * self.factor_x, 252 * self.factor_y)
+				leader_name = self.Country_Selection_Flag_Selection_Menu.selected_country.country_leader_name
+				leader_name_text = self.big_scalable_font.render(leader_name, True, (255, 255, 255))
 
-					if leader_name_text.get_width() > 350 * self.factor_x:
-						leader_name_text = self.smaller_country_name_scalable_font.render(leader_name, True, (255, 255, 255))
-						text_position = (1074 * self.factor_x, 254 * self.factor_y)
-					
-					screen.blit(leader_name_text, text_position)
-
-					self.national_spirits_display_rects = []
-
-					x_index = 0
-					y_index = 0
+				if leader_name_text.get_width() > 350 * self.factor_x:
+					leader_name_text = self.medium_scalable_font.render(leader_name, True, (255, 255, 255))
+				
+				screen.blit(leader_name_text, self.leader_name_position)
 
 
 
-					national_spirits_position = [1440*self.factor_x, 141*self.factor_y]
-					
-					if len(self.Country_Selection_Flag_Selection_Menu.selected_country.country_national_spirits) > 10:
-						for national_spirit in self.Country_Selection_Flag_Selection_Menu.selected_country.country_national_spirits:
-							scaled_national_spirit_icon = pygame.transform.scale_by(national_spirit.national_spirit_icon, 0.5)
+				self.national_spirits_display_rects = []
+				x_index = 0
+				y_index = 0
 
-							x_offset = scaled_national_spirit_icon.get_width() * 1.23
-							y_offset = scaled_national_spirit_icon.get_height()
-							
-							screen.blit(scaled_national_spirit_icon, (national_spirits_position[0] + x_offset*x_index, national_spirits_position[1] + y_offset*y_index))
-							
-							national_spirit.rect = self.pygame.Rect(national_spirits_position[0] + x_offset*x_index, national_spirits_position[1] + y_offset*y_index,
-																scaled_national_spirit_icon.get_width(), scaled_national_spirit_icon.get_height())
-							self.national_spirits_display_rects.append([national_spirit.rect, national_spirit])	
+				national_spirits_position = [1440*self.factor_x, 141*self.factor_y]
+				
+				if len(self.Country_Selection_Flag_Selection_Menu.selected_country.country_national_spirits) > 10:
+					for national_spirit in self.Country_Selection_Flag_Selection_Menu.selected_country.country_national_spirits:
+						scaled_national_spirit_icon = pygame.transform.scale_by(national_spirit.national_spirit_icon, 0.5)
 
-							if x_index < 9:
-								x_index += 1
-							else:
-								x_index = 0
-								y_index += 1							
-					else:	
-						for national_spirit in self.Country_Selection_Flag_Selection_Menu.selected_country.country_national_spirits:	
-							x_offset = national_spirit.national_spirit_icon.get_width() * 1.27
-							y_offset = national_spirit.national_spirit_icon.get_height()					
-							
-							screen.blit(national_spirit.national_spirit_icon, (national_spirits_position[0] + x_offset*x_index, national_spirits_position[1] + y_offset*y_index))
-							
-							national_spirit.rect = self.pygame.Rect(national_spirits_position[0] + x_offset*x_index, national_spirits_position[1] + y_offset*y_index,
-																national_spirit.national_spirit_icon.get_width(), national_spirit.national_spirit_icon.get_height())
-							self.national_spirits_display_rects.append([national_spirit.rect, national_spirit])	
+						x_offset = scaled_national_spirit_icon.get_width() * 1.23
+						y_offset = scaled_national_spirit_icon.get_height()
+						
+						screen.blit(scaled_national_spirit_icon, (national_spirits_position[0] + x_offset*x_index, national_spirits_position[1] + y_offset*y_index))
+						
+						national_spirit.rect = self.pygame.Rect(national_spirits_position[0] + x_offset*x_index, national_spirits_position[1] + y_offset*y_index,
+															scaled_national_spirit_icon.get_width(), scaled_national_spirit_icon.get_height())
+						self.national_spirits_display_rects.append([national_spirit.rect, national_spirit])	
 
-							if x_index < 4:
-								x_index += 1
-							else:
-								x_index = 0
-								y_index += 1
+						if x_index < 9:
+							x_index += 1
+						else:
+							x_index = 0
+							y_index += 1							
+				else:	
+					for national_spirit in self.Country_Selection_Flag_Selection_Menu.selected_country.country_national_spirits:	
+						x_offset = national_spirit.national_spirit_icon.get_width() * 1.27
+						y_offset = national_spirit.national_spirit_icon.get_height()					
+						
+						screen.blit(national_spirit.national_spirit_icon, (national_spirits_position[0] + x_offset*x_index, national_spirits_position[1] + y_offset*y_index))
+						
+						national_spirit.rect = self.pygame.Rect(national_spirits_position[0] + x_offset*x_index, national_spirits_position[1] + y_offset*y_index,
+															national_spirit.national_spirit_icon.get_width(), national_spirit.national_spirit_icon.get_height())
+						self.national_spirits_display_rects.append([national_spirit.rect, national_spirit])	
+
+						if x_index < 4:
+							x_index += 1
+						else:
+							x_index = 0
+							y_index += 1
 
 
-					# CULTURE
-					culture_national_spirit = self.Country_Selection_Flag_Selection_Menu.selected_country.country_culture
-					screen.blit(culture_national_spirit.national_spirit_icon, (1843 * self.factor_x, 143 * self.factor_y))
-					
-					culture_national_spirit.rect = self.pygame.Rect(1843 * self.factor_x, 143 * self.factor_y,
-					       	culture_national_spirit.national_spirit_icon.get_width(), culture_national_spirit.national_spirit_icon.get_height())					
-					
-					self.national_spirits_display_rects.append([culture_national_spirit.rect, culture_national_spirit])						
-					
-					# RELIGION	
-					religion_national_spirit = self.Country_Selection_Flag_Selection_Menu.selected_country.country_religion
-					screen.blit(religion_national_spirit.national_spirit_icon, (1843 * self.factor_x, 143 * self.factor_y + religion_national_spirit.national_spirit_icon.get_height()))
-					
-					religion_national_spirit.rect = self.pygame.Rect(1843 * self.factor_x, 143 * self.factor_y + religion_national_spirit.national_spirit_icon.get_height(),
-					       	religion_national_spirit.national_spirit_icon.get_width(), religion_national_spirit.national_spirit_icon.get_height())					
-					
-					self.national_spirits_display_rects.append([religion_national_spirit.rect, religion_national_spirit])						
-											
+				# CULTURE
+				culture_national_spirit = self.Country_Selection_Flag_Selection_Menu.selected_country.country_culture
+				screen.blit(culture_national_spirit.national_spirit_icon, (1843 * self.factor_x, 143 * self.factor_y))
+				
+				culture_national_spirit.rect = self.pygame.Rect(1843 * self.factor_x, 143 * self.factor_y,
+						culture_national_spirit.national_spirit_icon.get_width(), culture_national_spirit.national_spirit_icon.get_height())					
+				
+				self.national_spirits_display_rects.append([culture_national_spirit.rect, culture_national_spirit])						
+				
+				# RELIGION	
+				religion_national_spirit = self.Country_Selection_Flag_Selection_Menu.selected_country.country_religion
+				screen.blit(religion_national_spirit.national_spirit_icon, (1843 * self.factor_x, 143 * self.factor_y + religion_national_spirit.national_spirit_icon.get_height()))
+				
+				religion_national_spirit.rect = self.pygame.Rect(1843 * self.factor_x, 143 * self.factor_y + religion_national_spirit.national_spirit_icon.get_height(),
+						religion_national_spirit.national_spirit_icon.get_width(), religion_national_spirit.national_spirit_icon.get_height())					
+				
+				self.national_spirits_display_rects.append([religion_national_spirit.rect, religion_national_spirit])						
+										
 
-				if self.hovered_national_spirit != None:
-					pygame.draw.rect(screen, (255,255,255), self.hovered_national_spirit.rect, 2)
+			if self.hovered_national_spirit != None:
+				pygame.draw.rect(screen, (255,255,255), self.hovered_national_spirit.rect, 2)
 
-					national_spirit_description_text = self.tiny_country_name_scalable_font.render(self.hovered_national_spirit.national_spirit_description, True, (255, 255, 255))
-					text_position = (1435 * self.factor_x, 280 * self.factor_y)
+				national_spirit_description_text = self.small_scalable_font.render(self.hovered_national_spirit.national_spirit_description, True, (255, 255, 255))
+				text_position = (1435 * self.factor_x, 280 * self.factor_y)
 
-					pygame.draw.rect(screen, (6,15,20), (1430 * self.factor_x, 275 * self.factor_y, 485 * self.factor_x, national_spirit_description_text.get_height() + 10 * self.factor_y))
-					pygame.draw.rect(screen, (43,219,211), (1430 * self.factor_x, 275 * self.factor_y, 485 * self.factor_x, national_spirit_description_text.get_height() + 10 * self.factor_y), 2)
+				pygame.draw.rect(screen, (6,15,20), (1430 * self.factor_x, 275 * self.factor_y, 485 * self.factor_x, national_spirit_description_text.get_height() + 10 * self.factor_y))
+				pygame.draw.rect(screen, (43,219,211), (1430 * self.factor_x, 275 * self.factor_y, 485 * self.factor_x, national_spirit_description_text.get_height() + 10 * self.factor_y), 2)
 
-					screen.blit(national_spirit_description_text, text_position)						
-
-		screen.blit(self.CRT_flag_overlay_effect, (1201 * self.factor_x, 107 * self.factor_y))	
+				screen.blit(national_spirit_description_text, text_position)							
 
 		if self.clicked_ideology == None: # Blocked Buttons
 			screen.blit(self.blocked_select_flag_style_button, (self.select_flag_style_button_x_offset, self.select_flag_style_button_y_offset))
 			screen.blit(self.blocked_select_national_spirit_button, (self.select_national_spirit_button_x_offset, self.select_national_spirit_button_y_offset))
-			screen.blit(self.blocked_create_map_button, (self.create_map_button_x_offset, self.create_map_button_y_offset))				
+			screen.blit(self.blocked_start_game_button, (self.start_game_button_x_offset, self.start_game_button_y_offset))				
 			screen.blit(self.blocked_full_right_side, (self.screen_width - self.blocked_full_right_side.get_width(), 0))		
 		elif self.selected_flag_image == None:
 			screen.blit(self.blocked_select_national_spirit_button, (self.select_national_spirit_button_x_offset, self.select_national_spirit_button_y_offset))
-			screen.blit(self.blocked_create_map_button, (self.create_map_button_x_offset, self.create_map_button_y_offset))
+			screen.blit(self.blocked_start_game_button, (self.start_game_button_x_offset, self.start_game_button_y_offset))
 			screen.blit(self.blocked_all_laws, (self.screen_width - self.blocked_all_laws.get_width(), self.screen_height - self.blocked_all_laws.get_height()))
 			self.national_spirits_display_rects = []
 				
@@ -943,8 +946,8 @@ class Country_Selection_Menu:
 
 		if self.hovered_button != 'none': # Buttons Selection 
 			
-			if self.hovered_button == 'create_map':
-				screen.blit(self.hovered_create_map_button, (self.create_map_button_x_offset, self.create_map_button_y_offset))
+			if self.hovered_button == 'start_game':
+				screen.blit(self.hovered_start_game_button, (self.start_game_button_x_offset, self.start_game_button_y_offset))
 			
 			elif self.hovered_button == 'select_national_spirit':
 				screen.blit(self.hovered_select_national_spirit_button_image, (self.select_national_spirit_button_x_offset, self.select_national_spirit_button_y_offset))

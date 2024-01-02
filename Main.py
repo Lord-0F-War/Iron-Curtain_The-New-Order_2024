@@ -141,7 +141,7 @@ class Main:
 		self.national_spirits_background = self.pygame.image.load(os.path.join(self.country_selection_folder, 'national_spirits_background.png')).convert_alpha()
 		self.national_spirits_background = pygame.transform.smoothscale_by(self.national_spirits_background, (self.factor_x, self.factor_y))
 
-		self.hovered_create_map_button = self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_create_map_button.png')).convert_alpha()
+		self.hovered_start_game_button = self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_start_game_button.png')).convert_alpha()
 		self.hovered_select_flag_style_button_image = self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_select_flag_style_button.png')).convert_alpha()
 		self.hovered_select_national_spirit_button_image = self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_select_national_spirit_button.png')).convert_alpha()
 		
@@ -151,7 +151,7 @@ class Main:
 		self.blocked_all_laws = self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_all_laws.png')).convert_alpha()
 		self.blocked_select_national_spirit_button = self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_select_national_spirit_button.png')).convert_alpha()
 		self.blocked_select_flag_style_button = self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_select_flag_style_button.png')).convert_alpha()
-		self.blocked_create_map_button = self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_create_map_button.png')).convert_alpha()
+		self.blocked_start_game_button = self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_start_game_button.png')).convert_alpha()
 
 
 		self.ideas_folder = os.path.join(self.interface_folder, 'ideas')
@@ -682,9 +682,9 @@ your shoulders.
 		self.Country_Selection_Menu = MenuManager.Country_Selection_Menu(self.Country_Selection_Flag_Selection_Menu, self.Country_Selection_National_Spirits_Selection_Menu, 
 								 	self.screen_width, self.screen_height, self.pygame, self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.generic_click_menu_sound, 
 									self.country_selection_background, self.country_info_display_background, self.political_compass_image, self.ideologies_CRT_overlay_effect,
-									self.hovered_create_map_button, self.hovered_select_national_spirit_button_image, self.hovered_select_flag_style_button_image, 
+									self.hovered_start_game_button, self.hovered_select_national_spirit_button_image, self.hovered_select_flag_style_button_image, 
 									self.hovered_laws_button_image, self.generic_leader, self.CRT_flag_overlay_effect, self.blocked_select_national_spirit_button, 
-									self.blocked_select_flag_style_button, self.blocked_create_map_button, self.blocked_full_right_side, self.blocked_all_laws)
+									self.blocked_select_flag_style_button, self.blocked_start_game_button, self.blocked_full_right_side, self.blocked_all_laws)
 		
 		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.player_country, self.Main_Menu, self.Country_Selection_Menu,
 											self.Scenario_Selection_Menu, self.ESC_Menu, self.main_menu_backgound, 
@@ -922,7 +922,7 @@ your shoulders.
 							if self.Country_Selection_Menu.is_flag_selection_menu_open == False:
 								self.clicked_button = self.Country_Selection_Menu.get_clicked_button(self.mouse_rect)
 								if self.clicked_button != 'none' and self.clicked_button != None:
-									if self.clicked_button == 'create_map':
+									if self.clicked_button == 'start_game':
 										self.is_in_country_selection_screen = False
 										self.is_in_map_creation_screen = True
 										self.is_in_esc_menu = False
