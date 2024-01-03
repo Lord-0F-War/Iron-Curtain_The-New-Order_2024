@@ -5,8 +5,10 @@ from json import load as json_load, dump as json_dump
 
 exe_folder = os.path.dirname(sys.argv[0])
 
-screen_width = 1920
-screen_height = 1080
+with open(f'{exe_folder}\settings.txt', 'r') as file:
+	configs = json_load(file)
+	screen_width = configs["screen_width"]
+	screen_height = configs["screen_height"]
 
 
 import PygameManager
@@ -109,8 +111,8 @@ class Main:
 
 		self.game_logo = self.pygame.image.load(os.path.join(self.interface_folder, 'game_logo.png')).convert_alpha()
 
-		self.main_menu_menu_gui = self.pygame.image.load(os.path.join(self.interface_folder, 'menu_gui.png')).convert_alpha()
-		self.main_menu_options_gui = self.pygame.image.load(os.path.join(self.interface_folder, 'options_gui.png')).convert_alpha()
+		self.main_menu_UI = self.pygame.image.load(os.path.join(self.interface_folder, 'menu_UI.png')).convert_alpha()
+		self.menu_options_UI = self.pygame.image.load(os.path.join(self.interface_folder, 'options_UI.png')).convert_alpha()
 		self.hovered_green_button_menu_image = self.pygame.image.load(os.path.join(self.interface_folder, 'hovered_green_button_menu_image.png')).convert_alpha()
 		self.hovered_red_button_menu_image = self.pygame.image.load(os.path.join(self.interface_folder, 'hovered_red_button_menu_image.png')).convert_alpha()
 
@@ -660,38 +662,36 @@ your shoulders.
 	def create_classes(self):
 		self.Sounds_Manager = SoundsManager.Sounds_Manager(self.generic_hover_over_button_menu_sound, self.click_main_menu_sound, self.generic_click_menu_sound)
 
-		self.Options_Menu = MenuManager.Options_Menu(self.screen_width, self.screen_height, self.main_menu_options_gui, 
-											   self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.click_main_menu_sound, 
-									   self.hovered_green_button_menu_image, self.hovered_red_button_menu_image, self.Sounds_Manager)
-		self.ESC_Menu = MenuManager.ESC_Menu(self.screen_width, self.screen_height, self.ESC_menu_background, 
-									   self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.click_main_menu_sound, 
-									   self.hovered_green_button_menu_image, self.hovered_red_button_menu_image, self.Options_Menu)
-
-		self.Main_Menu = MenuManager.Main_Menu(self.screen_width, self.screen_height, self.pygame, self.game_logo, self.python_logo, self.main_menu_menu_gui, self.main_menu_options_gui, 
-										 self.hovered_green_button_menu_image, self.hovered_red_button_menu_image, self.new_game_menu_background, self.Sounds_Manager.generic_hover_over_button_menu_sound, 
-										 self.Sounds_Manager.click_main_menu_sound)
-	
+		self.Options_Menu = MenuManager.Options_Menu(self.screen_width, self.screen_height, self.menu_options_UI, 
+				self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.click_main_menu_sound, self.hovered_green_button_menu_image,
+				self.hovered_red_button_menu_image, self.Sounds_Manager)
 		
+		self.ESC_Menu = MenuManager.ESC_Menu(self.screen_width, self.screen_height, self.ESC_menu_background, 
+				self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.click_main_menu_sound, self.hovered_green_button_menu_image,
+				self.hovered_red_button_menu_image, self.Options_Menu)
+
+		self.Main_Menu = MenuManager.Main_Menu(self.screen_width, self.screen_height, self.pygame, self.game_logo, self.python_logo, self.main_menu_UI, self.hovered_green_button_menu_image,
+				self.hovered_red_button_menu_image, self.new_game_menu_background, self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.click_main_menu_sound)
+
 		self.Scenario_Selection_Menu = MenuManager.Scenario_Selection_Menu(self.screen_width, self.screen_height, self.pygame, self.game_logo, self.python_logo,
-									self.scenario_selection_menu_gui, self.hovered_select_scenario_button_menu_image, self.hovered_back_to_main_menu_button_menu_image,
-									self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.click_main_menu_sound)
+				self.scenario_selection_menu_gui, self.hovered_select_scenario_button_menu_image, self.hovered_back_to_main_menu_button_menu_image,
+				self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.click_main_menu_sound)
 
 
 		self.Country_Selection_Flag_Selection_Menu = MenuManager.Country_Selection_Flag_Selection_Menu(screen_width, screen_height, self.countries, 
-											       self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.generic_click_menu_sound)
+				self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.generic_click_menu_sound)
 		self.Country_Selection_National_Spirits_Selection_Menu = MenuManager.Country_Selection_National_Spirits_Selection_Menu(self.screen_width, self.screen_height, 
-														       self.national_spirits_background, self.generic_national_spirits, self.Sounds_Manager.generic_hover_over_button_menu_sound,
-															   self.Sounds_Manager.click_main_menu_sound)
+				self.national_spirits_background, self.generic_national_spirits, self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.click_main_menu_sound)
 		self.Country_Selection_Menu = MenuManager.Country_Selection_Menu(self.Country_Selection_Flag_Selection_Menu, self.Country_Selection_National_Spirits_Selection_Menu, 
-								 	self.screen_width, self.screen_height, self.pygame, self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.generic_click_menu_sound, 
-									self.country_selection_background, self.country_info_display_background, self.political_compass_image, self.ideologies_CRT_overlay_effect,
-									self.hovered_start_game_button, self.hovered_select_national_spirit_button_image, self.hovered_select_flag_style_button_image, 
-									self.hovered_laws_button_image, self.generic_leader, self.CRT_flag_overlay_effect, self.blocked_select_national_spirit_button, 
-									self.blocked_select_flag_style_button, self.blocked_start_game_button, self.blocked_full_right_side, self.blocked_all_laws)
+				self.screen_width, self.screen_height, self.pygame, self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.generic_click_menu_sound, 
+				self.country_selection_background, self.country_info_display_background, self.political_compass_image, self.ideologies_CRT_overlay_effect,
+				self.hovered_start_game_button, self.hovered_select_national_spirit_button_image, self.hovered_select_flag_style_button_image, 
+				self.hovered_laws_button_image, self.generic_leader, self.CRT_flag_overlay_effect, self.blocked_select_national_spirit_button, 
+				self.blocked_select_flag_style_button, self.blocked_start_game_button, self.blocked_full_right_side, self.blocked_all_laws)
 		
 		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.Main_Menu, self.Country_Selection_Menu,
-											self.Scenario_Selection_Menu, self.ESC_Menu, self.main_menu_backgound, 
-											self.python_logo)
+				self.Scenario_Selection_Menu, self.ESC_Menu, self.main_menu_backgound, self.python_logo)
+		
 	def setup_variables(self):
 		self.screen_center = (self.screen_width/2, self.screen_height/2)
 
@@ -753,13 +753,13 @@ your shoulders.
 							if self.clicked_button != 'none':
 								if self.Main_Menu.is_in_new_game_menu == False:
 									if self.clicked_button == 'start':
-										self.pygame.time.delay(100)
+										self.pygame.time.delay(50)
 										self.Main_Menu.is_in_new_game_menu = True
 									elif self.clicked_button == 'quit':
-										self.pygame.time.delay(200)
+										self.pygame.time.delay(50)
 										self.starting_the_game = False
 									elif self.clicked_button == 'options':
-										self.pygame.time.delay(200)
+										self.pygame.time.delay(50)
 										self.is_options_menu_open = True
 								else:
 									if self.clicked_button == 'new_game':

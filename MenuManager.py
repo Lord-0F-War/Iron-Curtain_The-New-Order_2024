@@ -27,24 +27,27 @@ class ESC_Menu:
 		menu_gui_height = self.ESC_menu_background.get_height()
 		
 		self.menu_gui_middle_x = (screen_width/2 - menu_gui_width/2)
-		self.menu_gui_middle_y = (screen_height/2 - menu_gui_height/2)		
+		self.menu_gui_middle_y = (screen_height/2 - menu_gui_height/2)	
 
-		options_button_width = 374 * self.factor_x
-		options_button_height = 35 * self.factor_y
-		options_button_x_offset = 57 * self.factor_x
-		options_button_y_offset = 100 * self.factor_y
+		self.hovered_green_button_menu_image = pygame.transform.smoothscale(hovered_green_button_menu_image, (371 * self.factor_x, 34 * self.factor_y))
+		self.hovered_red_button_menu_image = pygame.transform.smoothscale(hovered_red_button_menu_image, (371 * self.factor_x, 34 * self.factor_y))
+
+		options_button_width = 371 * self.factor_x
+		options_button_height = 34 * self.factor_y
+		options_button_x_offset = 59 * self.factor_x
+		options_button_y_offset = 101 * self.factor_y
 		self.options_button = GenericUtilitys.Button(self.menu_gui_middle_x + options_button_x_offset, self.menu_gui_middle_y + options_button_y_offset, options_button_width, options_button_height)
 		
-		main_menu_button_width = 374 * self.factor_x
-		main_menu_button_height = 35 * self.factor_y
-		main_menu_button_x_offset = 57 * self.factor_x
-		main_menu_button_y_offset = 419 * self.factor_y
+		main_menu_button_width = 371 * self.factor_x
+		main_menu_button_height = 34 * self.factor_y
+		main_menu_button_x_offset = 59 * self.factor_x
+		main_menu_button_y_offset = 420 * self.factor_y
 		self.main_menu_button = GenericUtilitys.Button(self.menu_gui_middle_x + main_menu_button_x_offset, self.menu_gui_middle_y + main_menu_button_y_offset, main_menu_button_width, main_menu_button_height)
 		
-		quit_button_width = 374 * self.factor_x
-		quit_button_height = 35 * self.factor_y
-		quit_button_x_offset = 57 * self.factor_x
-		quit_button_y_offset = 464 * self.factor_y
+		quit_button_width = 371 * self.factor_x
+		quit_button_height = 34 * self.factor_y
+		quit_button_x_offset = 59 * self.factor_x
+		quit_button_y_offset = 465 * self.factor_y
 		self.quit_button = GenericUtilitys.Button(self.menu_gui_middle_x + quit_button_x_offset, self.menu_gui_middle_y + quit_button_y_offset, quit_button_width, quit_button_height)						
 		
 
@@ -107,17 +110,19 @@ class Options_Menu:
 		
 		self.Sounds_Manager = Sounds_Manager
 
-		self.hovered_green_button_menu_image, self.hovered_red_button_menu_image =  hovered_green_button_menu_image, hovered_red_button_menu_image
 		self.hover_over_button_sound, self.click_menu_sound = generic_hover_over_button_menu_sound, generic_click_menu_sound
 		self.hovered_button = 'none'
 		self.last_hovered_button = None		
 
-		self.options_menu_background = options_menu_background
-
 		reference_screen_size_x = 1920
 		reference_screen_size_y = 1080
 		self.factor_x = screen_width / reference_screen_size_x
-		self.factor_y = screen_height / reference_screen_size_y		
+		self.factor_y = screen_height / reference_screen_size_y	
+
+		self.hovered_green_button_menu_image = pygame.transform.smoothscale(hovered_green_button_menu_image, (371 * self.factor_x, 34 * self.factor_y))
+		self.hovered_red_button_menu_image = pygame.transform.smoothscale(hovered_red_button_menu_image, (371 * self.factor_x, 34 * self.factor_y))		
+
+		self.options_menu_background = pygame.transform.smoothscale_by(options_menu_background, (self.factor_x,self.factor_y))			
 
 		menu_gui_width = self.options_menu_background.get_width()
 		menu_gui_height = self.options_menu_background.get_height()
@@ -126,23 +131,15 @@ class Options_Menu:
 		self.options_menu_gui_middle_y = (screen_height/2 - menu_gui_height/2)		
 
 
-		back_button_width = 374 * self.factor_x
-		back_button_height = int(35 * self.factor_y)
+		back_button_width = 371 * self.factor_x
+		back_button_height = 34 * self.factor_y
 		back_button_x_offset = 62 * self.factor_x
 		back_button_y_offset = 886 * self.factor_y
 		self.back_button = GenericUtilitys.Button(self.options_menu_gui_middle_x + back_button_x_offset, self.options_menu_gui_middle_y + back_button_y_offset, back_button_width, back_button_height)	
-
-		resolution_button_width = 374 * self.factor_x
-		resolution_button_height = int(35 * self.factor_y)
-		resolution_button_x_offset = 62 * self.factor_x
-		resolution_button_y_offset = 886 * self.factor_y
-		self.resolution_button = GenericUtilitys.Button(self.options_menu_gui_middle_x + resolution_button_x_offset, self.options_menu_gui_middle_y + resolution_button_y_offset,
-												  resolution_button_width, resolution_button_height)
 		
-		resolutions_button_width = 374 * self.factor_x
-		resolutions_button_height = int(35 * self.factor_y)
+		resolutions_button_width = 371 * self.factor_x
+		resolutions_button_height = 34 * self.factor_y
 		resolutions_button_x_offset = 62 * self.factor_x
-		
 		self.resolution_2560x1440_button = GenericUtilitys.Button(self.options_menu_gui_middle_x + resolutions_button_x_offset, self.options_menu_gui_middle_y + 100 * self.factor_y,
 												  resolutions_button_width, resolutions_button_height)	
 		self.resolution_1920x1080_button = GenericUtilitys.Button(self.options_menu_gui_middle_x + resolutions_button_x_offset, self.options_menu_gui_middle_y + 145 * self.factor_y,
@@ -154,7 +151,7 @@ class Options_Menu:
 		self.resolution_1280x1024_button = GenericUtilitys.Button(self.options_menu_gui_middle_x + resolutions_button_x_offset, self.options_menu_gui_middle_y + 280 * self.factor_y,
 												  resolutions_button_width, resolutions_button_height)										
 
-		self.clicked_resolution_button = 'resolution_1920x1080'
+		self.clicked_resolution_button = f'resolution_{screen_width}x{screen_height}'
 
 
 		self.brightness_slider = GenericUtilitys.Slide(self.options_menu_gui_middle_x + 457* self.factor_x, self.options_menu_gui_middle_y + 135* self.factor_y, 374* self.factor_x, 10* self.factor_y, 0, 180, 0)
@@ -189,6 +186,7 @@ class Options_Menu:
 		if clicked_button != 'none':
 			self.hover_over_button_sound.fadeout(150)
 			self.click_menu_sound.play()
+			self.clicked_resolution_button = clicked_button
 		return clicked_button
 	
 
@@ -252,7 +250,7 @@ class Options_Menu:
 
 
 class Main_Menu:
-	def __init__(self, screen_width, screen_height, pygame, game_logo, python_logo, menu_gui, main_menu_options_gui, hovered_green_button_menu_image, hovered_red_button_menu_image, 
+	def __init__(self, screen_width, screen_height, pygame, game_logo, python_logo, menu_gui, hovered_green_button_menu_image, hovered_red_button_menu_image, 
 			  new_game_menu_background, hover_over_button_sound, click_menu_sound):
 		self.hovered_button = 'none'
 		self.last_hovered_button ='none'
@@ -276,72 +274,61 @@ class Main_Menu:
 		self.factor_y = screen_height / reference_screen_size_y
 
 		self.python_logo = python_logo
-		self.python_logo = pygame.transform.smoothscale_by(self.python_logo, (self.factor_x,self. factor_y))
+		self.python_logo = pygame.transform.smoothscale_by(self.python_logo, (self.factor_x,self.factor_y))
 
 		self.game_logo = game_logo
-		self.game_logo = pygame.transform.smoothscale_by(self.game_logo, (self.factor_x,self. factor_y))
+		self.game_logo = pygame.transform.smoothscale_by(self.game_logo, (self.factor_x,self.factor_y))
 
-		self.menu_gui = pygame.transform.smoothscale_by(menu_gui, (self.factor_x,self. factor_y))
-		self.main_menu_options_gui = pygame.transform.smoothscale_by(main_menu_options_gui, (self.factor_x,self. factor_y))
+		self.menu_gui = pygame.transform.smoothscale_by(menu_gui, (self.factor_x,self.factor_y))
 		
-		self.hovered_green_button_menu_image = pygame.transform.smoothscale_by(hovered_green_button_menu_image, (self.factor_x, self.factor_y))
-		self.hovered_red_button_menu_image = pygame.transform.smoothscale_by(hovered_red_button_menu_image, (self.factor_x, self.factor_y))
-
-		self.small_hovered_green_button_menu_image = hovered_green_button_menu_image
-		self.small_hovered_red_button_menu_image = hovered_red_button_menu_image
+		self.hovered_green_button_menu_image = pygame.transform.smoothscale(hovered_green_button_menu_image, (371 * self.factor_x, 34 * self.factor_y))
+		self.hovered_red_button_menu_image = pygame.transform.smoothscale(hovered_red_button_menu_image, (371 * self.factor_x, 34 * self.factor_y))
 
 		
 		menu_gui_width = self.menu_gui.get_width()
 		menu_gui_height = self.menu_gui.get_height()
 		
 		self.menu_gui_middle_x = (screen_width - menu_gui_width*1.5)
-		self.menu_gui_middle_y = (screen_height - menu_gui_height) / 1.2
+		self.menu_gui_middle_y = (screen_height - menu_gui_height) / 1.2	
 
 		
-		options_menu_gui_width = self.main_menu_options_gui.get_width()
-		options_menu_gui_height = self.main_menu_options_gui.get_height()		
-
-		self.options_menu_gui_middle_x = (screen_width/2 - options_menu_gui_width/2)
-		self.options_menu_gui_middle_y = (screen_height - options_menu_gui_height) / 1.2
-
-		
-		start_button_width = 374 * self.factor_x
-		start_button_height = int(35 * self.factor_y)
-		start_button_x_offset = 48 * self.factor_x
+		start_button_width = 371 * self.factor_x
+		start_button_height = 34 * self.factor_y
+		start_button_x_offset = 49 * self.factor_x
 		start_button_y_offset = 459 * self.factor_y
 		self.start_button = GenericUtilitys.Button(self.menu_gui_middle_x + start_button_x_offset, self.menu_gui_middle_y + start_button_y_offset, start_button_width, start_button_height)	
 
-		quit_button_width = 374 * self.factor_x
-		quit_button_height = int(35 * self.factor_y)
-		quit_button_x_offset = 515 * self.factor_x
+		quit_button_width = 371 * self.factor_x
+		quit_button_height = 34 * self.factor_y
+		quit_button_x_offset = 516 * self.factor_x
 		quit_button_y_offset = 459 * self.factor_y
 		self.quit_button = GenericUtilitys.Button(self.menu_gui_middle_x + quit_button_x_offset, self.menu_gui_middle_y + quit_button_y_offset, quit_button_width, quit_button_height)	
 
 		self.is_options_menu_open = False
 
-		options_button_width = 374 * self.factor_x
-		options_button_height = int(35 * self.factor_y)
-		options_button_x_offset = 515 * self.factor_x
+		options_button_width = 371 * self.factor_x
+		options_button_height = 34 * self.factor_y
+		options_button_x_offset = 516 * self.factor_x
 		options_button_y_offset = 403 * self.factor_y
 		self.options_button = GenericUtilitys.Button(self.menu_gui_middle_x + options_button_x_offset, self.menu_gui_middle_y + options_button_y_offset, options_button_width, options_button_height)
 
 		# NEW GAME / LOAD SAVE  MENU
 
-		new_game_button_width = 374 * self.factor_x
-		new_game_button_height = int(35 * self.factor_y)
-		new_game_button_x_offset = 57 * self.factor_x
+		new_game_button_width = 371 * self.factor_x
+		new_game_button_height = 34 * self.factor_y
+		new_game_button_x_offset = 58 * self.factor_x
 		new_game_button_y_offset = 100 * self.factor_y
 		self.new_game_button = GenericUtilitys.Button(self.new_game_menu_background_middle_x + new_game_button_x_offset, self.new_game_menu_background_middle_y + new_game_button_y_offset, new_game_button_width, new_game_button_height)
 
-		load_save_button_width = 374 * self.factor_x
-		load_save_button_height = int(35 * self.factor_y)
-		load_save_button_x_offset = 57 * self.factor_x
-		load_save_button_y_offset = 152 * self.factor_y
+		load_save_button_width = 371 * self.factor_x
+		load_save_button_height = 34 * self.factor_y
+		load_save_button_x_offset = 58 * self.factor_x
+		load_save_button_y_offset = 151 * self.factor_y
 		self.load_save_button = GenericUtilitys.Button(self.new_game_menu_background_middle_x + load_save_button_x_offset, self.new_game_menu_background_middle_y + load_save_button_y_offset, load_save_button_width, load_save_button_height)
 
-		back_button_width = 374 * self.factor_x
-		back_button_height = int(35 * self.factor_y)
-		back_button_x_offset = 57 * self.factor_x
+		back_button_width = 371 * self.factor_x
+		back_button_height = 34 * self.factor_y
+		back_button_x_offset = 58 * self.factor_x
 		back_button_y_offset = 464 * self.factor_y
 		self.back_button = GenericUtilitys.Button(self.new_game_menu_background_middle_x + back_button_x_offset, self.new_game_menu_background_middle_y + back_button_y_offset, back_button_width, back_button_height)
 
@@ -429,11 +416,11 @@ class Main_Menu:
 			screen.blit(self.new_game_menu_background, (self.new_game_menu_background_middle_x, self.new_game_menu_background_middle_y))
 			if self.hovered_button != 'none':
 				if self.hovered_button == 'new_game':
-					screen.blit(self.small_hovered_green_button_menu_image, self.new_game_button.rect)
+					screen.blit(self.hovered_green_button_menu_image, self.new_game_button.rect)
 				elif self.hovered_button == 'load_save':
-					screen.blit(self.small_hovered_green_button_menu_image, self.load_save_button.rect)
+					screen.blit(self.hovered_green_button_menu_image, self.load_save_button.rect)
 				elif self.hovered_button == 'back':
-					screen.blit(self.small_hovered_green_button_menu_image, self.back_button.rect)										
+					screen.blit(self.hovered_green_button_menu_image, self.back_button.rect)										
 			else:
 				self.hover_over_button_sound.fadeout(200)
 
