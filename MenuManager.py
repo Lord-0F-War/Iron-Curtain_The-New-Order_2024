@@ -253,13 +253,20 @@ class Options_Menu:
 
 class Main_Menu:
 	def __init__(self, screen_width, screen_height, pygame, game_logo, python_logo, menu_gui, main_menu_options_gui, hovered_green_button_menu_image, hovered_red_button_menu_image, 
-			  hover_over_button_sound, click_menu_sound):
+			  new_game_menu_background, hover_over_button_sound, click_menu_sound):
 		self.hovered_button = 'none'
 		self.last_hovered_button ='none'
 
 		self.hover_over_button_sound = hover_over_button_sound
 		self.click_menu_sound = click_menu_sound
 
+		self.new_game_menu_background = new_game_menu_background
+		new_game_menu_background_width = self.new_game_menu_background.get_width()
+		new_game_menu_background_height = self.new_game_menu_background.get_height()
+		
+		self.new_game_menu_background_middle_x = (screen_width/2 - new_game_menu_background_width/2)
+		self.new_game_menu_background_middle_y = (screen_height/2 - new_game_menu_background_height/2)		
+		self.is_in_new_game_menu = False
 		
 		self.screen_width = screen_width
 		self.screen_height = screen_height
@@ -279,6 +286,9 @@ class Main_Menu:
 		
 		self.hovered_green_button_menu_image = pygame.transform.smoothscale_by(hovered_green_button_menu_image, (self.factor_x, self.factor_y))
 		self.hovered_red_button_menu_image = pygame.transform.smoothscale_by(hovered_red_button_menu_image, (self.factor_x, self.factor_y))
+
+		self.small_hovered_green_button_menu_image = hovered_green_button_menu_image
+		self.small_hovered_red_button_menu_image = hovered_red_button_menu_image
 
 		
 		menu_gui_width = self.menu_gui.get_width()
@@ -315,6 +325,26 @@ class Main_Menu:
 		options_button_y_offset = 403 * self.factor_y
 		self.options_button = GenericUtilitys.Button(self.menu_gui_middle_x + options_button_x_offset, self.menu_gui_middle_y + options_button_y_offset, options_button_width, options_button_height)
 
+		# NEW GAME / LOAD SAVE  MENU
+
+		new_game_button_width = 374 * self.factor_x
+		new_game_button_height = int(35 * self.factor_y)
+		new_game_button_x_offset = 57 * self.factor_x
+		new_game_button_y_offset = 100 * self.factor_y
+		self.new_game_button = GenericUtilitys.Button(self.new_game_menu_background_middle_x + new_game_button_x_offset, self.new_game_menu_background_middle_y + new_game_button_y_offset, new_game_button_width, new_game_button_height)
+
+		load_save_button_width = 374 * self.factor_x
+		load_save_button_height = int(35 * self.factor_y)
+		load_save_button_x_offset = 57 * self.factor_x
+		load_save_button_y_offset = 152 * self.factor_y
+		self.load_save_button = GenericUtilitys.Button(self.new_game_menu_background_middle_x + load_save_button_x_offset, self.new_game_menu_background_middle_y + load_save_button_y_offset, load_save_button_width, load_save_button_height)
+
+		back_button_width = 374 * self.factor_x
+		back_button_height = int(35 * self.factor_y)
+		back_button_x_offset = 57 * self.factor_x
+		back_button_y_offset = 464 * self.factor_y
+		self.back_button = GenericUtilitys.Button(self.new_game_menu_background_middle_x + back_button_x_offset, self.new_game_menu_background_middle_y + back_button_y_offset, back_button_width, back_button_height)
+
 
 	def get_button_by_interaction(self, mouse_rect):
 		if self.start_button.rect.colliderect(mouse_rect):
@@ -323,6 +353,12 @@ class Main_Menu:
 			return 'quit'
 		elif self.options_button.rect.colliderect(mouse_rect):
 			return 'options'
+		elif self.new_game_button.rect.colliderect(mouse_rect):
+			return 'new_game'
+		elif self.load_save_button.rect.colliderect(mouse_rect):
+			return 'load_save'
+		elif self.back_button.rect.colliderect(mouse_rect):
+			return 'back'		
 		else:
 			return 'none'
 
@@ -331,27 +367,45 @@ class Main_Menu:
 	def get_clicked_button(self, mouse_rect):
 		clicked_button = self.get_button_by_interaction(mouse_rect)
 		if clicked_button != 'none':
-			self.hover_over_button_sound.fadeout(150)
-			self.click_menu_sound.play()
-			if clicked_button == 'options':
-				self.is_options_menu_open = True
-			elif clicked_button == 'back':
-				self.is_options_menu_open = False			
+			if self.is_in_new_game_menu == False:
+				self.hover_over_button_sound.fadeout(150)
+				self.click_menu_sound.play()	
+			else:
+				if clicked_button == 'new_game':
+					self.hover_over_button_sound.fadeout(150)
+					self.click_menu_sound.play()
+				elif clicked_button == 'load_save':
+					self.hover_over_button_sound.fadeout(150)
+					self.click_menu_sound.play()
+				elif clicked_button == 'back':		
+					self.hover_over_button_sound.fadeout(150)
+					self.click_menu_sound.play()								
 
 		return clicked_button
 
 
 	def get_hovered_button(self, mouse_rect):
 		self.hovered_button = self.get_button_by_interaction(mouse_rect)
-		if self.hovered_button != self.last_hovered_button and self.hovered_button != 'none':
-			self.hover_over_button_sound.play()
-			self.last_hovered_button = self.hovered_button
-			return self.hovered_button
-		elif self.hovered_button != 'none':
-			return self.last_hovered_button
+		if self.is_in_new_game_menu == False:
+			if self.hovered_button != self.last_hovered_button and self.hovered_button not in ['new_game', 'load_save', 'back'] and self.hovered_button != 'none':
+				self.hover_over_button_sound.play()
+				self.last_hovered_button = self.hovered_button
+				return self.hovered_button
+			elif self.hovered_button != 'none':
+				return self.last_hovered_button
+			else:
+				self.last_hovered_button = 'none'
+				return 'none'
 		else:
-			self.last_hovered_button = 'none'
-			return 'none'
+			if self.hovered_button != self.last_hovered_button and self.hovered_button in ['new_game', 'load_save', 'back'] and self.hovered_button != 'none':
+				self.hover_over_button_sound.play()
+				self.last_hovered_button = self.hovered_button
+				return self.hovered_button
+			elif self.hovered_button != 'none':
+				return self.last_hovered_button
+			else:
+				self.last_hovered_button = 'none'
+				return 'none'				
 
 
 	def draw(self, screen):
@@ -359,17 +413,29 @@ class Main_Menu:
 
 		screen.blit(self.game_logo, (70 * self.factor_x, 0))
 		
-		screen.blit(self.menu_gui, (self.menu_gui_middle_x, self.menu_gui_middle_y))
+		if self.is_in_new_game_menu == False:
+			screen.blit(self.menu_gui, (self.menu_gui_middle_x, self.menu_gui_middle_y))
 
-		if self.hovered_button != 'none':
-			if self.hovered_button == 'start':
-				screen.blit(self.hovered_green_button_menu_image, self.start_button.rect)
-			elif self.hovered_button == 'quit':
-				screen.blit(self.hovered_red_button_menu_image, self.quit_button.rect)
-			elif self.hovered_button == 'options':
-				screen.blit(self.hovered_green_button_menu_image, self.options_button.rect)
+			if self.hovered_button != 'none':
+				if self.hovered_button == 'start':
+					screen.blit(self.hovered_green_button_menu_image, self.start_button.rect)
+				elif self.hovered_button == 'quit':
+					screen.blit(self.hovered_red_button_menu_image, self.quit_button.rect)
+				elif self.hovered_button == 'options':
+					screen.blit(self.hovered_green_button_menu_image, self.options_button.rect)
+			else:
+				self.hover_over_button_sound.fadeout(200)
 		else:
-			self.hover_over_button_sound.fadeout(200)
+			screen.blit(self.new_game_menu_background, (self.new_game_menu_background_middle_x, self.new_game_menu_background_middle_y))
+			if self.hovered_button != 'none':
+				if self.hovered_button == 'new_game':
+					screen.blit(self.small_hovered_green_button_menu_image, self.new_game_button.rect)
+				elif self.hovered_button == 'load_save':
+					screen.blit(self.small_hovered_green_button_menu_image, self.load_save_button.rect)
+				elif self.hovered_button == 'back':
+					screen.blit(self.small_hovered_green_button_menu_image, self.back_button.rect)										
+			else:
+				self.hover_over_button_sound.fadeout(200)
 
 
 class Scenario_Selection_Menu:
@@ -699,7 +765,7 @@ class Country_Selection_Menu:
 
 		}	
 
-		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(26 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
 		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
 		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
 

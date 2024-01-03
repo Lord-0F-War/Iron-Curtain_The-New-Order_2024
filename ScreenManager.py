@@ -2,7 +2,7 @@
 import GenericUtilitys
 
 class Screen:
-	def __init__(self, pygame, display, screen, surface_alfa, PlayerCountry, Main_Menu, Country_Selection_Menu, Scenario_Selection_Menu, ESC_Menu, main_menu_backgound, python_logo):
+	def __init__(self, pygame, display, screen, surface_alfa, Main_Menu, Country_Selection_Menu, Scenario_Selection_Menu, ESC_Menu, main_menu_backgound, python_logo):
 		
 		self.pygame = pygame
 		
@@ -19,9 +19,6 @@ class Screen:
 		self.screen_rect = pygame.Rect([0, 0, self.screen_width, self.screen_height])		
 
 		self.UI_point_of_view_by_team_id = 2
-
-
-		self.PlayerCountry = PlayerCountry
 
 		self.ESC_Menu = ESC_Menu
 		##

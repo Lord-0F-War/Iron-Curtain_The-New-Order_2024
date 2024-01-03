@@ -48,5 +48,3 @@ class Country:
         self.expenses = 550_600_000
 
 
-class Player_Country(Country):
-    pass

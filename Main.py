@@ -29,8 +29,6 @@ class Main:
 		self.pygame = pygame
 		self.clock, self.QUIT, self.ActionTick, self.FPS_update, self.key_delay, self.screen_update, self.display, self.screen, self.surface_alfa = clock, QUIT, ActionTick, FPS_update, key_delay, screen_update, display, screen, surface_alfa
 
-		self.player_country = CountriesManager.Player_Country(None, None, None, None, None, [])
-
 		self.countries = []
 
 		self.exe_folder = os.path.dirname(sys.argv[0])
@@ -122,6 +120,9 @@ class Main:
 		self.ESC_menu_background = self.pygame.image.load(os.path.join(self.interface_folder, 'ESC_menu_background.png')).convert_alpha()
 		self.ESC_menu_background = self.pygame.transform.smoothscale_by(self.ESC_menu_background, (self.factor_x, self.factor_y))
 
+		self.new_game_menu_background = self.pygame.image.load(os.path.join(self.interface_folder, 'new_game_menu_background.png')).convert_alpha()
+		self.new_game_menu_background = self.pygame.transform.smoothscale_by(self.new_game_menu_background, (self.factor_x, self.factor_y))		
+
 		self.scenario_selection_folder = os.path.join(self.interface_folder, 'scenario_selection')
 
 		self.scenario_selection_menu_gui = self.pygame.image.load(os.path.join(self.scenario_selection_folder, 'select_date_background.png')).convert_alpha()
@@ -181,6 +182,8 @@ class Main:
 		##
 	
 	def create_countries_default_frame(self):
+		self.countries = []
+
 		self.USSR = CountriesManager.Country(
 					'Leonid Ilyich Brezhnev',
 				    self.leaders_image_dic['Portrait_USSR_Leonid_Ilyich_Brezhnev'], 
@@ -665,7 +668,7 @@ your shoulders.
 									   self.hovered_green_button_menu_image, self.hovered_red_button_menu_image, self.Options_Menu)
 
 		self.Main_Menu = MenuManager.Main_Menu(self.screen_width, self.screen_height, self.pygame, self.game_logo, self.python_logo, self.main_menu_menu_gui, self.main_menu_options_gui, 
-										 self.hovered_green_button_menu_image, self.hovered_red_button_menu_image, self.Sounds_Manager.generic_hover_over_button_menu_sound, 
+										 self.hovered_green_button_menu_image, self.hovered_red_button_menu_image, self.new_game_menu_background, self.Sounds_Manager.generic_hover_over_button_menu_sound, 
 										 self.Sounds_Manager.click_main_menu_sound)
 	
 		
@@ -686,7 +689,7 @@ your shoulders.
 									self.hovered_laws_button_image, self.generic_leader, self.CRT_flag_overlay_effect, self.blocked_select_national_spirit_button, 
 									self.blocked_select_flag_style_button, self.blocked_start_game_button, self.blocked_full_right_side, self.blocked_all_laws)
 		
-		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.player_country, self.Main_Menu, self.Country_Selection_Menu,
+		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.Main_Menu, self.Country_Selection_Menu,
 											self.Scenario_Selection_Menu, self.ESC_Menu, self.main_menu_backgound, 
 											self.python_logo)
 	def setup_variables(self):
@@ -748,16 +751,26 @@ your shoulders.
 						if self.is_options_menu_open == False:
 							self.clicked_button = self.Main_Menu.get_clicked_button(self.mouse_rect)
 							if self.clicked_button != 'none':
-								if self.clicked_button == 'start':
-									self.pygame.time.delay(100)
-									self.is_in_scenario_selection_screen = True
-									self.is_in_main_menu_screen = False
-								elif self.clicked_button == 'quit':
-									self.pygame.time.delay(200)
-									self.starting_the_game = False
-								elif self.clicked_button == 'options':
-									self.pygame.time.delay(200)
-									self.is_options_menu_open = True									
+								if self.Main_Menu.is_in_new_game_menu == False:
+									if self.clicked_button == 'start':
+										self.pygame.time.delay(100)
+										self.Main_Menu.is_in_new_game_menu = True
+									elif self.clicked_button == 'quit':
+										self.pygame.time.delay(200)
+										self.starting_the_game = False
+									elif self.clicked_button == 'options':
+										self.pygame.time.delay(200)
+										self.is_options_menu_open = True
+								else:
+									if self.clicked_button == 'new_game':
+										self.is_in_scenario_selection_screen = True
+										self.is_in_main_menu_screen = False
+										self.Main_Menu.is_in_new_game_menu = False
+									elif self.clicked_button == 'load_save':
+										self.Main_Menu.is_in_new_game_menu = False
+									elif self.clicked_button == 'back':		
+										self.Main_Menu.is_in_new_game_menu = False
+
 						else:
 							self.clicked_button = self.ESC_Menu.get_clicked_button(self.mouse_rect, self.is_options_menu_open)
 							
@@ -926,9 +939,6 @@ your shoulders.
 										self.is_in_country_selection_screen = False
 										self.is_in_map_creation_screen = True
 										self.is_in_esc_menu = False
-
-										self.player_country = self.Country_Selection_Flag_Selection_Menu.selected_country
-										self.countries.remove(self.Country_Selection_Flag_Selection_Menu.selected_country)
 
 								elif self.Country_Selection_Menu.is_flag_national_spirits_selection_menu_open == False:
 									clicked_ideology = self.Country_Selection_Menu.get_clicked_ideology(self.mouse_rect)
