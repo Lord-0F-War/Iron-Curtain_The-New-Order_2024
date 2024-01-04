@@ -288,8 +288,8 @@ class Main_Menu:
 		menu_gui_width = self.menu_gui.get_width()
 		menu_gui_height = self.menu_gui.get_height()
 		
-		self.menu_gui_middle_x = (screen_width - menu_gui_width*1.5)
-		self.menu_gui_middle_y = (screen_height - menu_gui_height) / 1.2	
+		self.menu_gui_middle_x = (screen_width/1.35 - menu_gui_width/2)
+		self.menu_gui_middle_y = (screen_height/1.35 - menu_gui_height/2)	
 
 		
 		start_button_width = 371 * self.factor_x
@@ -455,16 +455,16 @@ class Scenario_Selection_Menu:
 		self.menu_gui_middle_x = (screen_width/2 - menu_gui_width/2)
 		self.menu_gui_middle_y = (screen_height - menu_gui_height) / 1.3
 
-		start_button_width = 204 * self.factor_x
+		start_button_width = 205 * self.factor_x
 		start_button_height = 43 * self.factor_y
-		start_button_x_offset = 478 * self.factor_x
-		start_button_y_offset = 560 * self.factor_y
+		start_button_x_offset = 470 * self.factor_x
+		start_button_y_offset = 673 * self.factor_y
 		self.start_button = GenericUtilitys.Button(self.menu_gui_middle_x + start_button_x_offset, self.menu_gui_middle_y + start_button_y_offset, start_button_width, start_button_height)	
 
-		back_button_width = 204 * self.factor_x
+		back_button_width = 205 * self.factor_x
 		back_button_height = 43 * self.factor_y
-		back_button_x_offset = 46 * self.factor_x
-		back_button_y_offset = 560 * self.factor_y
+		back_button_x_offset = 51 * self.factor_x
+		back_button_y_offset = 673 * self.factor_y
 		self.back_button = GenericUtilitys.Button(self.menu_gui_middle_x + back_button_x_offset, self.menu_gui_middle_y + back_button_y_offset, back_button_width, back_button_height)	
 
 		self.hovered = False
@@ -588,29 +588,31 @@ class Country_Selection_Menu:
 		political_compass_image_rect[1] += 31 * self.factor_y
 		self.Country_Selection_National_Spirits_Selection_Menu.background_position = [political_compass_image_rect[0]*0.65, political_compass_image_rect[1]*0.95]
 
-		self.leader_portrait_position = (1057 * self.factor_x, 55 * self.factor_y)
-		self.country_flag_position = (1211 * self.factor_x, 129 * self.factor_y)
+		self.leader_portrait_position = (1053 * self.factor_x, 25 * self.factor_y)
+		self.country_flag_position = (1209 * self.factor_x, 89 * self.factor_y)
 
-		self.country_name_position = (1218 * self.factor_x, 78 * self.factor_y)
-		self.leader_name_position = (1074 * self.factor_x, 257 * self.factor_y)
+		self.country_name_position = (1212 * self.factor_x, 41 * self.factor_y)
+		self.leader_name_position = (1071 * self.factor_x, 222 * self.factor_y)
+
+		self.national_spirits_position = [1437*self.factor_x, 104*self.factor_y]
 
 		#### MAIN BUTTONS
 		start_game_button_width = 268 * self.factor_x
 		start_game_button_height = 70 * self.factor_y
-		self.start_game_button_x_offset = 1643 * self.factor_x
-		self.start_game_button_y_offset = 278 * self.factor_y		
+		self.start_game_button_x_offset = 1639 * self.factor_x
+		self.start_game_button_y_offset = 248 * self.factor_y		
 		self.start_game_button = GenericUtilitys.Button(self.start_game_button_x_offset, self.start_game_button_y_offset, start_game_button_width, start_game_button_height)	
 
 		select_national_spirit_button_width = 211 * self.factor_x
 		select_national_spirit_button_height = 70 * self.factor_y
-		self.select_national_spirit_button_x_offset = 1428 * self.factor_x
-		self.select_national_spirit_button_y_offset = 278 * self.factor_y		
+		self.select_national_spirit_button_x_offset = 1424 * self.factor_x
+		self.select_national_spirit_button_y_offset = 248 * self.factor_y		
 		self.select_national_spirit_button = GenericUtilitys.Button(self.select_national_spirit_button_x_offset, self.select_national_spirit_button_y_offset, select_national_spirit_button_width, select_national_spirit_button_height)	
 
 		select_flag_style_button_width = 362 * self.factor_x
 		select_flag_style_button_height = 70 * self.factor_y
-		self.select_flag_style_button_x_offset = 1063 * self.factor_x
-		self.select_flag_style_button_y_offset = 278 * self.factor_y		
+		self.select_flag_style_button_x_offset = 1059 * self.factor_x
+		self.select_flag_style_button_y_offset = 248 * self.factor_y		
 		self.select_flag_style_button = GenericUtilitys.Button(self.select_flag_style_button_x_offset, self.select_flag_style_button_y_offset, select_flag_style_button_width, select_flag_style_button_height)					
 		####
 
@@ -620,15 +622,15 @@ class Country_Selection_Menu:
 
 
 		### FIRST ROW
-		self.first_row_law_button_y_offset_1 = 408 * self.factor_y	
-		self.first_row_law_button_y_offset_2 = 441 * self.factor_y		
-		self.first_row_law_button_y_offset_3 = 473 * self.factor_y	
-		self.first_row_law_button_y_offset_4 = 506 * self.factor_y	
-		self.first_row_law_button_y_offset_5 = 538 * self.factor_y
-		self.first_row_law_button_y_offset_6 = 570 * self.factor_y
-		self.first_row_law_button_y_offset_7 = 603 * self.factor_y	
-		self.first_row_law_button_y_offset_8 = 636 * self.factor_y
-		self.first_row_law_button_y_offset_9 = 668 * self.factor_y	
+		self.first_row_law_button_y_offset_1 = 430 * self.factor_y
+		self.first_row_law_button_y_offset_2 = 463 * self.factor_y		
+		self.first_row_law_button_y_offset_3 = 495 * self.factor_y	
+		self.first_row_law_button_y_offset_4 = 528 * self.factor_y	
+		self.first_row_law_button_y_offset_5 = 560 * self.factor_y
+		self.first_row_law_button_y_offset_6 = 592 * self.factor_y
+		self.first_row_law_button_y_offset_7 = 623 * self.factor_y	
+		self.first_row_law_button_y_offset_8 = 656 * self.factor_y
+		self.first_row_law_button_y_offset_9 = 690 * self.factor_y	
 		
 		## POLITICAL LAWS
 		self.political_law_button_x_offset = 1269 * self.factor_x
@@ -645,7 +647,7 @@ class Country_Selection_Menu:
 		##
 
 		## MILITARY LAWS
-		self.military_law_button_x_offset = 1707 * self.factor_x
+		self.military_law_button_x_offset = 1700 * self.factor_x
 
 		self.military_law_button_1 = GenericUtilitys.Button(self.military_law_button_x_offset, self.first_row_law_button_y_offset_1, law_button_width, law_button_height)
 		self.military_law_button_2 = GenericUtilitys.Button(self.military_law_button_x_offset, self.first_row_law_button_y_offset_2, law_button_width, law_button_height)
@@ -660,15 +662,15 @@ class Country_Selection_Menu:
 		###
 
 		### SECOND ROW
-		self.second_row_law_button_y_offset_1 = 759 * self.factor_y	
-		self.second_row_law_button_y_offset_2 = 791 * self.factor_y		
-		self.second_row_law_button_y_offset_3 = 824 * self.factor_y	
-		self.second_row_law_button_y_offset_4 = 856 * self.factor_y	
-		self.second_row_law_button_y_offset_5 = 889 * self.factor_y
-		self.second_row_law_button_y_offset_6 = 921 * self.factor_y
-		self.second_row_law_button_y_offset_7 = 954 * self.factor_y	
-		self.second_row_law_button_y_offset_8 = 986 * self.factor_y
-		self.second_row_law_button_y_offset_9 = 1019 * self.factor_y	
+		self.second_row_law_button_y_offset_1 = 781 * self.factor_y
+		self.second_row_law_button_y_offset_2 = 813 * self.factor_y		
+		self.second_row_law_button_y_offset_3 = 846 * self.factor_y	
+		self.second_row_law_button_y_offset_4 = 878 * self.factor_y	
+		self.second_row_law_button_y_offset_5 = 911 * self.factor_y
+		self.second_row_law_button_y_offset_6 = 943 * self.factor_y
+		self.second_row_law_button_y_offset_7 = 976 * self.factor_y	
+		self.second_row_law_button_y_offset_8 = 1008 * self.factor_y
+		self.second_row_law_button_y_offset_9 = 1041 * self.factor_y	
 		
 		## ECONOMIC LAWS
 		self.economic_law_button_x_offset = 1269 * self.factor_x
@@ -685,7 +687,7 @@ class Country_Selection_Menu:
 		##
 
 		## SOCIAL LAWS
-		self.social_law_button_x_offset = 1707 * self.factor_x
+		self.social_law_button_x_offset = 1700 * self.factor_x
 
 		self.social_law_button_1 = GenericUtilitys.Button(self.social_law_button_x_offset, self.second_row_law_button_y_offset_1, law_button_width, law_button_height)
 		self.social_law_button_2 = GenericUtilitys.Button(self.social_law_button_x_offset, self.second_row_law_button_y_offset_2, law_button_width, law_button_height)
@@ -900,14 +902,10 @@ class Country_Selection_Menu:
 				
 				screen.blit(leader_name_text, self.leader_name_position)
 
-
-
 				self.national_spirits_display_rects = []
 				x_index = 0
 				y_index = 0
-
-				national_spirits_position = [1440*self.factor_x, 141*self.factor_y]
-				
+	
 				if len(self.Country_Selection_Flag_Selection_Menu.selected_country.country_national_spirits) > 10:
 					for national_spirit in self.Country_Selection_Flag_Selection_Menu.selected_country.country_national_spirits:
 						scaled_national_spirit_icon = pygame.transform.scale_by(national_spirit.national_spirit_icon, 0.5)
@@ -915,9 +913,9 @@ class Country_Selection_Menu:
 						x_offset = scaled_national_spirit_icon.get_width() * 1.23
 						y_offset = scaled_national_spirit_icon.get_height()
 						
-						screen.blit(scaled_national_spirit_icon, (national_spirits_position[0] + x_offset*x_index, national_spirits_position[1] + y_offset*y_index))
+						screen.blit(scaled_national_spirit_icon, (self.national_spirits_position[0] + x_offset*x_index, self.national_spirits_position[1] + y_offset*y_index))
 						
-						national_spirit.rect = self.pygame.Rect(national_spirits_position[0] + x_offset*x_index, national_spirits_position[1] + y_offset*y_index,
+						national_spirit.rect = self.pygame.Rect(self.national_spirits_position[0] + x_offset*x_index, self.national_spirits_position[1] + y_offset*y_index,
 															scaled_national_spirit_icon.get_width(), scaled_national_spirit_icon.get_height())
 						self.national_spirits_display_rects.append([national_spirit.rect, national_spirit])	
 
@@ -931,9 +929,9 @@ class Country_Selection_Menu:
 						x_offset = national_spirit.national_spirit_icon.get_width() * 1.27
 						y_offset = national_spirit.national_spirit_icon.get_height()					
 						
-						screen.blit(national_spirit.national_spirit_icon, (national_spirits_position[0] + x_offset*x_index, national_spirits_position[1] + y_offset*y_index))
+						screen.blit(national_spirit.national_spirit_icon, (self.national_spirits_position[0] + x_offset*x_index, self.national_spirits_position[1] + y_offset*y_index))
 						
-						national_spirit.rect = self.pygame.Rect(national_spirits_position[0] + x_offset*x_index, national_spirits_position[1] + y_offset*y_index,
+						national_spirit.rect = self.pygame.Rect(self.national_spirits_position[0] + x_offset*x_index, self.national_spirits_position[1] + y_offset*y_index,
 															national_spirit.national_spirit_icon.get_width(), national_spirit.national_spirit_icon.get_height())
 						self.national_spirits_display_rects.append([national_spirit.rect, national_spirit])	
 
@@ -946,18 +944,18 @@ class Country_Selection_Menu:
 
 				# CULTURE
 				culture_national_spirit = self.Country_Selection_Flag_Selection_Menu.selected_country.country_culture
-				screen.blit(culture_national_spirit.national_spirit_icon, (1843 * self.factor_x, 143 * self.factor_y))
+				screen.blit(culture_national_spirit.national_spirit_icon, (1840 * self.factor_x, 104 * self.factor_y))
 				
-				culture_national_spirit.rect = self.pygame.Rect(1843 * self.factor_x, 143 * self.factor_y,
+				culture_national_spirit.rect = self.pygame.Rect(1840 * self.factor_x, 104 * self.factor_y,
 						culture_national_spirit.national_spirit_icon.get_width(), culture_national_spirit.national_spirit_icon.get_height())					
 				
 				self.national_spirits_display_rects.append([culture_national_spirit.rect, culture_national_spirit])						
 				
 				# RELIGION	
 				religion_national_spirit = self.Country_Selection_Flag_Selection_Menu.selected_country.country_religion
-				screen.blit(religion_national_spirit.national_spirit_icon, (1843 * self.factor_x, 143 * self.factor_y + religion_national_spirit.national_spirit_icon.get_height()))
+				screen.blit(religion_national_spirit.national_spirit_icon, (1840 * self.factor_x, 105 * self.factor_y + religion_national_spirit.national_spirit_icon.get_height()))
 				
-				religion_national_spirit.rect = self.pygame.Rect(1843 * self.factor_x, 143 * self.factor_y + religion_national_spirit.national_spirit_icon.get_height(),
+				religion_national_spirit.rect = self.pygame.Rect(1840 * self.factor_x, 105 * self.factor_y + religion_national_spirit.national_spirit_icon.get_height(),
 						religion_national_spirit.national_spirit_icon.get_width(), religion_national_spirit.national_spirit_icon.get_height())					
 				
 				self.national_spirits_display_rects.append([religion_national_spirit.rect, religion_national_spirit])						
