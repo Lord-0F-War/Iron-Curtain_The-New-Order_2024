@@ -90,20 +90,15 @@ class Main:
 		self.factor_y = screen_height / self.reference_screen_size_y
 		self.factor = self.factor_x * self.factor_y
 
-		## ###
 		self.gfx_folder = os.path.join(self.exe_folder, 'gfx')
 
 		self.flags_folder = os.path.join(self.gfx_folder, 'flags')
 		self.load_flags_images(self.flags_folder)
 
-		##
 		self.leaders_folder = os.path.join(self.gfx_folder, 'leaders')
 		self.load_leaders_images(self.leaders_folder)
 		self.generic_leader = self.leaders_image_dic['Portrait_NULL_Generic_Leader']
 
-		##
-
-		##
 		self.interface_folder = os.path.join(self.gfx_folder, 'Interface')
 
 		self.main_menu_backgound = self.pygame.image.load(os.path.join(self.interface_folder, 'main_menu.png')).convert_alpha()
@@ -145,7 +140,7 @@ class Main:
 		self.national_spirits_background = pygame.transform.smoothscale_by(self.national_spirits_background, (self.factor_x, self.factor_y))
 
 		self.hovered_start_game_button = self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_start_game_button.png')).convert_alpha()
-		self.hovered_select_flag_style_button_image = self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_select_flag_style_button.png')).convert_alpha()
+		self.hovered_select_flag_button_image = self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_select_flag_button.png')).convert_alpha()
 		self.hovered_select_national_spirit_button_image = self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_select_national_spirit_button.png')).convert_alpha()
 		
 		self.hovered_laws_button_image = self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_laws_button.png')).convert_alpha()
@@ -162,11 +157,6 @@ class Main:
 		self.national_spirits_folder = os.path.join(self.ideas_folder, 'national_spirits')
 		self.load_national_spirits(self.national_spirits_folder)
 		
-		##
-		## ###
-
-
-		##
 		self.sounds_folder = os.path.join(self.exe_folder, 'Sounds')
 		self.sounds_menu_folder = os.path.join(self.sounds_folder, 'menu')
 
@@ -175,13 +165,9 @@ class Main:
 		self.click_main_menu_sound = self.pygame.mixer.Sound(os.path.join(self.sounds_menu_folder, 'click_main_menu.ogg'))
 		self.generic_click_menu_sound = self.pygame.mixer.Sound(os.path.join(self.sounds_menu_folder, 'generic_click_menu.ogg'))
 
-		##
-
-		##
 		self.music_folder = os.path.join(self.exe_folder, 'Music')
 		self.load_music_files(self.music_folder)
 
-		##
 	
 	def create_countries_default_frame(self):
 		self.countries = []
@@ -685,7 +671,7 @@ your shoulders.
 		self.Country_Selection_Menu = MenuManager.Country_Selection_Menu(self.Country_Selection_Flag_Selection_Menu, self.Country_Selection_National_Spirits_Selection_Menu, 
 				self.screen_width, self.screen_height, self.pygame, self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.generic_click_menu_sound, 
 				self.country_selection_background, self.country_info_display_background, self.political_compass_image, self.ideologies_CRT_overlay_effect,
-				self.hovered_start_game_button, self.hovered_select_national_spirit_button_image, self.hovered_select_flag_style_button_image, 
+				self.hovered_start_game_button, self.hovered_select_national_spirit_button_image, self.hovered_select_flag_button_image, 
 				self.hovered_laws_button_image, self.generic_leader, self.CRT_flag_overlay_effect, self.blocked_select_national_spirit_button, 
 				self.blocked_select_flag_style_button, self.blocked_start_game_button, self.blocked_full_right_side, self.blocked_all_laws)
 		

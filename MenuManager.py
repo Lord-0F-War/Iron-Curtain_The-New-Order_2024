@@ -133,8 +133,8 @@ class Options_Menu:
 
 		back_button_width = 371 * self.factor_x
 		back_button_height = 34 * self.factor_y
-		back_button_x_offset = 62 * self.factor_x
-		back_button_y_offset = 886 * self.factor_y
+		back_button_x_offset = 63 * self.factor_x
+		back_button_y_offset = 887 * self.factor_y
 		self.back_button = GenericUtilitys.Button(self.options_menu_gui_middle_x + back_button_x_offset, self.options_menu_gui_middle_y + back_button_y_offset, back_button_width, back_button_height)	
 		
 		resolutions_button_width = 371 * self.factor_x
@@ -316,20 +316,20 @@ class Main_Menu:
 
 		new_game_button_width = 371 * self.factor_x
 		new_game_button_height = 34 * self.factor_y
-		new_game_button_x_offset = 58 * self.factor_x
-		new_game_button_y_offset = 100 * self.factor_y
+		new_game_button_x_offset = 59 * self.factor_x
+		new_game_button_y_offset = 101 * self.factor_y
 		self.new_game_button = GenericUtilitys.Button(self.new_game_menu_background_middle_x + new_game_button_x_offset, self.new_game_menu_background_middle_y + new_game_button_y_offset, new_game_button_width, new_game_button_height)
 
 		load_save_button_width = 371 * self.factor_x
 		load_save_button_height = 34 * self.factor_y
-		load_save_button_x_offset = 58 * self.factor_x
-		load_save_button_y_offset = 151 * self.factor_y
+		load_save_button_x_offset = 59 * self.factor_x
+		load_save_button_y_offset = 152 * self.factor_y
 		self.load_save_button = GenericUtilitys.Button(self.new_game_menu_background_middle_x + load_save_button_x_offset, self.new_game_menu_background_middle_y + load_save_button_y_offset, load_save_button_width, load_save_button_height)
 
 		back_button_width = 371 * self.factor_x
 		back_button_height = 34 * self.factor_y
-		back_button_x_offset = 58 * self.factor_x
-		back_button_y_offset = 464 * self.factor_y
+		back_button_x_offset = 59 * self.factor_x
+		back_button_y_offset = 465 * self.factor_y
 		self.back_button = GenericUtilitys.Button(self.new_game_menu_background_middle_x + back_button_x_offset, self.new_game_menu_background_middle_y + back_button_y_offset, back_button_width, back_button_height)
 
 
