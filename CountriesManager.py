@@ -8,6 +8,9 @@ class National_Spirit:
 
         self.rect = None
 
+        self.points_cost = 0
+
+
 class Country:
     def __init__(self, country_leader_name, country_leader_image, country_flag_image, country_name, country_ruler_ideology, country_music_playlist) -> None:
         self.country_leader_name = country_leader_name
@@ -31,20 +34,7 @@ class Country:
 
         self.country_brief_history = 'history demo'
 
-
-        self.country_stability = 100
-        self.country_war_support = 100
-        self.country_party_popularity = 100
-
-        self.country_land_manpower = 150_500
-        self.country_air_manpower = 150_500
-
-        self.country_factory_amount = 1000
-
-        self.country_fuel = 100_000
-
-
-        self.income = 10_550_000_000
-        self.expenses = 550_600_000
+        self.country_national_spirits_total_points = 10
+        self.country_national_spirits_points_left = self.country_national_spirits_total_points
 
 

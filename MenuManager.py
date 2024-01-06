@@ -522,9 +522,9 @@ class Country_Selection_Menu:
 	      
 		  generic_hover_over_button_menu_sound, generic_click_menu_sound, country_selection_background, country_info_display_background, political_compass_image, 
 		  
-		  ideologies_CRT_overlay_effect, hovered_start_game_button, hovered_select_national_spirit_button_image, hovered_select_flag_style_button_image, 
+		  ideologies_CRT_overlay_effect, hovered_start_game_button, hovered_select_national_spirit_button_image, hovered_select_country_button_image, 
 		  
-		  hovered_laws_button_image, generic_leader, CRT_flag_overlay_effect, blocked_select_national_spirit_button, blocked_select_flag_style_button, blocked_start_game_button, 
+		  hovered_laws_button_image, generic_leader, CRT_flag_overlay_effect, blocked_select_national_spirit_button, blocked_select_country_button, blocked_start_game_button, 
 		  
 		  blocked_full_right_side, blocked_all_laws):
 		
@@ -570,11 +570,11 @@ class Country_Selection_Menu:
 
 		self.hovered_start_game_button = pygame.transform.smoothscale_by(hovered_start_game_button, (self.factor_x, self.factor_y))
 		self.hovered_select_national_spirit_button_image = pygame.transform.smoothscale_by(hovered_select_national_spirit_button_image, (self.factor_x, self.factor_y))
-		self.hovered_select_flag_style_button_image = pygame.transform.smoothscale_by(hovered_select_flag_style_button_image, (self.factor_x, self.factor_y))
+		self.hovered_select_country_button_image = pygame.transform.smoothscale_by(hovered_select_country_button_image, (self.factor_x, self.factor_y))
 		self.hovered_laws_button_image = pygame.transform.smoothscale_by(hovered_laws_button_image, (self.factor_x, self.factor_y))
 
 		self.blocked_select_national_spirit_button = pygame.transform.smoothscale_by(blocked_select_national_spirit_button, (self.factor_x, self.factor_y))
-		self.blocked_select_flag_style_button = pygame.transform.smoothscale_by(blocked_select_flag_style_button, (self.factor_x, self.factor_y))
+		self.blocked_select_country_button = pygame.transform.smoothscale_by(blocked_select_country_button, (self.factor_x, self.factor_y))
 		self.blocked_start_game_button = pygame.transform.smoothscale_by(blocked_start_game_button, (self.factor_x, self.factor_y))
 
 		self.blocked_full_right_side = pygame.transform.smoothscale_by(blocked_full_right_side, (self.factor_x, self.factor_y))
@@ -973,7 +973,7 @@ class Country_Selection_Menu:
 				screen.blit(national_spirit_description_text, text_position)							
 
 		if self.clicked_ideology == None: # Blocked Buttons
-			screen.blit(self.blocked_select_flag_style_button, (self.select_flag_style_button_x_offset, self.select_flag_style_button_y_offset))
+			screen.blit(self.blocked_select_country_button, (self.select_flag_style_button_x_offset, self.select_flag_style_button_y_offset))
 			screen.blit(self.blocked_select_national_spirit_button, (self.select_national_spirit_button_x_offset, self.select_national_spirit_button_y_offset))
 			screen.blit(self.blocked_start_game_button, (self.start_game_button_x_offset, self.start_game_button_y_offset))				
 			screen.blit(self.blocked_full_right_side, (self.screen_width - self.blocked_full_right_side.get_width(), 0))		
@@ -1004,7 +1004,7 @@ class Country_Selection_Menu:
 				screen.blit(self.hovered_select_national_spirit_button_image, (self.select_national_spirit_button_x_offset, self.select_national_spirit_button_y_offset))
 			
 			elif self.hovered_button == 'select_flag/style':
-				screen.blit(self.hovered_select_flag_style_button_image, (self.select_flag_style_button_x_offset, self.select_flag_style_button_y_offset))				
+				screen.blit(self.hovered_select_country_button_image, (self.select_flag_style_button_x_offset, self.select_flag_style_button_y_offset))				
 
 			else:
 				for number in range(9):
@@ -1239,6 +1239,7 @@ class Country_Selection_National_Spirits_Selection_Menu:
 		self.hover_over_button_sound = hover_over_button_sound
 		self.click_sound = click_sound
 
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(32 * self.factor_y))
 		self.normal_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(26.6 * self.factor_y))
 		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(20 * self.factor_y))
 		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))		
@@ -1267,11 +1268,14 @@ class Country_Selection_National_Spirits_Selection_Menu:
 		for rect, national_spirit in self.selectable_national_spirits_rects:
 			rect = pygame.Rect(rect)
 			if rect.colliderect(mouse_rect):
-				if national_spirit not in self.selected_country.country_national_spirits:
-					self.selected_country.country_national_spirits.append(national_spirit)
+				if national_spirit not in self.selected_country.country_national_spirits: 
+					if(self.selected_country.country_national_spirits_points_left - national_spirit.points_cost) >= 0:
+						self.selected_country.country_national_spirits.append(national_spirit)
+						self.selected_country.country_national_spirits_points_left -= national_spirit.points_cost
 					self.click_sound.play()	
 				else:
 					self.selected_country.country_national_spirits.remove(national_spirit)
+					self.selected_country.country_national_spirits_points_left += national_spirit.points_cost
 					self.click_sound.play()	
 
 				return national_spirit
@@ -1281,6 +1285,11 @@ class Country_Selection_National_Spirits_Selection_Menu:
 
 	def draw(self, screen):
 		screen.blit(self.national_spirits_background, self.background_position)
+
+		points_text = f"{self.selected_country.country_national_spirits_total_points} | {self.selected_country.country_national_spirits_points_left}"
+		points_text_render = self.big_scalable_font.render(points_text, True, (255, 255, 255))
+		text_position = (self.background_position[0] + 725 * self.factor_x - points_text_render.get_width()/2, self.background_position[1] + 40 * self.factor_y)
+		screen.blit(points_text_render, text_position)		
 
 		selectable_national_spirits_position = [95*self.factor_x, 125*self.factor_y]
 		x_index = 0

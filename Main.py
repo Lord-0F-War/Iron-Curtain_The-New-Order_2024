@@ -140,7 +140,7 @@ class Main:
 		self.national_spirits_background = pygame.transform.smoothscale_by(self.national_spirits_background, (self.factor_x, self.factor_y))
 
 		self.hovered_start_game_button = self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_start_game_button.png')).convert_alpha()
-		self.hovered_select_flag_button_image = self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_select_flag_button.png')).convert_alpha()
+		self.hovered_select_country_button_image = self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_select_country_button.png')).convert_alpha()
 		self.hovered_select_national_spirit_button_image = self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_select_national_spirit_button.png')).convert_alpha()
 		
 		self.hovered_laws_button_image = self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_laws_button.png')).convert_alpha()
@@ -148,7 +148,7 @@ class Main:
 		self.blocked_full_right_side = self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_full_right_side.png')).convert_alpha()
 		self.blocked_all_laws = self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_all_laws.png')).convert_alpha()
 		self.blocked_select_national_spirit_button = self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_select_national_spirit_button.png')).convert_alpha()
-		self.blocked_select_flag_style_button = self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_select_flag_style_button.png')).convert_alpha()
+		self.blocked_select_country_button = self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_select_country_button.png')).convert_alpha()
 		self.blocked_start_game_button = self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_start_game_button.png')).convert_alpha()
 
 
@@ -481,7 +481,10 @@ your shoulders.
 	
 
 		self.generic_national_spirits = [self.winter_resistance, self.local_business_traditional_support, self.nuclear_capable, 
-				   self.educational_culture, self.armor_industry, self.oil_abundance, self.crops_abundance, self.general_staff]
+			self.educational_culture, self.armor_industry, self.oil_abundance, self.crops_abundance, self.general_staff]
+		
+		for np in self.generic_national_spirits:
+			np.points_cost = 5
 
 		#### COUNTRIES
 		
@@ -671,9 +674,9 @@ your shoulders.
 		self.Country_Selection_Menu = MenuManager.Country_Selection_Menu(self.Country_Selection_Flag_Selection_Menu, self.Country_Selection_National_Spirits_Selection_Menu, 
 				self.screen_width, self.screen_height, self.pygame, self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.generic_click_menu_sound, 
 				self.country_selection_background, self.country_info_display_background, self.political_compass_image, self.ideologies_CRT_overlay_effect,
-				self.hovered_start_game_button, self.hovered_select_national_spirit_button_image, self.hovered_select_flag_button_image, 
+				self.hovered_start_game_button, self.hovered_select_national_spirit_button_image, self.hovered_select_country_button_image, 
 				self.hovered_laws_button_image, self.generic_leader, self.CRT_flag_overlay_effect, self.blocked_select_national_spirit_button, 
-				self.blocked_select_flag_style_button, self.blocked_start_game_button, self.blocked_full_right_side, self.blocked_all_laws)
+				self.blocked_select_country_button, self.blocked_start_game_button, self.blocked_full_right_side, self.blocked_all_laws)
 		
 		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.Main_Menu, self.Country_Selection_Menu,
 				self.Scenario_Selection_Menu, self.ESC_Menu, self.main_menu_backgound, self.python_logo)
