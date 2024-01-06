@@ -1,6 +1,7 @@
 
 import GenericUtilitys
 
+
 class Screen:
 	def __init__(self, pygame, display, screen, surface_alfa, Main_Menu, Country_Selection_Menu, Scenario_Selection_Menu, ESC_Menu, main_menu_backgound, python_logo):
 		
@@ -9,7 +10,6 @@ class Screen:
 		self.display = display
 		self.screen = screen
 		self.surface_alfa = surface_alfa
-
 
 		self.screen_width, self.screen_height = self.screen.get_size()	
 		reference_screen_size_x = 1920
@@ -21,33 +21,23 @@ class Screen:
 		self.UI_point_of_view_by_team_id = 2
 
 		self.ESC_Menu = ESC_Menu
-		##
 		self.Main_Menu = Main_Menu
 		self.main_menu_backgound = main_menu_backgound
-		##
-
 		
 		self.Scenario_Selection_Menu = Scenario_Selection_Menu
 
-
-		##
 		self.Country_Selection_Menu = Country_Selection_Menu
-		##
 
 		self.loading_screen_index = 0
-
-		##	
 
 		self.python_logo = python_logo
 		self.python_logo = pygame.transform.smoothscale_by(self.python_logo, (self.factor_x,self. factor_y))		
 
 		self.loading_status_font = GenericUtilitys.ScalableFont('menu.ttf', 25)
 		self.loading_screen_index = 0
-		##
-
 
 		self.brightness_surface = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA)
-	
+
 
 	def render_main_menu(self, brightness_value, is_options_menu_open):
 		self.screen.fill((0, 0, 0))

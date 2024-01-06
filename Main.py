@@ -651,14 +651,6 @@ your shoulders.
 	def create_classes(self):
 		self.Sounds_Manager = SoundsManager.Sounds_Manager(self.generic_hover_over_button_menu_sound, self.click_main_menu_sound, self.generic_click_menu_sound)
 
-		self.Options_Menu = MenuManager.Options_Menu(self.screen_width, self.screen_height, self.menu_options_UI, 
-				self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.click_main_menu_sound, self.hovered_green_button_menu_image,
-				self.hovered_red_button_menu_image, self.Sounds_Manager)
-		
-		self.ESC_Menu = MenuManager.ESC_Menu(self.screen_width, self.screen_height, self.ESC_menu_background, 
-				self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.click_main_menu_sound, self.hovered_green_button_menu_image,
-				self.hovered_red_button_menu_image, self.Options_Menu)
-
 		self.Main_Menu = MenuManager.Main_Menu(self.screen_width, self.screen_height, self.pygame, self.game_logo, self.python_logo, self.main_menu_UI, self.hovered_green_button_menu_image,
 				self.hovered_red_button_menu_image, self.new_game_menu_background, self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.click_main_menu_sound)
 
@@ -678,6 +670,14 @@ your shoulders.
 				self.hovered_laws_button_image, self.generic_leader, self.CRT_flag_overlay_effect, self.blocked_select_national_spirit_button, 
 				self.blocked_select_country_button, self.blocked_start_game_button, self.blocked_full_right_side, self.blocked_all_laws)
 		
+		self.Options_Menu = MenuManager.Options_Menu(self.screen_width, self.screen_height, self.menu_options_UI, 
+				self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.click_main_menu_sound, self.hovered_green_button_menu_image,
+				self.hovered_red_button_menu_image, self.Sounds_Manager, self.Main_Menu)
+		
+		self.ESC_Menu = MenuManager.ESC_Menu(self.screen_width, self.screen_height, self.ESC_menu_background, 
+				self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.click_main_menu_sound, self.hovered_green_button_menu_image,
+				self.hovered_red_button_menu_image, self.Options_Menu)
+
 		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.Main_Menu, self.Country_Selection_Menu,
 				self.Scenario_Selection_Menu, self.ESC_Menu, self.main_menu_backgound, self.python_logo)
 		
@@ -744,6 +744,10 @@ your shoulders.
 									if self.clicked_button == 'start':
 										self.pygame.time.delay(50)
 										self.Main_Menu.is_in_new_game_menu = True
+										self.Main_Menu.vid.toggle_pause()
+										self.Options_Menu.music_slider.value = 60
+										self.Options_Menu.music_slider.update()
+										pygame.mixer.music.set_volume(self.Options_Menu.music_slider.value/100)
 									elif self.clicked_button == 'quit':
 										self.pygame.time.delay(50)
 										self.starting_the_game = False
@@ -759,6 +763,10 @@ your shoulders.
 										self.Main_Menu.is_in_new_game_menu = False
 									elif self.clicked_button == 'back':		
 										self.Main_Menu.is_in_new_game_menu = False
+										self.Main_Menu.vid.toggle_pause()
+										self.Options_Menu.music_slider.value = 10
+										self.Options_Menu.music_slider.update()
+										pygame.mixer.music.set_volume(self.Options_Menu.music_slider.value/100)
 
 						else:
 							self.clicked_button = self.ESC_Menu.get_clicked_button(self.mouse_rect, self.is_options_menu_open)

@@ -3,6 +3,8 @@ from numpy import array as numpy_array
 import GenericUtilitys
 from PygameManager import pygame
 
+from pyvidplayer import Video
+
 
 
 class ESC_Menu:
@@ -106,9 +108,10 @@ class ESC_Menu:
 			self.Options_Menu.draw(surface_alfa)			
 class Options_Menu:
 	def __init__(self, screen_width, screen_height, options_menu_background, generic_hover_over_button_menu_sound, generic_click_menu_sound, 
-			  hovered_green_button_menu_image, hovered_red_button_menu_image, Sounds_Manager) -> None:
+			  hovered_green_button_menu_image, hovered_red_button_menu_image, Sounds_Manager, Main_Menu) -> None:
 		
 		self.Sounds_Manager = Sounds_Manager
+		self.Main_Menu = Main_Menu
 
 		self.hover_over_button_sound, self.click_menu_sound = generic_hover_over_button_menu_sound, generic_click_menu_sound
 		self.hovered_button = 'none'
@@ -156,11 +159,14 @@ class Options_Menu:
 
 		self.brightness_slider = GenericUtilitys.Slide(self.options_menu_gui_middle_x + 457* self.factor_x, self.options_menu_gui_middle_y + 135* self.factor_y, 374* self.factor_x, 10* self.factor_y, 0, 180, 0)
 		
-		self.music_slider = GenericUtilitys.Slide(self.options_menu_gui_middle_x + 852* self.factor_x, self.options_menu_gui_middle_y + 135* self.factor_y, 374* self.factor_x, 10* self.factor_y, 0, max_value = 100, initial_value = 60)
-		self.sound_slider = GenericUtilitys.Slide(self.options_menu_gui_middle_x + 852* self.factor_x, self.options_menu_gui_middle_y + 270* self.factor_y, 374* self.factor_x, 10* self.factor_y, 0, max_value = 100, initial_value = 10)
+		self.music_slider = GenericUtilitys.Slide(self.options_menu_gui_middle_x + 852* self.factor_x, self.options_menu_gui_middle_y + 135* self.factor_y, 374* self.factor_x, 10* self.factor_y, 0, max_value = 100, initial_value = 10)
+		self.sound_slider = GenericUtilitys.Slide(self.options_menu_gui_middle_x + 852* self.factor_x, self.options_menu_gui_middle_y + 270* self.factor_y, 374* self.factor_x, 10* self.factor_y, 0, max_value = 100, initial_value = 50)
 		
 		pygame.mixer.music.set_volume(self.music_slider.value/100)	
 		self.Sounds_Manager.change_volume(self.sound_slider.value/100)
+
+		self.Main_Menu.vid.set_volume(self.sound_slider.value/100)		
+
 
 	def get_button_by_interaction(self, mouse_rect):
 		if self.back_button.rect.colliderect(mouse_rect):
@@ -209,7 +215,9 @@ class Options_Menu:
 
 		self.brightness_slider.update()
 		self.music_slider.update()
-		self.sound_slider.update()	
+		self.sound_slider.update()
+
+		self.Main_Menu.vid.set_volume(self.sound_slider.value/100)
 
 		pygame.mixer.music.set_volume(self.music_slider.value/100)
 		self.Sounds_Manager.change_volume(self.sound_slider.value/100)
@@ -252,6 +260,7 @@ class Options_Menu:
 class Main_Menu:
 	def __init__(self, screen_width, screen_height, pygame, game_logo, python_logo, menu_gui, hovered_green_button_menu_image, hovered_red_button_menu_image, 
 			  new_game_menu_background, hover_over_button_sound, click_menu_sound):
+		
 		self.hovered_button = 'none'
 		self.last_hovered_button ='none'
 
@@ -304,8 +313,6 @@ class Main_Menu:
 		quit_button_y_offset = 459 * self.factor_y
 		self.quit_button = GenericUtilitys.Button(self.menu_gui_middle_x + quit_button_x_offset, self.menu_gui_middle_y + quit_button_y_offset, quit_button_width, quit_button_height)	
 
-		self.is_options_menu_open = False
-
 		options_button_width = 371 * self.factor_x
 		options_button_height = 34 * self.factor_y
 		options_button_x_offset = 516 * self.factor_x
@@ -332,6 +339,9 @@ class Main_Menu:
 		back_button_y_offset = 465 * self.factor_y
 		self.back_button = GenericUtilitys.Button(self.new_game_menu_background_middle_x + back_button_x_offset, self.new_game_menu_background_middle_y + back_button_y_offset, back_button_width, back_button_height)
 
+		self.vid = Video("Know Your History.mp4", size=(936* self.factor_x, 374* self.factor_y))
+		self.vid.set_volume(0)
+
 
 	def get_button_by_interaction(self, mouse_rect):
 		if self.start_button.rect.colliderect(mouse_rect):
@@ -348,7 +358,6 @@ class Main_Menu:
 			return 'back'		
 		else:
 			return 'none'
-
 
 
 	def get_clicked_button(self, mouse_rect):
@@ -398,9 +407,14 @@ class Main_Menu:
 	def draw(self, screen):
 		screen.blit(self.python_logo, (0, self.screen_height - self.python_logo.get_height()))
 
-		screen.blit(self.game_logo, (70 * self.factor_x, 0))
+		screen.blit(self.game_logo, (70 * self.factor_x, 0))	
 		
 		if self.is_in_new_game_menu == False:
+			self.vid.draw(screen, (self.menu_gui_middle_x + 2 * self.factor_x, self.menu_gui_middle_y + 2 * self.factor_y))
+
+			if self.vid.frames >= 1674:
+				self.vid.restart()	
+
 			screen.blit(self.menu_gui, (self.menu_gui_middle_x, self.menu_gui_middle_y))
 
 			if self.hovered_button != 'none':
@@ -1286,7 +1300,7 @@ class Country_Selection_National_Spirits_Selection_Menu:
 	def draw(self, screen):
 		screen.blit(self.national_spirits_background, self.background_position)
 
-		points_text = f"{self.selected_country.country_national_spirits_total_points} | {self.selected_country.country_national_spirits_points_left}"
+		points_text = f"{self.selected_country.country_national_spirits_total_points}    -    {self.selected_country.country_national_spirits_points_left}"
 		points_text_render = self.big_scalable_font.render(points_text, True, (255, 255, 255))
 		text_position = (self.background_position[0] + 725 * self.factor_x - points_text_render.get_width()/2, self.background_position[1] + 40 * self.factor_y)
 		screen.blit(points_text_render, text_position)		
