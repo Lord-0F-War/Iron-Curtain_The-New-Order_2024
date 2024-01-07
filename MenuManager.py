@@ -272,7 +272,7 @@ class Main_Menu:
 		new_game_menu_background_height = self.new_game_menu_background.get_height()
 		
 		self.new_game_menu_background_middle_x = (screen_width/2 - new_game_menu_background_width/2)
-		self.new_game_menu_background_middle_y = (screen_height/2 - new_game_menu_background_height/2)		
+		self.new_game_menu_background_middle_y = (screen_height/1.65 - new_game_menu_background_height/2)		
 		self.is_in_new_game_menu = False
 		
 		self.screen_width = screen_width
@@ -297,7 +297,7 @@ class Main_Menu:
 		menu_gui_width = self.menu_gui.get_width()
 		menu_gui_height = self.menu_gui.get_height()
 		
-		self.menu_gui_middle_x = (screen_width/1.35 - menu_gui_width/2)
+		self.menu_gui_middle_x = (screen_width/2 - menu_gui_width/2)
 		self.menu_gui_middle_y = (screen_height/1.35 - menu_gui_height/2)	
 
 		
@@ -324,19 +324,19 @@ class Main_Menu:
 		new_game_button_width = 371 * self.factor_x
 		new_game_button_height = 34 * self.factor_y
 		new_game_button_x_offset = 59 * self.factor_x
-		new_game_button_y_offset = 101 * self.factor_y
+		new_game_button_y_offset = 28 * self.factor_y
 		self.new_game_button = GenericUtilitys.Button(self.new_game_menu_background_middle_x + new_game_button_x_offset, self.new_game_menu_background_middle_y + new_game_button_y_offset, new_game_button_width, new_game_button_height)
 
 		load_save_button_width = 371 * self.factor_x
 		load_save_button_height = 34 * self.factor_y
 		load_save_button_x_offset = 59 * self.factor_x
-		load_save_button_y_offset = 152 * self.factor_y
+		load_save_button_y_offset = 79 * self.factor_y
 		self.load_save_button = GenericUtilitys.Button(self.new_game_menu_background_middle_x + load_save_button_x_offset, self.new_game_menu_background_middle_y + load_save_button_y_offset, load_save_button_width, load_save_button_height)
 
 		back_button_width = 371 * self.factor_x
 		back_button_height = 34 * self.factor_y
 		back_button_x_offset = 59 * self.factor_x
-		back_button_y_offset = 465 * self.factor_y
+		back_button_y_offset = 162 * self.factor_y
 		self.back_button = GenericUtilitys.Button(self.new_game_menu_background_middle_x + back_button_x_offset, self.new_game_menu_background_middle_y + back_button_y_offset, back_button_width, back_button_height)
 
 		self.vid = Video("Know Your History.mp4", size=(936* self.factor_x, 374* self.factor_y))
@@ -407,7 +407,7 @@ class Main_Menu:
 	def draw(self, screen):
 		screen.blit(self.python_logo, (0, self.screen_height - self.python_logo.get_height()))
 
-		screen.blit(self.game_logo, (70 * self.factor_x, 0))	
+		screen.blit(self.game_logo, (60 * self.factor_x, 0))	
 		
 		if self.is_in_new_game_menu == False:
 			self.vid.draw(screen, (self.menu_gui_middle_x + 2 * self.factor_x, self.menu_gui_middle_y + 2 * self.factor_y))
@@ -434,7 +434,7 @@ class Main_Menu:
 				elif self.hovered_button == 'load_save':
 					screen.blit(self.hovered_green_button_menu_image, self.load_save_button.rect)
 				elif self.hovered_button == 'back':
-					screen.blit(self.hovered_green_button_menu_image, self.back_button.rect)										
+					screen.blit(self.hovered_red_button_menu_image, self.back_button.rect)										
 			else:
 				self.hover_over_button_sound.fadeout(200)
 
@@ -518,7 +518,7 @@ class Scenario_Selection_Menu:
 
 		screen.blit(self.python_logo, (0, self.screen_height - self.python_logo.get_height()))		
 
-		screen.blit(self.game_logo, (70 * self.factor_x, 0))
+		screen.blit(self.game_logo, (60 * self.factor_x, 0))
 
 		if self.hovered_button != 'none':
 			if self.hovered_button == 'start':
@@ -1318,7 +1318,7 @@ class Country_Selection_National_Spirits_Selection_Menu:
 			screen.blit(national_spirit.national_spirit_icon, (selectable_national_spirits_position[0] + x_offset*x_index, selectable_national_spirits_position[1] + y_offset*y_index))
 			
 			self.selectable_national_spirits_rects.append(((selectable_national_spirits_position[0] + x_offset*x_index, selectable_national_spirits_position[1] + y_offset*y_index, 
-							     							national_spirit.national_spirit_icon.get_width(),  national_spirit.national_spirit_icon.get_height()), national_spirit))
+															national_spirit.national_spirit_icon.get_width(),  national_spirit.national_spirit_icon.get_height()), national_spirit))
 
 			if x_index < 4:
 				x_index += 1

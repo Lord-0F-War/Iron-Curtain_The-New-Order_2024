@@ -848,6 +848,7 @@ your shoulders.
 									self.pygame.time.delay(50)
 									self.is_in_scenario_selection_screen = False
 									self.is_in_main_menu_screen = True
+									self.Main_Menu.vid.toggle_pause()
 						else:
 							self.clicked_button = self.ESC_Menu.get_clicked_button(self.mouse_rect, self.is_options_menu_open)
 							if self.clicked_button != 'none' and self.clicked_button != None:
@@ -859,6 +860,7 @@ your shoulders.
 										self.is_in_scenario_selection_screen = False
 										self.is_in_main_menu_screen = True
 										self.is_in_esc_menu = False
+										self.Main_Menu.vid.toggle_pause()
 
 									elif self.clicked_button == 'quit':
 										self.starting_the_game = False
@@ -965,6 +967,10 @@ your shoulders.
 										self.is_in_country_selection_screen = False
 										self.is_in_main_menu_screen = True
 										self.is_in_esc_menu = False
+										self.Options_Menu.music_slider.value = 10
+										self.Options_Menu.music_slider.update()
+										pygame.mixer.music.set_volume(self.Options_Menu.music_slider.value/100)										
+										self.Main_Menu.vid.toggle_pause()
 
 									elif self.clicked_button == 'quit':
 										self.starting_the_game = False
