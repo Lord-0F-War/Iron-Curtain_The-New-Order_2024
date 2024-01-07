@@ -14,7 +14,7 @@ with open(f'{exe_folder}\settings.txt', 'r') as file:
 import PygameManager
 Pygame_Manager = PygameManager.Pygame(screen_width, screen_height)
 pygame = Pygame_Manager.start_pygame()
-clock, QUIT, ActionTick, FPS_update, key_delay, screen_update, display, screen, surface_alfa, territory_ownership_surface = Pygame_Manager.config_pygame()
+clock, QUIT, date_tick, FPS_update, key_delay, screen_update, display, screen, surface_alfa, territory_ownership_surface = Pygame_Manager.config_pygame()
 
 import ScreenManager
 import SoundsManager
@@ -24,12 +24,12 @@ import CountriesManager
 
 
 class Main:
-	def __init__(self, screen_width, screen_height, Pygame_Manager, pygame, clock, QUIT, ActionTick, FPS_update, key_delay, screen_update, display, screen, surface_alfa) -> None:
+	def __init__(self, screen_width, screen_height, Pygame_Manager, pygame, clock, QUIT, date_tick, FPS_update, key_delay, screen_update, display, screen, surface_alfa) -> None:
 		
 		self.screen_width, self.screen_height = screen_width, screen_height
 		self.Pygame_Manager = Pygame_Manager
 		self.pygame = pygame
-		self.clock, self.QUIT, self.ActionTick, self.FPS_update, self.key_delay, self.screen_update, self.display, self.screen, self.surface_alfa = clock, QUIT, ActionTick, FPS_update, key_delay, screen_update, display, screen, surface_alfa
+		self.clock, self.QUIT, self.date_tick, self.FPS_update, self.key_delay, self.screen_update, self.display, self.screen, self.surface_alfa = clock, QUIT, date_tick, FPS_update, key_delay, screen_update, display, screen, surface_alfa
 
 		self.countries = []
 
@@ -150,6 +150,12 @@ class Main:
 		self.blocked_select_national_spirit_button = self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_select_national_spirit_button.png')).convert_alpha()
 		self.blocked_select_country_button = self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_select_country_button.png')).convert_alpha()
 		self.blocked_start_game_button = self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_start_game_button.png')).convert_alpha()
+
+		self.game_HUD_folder = os.path.join(self.interface_folder, 'game_HUD')
+
+		self.top_bar_right_background = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'top_bar_right_background.png')).convert_alpha()
+		self.top_bar_game_speed_indicator = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'top_bar_game_speed_indicator.png')).convert_alpha()
+		self.top_bar_defcon_levels = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'defcon_levels.png')).convert_alpha()		
 
 
 		self.ideas_folder = os.path.join(self.interface_folder, 'ideas')
@@ -670,16 +676,20 @@ your shoulders.
 				self.hovered_laws_button_image, self.generic_leader, self.CRT_flag_overlay_effect, self.blocked_select_national_spirit_button, 
 				self.blocked_select_country_button, self.blocked_start_game_button, self.blocked_full_right_side, self.blocked_all_laws)
 		
+
 		self.Options_Menu = MenuManager.Options_Menu(self.screen_width, self.screen_height, self.menu_options_UI, 
 				self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.click_main_menu_sound, self.hovered_green_button_menu_image,
 				self.hovered_red_button_menu_image, self.Sounds_Manager, self.Main_Menu)
-		
 		self.ESC_Menu = MenuManager.ESC_Menu(self.screen_width, self.screen_height, self.ESC_menu_background, 
 				self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.click_main_menu_sound, self.hovered_green_button_menu_image,
 				self.hovered_red_button_menu_image, self.Options_Menu)
+		
+
+		self.Game_Screen = MenuManager.Game_Screen(self.screen_width, self.screen_height, self.pygame, self.top_bar_right_background, self.top_bar_game_speed_indicator, self.top_bar_defcon_levels)
+
 
 		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.Main_Menu, self.Country_Selection_Menu,
-				self.Scenario_Selection_Menu, self.ESC_Menu, self.main_menu_backgound, self.python_logo)
+				self.Scenario_Selection_Menu, self.ESC_Menu, self.Game_Screen, self.main_menu_backgound, self.python_logo)
 		
 	def setup_variables(self):
 		self.screen_center = (self.screen_width/2, self.screen_height/2)
@@ -704,6 +714,8 @@ your shoulders.
 		self.is_in_scenario_selection_screen = False
 
 		self.is_in_country_selection_screen = False
+
+		self.is_in_game_screen = False
 
 
 	def main_loop(self):
@@ -744,7 +756,7 @@ your shoulders.
 									if self.clicked_button == 'start':
 										self.pygame.time.delay(50)
 										self.Main_Menu.is_in_new_game_menu = True
-										self.Main_Menu.vid.toggle_pause()
+										self.Main_Menu.main_menu_intro_video.toggle_pause()
 										self.Options_Menu.music_slider.value = 60
 										self.Options_Menu.music_slider.update()
 										pygame.mixer.music.set_volume(self.Options_Menu.music_slider.value/100)
@@ -763,7 +775,7 @@ your shoulders.
 										self.Main_Menu.is_in_new_game_menu = False
 									elif self.clicked_button == 'back':		
 										self.Main_Menu.is_in_new_game_menu = False
-										self.Main_Menu.vid.toggle_pause()
+										self.Main_Menu.main_menu_intro_video.toggle_pause()
 										self.Options_Menu.music_slider.value = 10
 										self.Options_Menu.music_slider.update()
 										pygame.mixer.music.set_volume(self.Options_Menu.music_slider.value/100)
@@ -794,6 +806,7 @@ your shoulders.
 
 								with open(f'{self.exe_folder}\\settings.txt', 'w') as file:
 									json_dump(configs, file)
+
 
 
 				self.mouse_rect = self.pygame.Rect(self.mouse_pos, (2, 2))
@@ -848,7 +861,7 @@ your shoulders.
 									self.pygame.time.delay(50)
 									self.is_in_scenario_selection_screen = False
 									self.is_in_main_menu_screen = True
-									self.Main_Menu.vid.toggle_pause()
+									self.Main_Menu.main_menu_intro_video.toggle_pause()
 						else:
 							self.clicked_button = self.ESC_Menu.get_clicked_button(self.mouse_rect, self.is_options_menu_open)
 							if self.clicked_button != 'none' and self.clicked_button != None:
@@ -860,11 +873,10 @@ your shoulders.
 										self.is_in_scenario_selection_screen = False
 										self.is_in_main_menu_screen = True
 										self.is_in_esc_menu = False
-										self.Main_Menu.vid.toggle_pause()
+										self.Main_Menu.main_menu_intro_video.toggle_pause()
 
 									elif self.clicked_button == 'quit':
 										self.starting_the_game = False
-										self.is_in_game_screen = False
 										self.is_in_scenario_selection_screen = False
 										self.pygame.time.delay(200)	
 								else:
@@ -936,8 +948,8 @@ your shoulders.
 								if self.clicked_button != 'none' and self.clicked_button != None:
 									if self.clicked_button == 'start_game':
 										self.is_in_country_selection_screen = False
-										self.is_in_map_creation_screen = True
 										self.is_in_esc_menu = False
+										self.is_in_game_screen = True
 
 								elif self.Country_Selection_Menu.is_flag_national_spirits_selection_menu_open == False:
 									clicked_ideology = self.Country_Selection_Menu.get_clicked_ideology(self.mouse_rect)
@@ -970,11 +982,10 @@ your shoulders.
 										self.Options_Menu.music_slider.value = 10
 										self.Options_Menu.music_slider.update()
 										pygame.mixer.music.set_volume(self.Options_Menu.music_slider.value/100)										
-										self.Main_Menu.vid.toggle_pause()
+										self.Main_Menu.main_menu_intro_video.toggle_pause()
 
 									elif self.clicked_button == 'quit':
 										self.starting_the_game = False
-										self.is_in_game_screen = False
 										self.is_in_country_selection_screen = False
 										self.pygame.time.delay(200)	
 								else:
@@ -1033,11 +1044,124 @@ your shoulders.
 					self.pygame.mixer.music.play()				
 
 
+			if self.is_in_game_screen == True:
+				for event in self.pygame.event.get():
+					keys = self.pygame.key.get_pressed()	
+					if event.type == QUIT:
+						self.starting_the_game = False
+						self.is_in_game_screen = False		
+					if event.type == FPS_update:
+						self.pygame.display.set_caption(str(round(clock.get_fps(), 2)))							
+					if event.type == screen_update:
+						self.Screen_Manager.render_game_screen(self.Options_Menu.brightness_slider.value, self.is_in_esc_menu, self.is_options_menu_open)
+					if event.type == date_tick:
+						self.Game_Screen.date_tick()
+
+					if self.is_options_menu_open == True:
+						self.Options_Menu.interacting_with_UI_slides(event)
+
+					if event.type == self.pygame.KEYDOWN:
+						if keys[self.pygame.K_ESCAPE]:
+							self.is_in_esc_menu = not self.is_in_esc_menu
+							self.is_options_menu_open = False
+
+						if keys[self.pygame.K_KP_PLUS]:
+							if self.Game_Screen.game_speed + 1 <= 5:
+								self.Game_Screen.game_speed += 1
+						elif keys[self.pygame.K_KP_MINUS]:
+							if self.Game_Screen.game_speed - 1 >= 0:
+								self.Game_Screen.game_speed -= 1
+						elif keys[self.pygame.K_1]:
+							self.Game_Screen.game_speed = 1
+						elif keys[self.pygame.K_2]:
+							self.Game_Screen.game_speed = 2	
+						elif keys[self.pygame.K_3]:
+							self.Game_Screen.game_speed = 3	
+						elif keys[self.pygame.K_4]:
+							self.Game_Screen.game_speed = 4	
+						elif keys[self.pygame.K_5]:
+							self.Game_Screen.game_speed = 5
+						elif keys[self.pygame.K_SPACE]:
+							self.Game_Screen.game_speed = 0
+
+						if keys[self.pygame.K_9]:
+							self.Game_Screen.defcon_level += 1
+						if keys[self.pygame.K_0]:																													
+							self.Game_Screen.defcon_level -= 1
+
+					self.mouse_pos = self.pygame.mouse.get_pos()
+
+					if event.type == self.pygame.MOUSEBUTTONUP:	
+						pass
+					
+					elif event.type == self.pygame.MOUSEBUTTONDOWN:
+						self.mouse_rect = self.pygame.Rect(self.mouse_pos, (2, 2))
+
+						if self.is_in_esc_menu == False:
+							pass
+						else:
+							self.clicked_button = self.ESC_Menu.get_clicked_button(self.mouse_rect, self.is_options_menu_open)
+							if self.clicked_button != 'none' and self.clicked_button != None:
+								if self.is_options_menu_open == False:
+									if self.clicked_button == 'options':
+										self.is_options_menu_open = True
+
+									elif self.clicked_button == 'main_menu':
+										self.is_in_game_screen = False
+										self.is_in_main_menu_screen = True
+										self.is_in_esc_menu = False
+										self.Options_Menu.music_slider.value = 10
+										self.Options_Menu.music_slider.update()
+										pygame.mixer.music.set_volume(self.Options_Menu.music_slider.value/100)										
+										self.Main_Menu.main_menu_intro_video.toggle_pause()
+
+									elif self.clicked_button == 'quit':
+										self.starting_the_game = False
+										self.is_in_game_screen = False
+										self.pygame.time.delay(200)	
+								else:
+									if self.clicked_button == 'back':
+										self.is_options_menu_open = False
+
+									resolution_to_save = None
+									if self.clicked_button == 'resolution_2560x1440':
+										resolution_to_save = (2560,1440)
+									elif self.clicked_button == 'resolution_1920x1080':
+										resolution_to_save = (1920,1080)
+									elif self.clicked_button == 'resolution_1600x900':
+										resolution_to_save = (1600,900)
+									elif self.clicked_button == 'resolution_1440x900':
+										resolution_to_save = (1440,900)
+									elif self.clicked_button == 'resolution_1280x1024':
+										resolution_to_save = (1280,1024)
+
+									if resolution_to_save != None:
+										with open(f'{self.exe_folder}\\settings.txt', 'r') as file:
+											configs = json_load(file)
+
+										configs["screen_width"], configs["screen_height"] = resolution_to_save
+
+										with open(f'{self.exe_folder}\\settings.txt', 'w') as file:
+											json_dump(configs, file)									
+
+				self.mouse_rect = self.pygame.Rect(self.mouse_pos, (2, 2))
+				
+
+				if self.is_in_esc_menu == False:
+					pass
+				else:
+					self.hovered_button = self.ESC_Menu.get_hovered_button(self.mouse_rect, self.is_options_menu_open)
+					self.ESC_Menu.hovered_button = self.hovered_button
+					self.Options_Menu.hovered_button = self.hovered_button
+
+				self.Country_Selection_Menu.music_player()
+
+
 			clock.tick()
 
 		self.pygame.quit()
 
 
 
-Main(screen_width, screen_height, Pygame_Manager, pygame, clock, QUIT, ActionTick, FPS_update, key_delay, screen_update, display, screen, surface_alfa)
+Main(screen_width, screen_height, Pygame_Manager, pygame, clock, QUIT, date_tick, FPS_update, key_delay, screen_update, display, screen, surface_alfa)
 

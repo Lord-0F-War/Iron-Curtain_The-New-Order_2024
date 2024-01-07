@@ -165,7 +165,7 @@ class Options_Menu:
 		pygame.mixer.music.set_volume(self.music_slider.value/100)	
 		self.Sounds_Manager.change_volume(self.sound_slider.value/100)
 
-		self.Main_Menu.vid.set_volume(self.sound_slider.value/100)		
+		self.Main_Menu.main_menu_intro_video.set_volume(self.sound_slider.value/100)		
 
 
 	def get_button_by_interaction(self, mouse_rect):
@@ -217,7 +217,7 @@ class Options_Menu:
 		self.music_slider.update()
 		self.sound_slider.update()
 
-		self.Main_Menu.vid.set_volume(self.sound_slider.value/100)
+		self.Main_Menu.main_menu_intro_video.set_volume(self.sound_slider.value/100)
 
 		pygame.mixer.music.set_volume(self.music_slider.value/100)
 		self.Sounds_Manager.change_volume(self.sound_slider.value/100)
@@ -339,8 +339,8 @@ class Main_Menu:
 		back_button_y_offset = 162 * self.factor_y
 		self.back_button = GenericUtilitys.Button(self.new_game_menu_background_middle_x + back_button_x_offset, self.new_game_menu_background_middle_y + back_button_y_offset, back_button_width, back_button_height)
 
-		self.vid = Video("Know Your History.mp4", size=(936* self.factor_x, 374* self.factor_y))
-		self.vid.set_volume(0)
+		self.main_menu_intro_video = Video("Know Your History.mp4", size=(936* self.factor_x, 374* self.factor_y))
+		self.main_menu_intro_video.set_volume(0)
 
 
 	def get_button_by_interaction(self, mouse_rect):
@@ -410,10 +410,10 @@ class Main_Menu:
 		screen.blit(self.game_logo, (60 * self.factor_x, 0))	
 		
 		if self.is_in_new_game_menu == False:
-			self.vid.draw(screen, (self.menu_gui_middle_x + 2 * self.factor_x, self.menu_gui_middle_y + 2 * self.factor_y))
+			self.main_menu_intro_video.draw(screen, (self.menu_gui_middle_x + 2 * self.factor_x, self.menu_gui_middle_y + 2 * self.factor_y))
 
-			if self.vid.frames >= 1674:
-				self.vid.restart()	
+			if self.main_menu_intro_video.frames >= 1674:
+				self.main_menu_intro_video.restart()	
 
 			screen.blit(self.menu_gui, (self.menu_gui_middle_x, self.menu_gui_middle_y))
 
@@ -820,8 +820,6 @@ class Country_Selection_Menu:
 					self.is_flag_national_spirits_selection_menu_open = not self.is_flag_national_spirits_selection_menu_open
 
 			return clicked_button
-	
-
 	def get_clicked_ideology(self, mouse_rect):
 		if self.is_flag_selection_menu_open == False:
 			for ideology, rect in self.ideology_rects.items():
@@ -1047,7 +1045,6 @@ class Country_Selection_Menu:
 		if self.is_flag_national_spirits_selection_menu_open == True:
 			self.Country_Selection_National_Spirits_Selection_Menu.draw(screen)
 
-
 class Country_Selection_Flag_Selection_Menu:
 	def __init__(self, screen_width, screen_height, countries, generic_hover_over_button_menu_sound, generic_click_menu_sound) -> None:
 		self.countries = countries
@@ -1229,7 +1226,6 @@ class Country_Selection_Flag_Selection_Menu:
 
 				screen.blit(flag, flag_position)
 
-
 class Country_Selection_National_Spirits_Selection_Menu:
 	def __init__(self, screen_width, screen_height, national_spirits_background, selectable_national_spirits_list, hover_over_button_sound, click_sound) -> None:
 		self.screen_width = screen_width
@@ -1363,3 +1359,127 @@ class Country_Selection_National_Spirits_Selection_Menu:
 
 			screen.blit(national_spirit_description_text, text_position)
 
+
+class Game_Screen:
+	def __init__(self, screen_width, screen_height, pygame, top_bar_right_background, top_bar_game_speed_indicator, top_bar_defcon_level):
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		reference_screen_size_x = 1920
+		reference_screen_size_y = 1080
+		self.factor_x = screen_width / reference_screen_size_x
+		self.factor_y = screen_height / reference_screen_size_y
+		self.factor = self.factor_x * self.factor_y
+
+
+		self.top_bar_right_background = pygame.transform.smoothscale_by(top_bar_right_background, (self.factor_x, self.factor_y))
+		self.top_bar_game_speed_indicator = pygame.transform.smoothscale_by(top_bar_game_speed_indicator, (self.factor_x, self.factor_y))
+		self.top_bar_defcon_level = pygame.transform.smoothscale_by(top_bar_defcon_level, (self.factor_x, self.factor_y))
+
+		self.pygame = pygame
+
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(22 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(10 * self.factor_y))	
+
+		self.game_speed = 1	
+		self.defcon_level = 5
+
+		self.current_year = 1970
+		self.current_month = 1
+		self.current_day = 1
+		self.current_hour = 1
+		self.time_buffer = 0
+
+		self.days_in_each_mounth = {
+			'1': 31,
+			'2': 28,
+			'3': 31,
+			'4': 30,
+			'5': 31,
+			'6': 30,
+			'7': 31,
+			'8': 31,
+			'9': 30,
+			'10': 31,
+			'11': 30,
+			'12': 31,
+		}						
+
+	def get_button_by_interaction(self, mouse_rect):
+		pass
+
+	def get_clicked_button(self, mouse_rect):
+		clicked_button = self.get_button_by_interaction(mouse_rect)
+
+	def get_hovered_button(self, mouse_rect):
+		hovered_button = self.get_button_by_interaction(mouse_rect)
+
+
+	def date_tick(self):
+		if self.game_speed == 0:
+			self.time_buffer += 0
+		elif self.game_speed == 1:
+			self.time_buffer += 0.1
+		elif self.game_speed == 2:
+			self.time_buffer += 0.8
+		elif self.game_speed == 3:
+			self.time_buffer += 2.4
+		elif self.game_speed == 4:
+			self.time_buffer += 5.6
+		elif self.game_speed == 5:
+			self.time_buffer += 10.4															
+
+		if self.time_buffer >= 10.4:
+			self.time_buffer = 0
+			self.current_hour += 1
+			if self.current_hour == 25:
+				self.current_hour = 1
+				self.current_day += 1
+				if self.current_day == self.days_in_each_mounth[str(self.current_month)] + 1:
+					self.current_day = 1
+					self.current_month += 1
+					if self.current_month == 13:
+						self.current_month = 1
+						self.current_year += 1
+
+	def draw(self, screen):
+		screen.blit(self.top_bar_right_background, (self.screen_width - self.top_bar_right_background.get_width(), 0))
+
+		
+		speed_indicator_alignment_offset = 8
+		speed_indicator_sprite_width = 43 * self.game_speed
+
+		top_bar_game_speed_indicator_surface = self.pygame.Surface((speed_indicator_sprite_width, self.top_bar_game_speed_indicator.get_height()), self.pygame.SRCALPHA)	
+		top_bar_game_speed_indicator_surface.blit(self.top_bar_game_speed_indicator, (0, 0), self.pygame.Rect(0, 0, speed_indicator_sprite_width, self.top_bar_game_speed_indicator.get_height()))		
+
+		screen.blit(top_bar_game_speed_indicator_surface, (self.screen_width - self.top_bar_right_background.get_width() + 62 + speed_indicator_alignment_offset, 42))	
+
+		top_bar_defcon_level_height = 18.4 * (self.defcon_level - 1)
+
+		top_bar_defcon_level_surface = self.pygame.Surface((self.top_bar_defcon_level.get_width(), 92), self.pygame.SRCALPHA)	
+		top_bar_defcon_level_surface.blit(self.top_bar_defcon_level, (0, top_bar_defcon_level_height), self.pygame.Rect(0, top_bar_defcon_level_height, self.top_bar_defcon_level.get_width(), 18.4))		
+
+		screen.blit(top_bar_defcon_level_surface, (self.screen_width - self.top_bar_right_background.get_width() + 300, 9))	
+
+		date_font_color = (255,255,255) if self.game_speed != 0 else (255,40,40)	
+
+		hour_date_text = f"{self.current_hour:02d}H"
+		day_date_text = f"{self.current_day:02d}D"
+		month_date_text = f"{self.current_month:02d}M"
+		year_date_text = f"{self.current_year:04d}Y"
+
+		hour_date_render = self.medium_scalable_font.render(hour_date_text, True, date_font_color)
+		day_date_render = self.medium_scalable_font.render(day_date_text, True, date_font_color)
+		month_date_render = self.medium_scalable_font.render(month_date_text, True, date_font_color)
+		year_date_render = self.medium_scalable_font.render(year_date_text, True, date_font_color)
+
+		date_x_position = self.screen_width - 318 * self.factor_x
+		date_y_position = 17 * self.factor_y
+
+		screen.blit(hour_date_render, ((date_x_position + max(0, 42 - hour_date_render.get_width()))* self.factor_x, date_y_position))
+		screen.blit(day_date_render, ((date_x_position + 48 + max(0, 38 - day_date_render.get_width()))* self.factor_x, date_y_position))
+		screen.blit(month_date_render, ((date_x_position + 88 + max(0, 41 - month_date_render.get_width()))* self.factor_x, date_y_position))
+		screen.blit(year_date_render, (date_x_position + 135 * self.factor_x, date_y_position))
+							

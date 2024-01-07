@@ -3,7 +3,7 @@ import GenericUtilitys
 
 
 class Screen:
-	def __init__(self, pygame, display, screen, surface_alfa, Main_Menu, Country_Selection_Menu, Scenario_Selection_Menu, ESC_Menu, main_menu_backgound, python_logo):
+	def __init__(self, pygame, display, screen, surface_alfa, Main_Menu, Country_Selection_Menu, Scenario_Selection_Menu, ESC_Menu, Game_Screen, main_menu_backgound, python_logo):
 		
 		self.pygame = pygame
 		
@@ -18,8 +18,6 @@ class Screen:
 		self.factor_y = self.screen_height / reference_screen_size_y		
 		self.screen_rect = pygame.Rect([0, 0, self.screen_width, self.screen_height])		
 
-		self.UI_point_of_view_by_team_id = 2
-
 		self.ESC_Menu = ESC_Menu
 		self.Main_Menu = Main_Menu
 		self.main_menu_backgound = main_menu_backgound
@@ -28,13 +26,10 @@ class Screen:
 
 		self.Country_Selection_Menu = Country_Selection_Menu
 
-		self.loading_screen_index = 0
+		self.Game_Screen = Game_Screen
 
 		self.python_logo = python_logo
 		self.python_logo = pygame.transform.smoothscale_by(self.python_logo, (self.factor_x,self. factor_y))		
-
-		self.loading_status_font = GenericUtilitys.ScalableFont('menu.ttf', 25)
-		self.loading_screen_index = 0
 
 		self.brightness_surface = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA)
 
@@ -99,4 +94,22 @@ class Screen:
 		self.display.blit(self.screen, (0, 0))
 
 		self.pygame.display.update(self.screen_rect)
+
+	def render_game_screen(self, brightness_value, is_in_esc_menu, is_options_menu_open):
+		self.screen.fill((0, 0, 0))
+		self.surface_alfa.fill((0, 0, 0, 0))
+
+		self.Game_Screen.draw(self.surface_alfa)
+
+		if is_in_esc_menu == True:
+			self.ESC_Menu.draw(self.surface_alfa, is_options_menu_open)
+
+		self.screen.blit(self.surface_alfa, (0, 0))	
+
+		self.pygame.draw.rect(self.brightness_surface, (255, 255, 255, brightness_value), ((0, 0), (self.screen_width, self.screen_height)))		
+		self.screen.blit(self.brightness_surface, (0, 0))		
+
+		self.display.blit(self.screen, (0, 0))
+
+		self.pygame.display.update(self.screen_rect)		
 

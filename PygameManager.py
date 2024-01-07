@@ -17,8 +17,7 @@ class Pygame:
 		pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP, USEREVENT, MOUSEWHEEL, MOUSEBUTTONUP, MOUSEBUTTONDOWN])
 		self.clock = pygame.time.Clock()  
 		
-		flags = FULLSCREEN
-		self.display = pygame.display.set_mode((self.screen_width, self.screen_height), flags)
+		self.display = pygame.display.set_mode((self.screen_width, self.screen_height), FULLSCREEN)
 		self.screen = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA)
 		self.surface_alfa = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA)
 
@@ -27,16 +26,17 @@ class Pygame:
 		self.screen.fill((0, 0, 0))
 		self.surface_alfa.fill((0, 0, 0, 0))
 
-		self.ActionTick = pygame.USEREVENT + 1
+		self.date_tick = pygame.USEREVENT + 1
 		self.FPS_update = pygame.USEREVENT + 2
 		self.key_delay = pygame.USEREVENT + 3
 		self.screen_update = pygame.USEREVENT + 4
 
-		pygame.time.set_timer(self.ActionTick, 24) # 48 ticks per second
+		pygame.time.set_timer(self.date_tick, 10) # 100 ticks per second
 		pygame.time.set_timer(self.FPS_update, 50)
 		pygame.time.set_timer(self.key_delay, 42)
 		pygame.time.set_timer(self.screen_update, 41) # 24 fps
 
 		pygame.mixer.init(buffer=8192) 
+		pygame.K_1
+		return (self.clock, QUIT, self.date_tick, self.FPS_update, self.key_delay, self.screen_update, self.display, self.screen, self.surface_alfa, self.territory_ownership_surface)
 
-		return (self.clock, QUIT, self.ActionTick, self.FPS_update, self.key_delay, self.screen_update, self.display, self.screen, self.surface_alfa, self.territory_ownership_surface)		  
