@@ -159,6 +159,8 @@ class Main:
 		self.top_bar_left_background = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'top_bar_left_background.png')).convert_alpha()
 		self.top_bar_flag_overlay = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'top_bar_flag_overlay.png')).convert_alpha()
 		self.top_bar_flag_overlay_hovering_over = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'top_bar_flag_overlay_hovering_over.png')).convert_alpha()		
+		self.country_overview = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'country_overview.png')).convert_alpha()	
+		self.popularity_circle_overlay = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'popularity_circle_overlay.png')).convert_alpha()		
 
 		self.ideas_folder = os.path.join(self.interface_folder, 'ideas')
 		
@@ -461,7 +463,7 @@ your shoulders.
 		with open(os.path.join(self.selectable_ideas_localization_folder, 'local_business_traditional_support.txt'), 'r') as file:
 			local_business_traditional_support_description = file.read()		
 		self.local_business_traditional_support = CountriesManager.National_Spirit('Traditional Support Local Business', 
-									     self.national_spirits_image_dic['local_business_traditional_support'], local_business_traditional_support_description)
+			self.national_spirits_image_dic['local_business_traditional_support'], local_business_traditional_support_description)
 		
 		with open(os.path.join(self.selectable_ideas_localization_folder, 'nuclear_capable.txt'), 'r') as file:
 			nuclear_capable_description = file.read()			
@@ -687,8 +689,9 @@ your shoulders.
 				self.hovered_red_button_menu_image, self.Options_Menu)
 		
 
-		self.Game_Screen = MenuManager.Game_Screen(self.screen_width, self.screen_height, self.pygame, self.top_bar_right_background, self.top_bar_game_speed_indicator,
-											self.top_bar_defcon_levels, self.top_bar_left_background, self.top_bar_flag_overlay, self.top_bar_flag_overlay_hovering_over)
+		self.Game_Screen = MenuManager.Game_Screen(self.screen_width, self.screen_height, self.pygame, self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.click_main_menu_sound, 
+			self.top_bar_right_background, self.top_bar_game_speed_indicator, self.top_bar_defcon_levels, self.top_bar_left_background, self.top_bar_flag_overlay,
+			self.top_bar_flag_overlay_hovering_over, self.country_overview, self.popularity_circle_overlay)
 
 
 		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.Main_Menu, self.Country_Selection_Menu,
@@ -1103,7 +1106,8 @@ your shoulders.
 						self.mouse_rect = self.pygame.Rect(self.mouse_pos, (2, 2))
 
 						if self.is_in_esc_menu == False:
-							pass
+							self.clicked_button = self.Game_Screen.get_clicked_button(self.mouse_rect)
+
 						else:
 							self.clicked_button = self.ESC_Menu.get_clicked_button(self.mouse_rect, self.is_options_menu_open)
 							if self.clicked_button != 'none' and self.clicked_button != None:
@@ -1153,7 +1157,10 @@ your shoulders.
 				
 
 				if self.is_in_esc_menu == False:
-					pass
+					if self.Game_Screen.is_top_bar_country_viewer_open == True:
+						self.hovered_national_spirit = self.Game_Screen.get_hovered_national_spirit(self.mouse_rect)
+					else:
+						self.hovered_top_bar_button = self.Game_Screen.get_hovered_button(self.mouse_rect)
 				else:
 					self.hovered_button = self.ESC_Menu.get_hovered_button(self.mouse_rect, self.is_options_menu_open)
 					self.ESC_Menu.hovered_button = self.hovered_button

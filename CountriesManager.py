@@ -34,7 +34,7 @@ class Country:
 
         self.country_brief_history = 'history demo'
 
-        self.country_national_spirits_total_points = 10
+        self.country_national_spirits_total_points = 100
         self.country_national_spirits_points_left = self.country_national_spirits_total_points
 
         self.country_stability = 100

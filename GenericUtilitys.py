@@ -3,6 +3,47 @@ import sys
 import os
 from PygameManager import pygame
 from pygame.locals import *
+import math
+
+
+
+def generate_fading_colors(num_values, base_color):
+	colors = []
+	r, g, b = base_color
+	step = 160 // num_values
+	
+	for i in range(num_values):
+		colors.append((r, g, b))
+		r = max(r - step, 0)
+		g = max(g - step, 0)
+		b = max(b - step, 0)
+	
+	return colors
+
+
+def draw_pie_chart(surface, position, radius, values, colors):
+    total = sum(values)
+    start_angle = 0
+    
+    for i, value in enumerate(values):
+        angle = (value / total) * 360
+        end_angle = start_angle + angle
+        
+        # Calculate the points of the pie segment
+        points = [position]
+        
+        for a in range(int(start_angle), int(end_angle) + 1, 1):
+            rad_angle = math.radians(a)
+            x = position[0] + int(radius * math.cos(rad_angle))
+            y = position[1] + int(radius * math.sin(rad_angle))
+            points.append((x, y))
+        
+        # Close the segment with the center point
+        points.append(position)
+        
+        pygame.draw.polygon(surface, colors[i], points)
+        
+        start_angle += angle
 
 
 class ScalableFont:

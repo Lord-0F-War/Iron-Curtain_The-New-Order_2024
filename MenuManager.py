@@ -258,7 +258,7 @@ class Options_Menu:
 
 class Main_Menu:
 	def __init__(self, screen_width, screen_height, pygame, game_logo, python_logo, menu_gui, hovered_green_button_menu_image, hovered_red_button_menu_image, 
-			  new_game_menu_background, hover_over_button_sound, click_menu_sound):
+			new_game_menu_background, hover_over_button_sound, click_menu_sound):
 		
 		self.hovered_button = 'none'
 		self.last_hovered_button ='none'
@@ -338,7 +338,7 @@ class Main_Menu:
 		back_button_y_offset = 162 * self.factor_y
 		self.back_button = GenericUtilitys.Button(self.new_game_menu_background_middle_x + back_button_x_offset, self.new_game_menu_background_middle_y + back_button_y_offset, back_button_width, back_button_height)
 
-		self.main_menu_intro_video = Video("Know Your History.mp4", size=(936* self.factor_x, 374* self.factor_y))
+		self.main_menu_intro_video = Video("Know Your History.mp4", size=(936 * self.factor_x, 378 * self.factor_y))
 		self.main_menu_intro_video.set_volume(0)
 
 
@@ -1360,10 +1360,12 @@ class Country_Selection_National_Spirits_Selection_Menu:
 
 
 class Game_Screen:
-	def __init__(self, screen_width, screen_height, pygame, top_bar_right_background, top_bar_game_speed_indicator, top_bar_defcon_level, top_bar_left_background,
-			top_bar_flag_overlay, top_bar_flag_overlay_hovering_over):
+	def __init__(self, screen_width, screen_height, pygame, generic_hover_over_button_menu_sound, click_main_menu_sound, top_bar_right_background, top_bar_game_speed_indicator,
+			top_bar_defcon_level, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over, country_overview, popularity_circle_overlay):
 		self.screen_width = screen_width 
 		self.screen_height = screen_height
+
+		self.generic_hover_over_button_menu_sound, self.click_main_menu_sound = generic_hover_over_button_menu_sound, click_main_menu_sound
 
 		reference_screen_size_x = 1920
 		reference_screen_size_y = 1080
@@ -1381,13 +1383,85 @@ class Game_Screen:
 
 		self.top_bar_left_background = pygame.transform.smoothscale_by(top_bar_left_background, (self.factor_x, self.factor_y))
 		self.top_bar_flag_overlay = pygame.transform.smoothscale_by(top_bar_flag_overlay, (self.factor_x, self.factor_y))
-		self.top_bar_flag_overlay_hovering_over	= pygame.transform.smoothscale_by(top_bar_flag_overlay_hovering_over, (self.factor_x, self.factor_y))	 
+		self.top_bar_flag_overlay_hovering_over	= pygame.transform.smoothscale_by(top_bar_flag_overlay_hovering_over, (self.factor_x, self.factor_y))	
+
+		self.country_overview = pygame.transform.smoothscale_by(country_overview, (self.factor_x, self.factor_y))
+		self.popularity_circle_overlay = pygame.transform.smoothscale_by(popularity_circle_overlay, (self.factor_x, self.factor_y))
+		self.country_overview_position = (0, 79 * self.factor_y)
+		self.national_spirits_display_rects = []
+		self.hovered_national_spirit = None	
+		self.last_hovered_national_spirit = None
+
+
+		# COLORS
+
+		# POLITICS
+		red_base = (227, 52, 47)
+		blue_base =  (52, 144, 220)
+		yellow_base = (255, 237, 74)
+		green_base = (56, 193, 114)
+
+		red_values = GenericUtilitys.generate_fading_colors(6, red_base)
+		blue_values = GenericUtilitys.generate_fading_colors(6, blue_base)
+		yellow_values = GenericUtilitys.generate_fading_colors(7, yellow_base) 
+		green_values = GenericUtilitys.generate_fading_colors(5, green_base)
+
+		self.politics_segment_colors = red_values + blue_values + yellow_values + green_values
+
+		total = 70
+		num_numbers = 22
+		average = total / num_numbers
+
+		self.politics_numbers = [int(average)] * num_numbers
+
+		remainder = total - sum(self.politics_numbers)
+		for i in range(remainder):
+			self.politics_numbers[i] += 1
+
+		self.politics_numbers.insert(0, 30)			
+
+		# CULTURE
+		redish_base = (227, 52, 47)
+		gray_base = (220, 220, 220)
+		blue_base = (52, 144, 220)
+
+
+		red_values = GenericUtilitys.generate_fading_colors(6, redish_base)
+		blue_values = GenericUtilitys.generate_fading_colors(2, gray_base)
+		yellow_values = GenericUtilitys.generate_fading_colors(6, blue_base)
+
+		self.culture_segment_colors = red_values + blue_values + yellow_values + green_values
+
+		total = 100
+		num_numbers = 14
+		average = total / num_numbers
+
+		self.culture_numbers = [int(average)] * num_numbers
+
+		remainder = total - sum(self.culture_numbers)
+		for i in range(remainder):
+			self.culture_numbers[i] += 1
+
+		# RELIGION
+
+		self.religion_segment_colors = [(227, 52, 47),  (246, 153, 63), (255, 237, 74),  (56, 193, 114),  (77, 192, 181),
+			(52, 144, 220), (101, 116, 205),  (149, 97, 226), (246, 109, 155)]
+
+		self.religion_numbers = [11.11, 11.11, 11.11, 11.11, 11.11, 11.11, 11.11, 11.11, 11.11]					
+
+		# COLORS		
+
+		self.last_hovered_button = None
+
+		self.top_bar_country_viewer_button = GenericUtilitys.Button(2 * self.factor_x, 2 * self.factor_y, 123 * self.factor_x, 74 * self.factor_y)
+		self.is_top_bar_country_viewer_open = False		
 
 		self.pygame = pygame
 
 		self.info_height = 9 * self.factor_y
 
-		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(22 * self.factor_y))
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
 		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
 		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
 		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))	
@@ -1417,13 +1491,42 @@ class Game_Screen:
 		}						
 
 	def get_button_by_interaction(self, mouse_rect):
-		pass
+		if self.top_bar_country_viewer_button.rect.colliderect(mouse_rect):
+			return "country_viewer"
 
 	def get_clicked_button(self, mouse_rect):
 		clicked_button = self.get_button_by_interaction(mouse_rect)
+		if clicked_button == "country_viewer":
+			self.is_top_bar_country_viewer_open = not self.is_top_bar_country_viewer_open
+			self.generic_hover_over_button_menu_sound.fadeout(100)
+			self.click_main_menu_sound.play()
+			return clicked_button		
 
 	def get_hovered_button(self, mouse_rect):
 		hovered_button = self.get_button_by_interaction(mouse_rect)
+		if hovered_button == "country_viewer":
+			if self.last_hovered_button != "country_viewer":
+				self.generic_hover_over_button_menu_sound.play()			
+			self.highlight_country_viewer_button = True
+			self.last_hovered_button = "country_viewer"
+			return "country_viewer"
+		else:
+			self.highlight_country_viewer_button = False
+			self.last_hovered_button = None
+			self.generic_hover_over_button_menu_sound.fadeout(100)	
+
+
+	def get_hovered_national_spirit(self, mouse_rect):
+		for rect, national_spirit in self.national_spirits_display_rects:
+			if rect.colliderect(mouse_rect):
+				self.hovered_national_spirit = national_spirit
+				if national_spirit != self.last_hovered_national_spirit:
+					self.last_hovered_national_spirit = national_spirit
+					self.generic_hover_over_button_menu_sound.play()
+				return national_spirit
+		self.last_hovered_national_spirit = None
+		self.hovered_national_spirit = None
+
 
 
 	def date_tick(self):
@@ -1562,22 +1665,24 @@ class Game_Screen:
 
 		screen.blit(self.top_bar_right_background, (self.screen_width - self.top_bar_right_background.get_width(), 0))
 
-		
-		speed_indicator_alignment_offset = 8
-		speed_indicator_sprite_width = 43 * self.game_speed
+		# SPEED
+		speed_indicator_alignment_offset = 8 * self.factor_x
+		speed_indicator_sprite_width = 43 * self.factor_x * self.game_speed
 
 		top_bar_game_speed_indicator_surface = self.pygame.Surface((speed_indicator_sprite_width, self.top_bar_game_speed_indicator.get_height()), self.pygame.SRCALPHA)	
 		top_bar_game_speed_indicator_surface.blit(self.top_bar_game_speed_indicator, (0, 0), self.pygame.Rect(0, 0, speed_indicator_sprite_width, self.top_bar_game_speed_indicator.get_height()))		
 
-		screen.blit(top_bar_game_speed_indicator_surface, (self.screen_width - self.top_bar_right_background.get_width() + 62 + speed_indicator_alignment_offset, 42))	
+		screen.blit(top_bar_game_speed_indicator_surface, (self.screen_width - self.top_bar_right_background.get_width() + 62 * self.factor_x + speed_indicator_alignment_offset, 42 * self.factor_y))	
 
-		top_bar_defcon_level_height = 18.4 * (self.defcon_level - 1)
+		# DEFCON
+		top_bar_defcon_level_height = (18.4 * (self.defcon_level - 1) * self.factor_y)
 
-		top_bar_defcon_level_surface = self.pygame.Surface((self.top_bar_defcon_level.get_width(), 92), self.pygame.SRCALPHA)	
-		top_bar_defcon_level_surface.blit(self.top_bar_defcon_level, (0, top_bar_defcon_level_height), self.pygame.Rect(0, top_bar_defcon_level_height, self.top_bar_defcon_level.get_width(), 18.4))		
+		top_bar_defcon_level_surface = self.pygame.Surface((self.top_bar_defcon_level.get_width(), 92 * self.factor_y), self.pygame.SRCALPHA)	
+		top_bar_defcon_level_surface.blit(self.top_bar_defcon_level, (0, top_bar_defcon_level_height), self.pygame.Rect(0, top_bar_defcon_level_height, self.top_bar_defcon_level.get_width(), 18.4 * self.factor_y))		
 
-		screen.blit(top_bar_defcon_level_surface, (self.screen_width - self.top_bar_right_background.get_width() + 300, 9))	
+		screen.blit(top_bar_defcon_level_surface, (self.screen_width - self.top_bar_right_background.get_width() + 300 * self.factor_x, 9 * self.factor_y))	
 
+		# DATE
 		date_font_color = (255,255,255) if self.game_speed != 0 else (255,40,40)	
 
 		hour_date_text = f"{self.current_hour:02d}H"
@@ -1593,9 +1698,148 @@ class Game_Screen:
 		date_x_position = self.screen_width - 312 * self.factor_x
 		date_y_position = 17 * self.factor_y
 
-		screen.blit(hour_date_render, ((date_x_position + max(0, 42 - hour_date_render.get_width()))* self.factor_x, date_y_position))
-		screen.blit(day_date_render, ((date_x_position + 48 + max(0, 38 - day_date_render.get_width()))* self.factor_x, date_y_position))
-		screen.blit(month_date_render, ((date_x_position + 88 + max(0, 41 - month_date_render.get_width()))* self.factor_x, date_y_position))
-		screen.blit(year_date_render, (date_x_position + 135 * self.factor_x, date_y_position))
+		screen.blit(hour_date_render, (date_x_position + (-2 + max(0, 38 - hour_date_render.get_width()))* self.factor_x, date_y_position))
+		screen.blit(day_date_render, (date_x_position + (48 + max(0, 38 * self.factor_x - day_date_render.get_width()))* self.factor_x, date_y_position))
+		screen.blit(month_date_render, (date_x_position + (86 + max(0, 41 * self.factor_x - month_date_render.get_width()))* self.factor_x, date_y_position))
+		screen.blit(year_date_render, (date_x_position + (135 + max(0, 49 * self.factor_x - year_date_render.get_width()))* self.factor_x, date_y_position))
+
+		if self.is_top_bar_country_viewer_open == True:
+			screen.blit(self.PlayerCountry.country_leader_image, (12 * self.factor_x, 27 * self.factor_y + self.country_overview_position[1]))
+			screen.blit(self.country_overview, self.country_overview_position)
+
+			# COUNTRY NAME
+			country_name_text = self.big_scalable_font.render(self.PlayerCountry.country_name, True, (255, 255, 255))
+			text_position = (165 * self.factor_x, 39 * self.factor_y + self.country_overview_position[1])	
+			screen.blit(country_name_text, text_position)
+
+			# LEADER NAME
+			leader_name_text = self.huge_scalable_font.render(self.PlayerCountry.country_leader_name, True, (255, 255, 255))
+			if leader_name_text.get_width() > 350:
+				leader_name_text = self.big_scalable_font.render(self.PlayerCountry.country_leader_name, True, (255, 255, 255))
+			
+			text_position = (24 * self.factor_x, 226 * self.factor_y + self.country_overview_position[1])	
+			screen.blit(leader_name_text, text_position)
+
+			# GOVERNMENT
+			government_name_text = self.huge_scalable_font.render(self.PlayerCountry.country_government, True, (255, 255, 255))
+			text_position = (12 * self.factor_x, 512 * self.factor_y + self.country_overview_position[1])	
+			
+			if government_name_text.get_width() > 250:
+				government_name_text = self.big_scalable_font.render(self.PlayerCountry.country_government, True, (255, 255, 255))	
+				text_position = (12 * self.factor_x, 512 * self.factor_y + self.country_overview_position[1])
+				if government_name_text.get_width() > 250:	
+					government_name_text = self.medium_scalable_font.render(self.PlayerCountry.country_government, True, (255, 255, 255))	
+					text_position = (12 * self.factor_x, 512 * self.factor_y + self.country_overview_position[1])					
+
+			screen.blit(government_name_text, text_position)	
+
+			# RULING PARTY
+			ruling_party_name_text = self.huge_scalable_font.render(self.PlayerCountry.country_ruling_party, True, (255, 255, 255))
+			text_position = (299 * self.factor_x, 512 * self.factor_y + self.country_overview_position[1])	
+
+			if ruling_party_name_text.get_width() > 250:
+				ruling_party_name_text = self.big_scalable_font.render(self.PlayerCountry.country_ruling_party, True, (255, 255, 255))	
+				text_position = (299 * self.factor_x, 512 * self.factor_y + self.country_overview_position[1])
+				if ruling_party_name_text.get_width() > 250:
+					ruling_party_name_text = self.medium_scalable_font.render(self.PlayerCountry.country_ruling_party, True, (255, 255, 255))	
+					text_position = (299 * self.factor_x, 512 * self.factor_y + self.country_overview_position[1])										
+
+			screen.blit(ruling_party_name_text, text_position)
+
+			# ELECTIONS
+			elections_text = self.huge_scalable_font.render(self.PlayerCountry.country_elections, True, (255, 255, 255))
+			text_position = (586 * self.factor_x, 512 * self.factor_y + self.country_overview_position[1])	
+			screen.blit(elections_text, text_position)	
+
+
+			#-----------------------------------------------------------------------------------------------------------------------------------------------------#
+			# POPULARITY CIRCLES
+
+			# POLITICS
+			chart_position = (143 * self.factor_x, 391 * self.factor_y + self.country_overview_position[1]) 
+			chart_radius = 80 * self.factor_y
+
+			GenericUtilitys.draw_pie_chart(screen, chart_position, chart_radius, self.politics_numbers, self.politics_segment_colors)	
+
+			screen.blit(self.popularity_circle_overlay, (chart_position[0]-85 * self.factor_x, chart_position[1]-85 * self.factor_y))		
+
+			# CULTURE
+			chart_position = (433 * self.factor_x, 391 * self.factor_y + self.country_overview_position[1]) 
+			chart_radius = 80 * self.factor_y
+
+			GenericUtilitys.draw_pie_chart(screen, chart_position, chart_radius, self.culture_numbers, self.culture_segment_colors)		
+
+			screen.blit(self.popularity_circle_overlay, (chart_position[0]-85 * self.factor_x, chart_position[1]-85 * self.factor_y))			
+
+			# RELIGION
+			chart_position = (720 * self.factor_x, 391 * self.factor_y + self.country_overview_position[1]) 
+			chart_radius = 80 * self.factor_y  
+
+			GenericUtilitys.draw_pie_chart(screen, chart_position, chart_radius, self.religion_numbers, self.religion_segment_colors)
+
+			screen.blit(self.popularity_circle_overlay, (chart_position[0]-85 * self.factor_x, chart_position[1]-85 * self.factor_y))	
+
+
+			#-----------------------------------------------------------------------------------------------------------------------------------------------------#
+			# NATIONAL SPIRITS
+
+			self.national_spirits_display_rects = []
+			national_spirits_position = [382 * self.factor_x, 110 * self.factor_y + self.country_overview_position[1]]
+			x_index = 0
+			y_index = 0			
+
+			if len(self.PlayerCountry.country_national_spirits) > 14:
+				for national_spirit in self.PlayerCountry.country_national_spirits:
+					scaled_national_spirit_icon = pygame.transform.smoothscale(national_spirit.national_spirit_icon, (48 * self.factor_x, 48 * self.factor_y))
+
+					scaled_national_spirit_icon = pygame.transform.smoothscale_by(scaled_national_spirit_icon, 0.8)
+
+					x_offset = scaled_national_spirit_icon.get_width() * 1.20
+					y_offset = scaled_national_spirit_icon.get_height() * 1.1
+					
+					screen.blit(scaled_national_spirit_icon, (national_spirits_position[0] + x_offset*x_index, national_spirits_position[1] -5 * self.factor_y + y_offset*y_index))
+					
+					national_spirit.rect = self.pygame.Rect(national_spirits_position[0] + x_offset*x_index, national_spirits_position[1] -5 * self.factor_y  + y_offset*y_index,
+														scaled_national_spirit_icon.get_width(), scaled_national_spirit_icon.get_height())
+					self.national_spirits_display_rects.append([national_spirit.rect, national_spirit])	
+
+					if x_index < 8:
+						x_index += 1
+					else:
+						x_index = 0
+						y_index += 1							
+			else:	
+				for national_spirit in self.PlayerCountry.country_national_spirits:
+					scaled_national_spirit_icon = pygame.transform.smoothscale(national_spirit.national_spirit_icon, (48 * self.factor_x, 48 * self.factor_y))	
+						
+					x_offset = scaled_national_spirit_icon.get_width() * 1.23
+					y_offset = scaled_national_spirit_icon.get_height()	* 1.26		
+					
+					screen.blit(scaled_national_spirit_icon, (national_spirits_position[0] + x_offset*x_index, national_spirits_position[1] + y_offset*y_index))
+					
+					national_spirit.rect = self.pygame.Rect(national_spirits_position[0] + x_offset*x_index, national_spirits_position[1] + y_offset*y_index,
+														scaled_national_spirit_icon.get_width(), scaled_national_spirit_icon.get_height())
+					self.national_spirits_display_rects.append([national_spirit.rect, national_spirit])	
+
+					if x_index < 6:
+						x_index += 1
+					else:
+						x_index = 0
+						y_index += 1
+
+			if self.hovered_national_spirit != None:
+				pygame.draw.rect(screen, (255,255,255), self.hovered_national_spirit.rect, 2)
+
+				national_spirit_description_text = self.medium_scalable_font.render(self.hovered_national_spirit.national_spirit_description, True, (255, 255, 255))
+				text_position = (382 * self.factor_x, 238 * self.factor_y + self.country_overview_position[1])
+
+				pygame.draw.rect(screen, (6,15,20), (376 * self.factor_x, 230 * self.factor_y + self.country_overview_position[1], 484 * self.factor_x, national_spirit_description_text.get_height() + 10 * self.factor_y))
+				pygame.draw.rect(screen, (43,219,211), (376 * self.factor_x, 230 * self.factor_y + self.country_overview_position[1], 484 * self.factor_x, national_spirit_description_text.get_height() + 10 * self.factor_y), 2)
+
+				screen.blit(national_spirit_description_text, text_position)	
+
+		# country_viewer_open
+		else:
+			pass									
 
 
