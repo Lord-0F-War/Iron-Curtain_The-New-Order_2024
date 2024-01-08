@@ -79,7 +79,7 @@ class Main:
 			folder_path = os.path.join(musics_folder, folder_name)
 			if os.path.isdir(folder_path):
 				for filename in os.listdir(folder_path):
-					if filename.endswith(".wav") or filename.endswith(".ogg"):
+					if filename.endswith(".wav") or filename.endswith(".ogg") or filename.endswith(".mp3"):
 						music_path = os.path.join(folder_path, filename)
 						image_name = os.path.splitext(filename)[0]
 						self.music_files_dic[image_name] = music_path						
@@ -343,7 +343,7 @@ your shoulders.
 				    self.flags_image_dic['PCO'],
 					'Propertarian Commonwealth',
 					'Anarcho_Capitalism',
-					[self.music_files_dic['main_theme']])													
+					[self.music_files_dic['Clockwork_main_menu']])													
 		
 		self.countries.extend([self.USSR, self.CHI, self.GNW, self.POR, self.KSA, self.GDR, self.YUG, self.BRA, self.CHL, self.SWE, self.WGR, self.USA, self.SWI, self.TEX, self.PCO])
 	def create_national_spirits(self):
@@ -729,7 +729,7 @@ your shoulders.
 			if self.is_in_main_menu_screen == True:
 				if self.main_menu_music_started == False or self.pygame.mixer.music.get_busy() == False:
 					self.main_menu_music_started = True
-					self.pygame.mixer.music.load(self.music_files_dic['main_theme'])
+					self.pygame.mixer.music.load(self.music_files_dic['Clockwork_main_menu'])
 					self.pygame.mixer.music.play()
 
 				for event in self.pygame.event.get():
@@ -826,7 +826,7 @@ your shoulders.
 			if self.is_in_scenario_selection_screen == True:
 				if self.main_menu_music_started == False or self.pygame.mixer.music.get_busy() == False:
 					self.main_menu_music_started = True
-					self.pygame.mixer.music.load(self.music_files_dic['main_theme'])
+					self.pygame.mixer.music.load(self.music_files_dic['Clockwork_main_menu'])
 					self.pygame.mixer.music.play()
 
 				for event in self.pygame.event.get():
