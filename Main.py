@@ -156,7 +156,9 @@ class Main:
 		self.top_bar_right_background = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'top_bar_right_background.png')).convert_alpha()
 		self.top_bar_game_speed_indicator = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'top_bar_game_speed_indicator.png')).convert_alpha()
 		self.top_bar_defcon_levels = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'defcon_levels.png')).convert_alpha()		
-
+		self.top_bar_left_background = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'top_bar_left_background.png')).convert_alpha()
+		self.top_bar_flag_overlay = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'top_bar_flag_overlay.png')).convert_alpha()
+		self.top_bar_flag_overlay_hovering_over = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'top_bar_flag_overlay_hovering_over.png')).convert_alpha()		
 
 		self.ideas_folder = os.path.join(self.interface_folder, 'ideas')
 		
@@ -685,7 +687,8 @@ your shoulders.
 				self.hovered_red_button_menu_image, self.Options_Menu)
 		
 
-		self.Game_Screen = MenuManager.Game_Screen(self.screen_width, self.screen_height, self.pygame, self.top_bar_right_background, self.top_bar_game_speed_indicator, self.top_bar_defcon_levels)
+		self.Game_Screen = MenuManager.Game_Screen(self.screen_width, self.screen_height, self.pygame, self.top_bar_right_background, self.top_bar_game_speed_indicator,
+											self.top_bar_defcon_levels, self.top_bar_left_background, self.top_bar_flag_overlay, self.top_bar_flag_overlay_hovering_over)
 
 
 		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.Main_Menu, self.Country_Selection_Menu,
@@ -951,6 +954,8 @@ your shoulders.
 										self.is_in_esc_menu = False
 										self.is_in_game_screen = True
 
+										self.Game_Screen.PlayerCountry = self.Country_Selection_Flag_Selection_Menu.selected_country
+
 								elif self.Country_Selection_Menu.is_flag_national_spirits_selection_menu_open == False:
 									clicked_ideology = self.Country_Selection_Menu.get_clicked_ideology(self.mouse_rect)
 
@@ -1082,7 +1087,7 @@ your shoulders.
 						elif keys[self.pygame.K_5]:
 							self.Game_Screen.game_speed = 5
 						elif keys[self.pygame.K_SPACE]:
-							self.Game_Screen.game_speed = 0
+							self.Game_Screen.game_speed = 0 if self.Game_Screen.game_speed != 0 else 1
 
 						if keys[self.pygame.K_9]:
 							self.Game_Screen.defcon_level += 1

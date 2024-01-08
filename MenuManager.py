@@ -1,5 +1,4 @@
-from PIL import Image
-from numpy import array as numpy_array
+
 import GenericUtilitys
 from PygameManager import pygame
 
@@ -1070,7 +1069,7 @@ class Country_Selection_Flag_Selection_Menu:
 
 		self.normal_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(30 * self.factor_y))
 		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(18 * self.factor_y))		
-		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))
 
 
 		self.hover_over_button_sound, self.click_sound = generic_hover_over_button_menu_sound, generic_click_menu_sound
@@ -1127,7 +1126,7 @@ class Country_Selection_Flag_Selection_Menu:
 					if country_name_text.get_width() > 300 * self.factor_x:
 						country_name_text = self.small_scalable_font.render(self.selected_country_name, True, (255, 255, 255))
 					if country_name_text.get_width() > 300 * self.factor_x:
-						country_name_text = self.tiny_scalable_font.render(self.selected_country_name, True, (255, 255, 255))						
+						country_name_text = self.small_scalable_font.render(self.selected_country_name, True, (255, 255, 255))						
 
 					text_position = (self.screen_width/2 - country_name_text.get_width()/1.95, self.screen_height - self.country_info_display_background.get_height() + self.country_info_display_background.get_height() * 0.079 - country_name_text.get_height() /2)
 					screen.blit(country_name_text, text_position)
@@ -1138,7 +1137,7 @@ class Country_Selection_Flag_Selection_Menu:
 					leader_name = countries_with_selected_ideology[rect[2]].country_leader_name
 					leader_name_text = self.small_scalable_font.render(leader_name, True, (255, 255, 255))
 					if leader_name_text.get_width() > 265 * self.factor_x:
-						leader_name_text = self.tiny_scalable_font.render(leader_name, True, (255, 255, 255))
+						leader_name_text = self.small_scalable_font.render(leader_name, True, (255, 255, 255))
 
 					text_position = (66 * self.factor_x + country_info_display_background_position[0], 77 * self.factor_y + country_info_display_background_position[1])
 					screen.blit(leader_name_text, text_position)
@@ -1147,7 +1146,7 @@ class Country_Selection_Flag_Selection_Menu:
 					ruling_party_name = countries_with_selected_ideology[rect[2]].country_ruling_party
 					ruling_party_name_text = self.small_scalable_font.render(ruling_party_name, True, (255, 255, 255))
 					if ruling_party_name_text.get_width() > 265 * self.factor_x:
-						ruling_party_name_text = self.tiny_scalable_font.render(ruling_party_name, True, (255, 255, 255))
+						ruling_party_name_text = self.small_scalable_font.render(ruling_party_name, True, (255, 255, 255))
 					
 					text_position = (66 * self.factor_x + country_info_display_background_position[0], 143 * self.factor_y + country_info_display_background_position[1])
 					screen.blit(ruling_party_name_text, text_position)		
@@ -1156,7 +1155,7 @@ class Country_Selection_Flag_Selection_Menu:
 					government_name_text = countries_with_selected_ideology[rect[2]].country_government
 					government_name_text = self.small_scalable_font.render(government_name_text, True, (255, 255, 255))
 					if government_name_text.get_width() > 265 * self.factor_x:
-						government_name_text = self.tiny_scalable_font.render(government_name_text, True, (255, 255, 255))
+						government_name_text = self.small_scalable_font.render(government_name_text, True, (255, 255, 255))
 					
 					text_position = (66 * self.factor_x + country_info_display_background_position[0], 209 * self.factor_y + country_info_display_background_position[1])
 					screen.blit(government_name_text, text_position)		
@@ -1165,14 +1164,14 @@ class Country_Selection_Flag_Selection_Menu:
 					elections_name = countries_with_selected_ideology[rect[2]].country_elections
 					elections_name_text = self.small_scalable_font.render(elections_name, True, (255, 255, 255))
 					if elections_name_text.get_width() > 265 * self.factor_x:
-						elections_name_text = self.tiny_scalable_font.render(elections_name, True, (255, 255, 255))
+						elections_name_text = self.small_scalable_font.render(elections_name, True, (255, 255, 255))
 					
 					text_position = (165 * self.factor_x + country_info_display_background_position[0], 252 * self.factor_y + country_info_display_background_position[1])
 					screen.blit(elections_name_text, text_position)															
 
 					# BRIEF HISTORY
 					brief_history_name = countries_with_selected_ideology[rect[2]].country_brief_history
-					brief_history_name_text = self.tiny_scalable_font.render(brief_history_name, True, (255, 255, 255))
+					brief_history_name_text = self.small_scalable_font.render(brief_history_name, True, (255, 255, 255))
 					
 					text_position = (920 * self.factor_x + country_info_display_background_position[0], 65 * self.factor_y + country_info_display_background_position[1])
 					screen.blit(brief_history_name_text, text_position)		
@@ -1252,7 +1251,7 @@ class Country_Selection_National_Spirits_Selection_Menu:
 		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(32 * self.factor_y))
 		self.normal_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(26.6 * self.factor_y))
 		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(20 * self.factor_y))
-		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))		
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))		
 
 		self.color_cache = {}
 		self.color_timer = 0
@@ -1351,7 +1350,7 @@ class Country_Selection_National_Spirits_Selection_Menu:
 
 
 		if self.hovered_national_spirit != None:
-			national_spirit_description_text = self.tiny_scalable_font.render(self.hovered_national_spirit.national_spirit_description, True, (255, 255, 255))
+			national_spirit_description_text = self.small_scalable_font.render(self.hovered_national_spirit.national_spirit_description, True, (255, 255, 255))
 			text_position = (534 * self.factor_x, 132 * self.factor_y)
 
 			pygame.draw.rect(screen, (6,15,20), (525 * self.factor_x, 125 * self.factor_y, 495 * self.factor_x, national_spirit_description_text.get_height() + 10 * self.factor_y))
@@ -1361,7 +1360,8 @@ class Country_Selection_National_Spirits_Selection_Menu:
 
 
 class Game_Screen:
-	def __init__(self, screen_width, screen_height, pygame, top_bar_right_background, top_bar_game_speed_indicator, top_bar_defcon_level):
+	def __init__(self, screen_width, screen_height, pygame, top_bar_right_background, top_bar_game_speed_indicator, top_bar_defcon_level, top_bar_left_background,
+			top_bar_flag_overlay, top_bar_flag_overlay_hovering_over):
 		self.screen_width = screen_width 
 		self.screen_height = screen_height
 
@@ -1371,17 +1371,26 @@ class Game_Screen:
 		self.factor_y = screen_height / reference_screen_size_y
 		self.factor = self.factor_x * self.factor_y
 
+		self.PlayerCountry = None
+		self.highlight_country_viewer_button = False
+		self.is_top_bar_country_viewer_open = False
 
 		self.top_bar_right_background = pygame.transform.smoothscale_by(top_bar_right_background, (self.factor_x, self.factor_y))
 		self.top_bar_game_speed_indicator = pygame.transform.smoothscale_by(top_bar_game_speed_indicator, (self.factor_x, self.factor_y))
 		self.top_bar_defcon_level = pygame.transform.smoothscale_by(top_bar_defcon_level, (self.factor_x, self.factor_y))
 
+		self.top_bar_left_background = pygame.transform.smoothscale_by(top_bar_left_background, (self.factor_x, self.factor_y))
+		self.top_bar_flag_overlay = pygame.transform.smoothscale_by(top_bar_flag_overlay, (self.factor_x, self.factor_y))
+		self.top_bar_flag_overlay_hovering_over	= pygame.transform.smoothscale_by(top_bar_flag_overlay_hovering_over, (self.factor_x, self.factor_y))	 
+
 		self.pygame = pygame
+
+		self.info_height = 9 * self.factor_y
 
 		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(22 * self.factor_y))
 		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
 		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
-		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(10 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))	
 
 		self.game_speed = 1	
 		self.defcon_level = 5
@@ -1444,7 +1453,113 @@ class Game_Screen:
 						self.current_month = 1
 						self.current_year += 1
 
+
 	def draw(self, screen):
+		screen.blit(self.top_bar_left_background, (0 * self.factor_x, 0 * self.factor_y))
+		if self.PlayerCountry.country_flag_image.get_size() != self.top_bar_flag_overlay.get_size():
+			self.PlayerCountry.country_flag_image = self.pygame.transform.smoothscale(self.PlayerCountry.country_flag_image, (115 * self.factor_x, 66 * self.factor_y))
+		screen.blit(self.PlayerCountry.country_flag_image, (6 * self.factor_x, 6 * self.factor_y))
+
+		if self.highlight_country_viewer_button == False and self.is_top_bar_country_viewer_open == False:
+			screen.blit(self.top_bar_flag_overlay, (2 * self.factor_x, 2 * self.factor_y))
+		else:
+			screen.blit(self.top_bar_flag_overlay_hovering_over, (2 * self.factor_x, 2 * self.factor_y))
+
+
+		# TOP BAR INFOS
+
+		## STABILITY
+		text_country_stability = self.medium_scalable_font.render(str(self.PlayerCountry.country_stability)+'%', True, (255, 255, 255))
+		text_country_stability_position = (165 * self.factor_x, self.info_height)	
+		screen.blit(text_country_stability, text_country_stability_position)
+		## WAR SUPPORT
+		text_country_war_support = self.medium_scalable_font.render(str(self.PlayerCountry.country_war_support)+'%', True, (255, 255, 255))
+		text_country_war_support_position = (265 * self.factor_x, self.info_height)	
+		screen.blit(text_country_war_support, text_country_war_support_position)
+		## PARTY POPULARITY
+		text_country_party_popularity = self.medium_scalable_font.render(str(self.PlayerCountry.country_party_popularity)+'%', True, (255, 255, 255))
+		text_country_party_popularity_position = (350 * self.factor_x, self.info_height)	
+		screen.blit(text_country_party_popularity, text_country_party_popularity_position)	
+
+		## LAND MANPOWER
+		manpower = self.PlayerCountry.country_land_manpower
+		if manpower >= 1000000:
+			formatted_manpower = f'{manpower / 1000000:.1f}m'
+		elif manpower >= 1000:
+			formatted_manpower = f'{manpower / 1000:.1f}k'
+		else:
+			formatted_manpower = str(manpower)
+	
+		text_country_land_manpower = self.medium_scalable_font.render(formatted_manpower, True, (255, 255, 255))
+		text_country_land_manpower_position = (446 * self.factor_x, self.info_height)	
+		screen.blit(text_country_land_manpower, text_country_land_manpower_position)
+		
+		## AIR MANPOWER
+		manpower = self.PlayerCountry.country_air_manpower
+		if manpower >= 1000000:
+			formatted_manpower = f'{manpower / 1000000:.1f}m'
+		elif manpower >= 1000:
+			formatted_manpower = f'{manpower / 1000:.1f}k'
+		else:
+			formatted_manpower = str(manpower)
+
+		text_country_air_manpower = self.medium_scalable_font.render(formatted_manpower, True, (255, 255, 255))
+		text_country_air_manpower_position = (563 * self.factor_x, self.info_height)	
+		screen.blit(text_country_air_manpower, text_country_air_manpower_position)
+
+		## COUNTRY GDP
+		GDP = self.PlayerCountry.country_GDP
+		if abs(GDP) < 1e6:
+			formatted_GDP = f"GDP:  ${GDP:,.2f}"
+		elif abs(GDP) < 1e9:
+			formatted_GDP = f"GDP:  ${GDP / 1e6:.2f}M"
+		elif abs(GDP) < 1e12:
+			formatted_GDP = f"GDP:  ${GDP / 1e9:.2f}B"
+		elif abs(GDP) < 1e15:
+			formatted_GDP = f"GDP:  ${GDP / 1e12:.2f}T"
+		else:
+			formatted_GDP = f"GDP:  ${GDP:.2f}"
+			
+		text_country_GDP = self.medium_scalable_font.render(formatted_GDP, True, (255, 255, 255))
+		text_country_GDP_position = (715 * self.factor_x, self.info_height)	
+		screen.blit(text_country_GDP, text_country_GDP_position)	
+
+
+		## INCOME
+		income = self.PlayerCountry.income
+		if abs(income) < 1e6:
+			formatted_money = f"${income:,.2f}"
+		elif abs(income) < 1e9:
+			formatted_money = f"${income / 1e6:.2f}M"
+		elif abs(income) < 1e12:
+			formatted_money = f"${income / 1e9:.2f}B"
+		elif abs(income) < 1e15:
+			formatted_money = f"${income / 1e12:.2f}T"
+		else:
+			formatted_money = f"${income:.2f}"
+		
+		text_income = self.small_scalable_font.render(formatted_money, True, (255, 255, 255))
+		text_income_position = (748 * self.factor_x, 40 * self.factor_y)	
+		screen.blit(text_income, text_income_position)
+
+		## EXPENSES
+		expenses = self.PlayerCountry.expenses
+		if abs(expenses) < 1e6:
+			formatted_money = f"${expenses:,.2f}"
+		elif abs(expenses) < 1e9:
+			formatted_money = f"${expenses / 1e6:.2f}M"
+		elif abs(expenses) < 1e12:
+			formatted_money = f"${expenses / 1e9:.2f}B"
+		elif abs(expenses) < 1e15:
+			formatted_money = f"${expenses / 1e12:.2f}T"
+		else:
+			formatted_money = f"${expenses:.2f}"
+		
+		text_expenses = self.small_scalable_font.render(formatted_money, True, (255, 255, 255))
+		text_expenses_position = (748 * self.factor_x, 59 * self.factor_y)	
+		screen.blit(text_expenses, text_expenses_position)
+
+
 		screen.blit(self.top_bar_right_background, (self.screen_width - self.top_bar_right_background.get_width(), 0))
 
 		
@@ -1475,11 +1590,12 @@ class Game_Screen:
 		month_date_render = self.medium_scalable_font.render(month_date_text, True, date_font_color)
 		year_date_render = self.medium_scalable_font.render(year_date_text, True, date_font_color)
 
-		date_x_position = self.screen_width - 318 * self.factor_x
+		date_x_position = self.screen_width - 312 * self.factor_x
 		date_y_position = 17 * self.factor_y
 
 		screen.blit(hour_date_render, ((date_x_position + max(0, 42 - hour_date_render.get_width()))* self.factor_x, date_y_position))
 		screen.blit(day_date_render, ((date_x_position + 48 + max(0, 38 - day_date_render.get_width()))* self.factor_x, date_y_position))
 		screen.blit(month_date_render, ((date_x_position + 88 + max(0, 41 - month_date_render.get_width()))* self.factor_x, date_y_position))
 		screen.blit(year_date_render, (date_x_position + 135 * self.factor_x, date_y_position))
-							
+
+
