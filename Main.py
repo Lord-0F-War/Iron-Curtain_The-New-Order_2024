@@ -177,7 +177,6 @@ class Main:
 		self.music_folder = os.path.join(self.exe_folder, 'Music')
 		self.load_music_files(self.music_folder)
 
-	
 	def create_countries_default_frame(self):
 		self.countries = []
 
@@ -950,6 +949,9 @@ your shoulders.
 									self.is_in_game_screen = True
 
 									self.Game_Screen.CountryOverview.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
+									self.Game_Screen.CountryOverview.politics_popularity = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country.politics_popularity
+									self.Game_Screen.CountryOverview.culture_popularity = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country.culture_popularity
+									self.Game_Screen.CountryOverview.religion_popularity = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country.religion_popularity
 						else:
 							self.clicked_button = self.ESC_Menu.get_clicked_button(self.mouse_rect, self.is_options_menu_open)
 							if self.clicked_button != 'none' and self.clicked_button != None:
@@ -1019,7 +1021,7 @@ your shoulders.
 					if event.type == FPS_update:
 						self.pygame.display.set_caption(str(round(clock.get_fps(), 2)))							
 					if event.type == screen_update:
-						self.Screen_Manager.render_game_screen(self.Options_Menu.brightness_slider.value, self.is_in_esc_menu, self.is_options_menu_open)
+						self.Screen_Manager.render_game_screen(self.Options_Menu.brightness_slider.value, self.is_in_esc_menu, self.is_options_menu_open, self.mouse_rect)
 					if event.type == date_tick:
 						self.Game_Screen.Clock_UI.date_tick()
 
@@ -1112,7 +1114,6 @@ your shoulders.
 											json_dump(configs, file)									
 
 				self.mouse_rect = self.pygame.Rect(self.mouse_pos, (1, 1))
-				
 
 				if self.is_in_esc_menu == False:
 					if self.Game_Screen.is_top_bar_country_viewer_open == True:
@@ -1125,6 +1126,7 @@ your shoulders.
 					self.Options_Menu.hovered_button = self.hovered_button
 
 				self.Country_Selection_Screen.music_player()
+
 
 			clock.tick(144)
 

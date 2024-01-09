@@ -3,6 +3,7 @@ import sys
 import os
 from PygameManager import pygame
 from pygame.locals import *
+from shapely.geometry import Polygon, Point
 import math
 
 
@@ -22,29 +23,40 @@ def generate_fading_colors(num_values, base_color):
 
 
 def draw_pie_chart(surface, position, radius, values, colors):
-    total = sum(values)
-    start_angle = 0
-    
-    for i, value in enumerate(values):
-        angle = (value / total) * 360
-        end_angle = start_angle + angle
-        
-        # Calculate the points of the pie segment
-        points = [position]
-        
-        for a in range(int(start_angle), int(end_angle) + 1, 1):
-            rad_angle = math.radians(a)
-            x = position[0] + int(radius * math.cos(rad_angle))
-            y = position[1] + int(radius * math.sin(rad_angle))
-            points.append((x, y))
-        
-        # Close the segment with the center point
-        points.append(position)
-        
-        pygame.draw.polygon(surface, colors[i], points)
-        
-        start_angle += angle
+	total = sum(values)
+	start_angle = 0
+	rects = []  # List to store rects around each drawn polygon
+	
+	for i, value in enumerate(values):
+		angle = (value / total) * 360
+		end_angle = start_angle + angle
+		
+		# Calculate the points of the pie segment
+		points = [position]
+		
+		for a in range(int(start_angle), int(end_angle) + 1, 1):
+			rad_angle = math.radians(a)
+			x = position[0] + int(radius * math.cos(rad_angle))
+			y = position[1] + int(radius * math.sin(rad_angle))
+			points.append((int(x), int(y)))
+		
+		# Close the segment with the center point
+		points.append(position)
+		
+		pygame.draw.polygon(surface, colors[i], points)
+		# Get the rect around the drawn polygon
+		#rect_around_polygon = [points[0], points[-2], points[1]]
+		rect_around_polygon = points[0:-2]
+		rects.append(rect_around_polygon)
+		
+		start_angle += angle
+	return rects
 
+def polygon_intersects_rectangle(polygon_vertices, rect):
+    polygon = Polygon(polygon_vertices)
+    rect_polygon = Polygon([(rect[0], rect[1]), (rect[0]+rect[2], rect[1]), (rect[0]+rect[2], rect[1]+rect[3]), (rect[0], rect[1]+rect[3])])
+
+    return polygon.intersects(rect_polygon)
 
 class ScalableFont:
 	def __init__(self, font_name, font_size):

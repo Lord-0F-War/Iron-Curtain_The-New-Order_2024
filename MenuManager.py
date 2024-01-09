@@ -496,7 +496,7 @@ class Scenario_Selection_Menu:
 
 	def get_clicked_button(self, mouse_rect):
 		clicked_button = self.get_button_by_interaction(mouse_rect)
-		if clicked_button != 'none':
+		if clicked_button != None:
 			self.hover_over_button_sound.fadeout(150)
 			self.click_menu_sound.play()
 		return clicked_button
@@ -849,8 +849,6 @@ class Country_Selection_Menu:
 			#'Voluntaryism': pygame.Rect(510, 924, 251, 92),
 			'Anarcho_Capitalism': pygame.Rect(766, 924, 250, 92)
 			######			
-
-
 		}	
 
 		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
@@ -1470,9 +1468,8 @@ class Game_Screen:
 			self.last_hovered_button = None
 			self.generic_hover_over_button_sound.fadeout(100)	
 
-	def draw(self, screen):
-
-		self.CountryOverview.draw(screen)
+	def draw(self, screen, mouse_rect):
+		self.CountryOverview.draw(screen, mouse_rect)
 		self.Clock_UI.draw(screen)
 
 class CountryOverview:
@@ -1510,54 +1507,104 @@ class CountryOverview:
 		green_base = (56, 193, 114)
 
 		red_values = GenericUtilitys.generate_fading_colors(6, red_base)
-		blue_values = GenericUtilitys.generate_fading_colors(6, blue_base)
+		blue_values = GenericUtilitys.generate_fading_colors(7, blue_base)
 		yellow_values = GenericUtilitys.generate_fading_colors(7, yellow_base) 
-		green_values = GenericUtilitys.generate_fading_colors(5, green_base)
+		green_values = GenericUtilitys.generate_fading_colors(4, green_base)
 
 		self.politics_segment_colors = red_values + blue_values + yellow_values + green_values
+		self.politics_popularity = None
 
-		total = 70
-		num_numbers = 22
-		average = total / num_numbers
+		self.ideologies = [
+			'Marxist Leninism',
+			'Command Socialism',
+			'Consumer Socialism',
+			'Authoritarian Market Socialism',
+			'Democratic Socialism',
+			'Social Democracy',
 
-		self.politics_numbers = [int(average)] * num_numbers
+			'Absolute Monarchism',
+			'National Syndicalism',
+			'Corporautocracy',
+			'Social Statism',
+			'Pinochetism',
+			'Keynesianism',
+			'Chicago School',
 
-		remainder = total - sum(self.politics_numbers)
-		for i in range(remainder):
-			self.politics_numbers[i] += 1
+			'Social Liberalism',
+			'Classical Liberalism',	
+			'Social Libertarianism',
+			'Libertarian Capitalism',
+			'Minarcho Capitalism',
+			'Voluntaryism',
+			'Anarcho Capitalism',
 
-		self.politics_numbers.insert(0, 30)			
+			'Libertarian Socialism',
+			'Libertarian Market Socialism',
+			'Mutualism',
+			'Anarcho Communism'
+			]	
+
 
 		# CULTURE
 		redish_base = (227, 52, 47)
 		gray_base = (220, 220, 220)
 		blue_base = (52, 144, 220)
 
-
 		red_values = GenericUtilitys.generate_fading_colors(6, redish_base)
 		blue_values = GenericUtilitys.generate_fading_colors(2, gray_base)
 		yellow_values = GenericUtilitys.generate_fading_colors(6, blue_base)
 
 		self.culture_segment_colors = red_values + blue_values + yellow_values + green_values
+		self.culture_popularity = None
 
-		total = 100
-		num_numbers = 14
-		average = total / num_numbers
-
-		self.culture_numbers = [int(average)] * num_numbers
-
-		remainder = total - sum(self.culture_numbers)
-		for i in range(remainder):
-			self.culture_numbers[i] += 1
+		self.cultures = [
+			'Accelerationism',
+			'Ultraprogressive',
+			'Progressive',
+			'Environmentalism',
+			'Globalism',
+			'Multiculturalism',
+			
+			'Secularism',
+			'Centrist',
+			
+			'Liberal',
+			'Neoconservatism',
+			'Conservative',
+			'Reactionary',
+			'Traditionalist',
+			'Nationalism'
+		]
 
 		# RELIGION
-
 		self.religion_segment_colors = [(227, 52, 47),  (246, 153, 63), (255, 237, 74),  (56, 193, 114),  (77, 192, 181),
 			(52, 144, 220), (101, 116, 205),  (149, 97, 226), (246, 109, 155)]
 
-		self.religion_numbers = [11.11, 11.11, 11.11, 11.11, 11.11, 11.11, 11.11, 11.11, 11.11]					
+		self.religion_popularity = None
 
-		# COLORS ------------#	
+		self.religions = [
+			'Christianity',
+			'Judaism',
+			'Islam',
+			'Hinduism',
+			'Buddhism',
+			'Taoism',
+			'Shintoism',
+			'Indigenous',
+			'Atheism'
+		]				
+
+		# COLORS ------------#
+
+		self.is_touching_cicle_rects = False
+		self.politics_cicle_rects = [[(0, 0), (0, 1080), (1920, 0)]]
+		
+		self.culture_cicle_rects = [[(0, 0), (0, 1080), (1920, 0)]]
+		
+		self.religion_cicle_rects = [[(0, 0), (0, 1080), (1920, 0)]]
+
+		self.hitted_rect = None
+
 
 		self.top_bar_country_viewer_button = GenericUtilitys.Button(2 * self.factor_x, 2 * self.factor_y, 123 * self.factor_x, 74 * self.factor_y)
 
@@ -1574,6 +1621,33 @@ class CountryOverview:
 			return "country_viewer"	
 
 	def get_hovered_national_spirit(self, mouse_rect):
+		if self.is_top_bar_country_viewer_open == True:
+			self.is_touching_cicle_rects = False
+			if mouse_rect[1] > 391 * self.factor_y and  mouse_rect[1] < 560 * self.factor_y:
+				if  mouse_rect[0] > 60 * self.factor_x and  mouse_rect[0] < 227 * self.factor_x:
+					for index, rect in enumerate(self.politics_cicle_rects):
+						if GenericUtilitys.polygon_intersects_rectangle(rect, mouse_rect):
+							self.hitted_rect = [index, 'politics']
+							self.is_touching_cicle_rects = True
+							break
+				elif  mouse_rect[0] > 350 * self.factor_x and  mouse_rect[0] < 517 * self.factor_x:
+					for index, rect in enumerate(self.culture_cicle_rects):
+						if GenericUtilitys.polygon_intersects_rectangle(rect, mouse_rect):
+							self.hitted_rect = [index, 'culture']
+							self.is_touching_cicle_rects = True
+							break	
+				elif  mouse_rect[0] > 637 * self.factor_x and  mouse_rect[0] < 804 * self.factor_x:			
+					for index, rect in enumerate(self.religion_cicle_rects):
+						if GenericUtilitys.polygon_intersects_rectangle(rect, mouse_rect):
+							self.hitted_rect = [index, 'religion']
+							self.is_touching_cicle_rects = True
+							break							
+
+		else:
+			self.is_touching_politics_cicle_rects = False
+			self.is_touching_culture_cicle_rects = False
+			self.is_touching_religion_cicle_rects = False
+
 		for rect, national_spirit in self.national_spirits_display_rects:
 			if rect.colliderect(mouse_rect):
 				self.hovered_national_spirit = national_spirit
@@ -1584,7 +1658,7 @@ class CountryOverview:
 		self.last_hovered_national_spirit = None
 		self.hovered_national_spirit = None	
 
-	def draw(self, screen):
+	def draw(self, screen, mouse_rect):
 		screen.blit(self.top_bar_left_background, (0 * self.factor_x, 0 * self.factor_y))
 		if self.PlayerCountry.country_flag_image.get_size() != self.top_bar_flag_overlay.get_size():
 			self.PlayerCountry.country_flag_image = self.pygame.transform.smoothscale(self.PlayerCountry.country_flag_image, (115 * self.factor_x, 66 * self.factor_y))
@@ -1745,15 +1819,16 @@ class CountryOverview:
 			chart_position = (143 * self.factor_x, 391 * self.factor_y + self.country_overview_position[1]) 
 			chart_radius = 80 * self.factor_y
 
-			GenericUtilitys.draw_pie_chart(screen, chart_position, chart_radius, self.politics_numbers, self.politics_segment_colors)	
+			self.politics_cicle_rects = GenericUtilitys.draw_pie_chart(screen, chart_position, chart_radius, self.politics_popularity, self.politics_segment_colors)	
 
-			screen.blit(self.popularity_circle_overlay, (chart_position[0]-85 * self.factor_x, chart_position[1]-85 * self.factor_y))		
+			screen.blit(self.popularity_circle_overlay, (chart_position[0]-85 * self.factor_x, chart_position[1]-85 * self.factor_y))
 
 			# CULTURE
 			chart_position = (433 * self.factor_x, 391 * self.factor_y + self.country_overview_position[1]) 
 			chart_radius = 80 * self.factor_y
 
-			GenericUtilitys.draw_pie_chart(screen, chart_position, chart_radius, self.culture_numbers, self.culture_segment_colors)		
+			rects_info = GenericUtilitys.draw_pie_chart(screen, chart_position, chart_radius, self.culture_popularity, self.culture_segment_colors)		
+			self.culture_cicle_rects = rects_info
 
 			screen.blit(self.popularity_circle_overlay, (chart_position[0]-85 * self.factor_x, chart_position[1]-85 * self.factor_y))			
 
@@ -1761,10 +1836,27 @@ class CountryOverview:
 			chart_position = (720 * self.factor_x, 391 * self.factor_y + self.country_overview_position[1]) 
 			chart_radius = 80 * self.factor_y  
 
-			GenericUtilitys.draw_pie_chart(screen, chart_position, chart_radius, self.religion_numbers, self.religion_segment_colors)
+			rects_info = GenericUtilitys.draw_pie_chart(screen, chart_position, chart_radius, self.religion_popularity, self.religion_segment_colors)
+			self.religion_cicle_rects = rects_info
 
 			screen.blit(self.popularity_circle_overlay, (chart_position[0]-85 * self.factor_x, chart_position[1]-85 * self.factor_y))	
 
+			# POPULARITY TEXT INFO
+			if self.is_touching_cicle_rects == True:
+				if self.hitted_rect[1] == 'politics':
+					ideology_name = self.ideologies[self.hitted_rect[0]] + ":   " + str(self.politics_popularity[self.hitted_rect[0]]) + '%'
+				elif self.hitted_rect[1] == 'culture':
+					ideology_name = self.cultures[self.hitted_rect[0]] + ":   " + str(self.culture_popularity[self.hitted_rect[0]]) + '%'
+				elif self.hitted_rect[1] == 'religion':
+					ideology_name = self.religions[self.hitted_rect[0]] + ":   " + str(self.religion_popularity[self.hitted_rect[0]]) + '%'
+
+				ideology_name_text = self.medium_scalable_font.render(ideology_name, True, (255, 255, 255))
+				text_position = (mouse_rect[0]+20 * self.factor_x, mouse_rect[1])	
+				
+				pygame.draw.rect(screen, (6,15,20), (text_position[0]-20 * self.factor_x, text_position[1], ideology_name_text.get_width()+24 * self.factor_x, ideology_name_text.get_height()+10 * self.factor_y))
+				pygame.draw.rect(screen, (43,219,211), (text_position[0]-20 * self.factor_x, text_position[1], ideology_name_text.get_width()+24 * self.factor_x, ideology_name_text.get_height()+10 * self.factor_y), 2)				
+				
+				screen.blit(ideology_name_text, (text_position[0], text_position[1]+6 * self.factor_y))	
 
 			#-----------------------------------------------------------------------------------------------------------------------------------------------------#
 			# NATIONAL SPIRITS

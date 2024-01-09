@@ -96,11 +96,11 @@ class Screen:
 		self.pygame.display.update(self.screen_rect)
 
 
-	def render_game_screen(self, brightness_value, is_in_esc_menu, is_options_menu_open):
+	def render_game_screen(self, brightness_value, is_in_esc_menu, is_options_menu_open, mouse_rect):
 		self.screen.fill((0, 0, 0))
 		self.surface_alfa.fill((0, 0, 0, 0))
 
-		self.Game_Screen.draw(self.surface_alfa)
+		self.Game_Screen.draw(self.surface_alfa, mouse_rect)
 
 		if is_in_esc_menu == True:
 			self.ESC_Menu.draw(self.surface_alfa, is_options_menu_open)

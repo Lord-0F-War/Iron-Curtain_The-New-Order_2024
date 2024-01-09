@@ -28,6 +28,10 @@ class Country:
         self.country_culture = None
         self.country_religion = None
 
+        self.politics_popularity = [4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16]
+        self.culture_popularity = [7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14]
+        self.religion_popularity = [11.11, 11.11, 11.11, 11.11, 11.11, 11.11, 11.11, 11.11, 11.11]        
+
         self.country_ruling_party = 'party demo'
         self.country_government = 'government demo'
         self.country_elections = 'Never'
@@ -45,7 +49,6 @@ class Country:
         self.country_air_manpower = 150_500
 
         self.country_GDP = 10_550_000_000_000
-
 
         self.income = 10_550_000_000_000
         self.expenses = 550_600_000        
