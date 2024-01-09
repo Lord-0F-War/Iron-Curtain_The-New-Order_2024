@@ -972,7 +972,7 @@ class Country_Selection_Menu:
 
 		# Country Name | Leader Name | National Spirits
 		if self.is_flag_selection_menu_open == False and self.selected_flag_image != None:
-			if  self.selected_country != None:
+			if self.selected_country != None:
 				country_name_text = self.medium_scalable_font.render(self.selected_country.country_name, True, (255, 255, 255))
 				screen.blit(country_name_text, self.country_name_position)	
 
@@ -1043,17 +1043,6 @@ class Country_Selection_Menu:
 				self.national_spirits_display_rects.append([religion_national_spirit.rect, religion_national_spirit])						
 										
 
-			if self.hovered_national_spirit != None:
-				pygame.draw.rect(screen, (255,255,255), self.hovered_national_spirit.rect, 2)
-
-				national_spirit_description_text = self.small_scalable_font.render(self.hovered_national_spirit.national_spirit_description, True, (255, 255, 255))
-				text_position = (1435 * self.factor_x, 280 * self.factor_y)
-
-				pygame.draw.rect(screen, (6,15,20), (1430 * self.factor_x, 275 * self.factor_y, 485 * self.factor_x, national_spirit_description_text.get_height() + 10 * self.factor_y))
-				pygame.draw.rect(screen, (43,219,211), (1430 * self.factor_x, 275 * self.factor_y, 485 * self.factor_x, national_spirit_description_text.get_height() + 10 * self.factor_y), 2)
-
-				screen.blit(national_spirit_description_text, text_position)							
-
 		if self.clicked_ideology == None: # Blocked Buttons
 			screen.blit(self.blocked_select_country_button, (self.select_flag_style_button_x_offset, self.select_flag_style_button_y_offset))
 			screen.blit(self.blocked_select_national_spirit_button, (self.select_national_spirit_button_x_offset, self.select_national_spirit_button_y_offset))
@@ -1102,7 +1091,18 @@ class Country_Selection_Menu:
 						button = getattr(self, f'social_law_button_{str(number+1)}', None)
 						screen.blit(self.hovered_laws_button_image, (button.rect[:2]))															
 		else: # Fade Audio
-			self.hover_over_button_sound.fadeout(200)	
+			self.hover_over_button_sound.fadeout(50)
+
+		if self.hovered_national_spirit != None:
+			pygame.draw.rect(screen, (255,255,255), self.hovered_national_spirit.rect, 2)
+
+			national_spirit_description_text = self.small_scalable_font.render(self.hovered_national_spirit.national_spirit_description, True, (255, 255, 255))
+			text_position = (1429 * self.factor_x, 239 * self.factor_y)
+
+			pygame.draw.rect(screen, (6,15,20), (1423 * self.factor_x, 232 * self.factor_y, 484 * self.factor_x, national_spirit_description_text.get_height() + 10 * self.factor_y))
+			pygame.draw.rect(screen, (43,219,211), (1423 * self.factor_x, 232 * self.factor_y, 484 * self.factor_x, national_spirit_description_text.get_height() + 10 * self.factor_y), 2)
+
+			screen.blit(national_spirit_description_text, text_position)				
 class Flag_Selection_Menu:
 	def __init__(self, screen_width, screen_height, pygame, countries, generic_hover_over_button_sound, generic_click_menu_sound, country_info_display_background) -> None:
 		self.countries = countries

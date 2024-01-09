@@ -1126,8 +1126,7 @@ your shoulders.
 
 				self.Country_Selection_Screen.music_player()
 
-
-			clock.tick()
+			clock.tick(144)
 
 		self.pygame.quit()
 
