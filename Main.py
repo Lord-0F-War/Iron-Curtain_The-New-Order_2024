@@ -34,7 +34,8 @@ class Main:
 		self.countries = []
 
 		self.exe_folder = os.path.dirname(sys.argv[0])
-		self.leaders_image_dic = {}		
+		self.leaders_image_dic = {}
+		self.capitals_images_dic = {}		
 		self.flags_image_dic = {}
 		self.national_spirits_image_dic = {}
 		self.music_files_dic = {}
@@ -56,6 +57,14 @@ class Main:
 						image_name = os.path.splitext(filename)[0]
 						self.leaders_image_dic[image_name] = self.pygame.image.load(image_path).convert()
 						self.leaders_image_dic[image_name] = self.pygame.transform.smoothscale_by(self.leaders_image_dic[image_name], (self.factor_x, self.factor_y))
+	def load_capitals_images(self, flags_folder):	
+		if os.path.isdir(flags_folder):
+			for filename in os.listdir(flags_folder):
+				if filename.endswith(".png") or filename.endswith(".jpg"):
+					image_path = os.path.join(flags_folder, filename)
+					image_name = os.path.splitext(filename)[0]
+					self.capitals_images_dic[image_name] = self.pygame.image.load(image_path).convert()
+					self.capitals_images_dic[image_name] = self.pygame.transform.smoothscale_by(self.capitals_images_dic[image_name], (self.factor_x, self.factor_y))		
 	def load_flags_images(self, flags_folder):	
 		if os.path.isdir(flags_folder):
 			for filename in os.listdir(flags_folder):
@@ -91,6 +100,9 @@ class Main:
 		self.factor = self.factor_x * self.factor_y
 
 		self.gfx_folder = os.path.join(self.exe_folder, 'gfx')
+
+		self.capitals_folder = os.path.join(self.gfx_folder, 'capitals')
+		self.load_capitals_images(self.capitals_folder)
 
 		self.flags_folder = os.path.join(self.gfx_folder, 'flags')
 		self.load_flags_images(self.flags_folder)
@@ -182,6 +194,7 @@ class Main:
 
 		self.USSR = CountriesManager.Country(
 					'Leonid Ilyich Brezhnev',
+					self.capitals_images_dic['USA'],
 				    self.leaders_image_dic['Portrait_USSR_Leonid_Ilyich_Brezhnev'], 
 				    self.flags_image_dic['USSR'],
 					'Union of Soviet Socialist Republics',
@@ -208,22 +221,16 @@ catastrophic maelstrom."""
 		
 		self.CHI = CountriesManager.Country(
 				    'Mao Zedong',
+					self.capitals_images_dic['USA'],
 					self.leaders_image_dic['Portrait_CHI_Mao_Zedong'], 
 				    self.flags_image_dic['CHI'],
 					"People's Republic of China",
 					'Command_Socialism',
 					[self.music_files_dic['red_sun_in_the_sky']])
 
-		self.CHI2 = CountriesManager.Country(
-			'Mao Zedong',
-			self.leaders_image_dic['Portrait_CHI_Mao_Zedong'], 
-			self.flags_image_dic['CHI'],
-			"People's Republic of China",
-			'Command_Socialism',
-			[self.music_files_dic['red_sun_in_the_sky']])	
-		
 		self.GNW = CountriesManager.Country(
 					'Ernst Thalmann',
+					self.capitals_images_dic['USA'],
 				    self.leaders_image_dic['Portrait_GNW_Ernst_Thalmann'], 
 				    self.flags_image_dic['GNW'],
 					'German National Worker State',
@@ -232,6 +239,7 @@ catastrophic maelstrom."""
 		
 		self.POR = CountriesManager.Country(
 					'Antonio de Oliveira Salazar',
+					self.capitals_images_dic['USA'],
 					self.leaders_image_dic['Portrait_POR_Antonio_de_Oliveira_Salazar'], 
 				    self.flags_image_dic['POR'],
 					'Estado Novo',
@@ -240,6 +248,7 @@ catastrophic maelstrom."""
 		
 		self.KSA = CountriesManager.Country(
 					'Faisal Bin Abdulaziz Al Saud',
+					self.capitals_images_dic['USA'],
 					self.leaders_image_dic['Portrait_KSA_Faisal_Bin_Abdulaziz_Al_Saud'], 
 				    self.flags_image_dic['KSA'],
 					'Kingdom of Saudi Arabia',
@@ -248,6 +257,7 @@ catastrophic maelstrom."""
 		
 		self.GDR = CountriesManager.Country(
 					'Erich Ernst Paul Honecker',
+					self.capitals_images_dic['USA'],
 					self.leaders_image_dic['Portrait_GDR_Erich_Ernst_Paul_Honecker'], 
 				    self.flags_image_dic['GDR'],
 					'German Democratic Republic',
@@ -256,6 +266,7 @@ catastrophic maelstrom."""
 		
 		self.YUG = CountriesManager.Country(
 					'Josip Broz Tito',
+					self.capitals_images_dic['USA'],
 					self.leaders_image_dic['Portrait_YUG_Josip_Broz_Tito'], 
 				    self.flags_image_dic['YUG'],
 					'Socialist Federal Republic of Yugoslavia',
@@ -264,6 +275,7 @@ catastrophic maelstrom."""
 		
 		self.BRA = CountriesManager.Country(
 					'Emilio Garrastazu Medici',
+					self.capitals_images_dic['USA'],
 					self.leaders_image_dic['Portrait_BRA_Emilio_Garrastazu_Medici'], 
 				    self.flags_image_dic['BRA'],
 					'United States of Brazil',
@@ -272,6 +284,7 @@ catastrophic maelstrom."""
 		
 		self.CHL = CountriesManager.Country(
 					'Augusto Pinochet',
+					self.capitals_images_dic['USA'],
 					self.leaders_image_dic['Portrait_CHL_Augusto_Pinochet'], 
 				    self.flags_image_dic['CHL'],
 					'Chile',
@@ -280,6 +293,7 @@ catastrophic maelstrom."""
 		
 		self.SWE = CountriesManager.Country(
 					'Sven Olof Joachim Palme',
+					self.capitals_images_dic['USA'],
 					self.leaders_image_dic['Portrait_SWE_Sven_Olof_Joachim_Palme'], 
 				    self.flags_image_dic['SWE'],
 					'Sweden',
@@ -288,6 +302,7 @@ catastrophic maelstrom."""
 		
 		self.WGR = CountriesManager.Country(
 					'Willy Brandt',
+					self.capitals_images_dic['USA'],
 					self.leaders_image_dic['Portrait_WGR_Willy_Brandt'], 
 				    self.flags_image_dic['WGR'],
 					'Federal Republic of Germany',
@@ -296,6 +311,7 @@ catastrophic maelstrom."""
 		
 		self.USA = CountriesManager.Country(
 					'Richard Nixon',
+					self.capitals_images_dic['USA'],
 					self.leaders_image_dic['Portrait_USA_Richard_Nixon'], 
 				    self.flags_image_dic['USA'],
 					'United States of America',
@@ -323,6 +339,7 @@ your shoulders.
 		
 		self.SWI = CountriesManager.Country(
 					'Federal Council',
+					self.capitals_images_dic['USA'],
 					self.leaders_image_dic['Portrait_SWI_Federal_Council'], 
 				    self.flags_image_dic['SWI'],
 					'Switzerland',
@@ -331,6 +348,7 @@ your shoulders.
 		
 		self.TEX = CountriesManager.Country(
 					'John Connally',
+					self.capitals_images_dic['USA'],
 					self.leaders_image_dic['Portrait_TEX_John_Connally'], 
 				    self.flags_image_dic['TEX'],
 					'Texas',
@@ -339,6 +357,7 @@ your shoulders.
 		
 		self.PCO = CountriesManager.Country(
 					'Hans Hermann Hoppe',
+					self.capitals_images_dic['USA'],
 					self.leaders_image_dic['Portrait_PCO_Hans_Hermann_Hoppe'], 
 				    self.flags_image_dic['PCO'],
 					'Propertarian Commonwealth',

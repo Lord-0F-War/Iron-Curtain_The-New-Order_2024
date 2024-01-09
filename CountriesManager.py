@@ -12,8 +12,9 @@ class National_Spirit:
 
 
 class Country:
-    def __init__(self, country_leader_name, country_leader_image, country_flag_image, country_name, country_ruler_ideology, country_music_playlist) -> None:
+    def __init__(self, country_leader_name, country_capital_image,  country_leader_image, country_flag_image, country_name, country_ruler_ideology, country_music_playlist) -> None:
         self.country_leader_name = country_leader_name
+        self.country_capital_image = country_capital_image
         self.country_leader_image = country_leader_image
         self.country_flag_image = country_flag_image
         self.country_name = country_name

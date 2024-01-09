@@ -1669,7 +1669,7 @@ class CountryOverview:
 		else:
 			screen.blit(self.top_bar_flag_overlay_hovering_over, (2 * self.factor_x, 2 * self.factor_y))
 
-
+		#----------------------------------------------------------------------------------------------------------------------------------------#
 		# TOP BAR INFOS
 
 		## STABILITY
@@ -1762,10 +1762,17 @@ class CountryOverview:
 		text_expenses = self.small_scalable_font.render(formatted_money, True, (255, 255, 255))
 		text_expenses_position = (748 * self.factor_x, 59 * self.factor_y)	
 		screen.blit(text_expenses, text_expenses_position)		
+		#----------------------------------------------------------------------------------------------------------------------------------------#
+
+		#----------------------------------------------------------------------------------------------------------------------------------------#
+		# COUNTRY VIWER
 
 		if self.is_top_bar_country_viewer_open == True:
 			screen.blit(self.PlayerCountry.country_leader_image, (12 * self.factor_x, 27 * self.factor_y + self.country_overview_position[1]))
 			screen.blit(self.country_overview, self.country_overview_position)
+
+			screen.blit(self.PlayerCountry.country_capital_image, (160 * self.factor_x, 90 * self.factor_y + self.country_overview_position[1]))
+			screen.blit(self.country_overview, self.country_overview_position)			
 
 			# COUNTRY NAME
 			country_name_text = self.big_scalable_font.render(self.PlayerCountry.country_name, True, (255, 255, 255))
