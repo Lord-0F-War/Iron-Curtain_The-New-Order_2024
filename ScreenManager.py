@@ -3,7 +3,7 @@ import GenericUtilitys
 
 
 class Screen:
-	def __init__(self, pygame, display, screen, surface_alfa, Main_Menu, Country_Selection_Menu, Scenario_Selection_Menu, ESC_Menu, Game_Screen, main_menu_backgound, python_logo):
+	def __init__(self, pygame, display, screen, surface_alfa, Main_Menu, Country_Selection_Screen, Scenario_Selection_Menu, ESC_Menu, Game_Screen, main_menu_backgound, python_logo):
 		
 		self.pygame = pygame
 		
@@ -24,7 +24,7 @@ class Screen:
 		
 		self.Scenario_Selection_Menu = Scenario_Selection_Menu
 
-		self.Country_Selection_Menu = Country_Selection_Menu
+		self.Country_Selection_Screen = Country_Selection_Screen
 
 		self.Game_Screen = Game_Screen
 
@@ -77,11 +77,11 @@ class Screen:
 		self.pygame.display.update(self.screen_rect)		
 
 
-	def render_country_selection_menu(self, brightness_value, is_in_esc_menu, is_options_menu_open):
+	def render_country_selection_menu(self, brightness_value, is_in_esc_menu, is_options_menu_open, mouse_pos, mouse_rect):
 		self.screen.fill((0, 0, 0))
 		self.surface_alfa.fill((0, 0, 0, 0))
 
-		self.Country_Selection_Menu.draw(self.surface_alfa)
+		self.Country_Selection_Screen.draw(self.surface_alfa, mouse_pos, mouse_rect)
 
 		if is_in_esc_menu == True:
 			self.ESC_Menu.draw(self.surface_alfa, is_options_menu_open)
@@ -94,6 +94,7 @@ class Screen:
 		self.display.blit(self.screen, (0, 0))
 
 		self.pygame.display.update(self.screen_rect)
+
 
 	def render_game_screen(self, brightness_value, is_in_esc_menu, is_options_menu_open):
 		self.screen.fill((0, 0, 0))

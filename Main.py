@@ -170,10 +170,9 @@ class Main:
 		self.sounds_folder = os.path.join(self.exe_folder, 'Sounds')
 		self.sounds_menu_folder = os.path.join(self.sounds_folder, 'menu')
 
-		self.generic_hover_over_button_menu_sound = self.pygame.mixer.Sound(os.path.join(self.sounds_menu_folder, 'generic_hover_over_button_menu.ogg'))
+		self.generic_hover_over_button_sound = self.pygame.mixer.Sound(os.path.join(self.sounds_menu_folder, 'generic_hover_over_button_sound.wav'))
+		self.generic_click_button_sound = self.pygame.mixer.Sound(os.path.join(self.sounds_menu_folder, 'generic_click_button_sound.wav'))
 
-		self.click_main_menu_sound = self.pygame.mixer.Sound(os.path.join(self.sounds_menu_folder, 'click_main_menu.ogg'))
-		self.generic_click_menu_sound = self.pygame.mixer.Sound(os.path.join(self.sounds_menu_folder, 'generic_click_menu.ogg'))
 
 		self.music_folder = os.path.join(self.exe_folder, 'Music')
 		self.load_music_files(self.music_folder)
@@ -345,7 +344,7 @@ your shoulders.
 				    self.flags_image_dic['PCO'],
 					'Propertarian Commonwealth',
 					'Anarcho_Capitalism',
-					[self.music_files_dic['Clockwork_main_menu']])													
+					[self.music_files_dic['clock-ticking']])													
 		
 		self.countries.extend([self.USSR, self.CHI, self.GNW, self.POR, self.KSA, self.GDR, self.YUG, self.BRA, self.CHL, self.SWE, self.WGR, self.USA, self.SWI, self.TEX, self.PCO])
 	def create_national_spirits(self):
@@ -659,49 +658,46 @@ your shoulders.
 		self.PCO.country_religion = self.Christianity			
 
 	def create_classes(self):
-		self.Sounds_Manager = SoundsManager.Sounds_Manager(self.generic_hover_over_button_menu_sound, self.click_main_menu_sound, self.generic_click_menu_sound)
+		self.Sounds_Manager = SoundsManager.Sounds_Manager(self.generic_hover_over_button_sound, self.generic_click_button_sound)
 
 		self.Main_Menu = MenuManager.Main_Menu(self.screen_width, self.screen_height, self.pygame, self.game_logo, self.python_logo, self.main_menu_UI, self.hovered_green_button_menu_image,
-				self.hovered_red_button_menu_image, self.new_game_menu_background, self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.click_main_menu_sound)
+				self.hovered_red_button_menu_image, self.new_game_menu_background, self.Sounds_Manager.generic_hover_over_button_sound, self.Sounds_Manager.generic_click_button_sound)
 
 		self.Scenario_Selection_Menu = MenuManager.Scenario_Selection_Menu(self.screen_width, self.screen_height, self.pygame, self.game_logo, self.python_logo,
 				self.scenario_selection_menu_gui, self.hovered_select_scenario_button_menu_image, self.hovered_back_to_main_menu_button_menu_image,
-				self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.click_main_menu_sound)
+				self.Sounds_Manager.generic_hover_over_button_sound, self.Sounds_Manager.generic_click_button_sound)
 
 
-		self.Country_Selection_Flag_Selection_Menu = MenuManager.Country_Selection_Flag_Selection_Menu(screen_width, screen_height, self.countries, 
-				self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.generic_click_menu_sound)
-		self.Country_Selection_National_Spirits_Selection_Menu = MenuManager.Country_Selection_National_Spirits_Selection_Menu(self.screen_width, self.screen_height, 
-				self.national_spirits_background, self.generic_national_spirits, self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.click_main_menu_sound)
-		self.Country_Selection_Menu = MenuManager.Country_Selection_Menu(self.Country_Selection_Flag_Selection_Menu, self.Country_Selection_National_Spirits_Selection_Menu, 
-				self.screen_width, self.screen_height, self.pygame, self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.generic_click_menu_sound, 
+		self.Country_Selection_Screen = MenuManager.Country_Selection_Screen(
+				self.screen_width, self.screen_height, self.pygame, self.countries, self.Sounds_Manager.generic_hover_over_button_sound, self.Sounds_Manager.generic_click_button_sound, 
 				self.country_selection_background, self.country_info_display_background, self.political_compass_image, self.ideologies_CRT_overlay_effect,
 				self.hovered_start_game_button, self.hovered_select_national_spirit_button_image, self.hovered_select_country_button_image, 
 				self.hovered_laws_button_image, self.generic_leader, self.CRT_flag_overlay_effect, self.blocked_select_national_spirit_button, 
-				self.blocked_select_country_button, self.blocked_start_game_button, self.blocked_full_right_side, self.blocked_all_laws)
+				self.blocked_select_country_button, self.blocked_start_game_button, self.blocked_full_right_side, self.blocked_all_laws, self.national_spirits_background,
+				self.generic_national_spirits)
 		
 
 		self.Options_Menu = MenuManager.Options_Menu(self.screen_width, self.screen_height, self.menu_options_UI, 
-				self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.click_main_menu_sound, self.hovered_green_button_menu_image,
+				self.Sounds_Manager.generic_hover_over_button_sound, self.Sounds_Manager.generic_click_button_sound, self.hovered_green_button_menu_image,
 				self.hovered_red_button_menu_image, self.Sounds_Manager, self.Main_Menu)
 		self.ESC_Menu = MenuManager.ESC_Menu(self.screen_width, self.screen_height, self.ESC_menu_background, 
-				self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.click_main_menu_sound, self.hovered_green_button_menu_image,
+				self.Sounds_Manager.generic_hover_over_button_sound, self.Sounds_Manager.generic_click_button_sound, self.hovered_green_button_menu_image,
 				self.hovered_red_button_menu_image, self.Options_Menu)
 		
 
-		self.Game_Screen = MenuManager.Game_Screen(self.screen_width, self.screen_height, self.pygame, self.Sounds_Manager.generic_hover_over_button_menu_sound, self.Sounds_Manager.click_main_menu_sound, 
+		self.Game_Screen = MenuManager.Game_Screen(self.screen_width, self.screen_height, self.pygame, self.Sounds_Manager.generic_hover_over_button_sound, self.Sounds_Manager.generic_click_button_sound, 
 			self.top_bar_right_background, self.top_bar_game_speed_indicator, self.top_bar_defcon_levels, self.top_bar_left_background, self.top_bar_flag_overlay,
 			self.top_bar_flag_overlay_hovering_over, self.country_overview, self.popularity_circle_overlay)
 
 
-		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.Main_Menu, self.Country_Selection_Menu,
+		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.Main_Menu, self.Country_Selection_Screen,
 				self.Scenario_Selection_Menu, self.ESC_Menu, self.Game_Screen, self.main_menu_backgound, self.python_logo)
 		
 	def setup_variables(self):
 		self.screen_center = (self.screen_width/2, self.screen_height/2)
 
 		self.mouse_pos = self.pygame.mouse.get_pos()
-		self.mouse_rect = self.pygame.Rect(self.mouse_pos, (2, 2))
+		self.mouse_rect = self.pygame.Rect(self.mouse_pos, (1, 1))
 
 		self.clicked_button = 'none'
 		self.hovered_button = 'none'
@@ -728,11 +724,10 @@ your shoulders.
 		while self.starting_the_game:
 			self.rects_of_active_UI = []
 
-
 			if self.is_in_main_menu_screen == True:
 				if self.main_menu_music_started == False or self.pygame.mixer.music.get_busy() == False:
 					self.main_menu_music_started = True
-					self.pygame.mixer.music.load(self.music_files_dic['Clockwork_main_menu'])
+					self.pygame.mixer.music.load(self.music_files_dic['clock-ticking'])
 					self.pygame.mixer.music.play()
 
 				for event in self.pygame.event.get():
@@ -753,7 +748,7 @@ your shoulders.
 						pass
 					
 					elif event.type == self.pygame.MOUSEBUTTONDOWN:
-						self.mouse_rect = self.pygame.Rect(self.mouse_pos, (2, 2))
+						self.mouse_rect = self.pygame.Rect(self.mouse_pos, (1, 1))
 						
 						if self.is_options_menu_open == False:
 							self.clicked_button = self.Main_Menu.get_clicked_button(self.mouse_rect)
@@ -813,9 +808,7 @@ your shoulders.
 								with open(f'{self.exe_folder}\\settings.txt', 'w') as file:
 									json_dump(configs, file)
 
-
-
-				self.mouse_rect = self.pygame.Rect(self.mouse_pos, (2, 2))
+				self.mouse_rect = self.pygame.Rect(self.mouse_pos, (1, 1))
 
 				if self.is_options_menu_open == False:				
 					self.hovered_button = self.Main_Menu.get_hovered_button(self.mouse_rect)
@@ -829,7 +822,7 @@ your shoulders.
 			if self.is_in_scenario_selection_screen == True:
 				if self.main_menu_music_started == False or self.pygame.mixer.music.get_busy() == False:
 					self.main_menu_music_started = True
-					self.pygame.mixer.music.load(self.music_files_dic['Clockwork_main_menu'])
+					self.pygame.mixer.music.load(self.music_files_dic['clock-ticking'])
 					self.pygame.mixer.music.play()
 
 				for event in self.pygame.event.get():
@@ -854,7 +847,7 @@ your shoulders.
 						pass
 					
 					elif event.type == self.pygame.MOUSEBUTTONDOWN:
-						self.mouse_rect = self.pygame.Rect(self.mouse_pos, (2, 2))
+						self.mouse_rect = self.pygame.Rect(self.mouse_pos, (1, 1))
 
 						if self.is_in_esc_menu == False:						
 							self.clicked_button = self.Scenario_Selection_Menu.get_clicked_button(self.mouse_rect)
@@ -910,7 +903,7 @@ your shoulders.
 										with open(f'{self.exe_folder}\\settings.txt', 'w') as file:
 											json_dump(configs, file)								
 
-				self.mouse_rect = self.pygame.Rect(self.mouse_pos, (2, 2))
+				self.mouse_rect = self.pygame.Rect(self.mouse_pos, (1, 1))
 				
 				if self.is_in_esc_menu == False:
 					self.hovered_button = self.Scenario_Selection_Menu.get_hovered_button(self.mouse_rect)
@@ -930,7 +923,7 @@ your shoulders.
 					if event.type == FPS_update:
 						self.pygame.display.set_caption(str(round(clock.get_fps(), 2)))							
 					if event.type == screen_update:
-						self.Screen_Manager.render_country_selection_menu(self.Options_Menu.brightness_slider.value, self.is_in_esc_menu, self.is_options_menu_open)	
+						self.Screen_Manager.render_country_selection_menu(self.Options_Menu.brightness_slider.value, self.is_in_esc_menu, self.is_options_menu_open, self.mouse_pos, self.mouse_rect)	
 
 					if self.is_options_menu_open == True:
 						self.Options_Menu.interacting_with_UI_slides(event)
@@ -946,36 +939,17 @@ your shoulders.
 						pass
 					
 					elif event.type == self.pygame.MOUSEBUTTONDOWN:
-						self.mouse_rect = self.pygame.Rect(self.mouse_pos, (2, 2))
+						self.mouse_rect = self.pygame.Rect(self.mouse_pos, (1, 1))
 
 						if self.is_in_esc_menu == False:
-							if self.Country_Selection_Menu.is_flag_selection_menu_open == False:
-								self.clicked_button = self.Country_Selection_Menu.get_clicked_button(self.mouse_rect)
-								if self.clicked_button != 'none' and self.clicked_button != None:
-									if self.clicked_button == 'start_game':
-										self.is_in_country_selection_screen = False
-										self.is_in_esc_menu = False
-										self.is_in_game_screen = True
+							self.clicked_button = self.Country_Selection_Screen.get_clicked_button(self.mouse_rect)
+							if self.clicked_button != None:
+								if self.clicked_button == 'start_game':
+									self.is_in_country_selection_screen = False
+									self.is_in_esc_menu = False
+									self.is_in_game_screen = True
 
-										self.Game_Screen.PlayerCountry = self.Country_Selection_Flag_Selection_Menu.selected_country
-
-								elif self.Country_Selection_Menu.is_flag_national_spirits_selection_menu_open == False:
-									clicked_ideology = self.Country_Selection_Menu.get_clicked_ideology(self.mouse_rect)
-
-								else:
-									clicked_national_spirit = self.Country_Selection_National_Spirits_Selection_Menu.get_clicked_national_spirit(self.mouse_rect)
-									self.Country_Selection_Menu.selected_selectable_national_spirits = self.Country_Selection_National_Spirits_Selection_Menu.selected_national_spirits
-
-							else:
-								self.clicked_flag = self.Country_Selection_Flag_Selection_Menu.get_clicked_flag(self.mouse_rect)
-								if self.clicked_flag != None:
-									self.pygame.mixer.music.fadeout(200)
-									self.Country_Selection_Flag_Selection_Menu.flag_rects = []
-									self.Country_Selection_Menu.flag_size = None
-									self.Country_Selection_Menu.is_flag_selection_menu_open = False
-									self.Country_Selection_Menu.selected_flag_image = self.clicked_flag
-									self.Country_Selection_Menu.selected_selectable_national_spirits = []
-									self.Country_Selection_National_Spirits_Selection_Menu.selected_national_spirits = []
+									self.Game_Screen.CountryOverview.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
 						else:
 							self.clicked_button = self.ESC_Menu.get_clicked_button(self.mouse_rect, self.is_options_menu_open)
 							if self.clicked_button != 'none' and self.clicked_button != None:
@@ -1021,31 +995,15 @@ your shoulders.
 										with open(f'{self.exe_folder}\\settings.txt', 'w') as file:
 											json_dump(configs, file)									
 
-				self.mouse_rect = self.pygame.Rect(self.mouse_pos, (2, 2))
-				
-
+				self.mouse_rect = self.pygame.Rect(self.mouse_pos, (1, 1))
 				if self.is_in_esc_menu == False:
-					self.Country_Selection_Menu.mouse_pos = self.mouse_pos
-					self.Country_Selection_Flag_Selection_Menu.mouse_rect = self.mouse_rect
-					
-					self.hovered_button = self.Country_Selection_Menu.get_hovered_button(self.mouse_rect)
-					self.Country_Selection_Menu.hovered_button = self.hovered_button
-
-					if self.Country_Selection_Menu.is_flag_national_spirits_selection_menu_open == True:
-						self.hovered_selectable_national_spirit = self.Country_Selection_National_Spirits_Selection_Menu.get_hovered_national_spirit(self.mouse_rect)
-						self.Country_Selection_National_Spirits_Selection_Menu.hovered_national_spirit = self.hovered_selectable_national_spirit
-					else:
-						self.hovered_ideology_rect = self.Country_Selection_Menu.get_hovered_ideology_rect(self.mouse_rect)
-						self.Country_Selection_Menu.hovered_ideology_rect = self.hovered_ideology_rect
-
-					self.hovered_national_spirit = self.Country_Selection_Menu.get_hovered_national_spirit(self.mouse_rect)
-					self.Country_Selection_Menu.hovered_national_spirit = self.hovered_national_spirit
+					self.Country_Selection_Screen.get_hovered_button(self.mouse_rect)
 				else:
 					self.hovered_button = self.ESC_Menu.get_hovered_button(self.mouse_rect, self.is_options_menu_open)
 					self.ESC_Menu.hovered_button = self.hovered_button
 					self.Options_Menu.hovered_button = self.hovered_button
 
-				self.Country_Selection_Menu.music_player()
+				self.Country_Selection_Screen.music_player()
 
 				if self.main_menu_music_started == False or self.pygame.mixer.music.get_busy() == False:
 					self.main_menu_music_started = True
@@ -1063,7 +1021,7 @@ your shoulders.
 					if event.type == screen_update:
 						self.Screen_Manager.render_game_screen(self.Options_Menu.brightness_slider.value, self.is_in_esc_menu, self.is_options_menu_open)
 					if event.type == date_tick:
-						self.Game_Screen.date_tick()
+						self.Game_Screen.Clock_UI.date_tick()
 
 					if self.is_options_menu_open == True:
 						self.Options_Menu.interacting_with_UI_slides(event)
@@ -1074,28 +1032,28 @@ your shoulders.
 							self.is_options_menu_open = False
 
 						if keys[self.pygame.K_KP_PLUS]:
-							if self.Game_Screen.game_speed + 1 <= 5:
-								self.Game_Screen.game_speed += 1
+							if self.Game_Screen.Clock_UI.game_speed + 1 <= 5:
+								self.Game_Screen.Clock_UI.game_speed += 1
 						elif keys[self.pygame.K_KP_MINUS]:
-							if self.Game_Screen.game_speed - 1 >= 0:
-								self.Game_Screen.game_speed -= 1
+							if self.Game_Screen.Clock_UI.game_speed - 1 >= 0:
+								self.Game_Screen.Clock_UI.game_speed -= 1
 						elif keys[self.pygame.K_1]:
-							self.Game_Screen.game_speed = 1
+							self.Game_Screen.Clock_UI.game_speed = 1
 						elif keys[self.pygame.K_2]:
-							self.Game_Screen.game_speed = 2	
+							self.Game_Screen.Clock_UI.game_speed = 2	
 						elif keys[self.pygame.K_3]:
-							self.Game_Screen.game_speed = 3	
+							self.Game_Screen.Clock_UI.game_speed = 3	
 						elif keys[self.pygame.K_4]:
-							self.Game_Screen.game_speed = 4	
+							self.Game_Screen.Clock_UI.game_speed = 4	
 						elif keys[self.pygame.K_5]:
-							self.Game_Screen.game_speed = 5
+							self.Game_Screen.Clock_UI.game_speed = 5
 						elif keys[self.pygame.K_SPACE]:
-							self.Game_Screen.game_speed = 0 if self.Game_Screen.game_speed != 0 else 1
+							self.Game_Screen.Clock_UI.game_speed = 0 if self.Game_Screen.Clock_UI.game_speed != 0 else 1
 
 						if keys[self.pygame.K_9]:
-							self.Game_Screen.defcon_level += 1
+							self.Game_Screen.Clock_UI.defcon_level += 1
 						if keys[self.pygame.K_0]:																													
-							self.Game_Screen.defcon_level -= 1
+							self.Game_Screen.Clock_UI.defcon_level -= 1
 
 					self.mouse_pos = self.pygame.mouse.get_pos()
 
@@ -1103,7 +1061,7 @@ your shoulders.
 						pass
 					
 					elif event.type == self.pygame.MOUSEBUTTONDOWN:
-						self.mouse_rect = self.pygame.Rect(self.mouse_pos, (2, 2))
+						self.mouse_rect = self.pygame.Rect(self.mouse_pos, (1, 1))
 
 						if self.is_in_esc_menu == False:
 							self.clicked_button = self.Game_Screen.get_clicked_button(self.mouse_rect)
@@ -1153,12 +1111,12 @@ your shoulders.
 										with open(f'{self.exe_folder}\\settings.txt', 'w') as file:
 											json_dump(configs, file)									
 
-				self.mouse_rect = self.pygame.Rect(self.mouse_pos, (2, 2))
+				self.mouse_rect = self.pygame.Rect(self.mouse_pos, (1, 1))
 				
 
 				if self.is_in_esc_menu == False:
 					if self.Game_Screen.is_top_bar_country_viewer_open == True:
-						self.hovered_national_spirit = self.Game_Screen.get_hovered_national_spirit(self.mouse_rect)
+						self.hovered_national_spirit = self.Game_Screen.CountryOverview.get_hovered_national_spirit(self.mouse_rect)
 					else:
 						self.hovered_top_bar_button = self.Game_Screen.get_hovered_button(self.mouse_rect)
 				else:
@@ -1166,7 +1124,7 @@ your shoulders.
 					self.ESC_Menu.hovered_button = self.hovered_button
 					self.Options_Menu.hovered_button = self.hovered_button
 
-				self.Country_Selection_Menu.music_player()
+				self.Country_Selection_Screen.music_player()
 
 
 			clock.tick()

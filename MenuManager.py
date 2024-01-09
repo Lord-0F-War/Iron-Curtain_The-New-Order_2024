@@ -7,13 +7,13 @@ from pyvidplayer import Video
 
 
 class ESC_Menu:
-	def __init__(self, screen_width, screen_height, ESC_menu_background, generic_hover_over_button_menu_sound, generic_click_menu_sound, 
+	def __init__(self, screen_width, screen_height, ESC_menu_background, generic_hover_over_button_sound, generic_click_menu_sound, 
 			  hovered_green_button_menu_image, hovered_red_button_menu_image, Options_Menu) -> None:
 		
 		self.Options_Menu = Options_Menu 
 
 		self.hovered_green_button_menu_image, self.hovered_red_button_menu_image =  hovered_green_button_menu_image, hovered_red_button_menu_image
-		self.hover_over_button_sound, self.click_menu_sound = generic_hover_over_button_menu_sound, generic_click_menu_sound
+		self.hover_over_button_sound, self.click_menu_sound = generic_hover_over_button_sound, generic_click_menu_sound
 		self.hovered_button = 'none'
 		self.last_hovered_button = None		
 
@@ -106,13 +106,13 @@ class ESC_Menu:
 		else:
 			self.Options_Menu.draw(surface_alfa)			
 class Options_Menu:
-	def __init__(self, screen_width, screen_height, options_menu_background, generic_hover_over_button_menu_sound, generic_click_menu_sound, 
+	def __init__(self, screen_width, screen_height, options_menu_background, generic_hover_over_button_sound, generic_click_menu_sound, 
 			  hovered_green_button_menu_image, hovered_red_button_menu_image, Sounds_Manager, Main_Menu) -> None:
 		
 		self.Sounds_Manager = Sounds_Manager
 		self.Main_Menu = Main_Menu
 
-		self.hover_over_button_sound, self.click_menu_sound = generic_hover_over_button_menu_sound, generic_click_menu_sound
+		self.hover_over_button_sound, self.click_menu_sound = generic_hover_over_button_sound, generic_click_menu_sound
 		self.hovered_button = 'none'
 		self.last_hovered_button = None		
 
@@ -480,7 +480,6 @@ class Scenario_Selection_Menu:
 		back_button_y_offset = 673 * self.factor_y
 		self.back_button = GenericUtilitys.Button(self.menu_gui_middle_x + back_button_x_offset, self.menu_gui_middle_y + back_button_y_offset, back_button_width, back_button_height)	
 
-		self.hovered = False
 		self.hover_over_button_sound = hover_over_button_sound
 
 		self.click_menu_sound = generic_click_menu_sound
@@ -492,7 +491,7 @@ class Scenario_Selection_Menu:
 		elif self.back_button.rect.colliderect(mouse_rect):
 			return 'back'
 		else:
-			return 'none'
+			return None
 
 
 	def get_clicked_button(self, mouse_rect):
@@ -505,10 +504,12 @@ class Scenario_Selection_Menu:
 
 	def get_hovered_button(self, mouse_rect):
 		hovered_button = self.get_button_by_interaction(mouse_rect)
-		if self.hovered == False and self.hovered_button != 'none' or (self.hovered_button != self.last_hovered_button and self.hovered_button != 'none'):
-			self.hover_over_button_sound.play()
-			self.hovered = True	
-			self.last_hovered_button = self.hovered_button		
+		if self.hovered_button != None:
+			if self.hovered_button != self.last_hovered_button:
+				self.hover_over_button_sound.play()
+				self.last_hovered_button = self.hovered_button	
+		else:
+			self.last_hovered_button = self.hovered_button
 		return hovered_button
 
 
@@ -527,40 +528,129 @@ class Scenario_Selection_Menu:
 		else:
 			self.hover_over_button_sound.fadeout(200)	
 
-			self.hovered = False		
 
+class Country_Selection_Screen:
+	def __init__(self,
+				screen_width, screen_height, pygame, countries, generic_hover_over_button_sound, generic_click_button_sound, 
+				country_selection_background, country_info_display_background, political_compass_image, ideologies_CRT_overlay_effect,
+				hovered_start_game_button, hovered_select_national_spirit_button_image, hovered_select_country_button_image, 
+				hovered_laws_button_image, generic_leader, CRT_flag_overlay_effect, blocked_select_national_spirit_button, 
+				blocked_select_country_button, blocked_start_game_button, blocked_full_right_side, blocked_all_laws, national_spirits_background,
+				generic_national_spirits):	
+		
+		self.Country_Selection_Menu = Country_Selection_Menu(
+				screen_width, screen_height, pygame, generic_hover_over_button_sound, generic_click_button_sound, 
+				country_selection_background, political_compass_image, ideologies_CRT_overlay_effect,
+				hovered_start_game_button, hovered_select_national_spirit_button_image, hovered_select_country_button_image, 
+				hovered_laws_button_image, generic_leader, CRT_flag_overlay_effect, blocked_select_national_spirit_button, 
+				blocked_select_country_button, blocked_start_game_button, blocked_full_right_side, blocked_all_laws)		
+		
+		self.Flag_Selection_Menu = Flag_Selection_Menu(screen_width, screen_height, pygame, countries, 
+				generic_hover_over_button_sound, generic_click_button_sound, country_info_display_background)
+		
+		self.National_Spirits_Selection_Menu = National_Spirits_Selection_Menu(screen_width, screen_height,
+				national_spirits_background, generic_national_spirits, generic_hover_over_button_sound, generic_click_button_sound, political_compass_image)
+		
+		self.selected_flag_image = None
+
+	def get_clicked_button(self, mouse_rect):
+		if self.Country_Selection_Menu.is_flag_national_spirits_selection_menu_open == False:
+			clicked_button = self.Country_Selection_Menu.get_clicked_ideology(mouse_rect)
+			if clicked_button != None:
+				return clicked_button			
+		
+			clicked_button = self.Flag_Selection_Menu.get_clicked_button(mouse_rect)
+			if clicked_button != None:
+				pygame.mixer.music.fadeout(200)
+				self.Flag_Selection_Menu.flag_rects = []
+				self.Country_Selection_Menu.flag_size = None
+				self.Country_Selection_Menu.is_flag_selection_menu_open = False
+				self.selected_flag_image = clicked_button
+				self.Country_Selection_Menu.selected_flag_image = self.selected_flag_image
+				self.Country_Selection_Menu.selected_selectable_national_spirits = []
+				self.National_Spirits_Selection_Menu.selected_country = self.Flag_Selection_Menu.selected_country		
+				self.Country_Selection_Menu.selected_country = self.Flag_Selection_Menu.selected_country		
+				return clicked_button
+			
+		clicked_button = self.Country_Selection_Menu.get_clicked_button(mouse_rect)
+		if clicked_button != None and (self.Country_Selection_Menu.is_flag_national_spirits_selection_menu_open == False and clicked_button != 'select_country'):
+			return clicked_button		
+		
+		clicked_button = self.National_Spirits_Selection_Menu.get_clicked_national_spirit(mouse_rect)
+		if clicked_button != None:
+			return clicked_button	
+
+	def get_hovered_button(self, mouse_rect):	
+		if self.Country_Selection_Menu.is_flag_national_spirits_selection_menu_open == False:
+			hovered_button = self.Country_Selection_Menu.get_hovered_button(mouse_rect)
+			if hovered_button != None:
+				return hovered_button	
+
+			hovered_button = self.Country_Selection_Menu.get_hovered_ideology_rect(mouse_rect)
+			if hovered_button != None:
+				self.Country_Selection_Menu.hovered_ideology_rect = hovered_button
+				self.Flag_Selection_Menu.hovered_ideology_rect = hovered_button
+				return hovered_button	
+
+		hovered_button = self.Country_Selection_Menu.get_hovered_national_spirit(mouse_rect)
+		if hovered_button != None:
+			self.Country_Selection_Menu.hovered_national_spirit = hovered_button
+			return hovered_button
+		else:
+			self.Country_Selection_Menu.hovered_national_spirit = hovered_button				
+
+		hovered_button = self.National_Spirits_Selection_Menu.get_hovered_national_spirit(mouse_rect)
+		if hovered_button != None:
+			self.National_Spirits_Selection_Menu.hovered_national_spirit = hovered_button
+			return hovered_button
+		else:
+			self.National_Spirits_Selection_Menu.hovered_national_spirit = hovered_button
+	
+	def music_player(self):
+		if pygame.mixer.music.get_busy() == False and self.selected_flag_image != None:
+			self.main_menu_music_started = True
+			pygame.mixer.music.load(self.Flag_Selection_Menu.selected_country.country_music_playlist[0])
+			pygame.mixer.music.play()
+
+	def draw(self, screen, mouse_pos, mouse_rect):
+		self.Country_Selection_Menu.draw(screen)
+
+		if self.Country_Selection_Menu.hovered_ideology_rect != None:
+			self.Flag_Selection_Menu.draw_flag_selection_preview(screen, self.Country_Selection_Menu.last_hovered_ideology, mouse_pos)
+
+		if self.Country_Selection_Menu.is_flag_selection_menu_open == True:
+			self.Flag_Selection_Menu.draw(screen, self.Country_Selection_Menu.clicked_ideology, mouse_rect)
+
+		if self.Country_Selection_Menu.is_flag_national_spirits_selection_menu_open == True:
+			self.National_Spirits_Selection_Menu.draw(screen)									
 
 class Country_Selection_Menu:
-	def __init__(self, Country_Selection_Flag_Selection_Menu, Country_Selection_National_Spirits_Selection_Menu, screen_width, screen_height, pygame, 
-	      
-		  generic_hover_over_button_menu_sound, generic_click_menu_sound, country_selection_background, country_info_display_background, political_compass_image, 
-		  
-		  ideologies_CRT_overlay_effect, hovered_start_game_button, hovered_select_national_spirit_button_image, hovered_select_country_button_image, 
-		  
-		  hovered_laws_button_image, generic_leader, CRT_flag_overlay_effect, blocked_select_national_spirit_button, blocked_select_country_button, blocked_start_game_button, 
-		  
-		  blocked_full_right_side, blocked_all_laws):
+	def __init__(self, screen_width, screen_height, pygame, 
+		generic_hover_over_button_sound, generic_click_menu_sound, country_selection_background, political_compass_image, 
+		ideologies_CRT_overlay_effect, hovered_start_game_button, hovered_select_national_spirit_button_image, hovered_select_country_button_image, 
+		hovered_laws_button_image, generic_leader, CRT_flag_overlay_effect, blocked_select_national_spirit_button, blocked_select_country_button, blocked_start_game_button, 
+		blocked_full_right_side, blocked_all_laws):
 		
 		self.national_spirits_display_rects = []
 		self.hovered_national_spirit = None
 		self.last_hovered_national_spirit = None
+
+		self.selected_country = None
 
 		self.selected_selectable_national_spirits = []
 
 		self.mouse_pos = [0, 0]
 		
 		self.hovered_ideology_rect = None
-		self.last_overed_ideology = 'none'
+		self.last_hovered_ideology = None
 		
 		self.hovered_button = 'none'
 		self.last_hovered_button ='none'
 		
-		self.Country_Selection_Flag_Selection_Menu = Country_Selection_Flag_Selection_Menu
 		self.is_flag_selection_menu_open = False
 		self.selected_flag_image = None
 		self.flag_size = None
 
-		self.Country_Selection_National_Spirits_Selection_Menu = Country_Selection_National_Spirits_Selection_Menu
 		self.is_flag_national_spirits_selection_menu_open = False
 		
 		self.screen_width = screen_width 
@@ -577,9 +667,6 @@ class Country_Selection_Menu:
 		self.political_compass_image = pygame.transform.smoothscale_by(political_compass_image, (self.factor_x, self.factor_y))
 		self.ideologies_CRT_overlay_effect = pygame.transform.smoothscale_by(ideologies_CRT_overlay_effect, (self.factor_x, self.factor_y))
 		self.CRT_flag_overlay_effect = pygame.transform.smoothscale_by(CRT_flag_overlay_effect, (self.factor_x, self.factor_y))
-
-		self.country_info_display_background = pygame.transform.smoothscale_by(country_info_display_background, (self.factor_x, self.factor_y))
-		self.Country_Selection_Flag_Selection_Menu.country_info_display_background = self.country_info_display_background
 
 		self.hovered_start_game_button = pygame.transform.smoothscale_by(hovered_start_game_button, (self.factor_x, self.factor_y))
 		self.hovered_select_national_spirit_button_image = pygame.transform.smoothscale_by(hovered_select_national_spirit_button_image, (self.factor_x, self.factor_y))
@@ -599,9 +686,9 @@ class Country_Selection_Menu:
 		political_compass_image_rect = self.political_compass_image.get_rect()
 		political_compass_image_rect[0] += 15 * self.factor_x
 		political_compass_image_rect[1] += 31 * self.factor_y
-		self.Country_Selection_National_Spirits_Selection_Menu.background_position = [political_compass_image_rect[0]*0.65, political_compass_image_rect[1]*0.95]
+		#self.Country_Selection_National_Spirits_Selection_Menu.background_position = [political_compass_image_rect[0]*0.65, political_compass_image_rect[1]*0.95]
 
-		self.leader_portrait_position = (1053 * self.factor_x, 25 * self.factor_y)
+		self.leader_portrait_position = (1059 * self.factor_x, 29 * self.factor_y)
 		self.country_flag_position = (1209 * self.factor_x, 89 * self.factor_y)
 
 		self.country_name_position = (1212 * self.factor_x, 41 * self.factor_y)
@@ -714,8 +801,7 @@ class Country_Selection_Menu:
 		##		
 		####
 
-		self.hovered = False
-		self.hover_over_button_sound = generic_hover_over_button_menu_sound
+		self.hover_over_button_sound = generic_hover_over_button_sound
 
 		self.click_menu_sound = generic_click_menu_sound
 
@@ -771,15 +857,14 @@ class Country_Selection_Menu:
 		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
 		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
 
-
 	def get_button_by_interaction(self, mouse_rect):
-		if self.start_game_button.rect.colliderect(mouse_rect) and self.selected_flag_image != None:
+		if self.start_game_button.rect.colliderect(mouse_rect) and self.selected_country != None:
 			return 'start_game'
-		elif self.select_national_spirit_button.rect.colliderect(mouse_rect) and self.selected_flag_image != None:
+		elif self.select_national_spirit_button.rect.colliderect(mouse_rect) and self.selected_country != None:
 			return 'select_national_spirit'
 		elif self.select_flag_style_button.rect.colliderect(mouse_rect) and self.clicked_ideology != None:
-			return 'select_flag/style'				
-		elif self.selected_flag_image != None:
+			return 'select_country'				
+		elif self.selected_country != None:
 			
 			for number in range(9):
 				button = getattr(self, f'political_law_button_{str(number+1)}', None)
@@ -800,19 +885,17 @@ class Country_Selection_Menu:
 				button = getattr(self, f'social_law_button_{str(number+1)}', None)
 				if button.rect.colliderect(mouse_rect):
 					return f'social_law_button_{str(number+1)}'						
-			
 
-			return 'none'
-
+			return None
 
 	def get_clicked_button(self, mouse_rect):
 		if self.is_flag_selection_menu_open == False:
 			clicked_button = self.get_button_by_interaction(mouse_rect)
-			if clicked_button != 'none' and clicked_button != None:
+			if clicked_button != None:
 				self.hover_over_button_sound.fadeout(50)
 				self.click_menu_sound.play()
 
-				if clicked_button == 'select_flag/style' and self.is_flag_national_spirits_selection_menu_open == False:
+				if clicked_button == 'select_country' and self.is_flag_national_spirits_selection_menu_open == False:
 					self.is_flag_selection_menu_open = True
 
 				if clicked_button == 'select_national_spirit' and self.is_flag_selection_menu_open == False:
@@ -826,29 +909,27 @@ class Country_Selection_Menu:
 				if rect.colliderect(mouse_rect):
 					self.clicked_ideology = ideology
 					self.clicked_ideology_rect = rect
-					self.selected_flag_image = None
-					self.Country_Selection_Flag_Selection_Menu.selected_leader_image = self.generic_leader_image
-					self.Country_Selection_Flag_Selection_Menu.selected_country_name = None
-
+					self.selected_country = None
 					self.hover_over_button_sound.fadeout(50)
 					self.click_menu_sound.play()					
 					return self.clicked_ideology
-
 	
 	def get_hovered_button(self, mouse_rect):
 		if self.is_flag_selection_menu_open == False:
-			hovered_button = self.get_button_by_interaction(mouse_rect)
-			if self.hovered == False and self.hovered_button != 'none' or (self.hovered_button != self.last_hovered_button and self.hovered_button != 'none'):
-				self.hover_over_button_sound.play()
-				self.hovered = True	
+			self.hovered_button = self.get_button_by_interaction(mouse_rect)
+			if self.hovered_button != None:
+				if self.hovered_button != self.last_hovered_button:
+					self.hover_over_button_sound.play()
+					self.last_hovered_button = self.hovered_button
+			else:
 				self.last_hovered_button = self.hovered_button
-			return hovered_button
+			return self.hovered_button
 	def get_hovered_ideology_rect(self, mouse_rect):
 		if self.is_flag_selection_menu_open == False:
 			for ideology, rect in self.ideology_rects.items():
 				rect = pygame.Rect(rect[0]*self.factor_x + 15 * self.factor_x, rect[1]*self.factor_y + 31 * self.factor_y, rect[2]*self.factor_x, rect[3]*self.factor_y)
-				if rect.colliderect(mouse_rect) and ideology != self.last_overed_ideology:
-					self.last_overed_ideology = ideology
+				if rect.colliderect(mouse_rect) and ideology != self.last_hovered_ideology:
+					self.last_hovered_ideology = ideology
 					self.hover_over_button_sound.play()
 					return rect
 				elif rect.colliderect(mouse_rect):
@@ -858,38 +939,28 @@ class Country_Selection_Menu:
 	def get_hovered_national_spirit(self, mouse_rect):
 		if self.is_flag_selection_menu_open == False:
 			for rect, national_spirit in self.national_spirits_display_rects:
-				if rect.colliderect(mouse_rect) and national_spirit != self.last_hovered_national_spirit:
-					self.last_hovered_national_spirit = national_spirit
-					self.hover_over_button_sound.play()
+				if rect.colliderect(mouse_rect):
+					if national_spirit != self.last_hovered_national_spirit:
+						self.last_hovered_national_spirit = national_spirit
+						self.hover_over_button_sound.play()
 					return national_spirit
-				elif rect.colliderect(mouse_rect):
-					return national_spirit
-			self.last_hovered_national_spirit = None
+			return None
 
-
-	def music_player(self):
-		if pygame.mixer.music.get_busy() == False and self.selected_flag_image != None:
-			self.main_menu_music_started = True
-			pygame.mixer.music.load(self.Country_Selection_Flag_Selection_Menu.selected_country.country_music_playlist[0])
-			pygame.mixer.music.play()
-		
 
 	def draw(self, screen):
-		self.Country_Selection_National_Spirits_Selection_Menu.selected_country = self.Country_Selection_Flag_Selection_Menu.selected_country
-
 		screen.blit(self.political_compass_image, (15 * self.factor_x, 31 * self.factor_y))
 		
 		# Leader Portrait
-		if self.Country_Selection_Flag_Selection_Menu.selected_country != None and self.is_flag_selection_menu_open == False and self.selected_flag_image != None:
-			self.selected_leader_image = self.Country_Selection_Flag_Selection_Menu.selected_country.country_leader_image
+		if self.selected_country != None and self.is_flag_selection_menu_open == False:
+			self.selected_leader_image = self.selected_country.country_leader_image
 			screen.blit(self.selected_leader_image, self.leader_portrait_position)
 		else:
 			screen.blit(self.generic_leader_image, self.leader_portrait_position)
 		
 		# Flag
-		if self.selected_flag_image != None:
+		if self.selected_country != None:
 			if self.flag_size == None:
-				self.selected_flag_image = pygame.transform.scale(self.selected_flag_image, (208, 126))
+				self.selected_flag_image = pygame.transform.scale(self.selected_country.country_flag_image, (208, 126))
 				self.selected_flag_image = pygame.transform.smoothscale_by(self.selected_flag_image, (self.factor_x, self.factor_y))
 				self.flag_size = self.selected_flag_image.get_size()
 			screen.blit(self.selected_flag_image, self.country_flag_position)	
@@ -901,11 +972,11 @@ class Country_Selection_Menu:
 
 		# Country Name | Leader Name | National Spirits
 		if self.is_flag_selection_menu_open == False and self.selected_flag_image != None:
-			if  self.Country_Selection_Flag_Selection_Menu.selected_country != None:
-				country_name_text = self.medium_scalable_font.render(self.Country_Selection_Flag_Selection_Menu.selected_country.country_name, True, (255, 255, 255))
+			if  self.selected_country != None:
+				country_name_text = self.medium_scalable_font.render(self.selected_country.country_name, True, (255, 255, 255))
 				screen.blit(country_name_text, self.country_name_position)	
 
-				leader_name = self.Country_Selection_Flag_Selection_Menu.selected_country.country_leader_name
+				leader_name = self.selected_country.country_leader_name
 				leader_name_text = self.big_scalable_font.render(leader_name, True, (255, 255, 255))
 
 				if leader_name_text.get_width() > 350 * self.factor_x:
@@ -917,8 +988,8 @@ class Country_Selection_Menu:
 				x_index = 0
 				y_index = 0
 	
-				if len(self.Country_Selection_Flag_Selection_Menu.selected_country.country_national_spirits) > 10:
-					for national_spirit in self.Country_Selection_Flag_Selection_Menu.selected_country.country_national_spirits:
+				if len(self.selected_country.country_national_spirits) > 10:
+					for national_spirit in self.selected_country.country_national_spirits:
 						scaled_national_spirit_icon = pygame.transform.scale_by(national_spirit.national_spirit_icon, 0.5)
 
 						x_offset = scaled_national_spirit_icon.get_width() * 1.23
@@ -936,7 +1007,7 @@ class Country_Selection_Menu:
 							x_index = 0
 							y_index += 1							
 				else:	
-					for national_spirit in self.Country_Selection_Flag_Selection_Menu.selected_country.country_national_spirits:	
+					for national_spirit in self.selected_country.country_national_spirits:
 						x_offset = national_spirit.national_spirit_icon.get_width() * 1.27
 						y_offset = national_spirit.national_spirit_icon.get_height()					
 						
@@ -954,7 +1025,7 @@ class Country_Selection_Menu:
 
 
 				# CULTURE
-				culture_national_spirit = self.Country_Selection_Flag_Selection_Menu.selected_country.country_culture
+				culture_national_spirit = self.selected_country.country_culture
 				screen.blit(culture_national_spirit.national_spirit_icon, (1840 * self.factor_x, 104 * self.factor_y))
 				
 				culture_national_spirit.rect = self.pygame.Rect(1840 * self.factor_x, 104 * self.factor_y,
@@ -963,7 +1034,7 @@ class Country_Selection_Menu:
 				self.national_spirits_display_rects.append([culture_national_spirit.rect, culture_national_spirit])						
 				
 				# RELIGION	
-				religion_national_spirit = self.Country_Selection_Flag_Selection_Menu.selected_country.country_religion
+				religion_national_spirit = self.selected_country.country_religion
 				screen.blit(religion_national_spirit.national_spirit_icon, (1840 * self.factor_x, 105 * self.factor_y + religion_national_spirit.national_spirit_icon.get_height()))
 				
 				religion_national_spirit.rect = self.pygame.Rect(1840 * self.factor_x, 105 * self.factor_y + religion_national_spirit.national_spirit_icon.get_height(),
@@ -988,7 +1059,7 @@ class Country_Selection_Menu:
 			screen.blit(self.blocked_select_national_spirit_button, (self.select_national_spirit_button_x_offset, self.select_national_spirit_button_y_offset))
 			screen.blit(self.blocked_start_game_button, (self.start_game_button_x_offset, self.start_game_button_y_offset))				
 			screen.blit(self.blocked_full_right_side, (self.screen_width - self.blocked_full_right_side.get_width(), 0))		
-		elif self.selected_flag_image == None:
+		elif self.selected_country == None:
 			screen.blit(self.blocked_select_national_spirit_button, (self.select_national_spirit_button_x_offset, self.select_national_spirit_button_y_offset))
 			screen.blit(self.blocked_start_game_button, (self.start_game_button_x_offset, self.start_game_button_y_offset))
 			screen.blit(self.blocked_all_laws, (self.screen_width - self.blocked_all_laws.get_width(), self.screen_height - self.blocked_all_laws.get_height()))
@@ -997,16 +1068,9 @@ class Country_Selection_Menu:
 		if self.clicked_ideology_rect != None:
 			pygame.draw.rect(screen, (255,255,255), self.clicked_ideology_rect, 5)
 
-		if self.hovered_ideology_rect != None:
-			pygame.draw.rect(screen, (255,255,255), self.hovered_ideology_rect, 2)
-			self.Country_Selection_Flag_Selection_Menu.draw_flag_selection_preview(screen, self.last_overed_ideology, self.mouse_pos)	
-
 		screen.blit(self.ideologies_CRT_overlay_effect, (15 * self.factor_x, 31 * self.factor_y))			
-			
-		if self.is_flag_selection_menu_open == True: # Draw Flag Selection Menu
-			self.Country_Selection_Flag_Selection_Menu.draw(screen, self.clicked_ideology)	
 
-		if self.hovered_button != 'none': # Buttons Selection 
+		if self.hovered_button != None: # Buttons Selection 
 			
 			if self.hovered_button == 'start_game':
 				screen.blit(self.hovered_start_game_button, (self.start_game_button_x_offset, self.start_game_button_y_offset))
@@ -1014,7 +1078,7 @@ class Country_Selection_Menu:
 			elif self.hovered_button == 'select_national_spirit':
 				screen.blit(self.hovered_select_national_spirit_button_image, (self.select_national_spirit_button_x_offset, self.select_national_spirit_button_y_offset))
 			
-			elif self.hovered_button == 'select_flag/style':
+			elif self.hovered_button == 'select_country':
 				screen.blit(self.hovered_select_country_button_image, (self.select_flag_style_button_x_offset, self.select_flag_style_button_y_offset))				
 
 			else:
@@ -1039,17 +1103,13 @@ class Country_Selection_Menu:
 						screen.blit(self.hovered_laws_button_image, (button.rect[:2]))															
 		else: # Fade Audio
 			self.hover_over_button_sound.fadeout(200)	
-			self.hovered = False	
-
-		if self.is_flag_national_spirits_selection_menu_open == True:
-			self.Country_Selection_National_Spirits_Selection_Menu.draw(screen)
-
-class Country_Selection_Flag_Selection_Menu:
-	def __init__(self, screen_width, screen_height, countries, generic_hover_over_button_menu_sound, generic_click_menu_sound) -> None:
+class Flag_Selection_Menu:
+	def __init__(self, screen_width, screen_height, pygame, countries, generic_hover_over_button_sound, generic_click_menu_sound, country_info_display_background) -> None:
 		self.countries = countries
 
 		self.selected_country = None
 
+		self.pygame = pygame
 		
 		self.screen_width = screen_width
 		self.screen_height = screen_height
@@ -1058,11 +1118,10 @@ class Country_Selection_Flag_Selection_Menu:
 		self.factor_x = screen_width / reference_screen_size_x
 		self.factor_y = screen_height / reference_screen_size_y		
 
-		self.mouse_rect = None
-
 		self.flag_rects = []
+		self.hovered_ideology_rect = None
 
-		self.country_info_display_background = None
+		self.country_info_display_background = pygame.transform.smoothscale_by(country_info_display_background, (self.factor_x, self.factor_y))
 
 		self.last_selected_country_name = None
 		self.selected_country_name = None
@@ -1072,21 +1131,23 @@ class Country_Selection_Flag_Selection_Menu:
 		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))
 
 
-		self.hover_over_button_sound, self.click_sound = generic_hover_over_button_menu_sound, generic_click_menu_sound
+		self.hover_over_button_sound, self.click_sound = generic_hover_over_button_sound, generic_click_menu_sound
 
-
-	def get_clicked_flag(self, mouse_rect):
-		self.hover_over_button_sound.fadeout(50)
-		self.click_sound.play()		
+	def get_button_by_interaction(self, mouse_rect):
 		for rect in self.flag_rects:
 			if rect[0].colliderect(mouse_rect):
 				self.selected_country = rect[3]
-				return rect[1]
+				self.hover_over_button_sound.fadeout(50)
+				self.click_sound.play()	
+				return rect[1]	
 		else:
-			return None			
+			return None
 
+	def get_clicked_button(self, mouse_rect):
+		clicked_button = self.get_button_by_interaction(mouse_rect)
+		return clicked_button
 
-	def draw(self, screen, selected_ideology):
+	def draw(self, screen, selected_ideology, mouse_rect):
 		pygame.draw.rect(screen, (6,15,20), (self.screen_width * 0.05, self.screen_height*0.51, self.screen_width * 0.9, self.screen_height*0.48))
 		pygame.draw.rect(screen, (43,219,211), (self.screen_width * 0.05, self.screen_height*0.51, self.screen_width * 0.9, self.screen_height*0.48), 2)
 		
@@ -1118,7 +1179,7 @@ class Country_Selection_Flag_Selection_Menu:
 			screen.blit(self.country_info_display_background, (self.screen_width/2 - self.country_info_display_background.get_width()/2, self.screen_height - self.country_info_display_background.get_height() * 1.05))
 
 			for rect in self.flag_rects:
-				if rect[0].colliderect(self.mouse_rect) and self.country_info_display_background != None:
+				if rect[0].colliderect(mouse_rect) and self.country_info_display_background != None:
 					pygame.draw.rect(screen, (255,40,30), rect[0], 4)
 					
 					self.selected_country_name = countries_with_selected_ideology[rect[2]].country_name
@@ -1176,10 +1237,9 @@ class Country_Selection_Flag_Selection_Menu:
 					text_position = (920 * self.factor_x + country_info_display_background_position[0], 65 * self.factor_y + country_info_display_background_position[1])
 					screen.blit(brief_history_name_text, text_position)		
 
-
-					screen.blit(countries_with_selected_ideology[rect[2]].country_leader_image, (self.country_info_display_background.get_width() * 0.2421 + self.screen_width/2 - self.country_info_display_background.get_width()/2, self.screen_height - self.country_info_display_background.get_height() * 1.05 + self.country_info_display_background.get_height() * 0.1516))					
-
 					self.selected_leader_image = countries_with_selected_ideology[rect[2]].country_leader_image
+					self.selected_leader_image = self.pygame.transform.smoothscale(self.selected_leader_image, (155 * self.factor_x, 212 * self.factor_y))
+					screen.blit(self.selected_leader_image, (self.country_info_display_background.get_width() * 0.2421 + self.screen_width/2 - self.country_info_display_background.get_width()/2, self.screen_height - self.country_info_display_background.get_height() * 1.05 + self.country_info_display_background.get_height() * 0.1516))					
 
 					national_spirits_position = [country_info_display_background_position[0] + 541*self.factor_x, country_info_display_background_position[1] + 63*self.factor_y]
 					for i, national_spirit in enumerate(countries_with_selected_ideology[rect[2]].country_national_spirits):
@@ -1192,10 +1252,10 @@ class Country_Selection_Flag_Selection_Menu:
 					if self.selected_country_name != self.last_selected_country_name:
 						self.hover_over_button_sound.play()
 						self.last_selected_country_name = self.selected_country_name
-					
 
 	def draw_flag_selection_preview(self, screen, hovered_ideology, mouse_pos):
-		if hovered_ideology != None:			
+		if hovered_ideology != None:
+			pygame.draw.rect(screen, (255,255,255), self.hovered_ideology_rect, 2)							
 			self.flag_rects = []
 
 			countries_with_selected_ideology = []
@@ -1224,9 +1284,8 @@ class Country_Selection_Flag_Selection_Menu:
 				pygame.draw.rect(screen, (43,219,211), (x_position - flag_width/10, y_position - flag.get_height()/10, flag_width + flag_width/5, flag.get_height() + flag.get_height()/5), 2)				
 
 				screen.blit(flag, flag_position)
-
-class Country_Selection_National_Spirits_Selection_Menu:
-	def __init__(self, screen_width, screen_height, national_spirits_background, selectable_national_spirits_list, hover_over_button_sound, click_sound) -> None:
+class National_Spirits_Selection_Menu:
+	def __init__(self, screen_width, screen_height, national_spirits_background, selectable_national_spirits_list, hover_over_button_sound, click_sound, political_compass_image) -> None:
 		self.screen_width = screen_width
 		self.screen_height = screen_height
 		reference_screen_size_x = 1920
@@ -1234,7 +1293,12 @@ class Country_Selection_National_Spirits_Selection_Menu:
 		self.factor_x = screen_width / reference_screen_size_x
 		self.factor_y = screen_height / reference_screen_size_y	
 
-		self.background_position = None
+		self.political_compass_image = political_compass_image
+		political_compass_image_rect = self.political_compass_image.get_rect()
+		political_compass_image_rect[0] += 15 * self.factor_x
+		political_compass_image_rect[1] += 31 * self.factor_y
+		self.background_position = [political_compass_image_rect[0]*0.65, political_compass_image_rect[1]*0.95]
+
 		self.national_spirits_background = national_spirits_background
 		
 		self.selectable_national_spirits_list = selectable_national_spirits_list
@@ -1248,6 +1312,7 @@ class Country_Selection_National_Spirits_Selection_Menu:
 		self.hover_over_button_sound = hover_over_button_sound
 		self.click_sound = click_sound
 
+
 		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(32 * self.factor_y))
 		self.normal_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(26.6 * self.factor_y))
 		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(20 * self.factor_y))
@@ -1256,7 +1321,6 @@ class Country_Selection_National_Spirits_Selection_Menu:
 		self.color_cache = {}
 		self.color_timer = 0
 
-
 	def get_hovered_national_spirit(self, mouse_rect):
 		for rect, national_spirit in self.selectable_national_spirits_rects:
 			rect = pygame.Rect(rect)
@@ -1264,12 +1328,11 @@ class Country_Selection_National_Spirits_Selection_Menu:
 				if national_spirit != self.last_hovered_national_spirit:
 					self.last_hovered_national_spirit = national_spirit
 					self.hover_over_button_sound.play()
-
 					return national_spirit
 				else:
 					return national_spirit
-		self.last_hovered_national_spirit = None
-
+		self.last_hovered_national_spirit = None		
+		return None
 
 	def get_clicked_national_spirit(self, mouse_rect):
 		self.hover_over_button_sound.fadeout(50)
@@ -1290,7 +1353,6 @@ class Country_Selection_National_Spirits_Selection_Menu:
 				return national_spirit
 		else:
 			return None
-		
 
 	def draw(self, screen):
 		screen.blit(self.national_spirits_background, self.background_position)
@@ -1360,40 +1422,86 @@ class Country_Selection_National_Spirits_Selection_Menu:
 
 
 class Game_Screen:
-	def __init__(self, screen_width, screen_height, pygame, generic_hover_over_button_menu_sound, click_main_menu_sound, top_bar_right_background, top_bar_game_speed_indicator,
+	def __init__(self, screen_width, screen_height, pygame, generic_hover_over_button_sound, generic_click_button_sound, top_bar_right_background, top_bar_game_speed_indicator,
 			top_bar_defcon_level, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over, country_overview, popularity_circle_overlay):
-		self.screen_width = screen_width 
-		self.screen_height = screen_height
-
-		self.generic_hover_over_button_menu_sound, self.click_main_menu_sound = generic_hover_over_button_menu_sound, click_main_menu_sound
 
 		reference_screen_size_x = 1920
 		reference_screen_size_y = 1080
 		self.factor_x = screen_width / reference_screen_size_x
 		self.factor_y = screen_height / reference_screen_size_y
 		self.factor = self.factor_x * self.factor_y
+		
+		self.generic_hover_over_button_sound, self.generic_click_button_sound = generic_hover_over_button_sound, generic_click_button_sound
 
+		self.last_hovered_button = None
+		self.is_top_bar_country_viewer_open = False	
+
+
+		self.CountryOverview = CountryOverview(self.factor_x, self.factor_y, pygame, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over,
+			country_overview, popularity_circle_overlay, generic_hover_over_button_sound)
+		
+		self.Clock_UI = Clock_UI(self.factor_x, self.factor_y, screen_width, screen_height, pygame, top_bar_right_background, top_bar_game_speed_indicator, top_bar_defcon_level)
+	
+	def get_button_by_interaction(self, mouse_rect):
+		button = self.CountryOverview.get_button_by_interaction(mouse_rect)
+		if button != None:
+			return button
+
+	def get_clicked_button(self, mouse_rect):
+		clicked_button = self.get_button_by_interaction(mouse_rect)
+		
+		if clicked_button == "country_viewer":
+			self.is_top_bar_country_viewer_open = not self.is_top_bar_country_viewer_open
+			self.generic_hover_over_button_sound.fadeout(100)
+			self.generic_click_button_sound.play()
+			self.CountryOverview.is_top_bar_country_viewer_open = not self.CountryOverview.is_top_bar_country_viewer_open
+			return clicked_button	
+
+	def get_hovered_button(self, mouse_rect):
+		hovered_button = self.get_button_by_interaction(mouse_rect)
+		if hovered_button == "country_viewer":
+			if self.last_hovered_button != "country_viewer":
+				self.generic_hover_over_button_sound.play()			
+			self.CountryOverview.highlight_country_viewer_button = True
+			self.last_hovered_button = "country_viewer"
+			return "country_viewer"
+		else:
+			self.CountryOverview.highlight_country_viewer_button = False
+			self.last_hovered_button = None
+			self.generic_hover_over_button_sound.fadeout(100)	
+
+	def draw(self, screen):
+
+		self.CountryOverview.draw(screen)
+		self.Clock_UI.draw(screen)
+
+class CountryOverview:
+	def __init__(self, factor_x, factor_y, pygame, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over, country_overview, popularity_circle_overlay,
+			generic_hover_over_button_sound):
+		
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.pygame = pygame
 		self.PlayerCountry = None
-		self.highlight_country_viewer_button = False
-		self.is_top_bar_country_viewer_open = False
-
-		self.top_bar_right_background = pygame.transform.smoothscale_by(top_bar_right_background, (self.factor_x, self.factor_y))
-		self.top_bar_game_speed_indicator = pygame.transform.smoothscale_by(top_bar_game_speed_indicator, (self.factor_x, self.factor_y))
-		self.top_bar_defcon_level = pygame.transform.smoothscale_by(top_bar_defcon_level, (self.factor_x, self.factor_y))
 
 		self.top_bar_left_background = pygame.transform.smoothscale_by(top_bar_left_background, (self.factor_x, self.factor_y))
 		self.top_bar_flag_overlay = pygame.transform.smoothscale_by(top_bar_flag_overlay, (self.factor_x, self.factor_y))
 		self.top_bar_flag_overlay_hovering_over	= pygame.transform.smoothscale_by(top_bar_flag_overlay_hovering_over, (self.factor_x, self.factor_y))	
+
+		self.highlight_country_viewer_button = False
+		self.is_top_bar_country_viewer_open = False
 
 		self.country_overview = pygame.transform.smoothscale_by(country_overview, (self.factor_x, self.factor_y))
 		self.popularity_circle_overlay = pygame.transform.smoothscale_by(popularity_circle_overlay, (self.factor_x, self.factor_y))
 		self.country_overview_position = (0, 79 * self.factor_y)
 		self.national_spirits_display_rects = []
 		self.hovered_national_spirit = None	
-		self.last_hovered_national_spirit = None
+		self.last_hovered_national_spirit = None	
 
+		self.last_hovered_button = None
 
-		# COLORS
+		self.generic_hover_over_button_sound = generic_hover_over_button_sound
+
+		# COLORS ------------#	
 
 		# POLITICS
 		red_base = (227, 52, 47)
@@ -1449,14 +1557,9 @@ class Game_Screen:
 
 		self.religion_numbers = [11.11, 11.11, 11.11, 11.11, 11.11, 11.11, 11.11, 11.11, 11.11]					
 
-		# COLORS		
-
-		self.last_hovered_button = None
+		# COLORS ------------#	
 
 		self.top_bar_country_viewer_button = GenericUtilitys.Button(2 * self.factor_x, 2 * self.factor_y, 123 * self.factor_x, 74 * self.factor_y)
-		self.is_top_bar_country_viewer_open = False		
-
-		self.pygame = pygame
 
 		self.info_height = 9 * self.factor_y
 
@@ -1466,55 +1569,9 @@ class Game_Screen:
 		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
 		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))	
 
-		self.game_speed = 1	
-		self.defcon_level = 5
-
-		self.current_year = 1970
-		self.current_month = 1
-		self.current_day = 1
-		self.current_hour = 1
-		self.time_buffer = 0
-
-		self.days_in_each_mounth = {
-			'1': 31,
-			'2': 28,
-			'3': 31,
-			'4': 30,
-			'5': 31,
-			'6': 30,
-			'7': 31,
-			'8': 31,
-			'9': 30,
-			'10': 31,
-			'11': 30,
-			'12': 31,
-		}						
-
 	def get_button_by_interaction(self, mouse_rect):
 		if self.top_bar_country_viewer_button.rect.colliderect(mouse_rect):
-			return "country_viewer"
-
-	def get_clicked_button(self, mouse_rect):
-		clicked_button = self.get_button_by_interaction(mouse_rect)
-		if clicked_button == "country_viewer":
-			self.is_top_bar_country_viewer_open = not self.is_top_bar_country_viewer_open
-			self.generic_hover_over_button_menu_sound.fadeout(100)
-			self.click_main_menu_sound.play()
-			return clicked_button		
-
-	def get_hovered_button(self, mouse_rect):
-		hovered_button = self.get_button_by_interaction(mouse_rect)
-		if hovered_button == "country_viewer":
-			if self.last_hovered_button != "country_viewer":
-				self.generic_hover_over_button_menu_sound.play()			
-			self.highlight_country_viewer_button = True
-			self.last_hovered_button = "country_viewer"
-			return "country_viewer"
-		else:
-			self.highlight_country_viewer_button = False
-			self.last_hovered_button = None
-			self.generic_hover_over_button_menu_sound.fadeout(100)	
-
+			return "country_viewer"	
 
 	def get_hovered_national_spirit(self, mouse_rect):
 		for rect, national_spirit in self.national_spirits_display_rects:
@@ -1522,40 +1579,10 @@ class Game_Screen:
 				self.hovered_national_spirit = national_spirit
 				if national_spirit != self.last_hovered_national_spirit:
 					self.last_hovered_national_spirit = national_spirit
-					self.generic_hover_over_button_menu_sound.play()
+					self.generic_hover_over_button_sound.play()
 				return national_spirit
 		self.last_hovered_national_spirit = None
-		self.hovered_national_spirit = None
-
-
-
-	def date_tick(self):
-		if self.game_speed == 0:
-			self.time_buffer += 0
-		elif self.game_speed == 1:
-			self.time_buffer += 0.1
-		elif self.game_speed == 2:
-			self.time_buffer += 0.8
-		elif self.game_speed == 3:
-			self.time_buffer += 2.4
-		elif self.game_speed == 4:
-			self.time_buffer += 5.6
-		elif self.game_speed == 5:
-			self.time_buffer += 10.4															
-
-		if self.time_buffer >= 10.4:
-			self.time_buffer = 0
-			self.current_hour += 1
-			if self.current_hour == 25:
-				self.current_hour = 1
-				self.current_day += 1
-				if self.current_day == self.days_in_each_mounth[str(self.current_month)] + 1:
-					self.current_day = 1
-					self.current_month += 1
-					if self.current_month == 13:
-						self.current_month = 1
-						self.current_year += 1
-
+		self.hovered_national_spirit = None	
 
 	def draw(self, screen):
 		screen.blit(self.top_bar_left_background, (0 * self.factor_x, 0 * self.factor_y))
@@ -1660,48 +1687,7 @@ class Game_Screen:
 		
 		text_expenses = self.small_scalable_font.render(formatted_money, True, (255, 255, 255))
 		text_expenses_position = (748 * self.factor_x, 59 * self.factor_y)	
-		screen.blit(text_expenses, text_expenses_position)
-
-
-		screen.blit(self.top_bar_right_background, (self.screen_width - self.top_bar_right_background.get_width(), 0))
-
-		# SPEED
-		speed_indicator_alignment_offset = 8 * self.factor_x
-		speed_indicator_sprite_width = 43 * self.factor_x * self.game_speed
-
-		top_bar_game_speed_indicator_surface = self.pygame.Surface((speed_indicator_sprite_width, self.top_bar_game_speed_indicator.get_height()), self.pygame.SRCALPHA)	
-		top_bar_game_speed_indicator_surface.blit(self.top_bar_game_speed_indicator, (0, 0), self.pygame.Rect(0, 0, speed_indicator_sprite_width, self.top_bar_game_speed_indicator.get_height()))		
-
-		screen.blit(top_bar_game_speed_indicator_surface, (self.screen_width - self.top_bar_right_background.get_width() + 62 * self.factor_x + speed_indicator_alignment_offset, 42 * self.factor_y))	
-
-		# DEFCON
-		top_bar_defcon_level_height = (18.4 * (self.defcon_level - 1) * self.factor_y)
-
-		top_bar_defcon_level_surface = self.pygame.Surface((self.top_bar_defcon_level.get_width(), 92 * self.factor_y), self.pygame.SRCALPHA)	
-		top_bar_defcon_level_surface.blit(self.top_bar_defcon_level, (0, top_bar_defcon_level_height), self.pygame.Rect(0, top_bar_defcon_level_height, self.top_bar_defcon_level.get_width(), 18.4 * self.factor_y))		
-
-		screen.blit(top_bar_defcon_level_surface, (self.screen_width - self.top_bar_right_background.get_width() + 300 * self.factor_x, 9 * self.factor_y))	
-
-		# DATE
-		date_font_color = (255,255,255) if self.game_speed != 0 else (255,40,40)	
-
-		hour_date_text = f"{self.current_hour:02d}H"
-		day_date_text = f"{self.current_day:02d}D"
-		month_date_text = f"{self.current_month:02d}M"
-		year_date_text = f"{self.current_year:04d}Y"
-
-		hour_date_render = self.medium_scalable_font.render(hour_date_text, True, date_font_color)
-		day_date_render = self.medium_scalable_font.render(day_date_text, True, date_font_color)
-		month_date_render = self.medium_scalable_font.render(month_date_text, True, date_font_color)
-		year_date_render = self.medium_scalable_font.render(year_date_text, True, date_font_color)
-
-		date_x_position = self.screen_width - 312 * self.factor_x
-		date_y_position = 17 * self.factor_y
-
-		screen.blit(hour_date_render, (date_x_position + (-2 + max(0, 38 - hour_date_render.get_width()))* self.factor_x, date_y_position))
-		screen.blit(day_date_render, (date_x_position + (48 + max(0, 38 * self.factor_x - day_date_render.get_width()))* self.factor_x, date_y_position))
-		screen.blit(month_date_render, (date_x_position + (86 + max(0, 41 * self.factor_x - month_date_render.get_width()))* self.factor_x, date_y_position))
-		screen.blit(year_date_render, (date_x_position + (135 + max(0, 49 * self.factor_x - year_date_render.get_width()))* self.factor_x, date_y_position))
+		screen.blit(text_expenses, text_expenses_position)		
 
 		if self.is_top_bar_country_viewer_open == True:
 			screen.blit(self.PlayerCountry.country_leader_image, (12 * self.factor_x, 27 * self.factor_y + self.country_overview_position[1]))
@@ -1840,6 +1826,125 @@ class Game_Screen:
 
 		# country_viewer_open
 		else:
-			pass									
+			pass	
+class Clock_UI():
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, top_bar_right_background, top_bar_game_speed_indicator, top_bar_defcon_level):
+
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.top_bar_right_background = pygame.transform.smoothscale_by(top_bar_right_background, (self.factor_x, self.factor_y))
+		self.top_bar_game_speed_indicator = pygame.transform.smoothscale_by(top_bar_game_speed_indicator, (self.factor_x, self.factor_y))
+		self.top_bar_defcon_level = pygame.transform.smoothscale_by(top_bar_defcon_level, (self.factor_x, self.factor_y))	
+
+
+		self.game_speed = 1	
+		self.defcon_level = 5
+
+		self.current_year = 1970
+		self.current_month = 1
+		self.current_day = 1
+		self.current_hour = 1
+		self.time_buffer = 0
+
+		self.days_in_each_mounth = {
+			'1': 31,
+			'2': 28,
+			'3': 31,
+			'4': 30,
+			'5': 31,
+			'6': 30,
+			'7': 31,
+			'8': 31,
+			'9': 30,
+			'10': 31,
+			'11': 30,
+			'12': 31,
+		}						
+		
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))	
+
+	def date_tick(self):
+		if self.game_speed == 0:
+			self.time_buffer += 0
+		elif self.game_speed == 1:
+			self.time_buffer += 0.1
+		elif self.game_speed == 2:
+			self.time_buffer += 0.8
+		elif self.game_speed == 3:
+			self.time_buffer += 2.4
+		elif self.game_speed == 4:
+			self.time_buffer += 5.6
+		elif self.game_speed == 5:
+			self.time_buffer += 10.4															
+
+		if self.time_buffer >= 10.4:
+			self.time_buffer = 0
+			self.current_hour += 1
+			if self.current_hour == 25:
+				self.current_hour = 1
+				self.current_day += 1
+				if self.current_day == self.days_in_each_mounth[str(self.current_month)] + 1:
+					self.current_day = 1
+					self.current_month += 1
+					if self.current_month == 13:
+						self.current_month = 1
+						self.current_year += 1
+
+	def draw(self, screen):
+		screen.blit(self.top_bar_right_background, (self.screen_width - self.top_bar_right_background.get_width(), 0))
+
+		# SPEED
+		speed_indicator_alignment_offset = 8 * self.factor_x
+		speed_indicator_sprite_width = 43 * self.factor_x * self.game_speed
+
+		top_bar_game_speed_indicator_surface = self.pygame.Surface((speed_indicator_sprite_width, self.top_bar_game_speed_indicator.get_height()), self.pygame.SRCALPHA)	
+		top_bar_game_speed_indicator_surface.blit(self.top_bar_game_speed_indicator, (0, 0), self.pygame.Rect(0, 0, speed_indicator_sprite_width, self.top_bar_game_speed_indicator.get_height()))		
+
+		screen.blit(top_bar_game_speed_indicator_surface, (self.screen_width - self.top_bar_right_background.get_width() + 62 * self.factor_x + speed_indicator_alignment_offset, 42 * self.factor_y))	
+
+		# DEFCON
+		top_bar_defcon_level_height = (18.4 * (self.defcon_level - 1) * self.factor_y)
+
+		top_bar_defcon_level_surface = self.pygame.Surface((self.top_bar_defcon_level.get_width(), 92 * self.factor_y), self.pygame.SRCALPHA)	
+		top_bar_defcon_level_surface.blit(self.top_bar_defcon_level, (0, top_bar_defcon_level_height), self.pygame.Rect(0, top_bar_defcon_level_height, self.top_bar_defcon_level.get_width(), 18.4 * self.factor_y))		
+
+		screen.blit(top_bar_defcon_level_surface, (self.screen_width - self.top_bar_right_background.get_width() + 300 * self.factor_x, 9 * self.factor_y))	
+
+		# DATE
+		date_font_color = (255,255,255) if self.game_speed != 0 else (255,40,40)	
+
+		hour_date_text = f"{self.current_hour:02d}H"
+		day_date_text = f"{self.current_day:02d}D"
+		month_date_text = f"{self.current_month:02d}M"
+		year_date_text = f"{self.current_year:04d}Y"
+
+		hour_date_render = self.medium_scalable_font.render(hour_date_text, True, date_font_color)
+		day_date_render = self.medium_scalable_font.render(day_date_text, True, date_font_color)
+		month_date_render = self.medium_scalable_font.render(month_date_text, True, date_font_color)
+		year_date_render = self.medium_scalable_font.render(year_date_text, True, date_font_color)
+
+		date_x_position = self.screen_width - 312 * self.factor_x
+		date_y_position = 17 * self.factor_y
+
+		screen.blit(hour_date_render, (date_x_position + (-2 + max(0, 38 - hour_date_render.get_width()))* self.factor_x, date_y_position))
+		screen.blit(day_date_render, (date_x_position + (48 + max(0, 38 * self.factor_x - day_date_render.get_width()))* self.factor_x, date_y_position))
+		screen.blit(month_date_render, (date_x_position + (86 + max(0, 41 * self.factor_x - month_date_render.get_width()))* self.factor_x, date_y_position))
+		screen.blit(year_date_render, (date_x_position + (135 + max(0, 49 * self.factor_x - year_date_render.get_width()))* self.factor_x, date_y_position))		
+
+
+
+
+
+
+
+
 
 

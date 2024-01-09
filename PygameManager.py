@@ -17,7 +17,7 @@ class Pygame:
 		pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP, USEREVENT, MOUSEWHEEL, MOUSEBUTTONUP, MOUSEBUTTONDOWN])
 		self.clock = pygame.time.Clock()  
 		
-		self.display = pygame.display.set_mode((self.screen_width, self.screen_height), FULLSCREEN)
+		self.display = pygame.display.set_mode((self.screen_width, self.screen_height))
 		self.screen = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA)
 		self.surface_alfa = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA)
 
