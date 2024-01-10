@@ -10,7 +10,6 @@ with open(f'{exe_folder}\settings.txt', 'r') as file:
 	screen_width = configs["screen_width"]
 	screen_height = configs["screen_height"]
 
-
 import PygameManager
 Pygame_Manager = PygameManager.Pygame(screen_width, screen_height)
 pygame = Pygame_Manager.start_pygame()
@@ -98,6 +97,12 @@ class Main:
 		self.factor_x = screen_width / self.reference_screen_size_x
 		self.factor_y = screen_height / self.reference_screen_size_y
 		self.factor = self.factor_x * self.factor_y
+
+		self.map_folder = os.path.join(self.exe_folder, 'map')
+
+		self.earth_daymap = self.pygame.image.load(os.path.join(self.map_folder, 'earth_daymap.jpg')).convert_alpha()
+		self.earth_nightmap = self.pygame.image.load(os.path.join(self.map_folder, 'earth_nightmap.png')).convert_alpha()	
+
 
 		self.gfx_folder = os.path.join(self.exe_folder, 'gfx')
 
@@ -705,7 +710,7 @@ your shoulders.
 
 		self.Game_Screen = MenuManager.Game_Screen(self.screen_width, self.screen_height, self.pygame, self.Sounds_Manager.generic_hover_over_button_sound, self.Sounds_Manager.generic_click_button_sound, 
 			self.top_bar_right_background, self.top_bar_game_speed_indicator, self.top_bar_defcon_levels, self.top_bar_left_background, self.top_bar_flag_overlay,
-			self.top_bar_flag_overlay_hovering_over, self.country_overview, self.popularity_circle_overlay)
+			self.top_bar_flag_overlay_hovering_over, self.country_overview, self.popularity_circle_overlay, self.earth_daymap, self.earth_nightmap)
 
 
 		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.Main_Menu, self.Country_Selection_Screen,
@@ -967,10 +972,10 @@ your shoulders.
 									self.is_in_esc_menu = False
 									self.is_in_game_screen = True
 
-									self.Game_Screen.CountryOverview.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
-									self.Game_Screen.CountryOverview.politics_popularity = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country.politics_popularity
-									self.Game_Screen.CountryOverview.culture_popularity = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country.culture_popularity
-									self.Game_Screen.CountryOverview.religion_popularity = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country.religion_popularity
+									self.Game_Screen.Country_Overview.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
+									self.Game_Screen.Country_Overview.politics_popularity = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country.politics_popularity
+									self.Game_Screen.Country_Overview.culture_popularity = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country.culture_popularity
+									self.Game_Screen.Country_Overview.religion_popularity = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country.religion_popularity
 						else:
 							self.clicked_button = self.ESC_Menu.get_clicked_button(self.mouse_rect, self.is_options_menu_open)
 							if self.clicked_button != 'none' and self.clicked_button != None:
@@ -1136,7 +1141,7 @@ your shoulders.
 
 				if self.is_in_esc_menu == False:
 					if self.Game_Screen.is_top_bar_country_viewer_open == True:
-						self.hovered_national_spirit = self.Game_Screen.CountryOverview.get_hovered_national_spirit(self.mouse_rect)
+						self.hovered_national_spirit = self.Game_Screen.Country_Overview.get_hovered_national_spirit(self.mouse_rect)
 					else:
 						self.hovered_top_bar_button = self.Game_Screen.get_hovered_button(self.mouse_rect)
 				else:

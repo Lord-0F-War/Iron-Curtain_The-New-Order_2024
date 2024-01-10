@@ -1024,18 +1024,18 @@ class Country_Selection_Menu:
 
 				# CULTURE
 				culture_national_spirit = self.selected_country.country_culture
-				screen.blit(culture_national_spirit.national_spirit_icon, (1840 * self.factor_x, 104 * self.factor_y))
+				screen.blit(culture_national_spirit.national_spirit_icon, (1838 * self.factor_x, 104 * self.factor_y))
 				
-				culture_national_spirit.rect = self.pygame.Rect(1840 * self.factor_x, 104 * self.factor_y,
+				culture_national_spirit.rect = self.pygame.Rect(1838 * self.factor_x, 104 * self.factor_y,
 						culture_national_spirit.national_spirit_icon.get_width(), culture_national_spirit.national_spirit_icon.get_height())					
 				
 				self.national_spirits_display_rects.append([culture_national_spirit.rect, culture_national_spirit])						
 				
 				# RELIGION	
 				religion_national_spirit = self.selected_country.country_religion
-				screen.blit(religion_national_spirit.national_spirit_icon, (1840 * self.factor_x, 105 * self.factor_y + religion_national_spirit.national_spirit_icon.get_height()))
+				screen.blit(religion_national_spirit.national_spirit_icon, (1838 * self.factor_x, 104 * self.factor_y + religion_national_spirit.national_spirit_icon.get_height()))
 				
-				religion_national_spirit.rect = self.pygame.Rect(1840 * self.factor_x, 105 * self.factor_y + religion_national_spirit.national_spirit_icon.get_height(),
+				religion_national_spirit.rect = self.pygame.Rect(1838 * self.factor_x, 104 * self.factor_y + religion_national_spirit.national_spirit_icon.get_height(),
 						religion_national_spirit.national_spirit_icon.get_width(), religion_national_spirit.national_spirit_icon.get_height())					
 				
 				self.national_spirits_display_rects.append([religion_national_spirit.rect, religion_national_spirit])						
@@ -1421,7 +1421,7 @@ class National_Spirits_Selection_Menu:
 
 class Game_Screen:
 	def __init__(self, screen_width, screen_height, pygame, generic_hover_over_button_sound, generic_click_button_sound, top_bar_right_background, top_bar_game_speed_indicator,
-			top_bar_defcon_level, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over, country_overview, popularity_circle_overlay):
+			top_bar_defcon_level, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over, country_overview, popularity_circle_overlay, earth_daymap, earth_nightmap):
 
 		reference_screen_size_x = 1920
 		reference_screen_size_y = 1080
@@ -1435,13 +1435,15 @@ class Game_Screen:
 		self.is_top_bar_country_viewer_open = False	
 
 
-		self.CountryOverview = CountryOverview(self.factor_x, self.factor_y, pygame, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over,
+		self.Country_Overview = Country_Overview(self.factor_x, self.factor_y, pygame, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over,
 			country_overview, popularity_circle_overlay, generic_hover_over_button_sound)
 		
 		self.Clock_UI = Clock_UI(self.factor_x, self.factor_y, screen_width, screen_height, pygame, top_bar_right_background, top_bar_game_speed_indicator, top_bar_defcon_level)
+
+		self.Earth_Map = Earth_Map(self.factor_x, self.factor_y, earth_daymap, earth_nightmap, self.Clock_UI)
 	
 	def get_button_by_interaction(self, mouse_rect):
-		button = self.CountryOverview.get_button_by_interaction(mouse_rect)
+		button = self.Country_Overview.get_button_by_interaction(mouse_rect)
 		if button != None:
 			return button
 
@@ -1452,7 +1454,7 @@ class Game_Screen:
 			self.is_top_bar_country_viewer_open = not self.is_top_bar_country_viewer_open
 			self.generic_hover_over_button_sound.fadeout(100)
 			self.generic_click_button_sound.play()
-			self.CountryOverview.is_top_bar_country_viewer_open = not self.CountryOverview.is_top_bar_country_viewer_open
+			self.Country_Overview.is_top_bar_country_viewer_open = not self.Country_Overview.is_top_bar_country_viewer_open
 			return clicked_button	
 
 	def get_hovered_button(self, mouse_rect):
@@ -1460,19 +1462,21 @@ class Game_Screen:
 		if hovered_button == "country_viewer":
 			if self.last_hovered_button != "country_viewer":
 				self.generic_hover_over_button_sound.play()			
-			self.CountryOverview.highlight_country_viewer_button = True
+			self.Country_Overview.highlight_country_viewer_button = True
 			self.last_hovered_button = "country_viewer"
 			return "country_viewer"
 		else:
-			self.CountryOverview.highlight_country_viewer_button = False
+			self.Country_Overview.highlight_country_viewer_button = False
 			self.last_hovered_button = None
 			self.generic_hover_over_button_sound.fadeout(100)	
 
 	def draw(self, screen, mouse_rect):
-		self.CountryOverview.draw(screen, mouse_rect)
+		self.Earth_Map.draw(screen)		
+		self.Country_Overview.draw(screen, mouse_rect)
 		self.Clock_UI.draw(screen)
 
-class CountryOverview:
+
+class Country_Overview:
 	def __init__(self, factor_x, factor_y, pygame, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over, country_overview, popularity_circle_overlay,
 			generic_hover_over_button_sound):
 		
@@ -1921,12 +1925,31 @@ class CountryOverview:
 				pygame.draw.rect(screen, (6,15,20), (376 * self.factor_x, 230 * self.factor_y + self.country_overview_position[1], 484 * self.factor_x, national_spirit_description_text.get_height() + 10 * self.factor_y))
 				pygame.draw.rect(screen, (43,219,211), (376 * self.factor_x, 230 * self.factor_y + self.country_overview_position[1], 484 * self.factor_x, national_spirit_description_text.get_height() + 10 * self.factor_y), 2)
 
-				screen.blit(national_spirit_description_text, text_position)	
+				screen.blit(national_spirit_description_text, text_position)
+
+
+			# CULTURE
+			culture_national_spirit = self.PlayerCountry.country_culture
+			screen.blit(culture_national_spirit.national_spirit_icon, (792 * self.factor_x, 104 * self.factor_y + self.country_overview_position[1]))
+			
+			culture_national_spirit.rect = self.pygame.Rect(792 * self.factor_x, 103 * self.factor_y + self.country_overview_position[1],
+					culture_national_spirit.national_spirit_icon.get_width(), culture_national_spirit.national_spirit_icon.get_height())					
+			
+			self.national_spirits_display_rects.append([culture_national_spirit.rect, culture_national_spirit])						
+			
+			# RELIGION	
+			religion_national_spirit = self.PlayerCountry.country_religion
+			screen.blit(religion_national_spirit.national_spirit_icon, (792 * self.factor_x, 103 * self.factor_y + religion_national_spirit.national_spirit_icon.get_height() + self.country_overview_position[1]))
+			
+			religion_national_spirit.rect = self.pygame.Rect(792 * self.factor_x, 103 * self.factor_y + religion_national_spirit.national_spirit_icon.get_height() + self.country_overview_position[1],
+					religion_national_spirit.national_spirit_icon.get_width(), religion_national_spirit.national_spirit_icon.get_height())					
+			
+			self.national_spirits_display_rects.append([religion_national_spirit.rect, religion_national_spirit])						
 
 		# country_viewer_open
 		else:
 			pass	
-class Clock_UI():
+class Clock_UI:
 	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, top_bar_right_background, top_bar_game_speed_indicator, top_bar_defcon_level):
 
 		self.factor_x, self.factor_y = factor_x, factor_y	
@@ -1947,7 +1970,7 @@ class Clock_UI():
 		self.current_month = 1
 		self.current_day = 1
 		self.current_hour = 1
-		self.time_buffer = 0
+		self.current_minute = 0
 
 		self.days_in_each_mounth = {
 			'1': 31,
@@ -1972,23 +1995,23 @@ class Clock_UI():
 
 	def date_tick(self):
 		if self.game_speed == 0:
-			self.time_buffer += 0
+			self.current_minute += 0
 		elif self.game_speed == 1:
-			self.time_buffer += 0.1
+			self.current_minute += 1
 		elif self.game_speed == 2:
-			self.time_buffer += 0.8
+			self.current_minute += 5
 		elif self.game_speed == 3:
-			self.time_buffer += 2.4
+			self.current_minute += 10
 		elif self.game_speed == 4:
-			self.time_buffer += 5.6
+			self.current_minute += 30
 		elif self.game_speed == 5:
-			self.time_buffer += 10.4															
+			self.current_minute += 120														
 
-		if self.time_buffer >= 10.4:
-			self.time_buffer = 0
-			self.current_hour += 1
-			if self.current_hour == 25:
-				self.current_hour = 1
+		if self.current_minute >= 60:
+			self.current_hour += int(self.current_minute/60)
+			self.current_minute = 0
+			if self.current_hour >= 24:
+				self.current_hour = self.current_hour - 24
 				self.current_day += 1
 				if self.current_day == self.days_in_each_mounth[str(self.current_month)] + 1:
 					self.current_day = 1
@@ -2037,8 +2060,62 @@ class Clock_UI():
 		screen.blit(day_date_render, (date_x_position + (48 + max(0, 38 * self.factor_x - day_date_render.get_width()))* self.factor_x, date_y_position))
 		screen.blit(month_date_render, (date_x_position + (86 + max(0, 41 * self.factor_x - month_date_render.get_width()))* self.factor_x, date_y_position))
 		screen.blit(year_date_render, (date_x_position + (135 + max(0, 49 * self.factor_x - year_date_render.get_width()))* self.factor_x, date_y_position))		
+class Earth_Map:
+	def __init__(self, factor_x, factor_y, earth_daymap, earth_nightmap, Clock_UI):
+		self.factor_x = factor_x
+		self.factor_y = factor_y
 
+		self.Clock_UI = Clock_UI
 
+		self.earth_daymap = earth_daymap
+		#self.earth_daymap = pygame.transform.smoothscale_by(self.earth_daymap, (self.factor_x, self.factor_y))
+		self.earth_daymap = pygame.transform.smoothscale(self.earth_daymap, (1920, 1080))
+		
+		self.earth_nightmap = earth_nightmap
+		#self.earth_nightmap = pygame.transform.smoothscale_by(self.earth_nightmap, (self.factor_x, self.factor_y))
+		self.earth_nightmap = pygame.transform.smoothscale(self.earth_nightmap, (1920, 1080))
+		
+		# Precompute night strips for each 10-minute interval
+		self.night_strips = self.calculate_night_strips()
+
+		self.time_zone = 6.1 # 6.1 == Greenwich
+
+	def calculate_night_strips(self):
+		night_strips = {}
+
+		for minute in range(0, 1440, 1):
+			longitude_start, longitude_end = self.calculate_night_longitude_range(minute)
+			night_strips[minute] = [(longitude_start, longitude_end)]
+
+			# Check if the night strip crosses the right edge
+			if longitude_end > 360:
+				night_strips[minute].append((0, longitude_end - 360))
+
+		return night_strips
+
+	def calculate_night_longitude_range(self, minute):
+		# Calculate longitude range based on the minute of the day
+		longitude_start = (minute / 1440) * 360
+		longitude_end = ((minute + 720) / 1440) * 360
+		return longitude_start, longitude_end
+
+	def draw(self, screen):
+		screen.blit(self.earth_daymap, (0, 0))
+
+		current_minute = (1440 - (self.Clock_UI.current_hour * 60 + self.Clock_UI.current_minute)) + self.time_zone * 60
+		if current_minute >= 1440:
+			current_minute -= 1440
+
+		closest_key = min(self.night_strips.keys(), key=lambda x: abs(x - current_minute))
+		current_night_strips = self.night_strips[closest_key]
+
+		for start, end in current_night_strips:
+			x_start = int((start / 360) * self.earth_nightmap.get_width())
+			x_end = int((end / 360) * self.earth_nightmap.get_width())
+
+			# Blit night map for the current night strips
+			columns_to_copy = min(x_end - x_start, self.earth_nightmap.get_width() - x_start)
+			screen.blit(self.earth_nightmap.subsurface((x_start, 0, columns_to_copy, self.earth_nightmap.get_height())), (x_start, 0))
 
 
 

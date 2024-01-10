@@ -17,7 +17,7 @@ class Pygame:
 		pygame.event.set_allowed([QUIT, KEYDOWN, KEYUP, USEREVENT, MOUSEWHEEL, MOUSEBUTTONUP, MOUSEBUTTONDOWN])
 		self.clock = pygame.time.Clock()  
 		
-		self.display = pygame.display.set_mode((self.screen_width, self.screen_height))
+		self.display = pygame.display.set_mode((self.screen_width, self.screen_height), FULLSCREEN)
 		self.screen = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA)
 		self.surface_alfa = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA)
 
@@ -34,7 +34,7 @@ class Pygame:
 		pygame.time.set_timer(self.date_tick, 10) # 100 ticks per second
 		pygame.time.set_timer(self.FPS_update, 50)
 		pygame.time.set_timer(self.key_delay, 42)
-		pygame.time.set_timer(self.screen_update, 41) # 24 fps
+		pygame.time.set_timer(self.screen_update, 40) # 25 fps
 
 		pygame.mixer.init(buffer=8192) 
 		pygame.K_1
