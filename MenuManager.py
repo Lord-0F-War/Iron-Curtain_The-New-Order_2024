@@ -1421,8 +1421,7 @@ class National_Spirits_Selection_Menu:
 
 class Game_Screen:
 	def __init__(self, screen_width, screen_height, pygame, generic_hover_over_button_sound, generic_click_button_sound, top_bar_right_background, top_bar_game_speed_indicator,
-			top_bar_defcon_level, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over, country_overview, popularity_circle_overlay, earth_daymap, earth_nightmap,
-			earth_nightmap_fadeout):
+			top_bar_defcon_level, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over, country_overview, popularity_circle_overlay, earth_daymap, earth_nightmap):
 
 		reference_screen_size_x = 1920
 		reference_screen_size_y = 1080
@@ -1441,7 +1440,7 @@ class Game_Screen:
 		
 		self.Clock_UI = Clock_UI(self.factor_x, self.factor_y, screen_width, screen_height, pygame, top_bar_right_background, top_bar_game_speed_indicator, top_bar_defcon_level)
 
-		self.Earth_Map = Earth_Map(self.factor_x, self.factor_y, screen_width, screen_height, earth_daymap, earth_nightmap, earth_nightmap_fadeout, self.Clock_UI)
+		self.Earth_Map = Earth_Map(self.factor_x, self.factor_y, screen_width, screen_height, earth_daymap, earth_nightmap, self.Clock_UI)
 	
 	def get_button_by_interaction(self, mouse_rect):
 		button = self.Country_Overview.get_button_by_interaction(mouse_rect)
@@ -2062,12 +2061,12 @@ class Clock_UI:
 		screen.blit(month_date_render, (date_x_position + (86 + max(0, 41 * self.factor_x - month_date_render.get_width()))* self.factor_x, date_y_position))
 		screen.blit(year_date_render, (date_x_position + (135 + max(0, 49 * self.factor_x - year_date_render.get_width()))* self.factor_x, date_y_position))		
 class Earth_Map:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, earth_daymap, earth_nightmap, earth_nightmap_fadeout, Clock_UI):
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, earth_daymap, earth_nightmap, Clock_UI):
 		self.factor_x = factor_x
 		self.factor_y = factor_y
 
-		self.last_zomm_factor = 1
-		self.zomm_factor = 1
+		self.last_zoom_factor = 1
+		self.zoom_factor = 1
 
 		self.screen_width = screen_width
 		self.screen_height = screen_height
@@ -2080,13 +2079,10 @@ class Earth_Map:
 		self.earth_daymap = earth_daymap.copy()
 		self.earth_nightmap = earth_nightmap.copy()
 
-		#self.earth_nightmap_fadeout = earth_nightmap_fadeout
-		#self.earth_nightmap_fadeout = pygame.transform.smoothscale_by(self.earth_nightmap_fadeout, (self.factor_x, self.factor_y))
-
 		self.night_strips = self.calculate_night_strips(interval_minutes = 1)
 
 		self.screen_sized_map_surface = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA)
-		self._8k_sized_map_surface = pygame.Surface((self.source_earth_daymap.get_width(), self.source_earth_nightmap.get_height()), pygame.SRCALPHA)
+		self._8k_sized_map_surface = pygame.Surface((self.source_earth_daymap.get_width(), self.source_earth_nightmap.get_height()), pygame.SRCALPHA)	
 
 		self.time_zone = 6.1 # 6.1 == Greenwich
 
@@ -2112,43 +2108,93 @@ class Earth_Map:
 		longitude_end = ((minute + 720) / 1440) * 360
 		return longitude_start, longitude_end
 
-	def scale_map(self, zoom_factor_change):
-		self.zomm_factor += zoom_factor_change
-		if self.zomm_factor < 0.25:
-			self.zomm_factor = 0.25
-		if self.zomm_factor > 1:
-			self.zomm_factor = 1
+	def scale_map(self, zoom_factor_change, fps_freezing_avoidance, zoom_type):
+		if fps_freezing_avoidance > 10:
+			self.zoom_factor += zoom_factor_change
+			if self.zoom_factor < 0.25:
+				self.zoom_factor = 0.25
+			if self.zoom_factor > 1:
+				self.zoom_factor = 1
 
-		if self.last_zomm_factor != self.zomm_factor:
-			self.earth_daymap = pygame.transform.scale_by(self.source_earth_daymap, (self.zomm_factor))
-			self.earth_nightmap = pygame.transform.scale_by(self.source_earth_nightmap, (self.zomm_factor))
+			if self.last_zoom_factor != self.zoom_factor:
 
-		self.last_zomm_factor = self.zomm_factor	
+
+				self.earth_daymap = pygame.transform.scale_by(self.source_earth_daymap, (self.zoom_factor))
+				self.earth_nightmap = pygame.transform.scale_by(self.source_earth_nightmap, (self.zoom_factor))
+				
+				# DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER
+				# DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER
+
+				if zoom_type == 'zoom_out':
+					pass
+				if zoom_type == 'zoom_in':
+					pass
+
+			self.last_zoom_factor = self.zoom_factor	
 
 	def draw(self, screen):
 		self.screen_sized_map_surface.fill((0, 0, 0, 0), (0, 0, self.screen_width, self.screen_height))
 		self._8k_sized_map_surface.fill((0, 0, 0, 0), (0, 0, self.screen_width, self.screen_height))
 
-		if self.map_position[1] < 0:
-			if self.earth_daymap.get_height() - abs(self.map_position[1]) > self.screen_height:
-				self.offset_y = abs(self.map_position[1])
+		# HEIGHT
+		self.offset_y = abs(self.map_position[1]) if abs(self.map_position[1]) <  self.earth_daymap.get_height() else self.earth_daymap.get_height() - 1
+		#--------------#
+				
 
-		if self.screen_width - abs(self.map_position[0]) > 0:
-			self.screen_sized_map_surface.blit(self.earth_daymap.subsurface(0, self.offset_y, min(self.screen_width, self.screen_width - self.map_position[0]), self.screen_height), (self.map_position[0], 0))
+		# DAYMAP		
+		if self.map_position[0] == 0:
+			start = 0
+			width = self.screen_width
+			height = self.screen_height if self.screen_height + self.offset_y <= self.earth_daymap.get_height() else self.earth_daymap.get_height()
+			
+			if start + width > self.earth_daymap.get_width():
+				width = self.earth_daymap.get_width() - start			
+			if self.offset_y + height > self.earth_daymap.get_height():
+				height = self.earth_daymap.get_height() - self.offset_y
 
+			if height > 0 and width > 0:
+				self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((start, self.offset_y, width, height)), (0, 0))
+
+				if self.earth_daymap.get_width() < self.screen_width:
+					difference = self.screen_width - self.earth_daymap.get_width()
+					width = difference
+					self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((0, self.offset_y, width, height)), (self.screen_width - difference, 0))
+		
 		if self.map_position[0] > 0:
-			self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((self.earth_daymap.get_width() - self.map_position[0], self.offset_y, min(self.screen_width, self.map_position[0]), self.screen_height)), (0, 0))
-		else:
-			if max(self.screen_width, abs(self.map_position[0])) + min(self.screen_width, self.earth_daymap.get_width() - abs(self.map_position[0])) < self.earth_daymap.get_width():
-				self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((max(self.screen_width, abs(self.map_position[0])), self.offset_y, min(self.screen_width, self.earth_daymap.get_width() - abs(self.map_position[0])), self.screen_height)), (max(0, self.screen_width + self.map_position[0]), 0))
-			else:
-				safe_width = self.earth_daymap.get_width() - max(self.screen_width, abs(self.map_position[0]))
-				if safe_width < 0:
-					safe_width = 1
-				self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((max(self.screen_width, abs(self.map_position[0])), self.offset_y, safe_width, self.screen_height)), (max(0, self.screen_width + self.map_position[0]), 0))
-			if abs(self.map_position[0]) > self.earth_daymap.get_width() - self.screen_width:
-				self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((0, self.offset_y, max(1, self.screen_width - min(self.screen_width, self.earth_daymap.get_width() - abs(self.map_position[0]))), self.screen_height)), (min(self.screen_width, self.earth_daymap.get_width() - abs(self.map_position[0])), 0))
+			start = self.earth_daymap.get_width() - self.map_position[0]
+			width = min(self.screen_width, self.map_position[0])
+			height = self.screen_height if self.screen_height + self.offset_y <= self.earth_daymap.get_height() else self.earth_daymap.get_height()
+			
+			if start + width > self.earth_daymap.get_width():
+				width = self.earth_daymap.get_width() - start
+			if self.offset_y + height > self.earth_daymap.get_height():
+				height = self.earth_daymap.get_height() - self.offset_y	
 
+			if height > 0 and width > 0:			
+				self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((start, self.offset_y, width, height)), (0, 0))			
+				
+				if self.screen_width - self.map_position[0] > 0:
+					self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((0, self.offset_y, self.screen_width - self.map_position[0], height)), (abs(self.map_position[0]), 0))
+		
+		if self.map_position[0] < 0:
+			start = max(self.screen_width, abs(self.map_position[0]))
+			width = min(abs(self.map_position[0]), min(self.screen_width, self.earth_daymap.get_width() - abs(self.map_position[0])))
+			height = self.screen_height if self.screen_height + self.offset_y <= self.earth_daymap.get_height() else self.earth_daymap.get_height()
+			
+			if start + width > self.earth_daymap.get_width():
+				width = self.earth_daymap.get_width() - start
+			if self.offset_y + height > self.earth_daymap.get_height():
+				height = self.earth_daymap.get_height() - self.offset_y
+
+			if height > 0 and width > 0:		
+				self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((start, self.offset_y, width, height)), (max(0, self.screen_width - abs(self.map_position[0])), 0))
+				
+				if self.screen_width - abs(self.map_position[0]) > 0:
+					self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((abs(self.map_position[0]), self.offset_y, self.screen_width - abs(self.map_position[0]), height)), (0, 0))
+				
+				if self.earth_daymap.get_width() - abs(self.map_position[0]) < self.screen_width:
+					self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((0, self.offset_y, self.screen_width - (self.earth_daymap.get_width() - abs(self.map_position[0])), height)), (self.earth_daymap.get_width() - abs(self.map_position[0]), 0))
+		#--------------#
 		
 		self._8k_sized_map_surface.blit(self.screen_sized_map_surface, (0, 0))
 
@@ -2167,32 +2213,18 @@ class Earth_Map:
 			# Blit night map for the current night strips
 			columns_to_copy = min(x_end - x_start, self.earth_nightmap.get_width() - x_start)
 			if self.map_position[0] > 0:
-				pass
-				self._8k_sized_map_surface.blit(self.earth_nightmap.subsurface((x_start, self.offset_y, columns_to_copy, self.screen_height)), (x_start + abs(self.map_position[0]), 0))
+				height = self.screen_height if self.screen_height + self.offset_y <= self.earth_nightmap.get_height() else self.earth_nightmap.get_height() - self.offset_y
+
+				self._8k_sized_map_surface.blit(self.earth_nightmap.subsurface((x_start, self.offset_y, columns_to_copy, height)), (x_start + abs(self.map_position[0]), 0))
 				if x_start + columns_to_copy + abs(self.map_position[0]) > self.earth_nightmap.get_width():
 					difference = (x_start + columns_to_copy + abs(self.map_position[0])) - self.earth_nightmap.get_width()
-					self._8k_sized_map_surface.blit(self.earth_nightmap.subsurface((x_start, self.offset_y, columns_to_copy, self.screen_height)), (-columns_to_copy + difference, 0))
+					self._8k_sized_map_surface.blit(self.earth_nightmap.subsurface((x_start, self.offset_y, columns_to_copy, height)), (-columns_to_copy + difference, 0))
 			else:
-				self._8k_sized_map_surface.blit(self.earth_nightmap.subsurface((x_start, self.offset_y, columns_to_copy, self.screen_height)), (x_start - abs(self.map_position[0]), 0))
-				self._8k_sized_map_surface.blit(self.earth_nightmap.subsurface((x_start, self.offset_y, columns_to_copy, self.screen_height)), (self.earth_nightmap.get_width() - abs(self.map_position[0]) + x_start, 0))
+				height = self.screen_height if self.screen_height + self.offset_y <= self.earth_nightmap.get_height() else self.earth_nightmap.get_height() - self.offset_y
 
-
-			#if x_start - self.earth_nightmap_fadeout.get_width() >= self.earth_nightmap_fadeout.get_width():
-			#	self.map_surface.blit(self.earth_nightmap_fadeout, (x_start - self.earth_nightmap_fadeout.get_width(), 0))
-			#elif x_start - self.earth_nightmap_fadeout.get_width() > -self.earth_nightmap_fadeout.get_width():
-			#	self.map_surface.blit(self.earth_nightmap_fadeout, (x_start - self.earth_nightmap_fadeout.get_width(), 0))
-			#	self.map_surface.blit(self.earth_nightmap_fadeout, (self.earth_nightmap.get_width() - self.earth_nightmap_fadeout.get_width() + x_start, 0))
-
-
-			#if x_end - self.earth_nightmap.get_width() <= 0 and x_end - self.earth_nightmap.get_width() >= -self.earth_nightmap_fadeout.get_width():
-			#	self.map_surface.blit(pygame.transform.flip(self.earth_nightmap_fadeout, True, False), (x_end, 0))
-			#	self.map_surface.blit(pygame.transform.flip(self.earth_nightmap_fadeout, True, False), (x_end - self.earth_nightmap.get_width(), 0))
-			#else:
-			#	self.map_surface.blit(pygame.transform.flip(self.earth_nightmap_fadeout, True, False), (x_end, 0))
-
-		#self._8k_sized_map_surface.blit(self.map_surface, (0, 0))
-		#self.scaled_map_surface = pygame.transform.smoothscale_by(self._8k_sized_map_surface, self.zoom_factor)
-
+				self._8k_sized_map_surface.blit(self.earth_nightmap.subsurface((x_start, self.offset_y, columns_to_copy, height)), (x_start - abs(self.map_position[0]), 0))
+				self._8k_sized_map_surface.blit(self.earth_nightmap.subsurface((x_start, self.offset_y, columns_to_copy, height)), (self.earth_nightmap.get_width() - abs(self.map_position[0]) + x_start, 0))
+		
 		screen.blit(self._8k_sized_map_surface, (0, 0))
 
 
