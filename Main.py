@@ -102,6 +102,7 @@ class Main:
 
 		self.earth_daymap = self.pygame.image.load(os.path.join(self.map_folder, 'earth_daymap.jpg')).convert_alpha()
 		self.earth_nightmap = self.pygame.image.load(os.path.join(self.map_folder, 'earth_nightmap.png')).convert_alpha()	
+		self.earth_nightmap_fadeout = self.pygame.image.load(os.path.join(self.map_folder, 'earth_nightmap_fadeout.png')).convert_alpha()
 
 
 		self.gfx_folder = os.path.join(self.exe_folder, 'gfx')
@@ -710,7 +711,7 @@ your shoulders.
 
 		self.Game_Screen = MenuManager.Game_Screen(self.screen_width, self.screen_height, self.pygame, self.Sounds_Manager.generic_hover_over_button_sound, self.Sounds_Manager.generic_click_button_sound, 
 			self.top_bar_right_background, self.top_bar_game_speed_indicator, self.top_bar_defcon_levels, self.top_bar_left_background, self.top_bar_flag_overlay,
-			self.top_bar_flag_overlay_hovering_over, self.country_overview, self.popularity_circle_overlay, self.earth_daymap, self.earth_nightmap)
+			self.top_bar_flag_overlay_hovering_over, self.country_overview, self.popularity_circle_overlay, self.earth_daymap, self.earth_nightmap, self.earth_nightmap_fadeout)
 
 
 		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.Main_Menu, self.Country_Selection_Screen,
@@ -1078,8 +1079,26 @@ your shoulders.
 
 						if keys[self.pygame.K_9]:
 							self.Game_Screen.Clock_UI.defcon_level += 1
-						if keys[self.pygame.K_0]:																													
+						elif keys[self.pygame.K_0]:																													
 							self.Game_Screen.Clock_UI.defcon_level -= 1
+					
+					if event.type == self.pygame.MOUSEWHEEL:
+						if event.y > 0:	
+							self.Game_Screen.Earth_Map.scale_map(zoom_factor_change = 0.05)
+						elif event.y < 0:
+							self.Game_Screen.Earth_Map.scale_map(zoom_factor_change = -0.05)
+					else:
+						if keys[self.pygame.K_w]:																												
+							self.Game_Screen.Earth_Map.map_position[1] += 10 #if self.Game_Screen.Earth_Map.map_position[1] < 0 else 0 
+						if keys[self.pygame.K_a]:																													
+							self.Game_Screen.Earth_Map.map_position[0] += 10
+						if keys[self.pygame.K_s]:																													
+							self.Game_Screen.Earth_Map.map_position[1] -= 10 #if abs(self.Game_Screen.Earth_Map.map_position[1]) + self.screen_height < self.Game_Screen.Earth_Map.earth_daymap.get_height() else 0
+						if keys[self.pygame.K_d]:																													
+							self.Game_Screen.Earth_Map.map_position[0] -= 10
+
+					if self.Game_Screen.Earth_Map.map_position[0] > self.Game_Screen.Earth_Map.earth_daymap.get_width() or self.Game_Screen.Earth_Map.map_position[0] < -self.Game_Screen.Earth_Map.earth_daymap.get_width():
+						self.Game_Screen.Earth_Map.map_position[0] = 0
 
 					self.mouse_pos = self.pygame.mouse.get_pos()
 
@@ -1152,7 +1171,7 @@ your shoulders.
 				self.Country_Selection_Screen.music_player()
 
 
-			clock.tick(144)
+			clock.tick(30)
 
 		self.pygame.quit()
 
