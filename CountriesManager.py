@@ -52,6 +52,20 @@ class Country:
         self.country_GDP = 10_550_000_000_000
 
         self.income = 10_550_000_000_000
-        self.expenses = 550_600_000        
+        self.expenses = 550_600_000 
+
+        self.diplomacy_rating = 100   
+        self.military_rating = 75 
+        self.economy_rating = 50 
+        self.domestic_rating = 25
+
+        self.military_approval_rating = 100
+        self.domestic_approval_rating = 80
+        self.midia_approval_rating = 60
+        self.secret_service_approval_rating = 40
+        self.politics_approval_rating = 20 
+
+        self.internal_economy_rating = 100
+        self.external_economy_rating = 50    
 
 

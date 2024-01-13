@@ -30,7 +30,7 @@ class Pygame:
 		self.FPS_update = pygame.USEREVENT + 2
 		self.key_delay = pygame.USEREVENT + 3
 		self.screen_update = pygame.USEREVENT + 4
-
+		
 		pygame.time.set_timer(self.date_tick, 10) # 100 ticks per second
 		pygame.time.set_timer(self.FPS_update, 50)
 		pygame.time.set_timer(self.key_delay, 42)

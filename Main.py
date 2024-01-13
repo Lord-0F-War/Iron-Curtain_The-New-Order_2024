@@ -177,8 +177,11 @@ class Main:
 		self.top_bar_flag_overlay = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'top_bar_flag_overlay.png')).convert_alpha()
 		self.top_bar_flag_overlay_hovering_over = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'top_bar_flag_overlay_hovering_over.png')).convert_alpha()		
 		self.country_overview = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'country_overview.png')).convert_alpha()	
-		self.popularity_circle_overlay = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'popularity_circle_overlay.png')).convert_alpha()		
-
+		self.popularity_circle_overlay = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'popularity_circle_overlay.png')).convert_alpha()	
+		self.progressbar = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'progressbar.png')).convert_alpha()	
+		self.progressbar_vertical = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'progressbar_vertical.png')).convert_alpha()	
+		self.progressbar_small = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'progressbar_small.png')).convert_alpha()		
+		
 		self.ideas_folder = os.path.join(self.interface_folder, 'ideas')
 		
 		self.national_spirits_folder = os.path.join(self.ideas_folder, 'national_spirits')
@@ -710,7 +713,8 @@ your shoulders.
 
 		self.Game_Screen = MenuManager.Game_Screen(self.screen_width, self.screen_height, self.pygame, self.Sounds_Manager.generic_hover_over_button_sound, self.Sounds_Manager.generic_click_button_sound, 
 			self.top_bar_right_background, self.top_bar_game_speed_indicator, self.top_bar_defcon_levels, self.top_bar_left_background, self.top_bar_flag_overlay,
-			self.top_bar_flag_overlay_hovering_over, self.country_overview, self.popularity_circle_overlay, self.earth_daymap, self.earth_nightmap)
+			self.top_bar_flag_overlay_hovering_over, self.country_overview, self.popularity_circle_overlay, self.earth_daymap, self.earth_nightmap, self.progressbar, self.progressbar_vertical,
+			self.progressbar_small)
 
 
 		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.Main_Menu, self.Country_Selection_Screen,
@@ -1158,9 +1162,8 @@ your shoulders.
 				self.mouse_rect = self.pygame.Rect(self.mouse_pos, (1, 1))
 
 				if self.is_in_esc_menu == False:
-					if self.Game_Screen.is_top_bar_country_viewer_open == True:
-						self.hovered_national_spirit = self.Game_Screen.Country_Overview.get_hovered_national_spirit(self.mouse_rect)
-					else:
+					self.hovered_rect = self.Game_Screen.Country_Overview.get_hovered_rect(self.mouse_rect)
+					if self.Game_Screen.is_top_bar_country_viewer_open == False:
 						self.hovered_top_bar_button = self.Game_Screen.get_hovered_button(self.mouse_rect)
 				else:
 					self.hovered_button = self.ESC_Menu.get_hovered_button(self.mouse_rect, self.is_options_menu_open)
