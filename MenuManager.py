@@ -1445,27 +1445,28 @@ class Game_Screen:
 	
 	def get_button_by_interaction(self, mouse_rect):
 		button = self.Country_Overview.get_button_by_interaction(mouse_rect)
-		if button != None:
-			return button
+		return button
 
 	def get_clicked_button(self, mouse_rect):
 		clicked_button = self.get_button_by_interaction(mouse_rect)
 		
-		if clicked_button == "country_viewer":
-			self.is_top_bar_country_viewer_open = not self.is_top_bar_country_viewer_open
+		if clicked_button != None:
+			if clicked_button == "country_viewer":
+				self.is_top_bar_country_viewer_open = not self.is_top_bar_country_viewer_open
+				self.Country_Overview.is_top_bar_country_viewer_open = not self.Country_Overview.is_top_bar_country_viewer_open
 			self.generic_hover_over_button_sound.fadeout(100)
 			self.generic_click_button_sound.play()
-			self.Country_Overview.is_top_bar_country_viewer_open = not self.Country_Overview.is_top_bar_country_viewer_open
 			return clicked_button	
 
 	def get_hovered_button(self, mouse_rect):
 		hovered_button = self.get_button_by_interaction(mouse_rect)
-		if hovered_button == "country_viewer":
-			if self.last_hovered_button != "country_viewer":
-				self.generic_hover_over_button_sound.play()			
-			self.Country_Overview.highlight_country_viewer_button = True
-			self.last_hovered_button = "country_viewer"
-			return "country_viewer"
+		if hovered_button != None:
+			if self.last_hovered_button != hovered_button:
+				self.generic_hover_over_button_sound.play()
+				if hovered_button == "country_viewer":
+					self.Country_Overview.highlight_country_viewer_button = True
+			self.last_hovered_button = hovered_button
+			return hovered_button
 		else:
 			self.Country_Overview.highlight_country_viewer_button = False
 			self.last_hovered_button = None
@@ -1505,6 +1506,9 @@ class Country_Overview:
 		self.last_hovered_national_spirit = None	
 
 		self.last_hovered_button = None
+
+		self.hovered_rect = None
+		self.last_hovered_rect = None
 
 		self.generic_hover_over_button_sound = generic_hover_over_button_sound
 
@@ -1619,6 +1623,8 @@ class Country_Overview:
 
 		self.info_height = 9 * self.factor_y
 
+		# INFORMATION ------------#
+
 		self.hovering_diplomatic_information_rect = False
 		self.hovering_military_information_rect = False
 		self.hovering_economic_information_rect = False
@@ -1653,6 +1659,24 @@ class Country_Overview:
 
 		self.internal_and_external_market_approval_rating_rect = self.pygame.Rect(370 * self.factor_x, 74 * self.factor_y, 101 * self.factor_x, 28 * self.factor_y)	
 
+		# INFORMATION ------------#
+
+		# UI BUTTONS ------------#
+		self.hovered_top_bar_UI_button = None
+
+		height = 112 * self.factor_y
+		button_size = (57 * self.factor_x, 41 * self.factor_y)
+
+		self.top_bar_decisions_button = 		GenericUtilitys.Button(129 * self.factor_x, height, button_size[0], button_size[1])
+		self.top_bar_laws_button = 				GenericUtilitys.Button(188 * self.factor_x, height, button_size[0], button_size[1])
+		self.top_bar_finances_button = 			GenericUtilitys.Button(247 * self.factor_x, height, button_size[0], button_size[1])
+		self.top_bar_inteligence_button = 		GenericUtilitys.Button(306 * self.factor_x, height, button_size[0], button_size[1])
+		self.top_bar_research_button = 			GenericUtilitys.Button(365 * self.factor_x, height, button_size[0], button_size[1])
+		self.top_bar_global_market_button = 	GenericUtilitys.Button(424 * self.factor_x, height, button_size[0], button_size[1])
+		self.top_bar_construction_button = 		GenericUtilitys.Button(483 * self.factor_x, height, button_size[0], button_size[1])
+		self.top_bar_production_button = 		GenericUtilitys.Button(542 * self.factor_x, height, button_size[0], button_size[1])
+		self.top_bar_army_button = 				GenericUtilitys.Button(601 * self.factor_x, height, button_size[0], button_size[1])
+		self.top_bar_stockpile_button = 		GenericUtilitys.Button(660 * self.factor_x, height, button_size[0], button_size[1])
 
 
 		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
@@ -1662,35 +1686,88 @@ class Country_Overview:
 		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(13 * self.factor_y))	
 
 	def get_button_by_interaction(self, mouse_rect):
-		if self.top_bar_country_viewer_button.rect.colliderect(mouse_rect):
-			return "country_viewer"	
+		self.hovered_top_bar_UI_button = None
+		if self.top_bar_left_background_rect.colliderect(mouse_rect):		
+			if self.top_bar_country_viewer_button.rect.colliderect(mouse_rect):
+				return "country_viewer"	
+			
+			elif self.top_bar_decisions_button.rect.colliderect(mouse_rect):
+				self.hovered_top_bar_UI_button = "decisions_button"
+				return "decisions_button"	
+			elif self.top_bar_laws_button.rect.colliderect(mouse_rect):
+				self.hovered_top_bar_UI_button = "laws_button"
+				return "laws_button"	
+			elif self.top_bar_finances_button.rect.colliderect(mouse_rect):
+				self.hovered_top_bar_UI_button = "finances_button"
+				return "finances_button"	
+			elif self.top_bar_inteligence_button.rect.colliderect(mouse_rect):
+				self.hovered_top_bar_UI_button = "inteligence_button"
+				return "inteligence_button"	
+			elif self.top_bar_research_button.rect.colliderect(mouse_rect):
+				self.hovered_top_bar_UI_button = "research_button"
+				return "research_button"	
+			elif self.top_bar_global_market_button.rect.colliderect(mouse_rect):
+				self.hovered_top_bar_UI_button = "global_market_button"
+				return "global_market_button"	
+			elif self.top_bar_construction_button.rect.colliderect(mouse_rect):
+				self.hovered_top_bar_UI_button = "construction_button"
+				return "construction_button"	
+			elif self.top_bar_production_button.rect.colliderect(mouse_rect):
+				self.hovered_top_bar_UI_button = "production_button"
+				return "production_button"	
+			elif self.top_bar_army_button.rect.colliderect(mouse_rect):
+				self.hovered_top_bar_UI_button = "army_button"
+				return "army_button"	
+			elif self.top_bar_stockpile_button.rect.colliderect(mouse_rect):
+				self.hovered_top_bar_UI_button = "stockpile_button"
+				return "stockpile_button"	
+
+		return None																													
 
 	def get_hovered_rect(self, mouse_rect):
-		
 		if self.top_bar_left_background_rect.colliderect(mouse_rect):
+			self.hovered_rect = None
+
 			if self.diplomatic_information_rect.colliderect(mouse_rect):
+				self.hovered_rect = 1
 				self.hovering_diplomatic_information_rect = True
 			elif self.military_information_rect.colliderect(mouse_rect):	
+				self.hovered_rect = 2
 				self.hovering_military_information_rect = True
-			elif self.economic_information_rect.colliderect(mouse_rect):	
+			elif self.economic_information_rect.colliderect(mouse_rect):
+				self.hovered_rect = 3	
 				self.hovering_economic_information_rect = True
-			elif self.domestic_information_rect.colliderect(mouse_rect):									
+			elif self.domestic_information_rect.colliderect(mouse_rect):
+				self.hovered_rect = 4									
 				self.hovering_domestic_information_rect = True
 
-
-			if self.internal_and_external_market_approval_rating_rect.colliderect(mouse_rect):
+			elif self.internal_and_external_market_approval_rating_rect.colliderect(mouse_rect):
+				self.hovered_rect = 5
 				self.hovering_internal_and_external_market_approval_rating_rect = True
 
-			if self.military_approval_rating_rect.colliderect(mouse_rect):
+			elif self.military_approval_rating_rect.colliderect(mouse_rect):
+				self.hovered_rect = 6
 				self.hovering_military_approval_rating_rect = True
 			elif self.domestic_approval_rating_rect.colliderect(mouse_rect):
+				self.hovered_rect = 7
 				self.hovering_domestic_approval_rating_rect = True
 			elif self.midia_approval_rating_rect.colliderect(mouse_rect):
+				self.hovered_rect = 8
 				self.hovering_midia_approval_rating_rect = True
 			elif self.secret_service_approval_rating_rect.colliderect(mouse_rect):
+				self.hovered_rect = 9
 				self.hovering_secret_service_approval_rating_rect = True
-			elif self.politics_approval_rating_rect.colliderect(mouse_rect):												
+			elif self.politics_approval_rating_rect.colliderect(mouse_rect):	
+				self.hovered_rect = 10											
 				self.hovering_politics_approval_rating_rect = True
+
+			if self.hovered_rect != None:
+				if self.last_hovered_rect != self.hovered_rect:
+					self.generic_hover_over_button_sound.play()
+					self.last_hovered_rect = self.hovered_rect
+			else:
+				self.last_hovered_rect = None
+				self.generic_hover_over_button_sound.fadeout(100)
 
 
 		if self.is_top_bar_country_viewer_open == True:
@@ -1740,6 +1817,28 @@ class Country_Overview:
 			screen.blit(self.top_bar_flag_overlay, (2 * self.factor_x, 2 * self.factor_y))
 		else:
 			screen.blit(self.top_bar_flag_overlay_hovering_over, (2 * self.factor_x, 2 * self.factor_y))
+
+		if self.hovered_top_bar_UI_button != None:
+			if self.hovered_top_bar_UI_button == "decisions_button":
+				pygame.draw.rect(screen, (255,255,255), self.top_bar_decisions_button.rect, 2)
+			elif self.hovered_top_bar_UI_button == "laws_button":
+				pygame.draw.rect(screen, (255,255,255), self.top_bar_laws_button.rect, 2)
+			elif self.hovered_top_bar_UI_button == "finances_button":
+				pygame.draw.rect(screen, (255,255,255), self.top_bar_finances_button.rect, 2)
+			elif self.hovered_top_bar_UI_button == "inteligence_button":
+				pygame.draw.rect(screen, (255,255,255), self.top_bar_inteligence_button.rect, 2)
+			elif self.hovered_top_bar_UI_button == "research_button":
+				pygame.draw.rect(screen, (255,255,255), self.top_bar_research_button.rect, 2)
+			elif self.hovered_top_bar_UI_button == "global_market_button":
+				pygame.draw.rect(screen, (255,255,255), self.top_bar_global_market_button.rect, 2)
+			elif self.hovered_top_bar_UI_button == "construction_button":
+				pygame.draw.rect(screen, (255,255,255), self.top_bar_construction_button.rect, 2)
+			elif self.hovered_top_bar_UI_button == "production_button":
+				pygame.draw.rect(screen, (255,255,255), self.top_bar_production_button.rect, 2)
+			elif self.hovered_top_bar_UI_button == "army_button":
+				pygame.draw.rect(screen, (255,255,255), self.top_bar_army_button.rect, 2)
+			elif self.hovered_top_bar_UI_button == "stockpile_button":																																				
+				pygame.draw.rect(screen, (255,255,255), self.top_bar_stockpile_button.rect, 2)
 
 		#----------------------------------------------------------------------------------------------------------------------------------------#
 		# TOP BAR INFOS
@@ -1892,9 +1991,9 @@ class Country_Overview:
 
 			manpower = self.PlayerCountry.army_staff
 			if manpower >= 1000000:
-				formatted_manpower = f'{manpower / 1000000:.1f}m'
+				formatted_manpower = f'{manpower / 1000000:.1f} M'
 			elif manpower >= 1000:
-				formatted_manpower = f'{manpower / 1000:.1f}k'
+				formatted_manpower = f'{manpower / 1000:.1f} K'
 			else:
 				formatted_manpower = str(manpower)
 			hovering_military_information_description_text = self.tiny_scalable_font.render(f"\n\n    ARMY STAFF: \n\n    PRODUCTION CAPACITY: ", True, (255, 255, 255))	
