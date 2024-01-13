@@ -46,18 +46,53 @@ class Country:
         self.country_war_support = 100
         self.country_party_popularity = 100
 
+        # DIPLOMACY
+        self.diplomacy_rating = 100 
+
+        # ARMY  
+        self.military_rating = 75
+
         self.country_land_manpower = 150_500
-        self.country_air_manpower = 150_500
+        self.country_air_manpower = 150_500        
+        
+        self.army_staff = self.country_land_manpower + self.country_air_manpower
+        
+        self.production_capacity_army = 0
+        self.production_capacity_navy = 0
+        self.production_capacity_air = 0
+        self.production_capacity_special = 0
+        self.production_capacity_total = f"{self.production_capacity_army} / {self.production_capacity_navy} / {self.production_capacity_air} / {self.production_capacity_special}" 
+        
+        # ECONOMY
+        self.economy_rating = 50 
+        
+        self.treasury = 85_952_542_000_000
+        self.debt = 5_365_215_000_000
+
+        self.credit_rating = 52.5
+        self.inflation = 2.1
+        self.unemployment = 5.2
 
         self.country_GDP = 10_550_000_000_000
 
         self.income = 10_550_000_000_000
-        self.expenses = 550_600_000 
+        self.expenses = 550_600_000         
 
-        self.diplomacy_rating = 100   
-        self.military_rating = 75 
-        self.economy_rating = 50 
+        # DOMESTIC
         self.domestic_rating = 25
+
+        self.country_population = 100_600_000
+
+        self.country_immigration = 10000
+        self.country_emigration = 2000
+        self.country_births = 10400
+        self.country_deaths = 25000
+        self.country_literacy_rate = 94
+
+        self.population_political_leaning = "MODERATE"
+
+
+        
 
         self.military_approval_rating = 100
         self.domestic_approval_rating = 80

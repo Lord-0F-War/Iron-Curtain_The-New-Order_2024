@@ -1,10 +1,10 @@
 
 import GenericUtilitys
 from PygameManager import pygame
-
 from pyvidplayer import Video
 
-
+import locale
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
 class ESC_Menu:
 	def __init__(self, screen_width, screen_height, ESC_menu_background, generic_hover_over_button_sound, generic_click_menu_sound, 
@@ -1511,10 +1511,10 @@ class Country_Overview:
 		# COLORS ------------#	
 
 		# POLITICS
-		red_base = (227, 52, 47)
-		blue_base =  (52, 144, 220)
-		yellow_base = (255, 237, 74)
-		green_base = (56, 193, 114)
+		red_base = (255, 0, 0)
+		blue_base =  (89, 200, 234)
+		yellow_base = (255, 255, 0)
+		green_base = (0, 255, 16)
 
 		red_values = GenericUtilitys.generate_fading_colors(6, red_base)
 		blue_values = GenericUtilitys.generate_fading_colors(7, blue_base)
@@ -1558,7 +1558,7 @@ class Country_Overview:
 		# CULTURE
 		redish_base = (227, 52, 47)
 		gray_base = (220, 220, 220)
-		blue_base = (52, 144, 220)
+		blue_base = (89, 200, 234)
 
 		red_values = GenericUtilitys.generate_fading_colors(6, redish_base)
 		blue_values = GenericUtilitys.generate_fading_colors(2, gray_base)
@@ -1619,12 +1619,27 @@ class Country_Overview:
 
 		self.info_height = 9 * self.factor_y
 
+		self.hovering_diplomatic_information_rect = False
+		self.hovering_military_information_rect = False
+		self.hovering_economic_information_rect = False
+		self.hovering_domestic_information_rect = False	
+
+		size_x = 168 * self.factor_x
+		size_y = 14 * self.factor_y		
+
+		self.diplomatic_information_rect = 	self.pygame.Rect(135 * self.factor_x, 38 * self.factor_y, size_x, size_y)
+		self.military_information_rect = 	self.pygame.Rect(135 * self.factor_x, 57 * self.factor_y, size_x, size_y)
+		self.economic_information_rect = 	self.pygame.Rect(311 * self.factor_x, 38 * self.factor_y, 160 * self.factor_x, size_y)
+		self.domestic_information_rect = 	self.pygame.Rect(311 * self.factor_x, 57 * self.factor_y, 160 * self.factor_x, size_y)			
+
 
 		self.hovering_military_approval_rating_rect = False
 		self.hovering_domestic_approval_rating_rect = False
 		self.hovering_midia_approval_rating_rect = False
 		self.hovering_secret_service_approval_rating_rect = False
 		self.hovering_politics_approval_rating_rect = False
+		
+		self.hovering_internal_and_external_market_approval_rating_rect = False
 
 		size_x = 43 * self.factor_x
 		size_y = 25 * self.factor_y
@@ -1636,13 +1651,15 @@ class Country_Overview:
 		self.secret_service_approval_rating_rect = 	self.pygame.Rect(274 * self.factor_x, height, size_x, size_y)
 		self.politics_approval_rating_rect = 		self.pygame.Rect(320 * self.factor_x, height, size_x, size_y)
 
+		self.internal_and_external_market_approval_rating_rect = self.pygame.Rect(370 * self.factor_x, 74 * self.factor_y, 101 * self.factor_x, 28 * self.factor_y)	
+
 
 
 		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
 		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
 		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
 		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
-		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(13 * self.factor_y))	
 
 	def get_button_by_interaction(self, mouse_rect):
 		if self.top_bar_country_viewer_button.rect.colliderect(mouse_rect):
@@ -1651,6 +1668,19 @@ class Country_Overview:
 	def get_hovered_rect(self, mouse_rect):
 		
 		if self.top_bar_left_background_rect.colliderect(mouse_rect):
+			if self.diplomatic_information_rect.colliderect(mouse_rect):
+				self.hovering_diplomatic_information_rect = True
+			elif self.military_information_rect.colliderect(mouse_rect):	
+				self.hovering_military_information_rect = True
+			elif self.economic_information_rect.colliderect(mouse_rect):	
+				self.hovering_economic_information_rect = True
+			elif self.domestic_information_rect.colliderect(mouse_rect):									
+				self.hovering_domestic_information_rect = True
+
+
+			if self.internal_and_external_market_approval_rating_rect.colliderect(mouse_rect):
+				self.hovering_internal_and_external_market_approval_rating_rect = True
+
 			if self.military_approval_rating_rect.colliderect(mouse_rect):
 				self.hovering_military_approval_rating_rect = True
 			elif self.domestic_approval_rating_rect.colliderect(mouse_rect):
@@ -1724,7 +1754,7 @@ class Country_Overview:
 		screen.blit(self.progressbar.subsurface((0, 0, economy_rating, self.progressbar.get_height())), (378 * self.factor_x, 41 * self.factor_y))
 
 		domestic_rating = int((self.progressbar.get_width()/100) * self.PlayerCountry.domestic_rating)	
-		screen.blit(self.progressbar.subsurface((0, 0, domestic_rating, self.progressbar.get_height())), (378 * self.factor_x, 60 * self.factor_y))
+		screen.blit(self.progressbar.subsurface((0, 0, domestic_rating, self.progressbar.get_height())), (378 * self.factor_x, 60 * self.factor_y))		
 
 
 		internal_economy_rating = int((self.progressbar_small.get_width()/100) * self.PlayerCountry.internal_economy_rating)
@@ -1732,7 +1762,6 @@ class Country_Overview:
 
 		external_economy_rating = int((self.progressbar_small.get_width()/100) * self.PlayerCountry.external_economy_rating)	
 		screen.blit(self.progressbar_small.subsurface((0, 0, external_economy_rating, self.progressbar_small.get_height())), (401 * self.factor_x, 91 * self.factor_y))
-
 
 			# 	VERTICAL
 		height = 77 * self.factor_y
@@ -1751,57 +1780,6 @@ class Country_Overview:
 		politics_approval_rating = int((self.progressbar_vertical.get_height()/100) * self.PlayerCountry.politics_approval_rating)	
 		screen.blit(self.progressbar_vertical.subsurface((0, self.progressbar_vertical.get_height() - politics_approval_rating, self.progressbar_vertical.get_width(), politics_approval_rating)), (357 * self.factor_x, height + self.progressbar_vertical.get_height() - politics_approval_rating))				
 
-		if self.hovering_military_approval_rating_rect == True:
-			pygame.draw.rect(screen, (255,255,255), self.military_approval_rating_rect, 2)
-			hovering_military_approval_rating_description_text = self.small_scalable_font.render(f"MILITARY APPROVAL RATING:  {self.PlayerCountry.military_approval_rating}%", True, (255, 255, 255))
-			text_position = (mouse_rect[0]+20 * self.factor_x, mouse_rect[1] + 10)	
-			
-			pygame.draw.rect(screen, (6,15,20), (text_position[0]-5 * self.factor_x, text_position[1], hovering_military_approval_rating_description_text.get_width()+24 * self.factor_x, hovering_military_approval_rating_description_text.get_height()+10 * self.factor_y))
-			pygame.draw.rect(screen, (43,219,211), (text_position[0]-5 * self.factor_x, text_position[1], hovering_military_approval_rating_description_text.get_width()+24 * self.factor_x, hovering_military_approval_rating_description_text.get_height()+10 * self.factor_y), 2)				
-			
-			screen.blit(hovering_military_approval_rating_description_text, (text_position[0], text_position[1]+6 * self.factor_y))	
-		if self.hovering_domestic_approval_rating_rect == True:
-			pygame.draw.rect(screen, (255,255,255), self.domestic_approval_rating_rect, 2)
-			hovering_domestic_approval_rating_description_text = self.small_scalable_font.render(f"DOMESTIC APPROVAL RATING:  {self.PlayerCountry.domestic_approval_rating}%", True, (255, 255, 255))
-			text_position = (mouse_rect[0]+20 * self.factor_x, mouse_rect[1] + 10)	
-			
-			pygame.draw.rect(screen, (6,15,20), (text_position[0]-5 * self.factor_x, text_position[1], hovering_domestic_approval_rating_description_text.get_width()+24 * self.factor_x, hovering_domestic_approval_rating_description_text.get_height()+10 * self.factor_y))
-			pygame.draw.rect(screen, (43,219,211), (text_position[0]-5 * self.factor_x, text_position[1], hovering_domestic_approval_rating_description_text.get_width()+24 * self.factor_x, hovering_domestic_approval_rating_description_text.get_height()+10 * self.factor_y), 2)				
-			
-			screen.blit(hovering_domestic_approval_rating_description_text, (text_position[0], text_position[1]+6 * self.factor_y))	
-		if self.hovering_midia_approval_rating_rect == True:
-			pygame.draw.rect(screen, (255,255,255), self.midia_approval_rating_rect, 2)
-			hovering_midia_approval_rating_description_text = self.small_scalable_font.render(f"MIDIA APPROVAL RATING:  {self.PlayerCountry.midia_approval_rating}%", True, (255, 255, 255))
-			text_position = (mouse_rect[0]+20 * self.factor_x, mouse_rect[1] + 10)	
-			
-			pygame.draw.rect(screen, (6,15,20), (text_position[0]-5 * self.factor_x, text_position[1], hovering_midia_approval_rating_description_text.get_width()+24 * self.factor_x, hovering_midia_approval_rating_description_text.get_height()+10 * self.factor_y))
-			pygame.draw.rect(screen, (43,219,211), (text_position[0]-5 * self.factor_x, text_position[1], hovering_midia_approval_rating_description_text.get_width()+24 * self.factor_x, hovering_midia_approval_rating_description_text.get_height()+10 * self.factor_y), 2)				
-			
-			screen.blit(hovering_midia_approval_rating_description_text, (text_position[0], text_position[1]+6 * self.factor_y))	
-		if self.hovering_secret_service_approval_rating_rect == True:
-			pygame.draw.rect(screen, (255,255,255), self.secret_service_approval_rating_rect, 2)
-			hovering_secret_service_approval_description_text = self.small_scalable_font.render(f"SECRET SERVICE APPROVAL RATING:  {self.PlayerCountry.secret_service_approval_rating}%", True, (255, 255, 255))
-			text_position = (mouse_rect[0]+20 * self.factor_x, mouse_rect[1] + 10)	
-			
-			pygame.draw.rect(screen, (6,15,20), (text_position[0]-5 * self.factor_x, text_position[1], hovering_secret_service_approval_description_text.get_width()+24 * self.factor_x, hovering_secret_service_approval_description_text.get_height()+10 * self.factor_y))
-			pygame.draw.rect(screen, (43,219,211), (text_position[0]-5 * self.factor_x, text_position[1], hovering_secret_service_approval_description_text.get_width()+24 * self.factor_x, hovering_secret_service_approval_description_text.get_height()+10 * self.factor_y), 2)				
-			
-			screen.blit(hovering_secret_service_approval_description_text, (text_position[0], text_position[1]+6 * self.factor_y))	
-		if self.hovering_politics_approval_rating_rect == True:
-			pygame.draw.rect(screen, (255,255,255), self.politics_approval_rating_rect, 2)
-			hovering_politics_approval_rating_description_text = self.small_scalable_font.render(f"POLITICIANS APPROVAL RATING:  {self.PlayerCountry.politics_approval_rating}%", True, (255, 255, 255))
-			text_position = (mouse_rect[0]+20 * self.factor_x, mouse_rect[1] + 10)	
-			
-			pygame.draw.rect(screen, (6,15,20), (text_position[0]-5 * self.factor_x, text_position[1], hovering_politics_approval_rating_description_text.get_width()+24 * self.factor_x, hovering_politics_approval_rating_description_text.get_height()+10 * self.factor_y))
-			pygame.draw.rect(screen, (43,219,211), (text_position[0]-5 * self.factor_x, text_position[1], hovering_politics_approval_rating_description_text.get_width()+24 * self.factor_x, hovering_politics_approval_rating_description_text.get_height()+10 * self.factor_y), 2)				
-			
-			screen.blit(hovering_politics_approval_rating_description_text, (text_position[0], text_position[1]+6 * self.factor_y))													
-
-		self.hovering_military_approval_rating_rect = False
-		self.hovering_domestic_approval_rating_rect = False
-		self.hovering_midia_approval_rating_rect = False
-		self.hovering_secret_service_approval_rating_rect = False
-		self.hovering_politics_approval_rating_rect = False	
 
 		## STABILITY
 		text_country_stability = self.small_scalable_font.render(str(self.PlayerCountry.country_stability)+'%', True, (255, 255, 255))
@@ -1819,9 +1797,9 @@ class Country_Overview:
 		## LAND MANPOWER
 		manpower = self.PlayerCountry.country_land_manpower
 		if manpower >= 1000000:
-			formatted_manpower = f'{manpower / 1000000:.1f}m'
+			formatted_manpower = f'{manpower / 1000000:.1f} M'
 		elif manpower >= 1000:
-			formatted_manpower = f'{manpower / 1000:.1f}k'
+			formatted_manpower = f'{manpower / 1000:.1f} K'
 		else:
 			formatted_manpower = str(manpower)
 	
@@ -1832,9 +1810,9 @@ class Country_Overview:
 		## AIR MANPOWER
 		manpower = self.PlayerCountry.country_air_manpower
 		if manpower >= 1000000:
-			formatted_manpower = f'{manpower / 1000000:.1f}m'
+			formatted_manpower = f'{manpower / 1000000:.1f} M'
 		elif manpower >= 1000:
-			formatted_manpower = f'{manpower / 1000:.1f}k'
+			formatted_manpower = f'{manpower / 1000:.1f} K'
 		else:
 			formatted_manpower = str(manpower)
 
@@ -1847,11 +1825,11 @@ class Country_Overview:
 		if abs(GDP) < 1e6:
 			formatted_GDP = f"GDP:  ${GDP:,.2f}"
 		elif abs(GDP) < 1e9:
-			formatted_GDP = f"GDP:  ${GDP / 1e6:.2f}M"
+			formatted_GDP = f"GDP:  ${GDP / 1e6:.2f} M"
 		elif abs(GDP) < 1e12:
-			formatted_GDP = f"GDP:  ${GDP / 1e9:.2f}B"
+			formatted_GDP = f"GDP:  ${GDP / 1e9:.2f} B"
 		elif abs(GDP) < 1e15:
-			formatted_GDP = f"GDP:  ${GDP / 1e12:.2f}T"
+			formatted_GDP = f"GDP:  ${GDP / 1e12:.2f} T"
 		else:
 			formatted_GDP = f"GDP:  ${GDP:.2f}"
 			
@@ -1865,11 +1843,11 @@ class Country_Overview:
 		if abs(income) < 1e6:
 			formatted_money = f"INCO:  ${income:,.2f}"
 		elif abs(income) < 1e9:
-			formatted_money = f"INCO:  ${income / 1e6:.2f}M"
+			formatted_money = f"INCO:  ${income / 1e6:.2f} M"
 		elif abs(income) < 1e12:
-			formatted_money = f"INCO:  ${income / 1e9:.2f}B"
+			formatted_money = f"INCO:  ${income / 1e9:.2f} B"
 		elif abs(income) < 1e15:
-			formatted_money = f"INCO:  ${income / 1e12:.2f}T"
+			formatted_money = f"INCO:  ${income / 1e12:.2f} T"
 		else:
 			formatted_money = f"INCO:  ${income:.2f}"
 		
@@ -1882,17 +1860,182 @@ class Country_Overview:
 		if abs(expenses) < 1e6:
 			formatted_money = f"EXPE:  ${expenses:,.2f}"
 		elif abs(expenses) < 1e9:
-			formatted_money = f"EXPE:  ${expenses / 1e6:.2f}M"
+			formatted_money = f"EXPE:  ${expenses / 1e6:.2f} M"
 		elif abs(expenses) < 1e12:
-			formatted_money = f"EXPE:  ${expenses / 1e9:.2f}B"
+			formatted_money = f"EXPE:  ${expenses / 1e9:.2f} B"
 		elif abs(expenses) < 1e15:
-			formatted_money = f"EXPE:  ${expenses / 1e12:.2f}T"
+			formatted_money = f"EXPE:  ${expenses / 1e12:.2f} T"
 		else:
 			formatted_money = f"EXPE:  ${expenses:.2f}"
 		
 		text_expenses = self.small_scalable_font.render(formatted_money, True, (255, 255, 255))
 		text_expenses_position = (748 * self.factor_x, 59 * self.factor_y)	
-		screen.blit(text_expenses, text_expenses_position)		
+		screen.blit(text_expenses, text_expenses_position)	
+
+
+		if self.hovering_diplomatic_information_rect == True:
+			pygame.draw.rect(screen, (255,255,255), self.diplomatic_information_rect, 2)
+			hovering_diplomatic_information_description_title_text = self.small_scalable_font.render("DIPLOMATIC INFORMATION", True, (255, 255, 255))
+			text_position = (mouse_rect[0]+20 * self.factor_x + hovering_diplomatic_information_description_title_text.get_width(), mouse_rect[1] + 20)
+
+			hovering_diplomatic_information_description_text = self.tiny_scalable_font.render("\n\n    SOMETHING: 100% \n\n    SOMETHING: 80% \n\n    SOMETHING: 60%", True, (255, 255, 255))	
+			
+			pygame.draw.rect(screen, (6,15,20), (text_position[0]-5 * self.factor_x - hovering_diplomatic_information_description_title_text.get_width(), text_position[1], hovering_diplomatic_information_description_title_text.get_width()*2 + 24 * self.factor_x, hovering_diplomatic_information_description_title_text.get_height()+30 * self.factor_y + hovering_diplomatic_information_description_text.get_height()))
+			pygame.draw.rect(screen, (43,219,211), (text_position[0]-5 * self.factor_x - hovering_diplomatic_information_description_title_text.get_width(), text_position[1], hovering_diplomatic_information_description_title_text.get_width()*2 + 24 * self.factor_x, hovering_diplomatic_information_description_title_text.get_height()+30 * self.factor_y + hovering_diplomatic_information_description_text.get_height()), 4)				
+			
+			screen.blit(hovering_diplomatic_information_description_title_text, (text_position[0] - hovering_diplomatic_information_description_title_text.get_width()/2 +10 * self.factor_x, text_position[1]+12 * self.factor_y))
+			screen.blit(hovering_diplomatic_information_description_text, (text_position[0] - hovering_diplomatic_information_description_title_text.get_width(), text_position[1]+15 * self.factor_y + hovering_diplomatic_information_description_title_text.get_height()))	
+		if self.hovering_military_information_rect == True:
+			pygame.draw.rect(screen, (255,255,255), self.military_information_rect, 2)
+			hovering_military_information_description_title_text = self.small_scalable_font.render("MILITARY INFORMATION", True, (255, 255, 255))
+			text_position = (mouse_rect[0]+20 * self.factor_x + hovering_military_information_description_title_text.get_width(), mouse_rect[1] + 20)
+
+			manpower = self.PlayerCountry.army_staff
+			if manpower >= 1000000:
+				formatted_manpower = f'{manpower / 1000000:.1f}m'
+			elif manpower >= 1000:
+				formatted_manpower = f'{manpower / 1000:.1f}k'
+			else:
+				formatted_manpower = str(manpower)
+			hovering_military_information_description_text = self.tiny_scalable_font.render(f"\n\n    ARMY STAFF: \n\n    PRODUCTION CAPACITY: ", True, (255, 255, 255))	
+			hovering_military_information_description_values_text = self.tiny_scalable_font.render(f"\n\n                {formatted_manpower} \n\n                {self.PlayerCountry.production_capacity_total}", True, (255, 255, 255))	
+
+			pygame.draw.rect(screen, (6,15,20), (text_position[0]-5 * self.factor_x - hovering_military_information_description_title_text.get_width(), text_position[1], hovering_military_information_description_title_text.get_width()*2 + 24 * self.factor_x, hovering_military_information_description_title_text.get_height()+30 * self.factor_y + hovering_military_information_description_text.get_height()))
+			pygame.draw.rect(screen, (43,219,211), (text_position[0]-5 * self.factor_x - hovering_military_information_description_title_text.get_width(), text_position[1], hovering_military_information_description_title_text.get_width()*2 + 24 * self.factor_x, hovering_military_information_description_title_text.get_height()+30 * self.factor_y + hovering_military_information_description_text.get_height()), 4)				
+			
+			screen.blit(hovering_military_information_description_title_text, (text_position[0] - hovering_military_information_description_title_text.get_width()/2 +10 * self.factor_x, text_position[1]+12 * self.factor_y))
+			screen.blit(hovering_military_information_description_text, (text_position[0] - hovering_military_information_description_title_text.get_width(), text_position[1]+15 * self.factor_y + hovering_military_information_description_title_text.get_height()))
+			screen.blit(hovering_military_information_description_values_text, (text_position[0] - hovering_military_information_description_title_text.get_width() + 140 * self.factor_x, text_position[1]+15 * self.factor_y + hovering_military_information_description_title_text.get_height()))								
+		if self.hovering_economic_information_rect == True:
+			pygame.draw.rect(screen, (255,255,255), self.economic_information_rect, 2)
+			hovering_economic_information_description_title_text = self.small_scalable_font.render("ECONOMIC INFORMATION", True, (255, 255, 255))
+			text_position = (mouse_rect[0]+20 * self.factor_x + hovering_economic_information_description_title_text.get_width(), mouse_rect[1] + 20)
+
+			treasury = self.PlayerCountry.treasury
+			if abs(treasury) < 1e6:
+				formatted_treasury = f"${treasury:,.2f}"
+			elif abs(treasury) < 1e9:
+				formatted_treasury = f"${treasury / 1e6:.2f} M"
+			elif abs(treasury) < 1e12:
+				formatted_treasury = f"${treasury / 1e9:.2f} B"
+			elif abs(treasury) < 1e15:
+				formatted_treasury = f"${treasury / 1e12:.2f} T"
+			else:
+				formatted_treasury = f"${treasury:.2f}"
+
+			debt = self.PlayerCountry.debt
+			if abs(debt) < 1e6:
+				formatted_debt = f"${debt:,.2f}"
+			elif abs(debt) < 1e9:
+				formatted_debt = f"${debt / 1e6:.2f} M"
+			elif abs(debt) < 1e12:
+				formatted_debt = f"${debt / 1e9:.2f} B"
+			elif abs(debt) < 1e15:
+				formatted_debt = f"${debt / 1e12:.2f} T"
+			else:
+				formatted_debt = f"${debt:.2f}"				
+
+			hovering_economic_information_description_text = self.tiny_scalable_font.render(f"\n\n    TREASURY: \n\n    GDP/c: \n\n    DEBT: \n\n\n        CREDIT RATING: \n\n        INFLATION: \n\n        UNEMPLOYMENT: ", True, (255, 255, 255))	
+			hovering_economic_information_description_values_text = self.tiny_scalable_font.render(f"\n\n{formatted_treasury} \n\n${self.PlayerCountry.country_GDP/self.PlayerCountry.country_population:,.2f}\n\n{formatted_debt}\n\n\n        {self.PlayerCountry.credit_rating}%\n\n        {self.PlayerCountry.inflation}%\n\n        {self.PlayerCountry.unemployment}%", True, (255, 255, 255))
+			
+			pygame.draw.rect(screen, (6,15,20), (text_position[0]-5 * self.factor_x - hovering_economic_information_description_title_text.get_width(), text_position[1], hovering_economic_information_description_title_text.get_width()*2 + 24 * self.factor_x, hovering_economic_information_description_title_text.get_height()+30 * self.factor_y + hovering_economic_information_description_text.get_height()))
+			pygame.draw.rect(screen, (43,219,211), (text_position[0]-5 * self.factor_x - hovering_economic_information_description_title_text.get_width(), text_position[1], hovering_economic_information_description_title_text.get_width()*2 + 24 * self.factor_x, hovering_economic_information_description_title_text.get_height()+30 * self.factor_y + hovering_economic_information_description_text.get_height()), 4)				
+			
+			screen.blit(hovering_economic_information_description_title_text, (text_position[0] - hovering_economic_information_description_title_text.get_width()/2 +10 * self.factor_x, text_position[1]+12 * self.factor_y))
+			screen.blit(hovering_economic_information_description_text, (text_position[0] - hovering_economic_information_description_title_text.get_width(), text_position[1]+15 * self.factor_y + hovering_economic_information_description_title_text.get_height()))
+			screen.blit(hovering_economic_information_description_values_text, (text_position[0] - hovering_economic_information_description_title_text.get_width() + 135 * self.factor_x, text_position[1]+15 * self.factor_y + hovering_economic_information_description_title_text.get_height()))
+		if self.hovering_domestic_information_rect == True:
+			pygame.draw.rect(screen, (255,255,255), self.domestic_information_rect, 2)
+			hovering_domestic_information_description_title_text = self.small_scalable_font.render("DOMESTIC INFORMATION", True, (255, 255, 255))
+			text_position = (mouse_rect[0]+20 * self.factor_x + hovering_domestic_information_description_title_text.get_width(), mouse_rect[1] + 20)
+
+			population_formated = locale.format_string("%d", self.PlayerCountry.country_population, grouping=True)
+			country_immigration_formated = locale.format_string("%d", self.PlayerCountry.country_immigration, grouping=True)
+			country_emigration_formated = locale.format_string("%d", self.PlayerCountry.country_emigration, grouping=True)
+			country_births_formated = locale.format_string("%d", self.PlayerCountry.country_births, grouping=True)			
+			country_deaths_formated = locale.format_string("%d", self.PlayerCountry.country_deaths, grouping=True)
+			
+			hovering_domestic_information_description_text = self.tiny_scalable_font.render(f"\n\n    POPULATION: \n\n      IMMIGRATION: \n\n      EMIGRATION: \n\n      BIRTHS: \n\n      DEATHS: \n\n      LITERACY RATE: \n\n\n    POPULATION POLITICAL LEANING: ", True, (255, 255, 255))	
+			hovering_domestic_information_description_values_text = self.tiny_scalable_font.render(f"\n\n{population_formated} \n\n    {country_immigration_formated} \n\n    {country_emigration_formated} \n\n    {country_births_formated} \n\n    {country_deaths_formated} \n\n    {self.PlayerCountry.country_literacy_rate}% \n\n\n                        {self.PlayerCountry.population_political_leaning}", True, (255, 255, 255))
+			
+			pygame.draw.rect(screen, (6,15,20), (text_position[0]-5 * self.factor_x - hovering_domestic_information_description_title_text.get_width(), text_position[1], hovering_domestic_information_description_title_text.get_width()*2 + 24 * self.factor_x, hovering_domestic_information_description_title_text.get_height()+30 * self.factor_y + hovering_domestic_information_description_text.get_height()))
+			pygame.draw.rect(screen, (43,219,211), (text_position[0]-5 * self.factor_x - hovering_domestic_information_description_title_text.get_width(), text_position[1], hovering_domestic_information_description_title_text.get_width()*2 + 24 * self.factor_x, hovering_domestic_information_description_title_text.get_height()+30 * self.factor_y + hovering_domestic_information_description_text.get_height()), 4)				
+			
+			screen.blit(hovering_domestic_information_description_title_text, (text_position[0] - hovering_domestic_information_description_title_text.get_width()/2 +10 * self.factor_x, text_position[1]+12 * self.factor_y))
+			screen.blit(hovering_domestic_information_description_text, (text_position[0] - hovering_domestic_information_description_title_text.get_width(), text_position[1]+15 * self.factor_y + hovering_domestic_information_description_title_text.get_height()))			
+			screen.blit(hovering_domestic_information_description_values_text, (text_position[0] - hovering_domestic_information_description_title_text.get_width() + 160 * self.factor_x, text_position[1]+15 * self.factor_y + hovering_domestic_information_description_title_text.get_height()))			
+		
+		self.hovering_diplomatic_information_rect = False
+		self.hovering_military_information_rect = False
+		self.hovering_economic_information_rect = False
+		self.hovering_domestic_information_rect = False	
+
+
+		if self.hovering_internal_and_external_market_approval_rating_rect == True:
+			pygame.draw.rect(screen, (255,255,255), self.internal_and_external_market_approval_rating_rect, 3)
+			hovering_internal_and_external_market_approval_rating_rect = self.small_scalable_font.render(f"INTERNAL MARKET APPROVAL RATING:  {self.PlayerCountry.internal_economy_rating}%\n\nEXTERNAL MARKET APPROVAL RATING:  {self.PlayerCountry.external_economy_rating}%", True, (255, 255, 255))
+			text_position = (mouse_rect[0]+20 * self.factor_x, mouse_rect[1] + 10)	
+			
+			pygame.draw.rect(screen, (6,15,20), (text_position[0]-5 * self.factor_x, text_position[1], hovering_internal_and_external_market_approval_rating_rect.get_width()+24 * self.factor_x, hovering_internal_and_external_market_approval_rating_rect.get_height()+10 * self.factor_y))
+			pygame.draw.rect(screen, (43,219,211), (text_position[0]-5 * self.factor_x, text_position[1], hovering_internal_and_external_market_approval_rating_rect.get_width()+24 * self.factor_x, hovering_internal_and_external_market_approval_rating_rect.get_height()+10 * self.factor_y), 2)				
+			
+			screen.blit(hovering_internal_and_external_market_approval_rating_rect, (text_position[0], text_position[1]+6 * self.factor_y))	
+		self.hovering_internal_and_external_market_approval_rating_rect = False
+
+
+		if self.hovering_military_approval_rating_rect == True:
+			pygame.draw.rect(screen, (255,255,255), self.military_approval_rating_rect, 3)
+			hovering_military_approval_rating_description_text = self.small_scalable_font.render(f"MILITARY APPROVAL RATING:  {self.PlayerCountry.military_approval_rating}%", True, (255, 255, 255))
+			text_position = (mouse_rect[0]+20 * self.factor_x, mouse_rect[1] + 10)	
+			
+			pygame.draw.rect(screen, (6,15,20), (text_position[0]-5 * self.factor_x, text_position[1], hovering_military_approval_rating_description_text.get_width()+24 * self.factor_x, hovering_military_approval_rating_description_text.get_height()+10 * self.factor_y))
+			pygame.draw.rect(screen, (43,219,211), (text_position[0]-5 * self.factor_x, text_position[1], hovering_military_approval_rating_description_text.get_width()+24 * self.factor_x, hovering_military_approval_rating_description_text.get_height()+10 * self.factor_y), 3)				
+			
+			screen.blit(hovering_military_approval_rating_description_text, (text_position[0], text_position[1]+6 * self.factor_y))	
+		if self.hovering_domestic_approval_rating_rect == True:
+			pygame.draw.rect(screen, (255,255,255), self.domestic_approval_rating_rect, 3)
+			hovering_domestic_approval_rating_description_text = self.small_scalable_font.render(f"DOMESTIC APPROVAL RATING:  {self.PlayerCountry.domestic_approval_rating}%", True, (255, 255, 255))
+			text_position = (mouse_rect[0]+20 * self.factor_x, mouse_rect[1] + 10)	
+			
+			pygame.draw.rect(screen, (6,15,20), (text_position[0]-5 * self.factor_x, text_position[1], hovering_domestic_approval_rating_description_text.get_width()+24 * self.factor_x, hovering_domestic_approval_rating_description_text.get_height()+10 * self.factor_y))
+			pygame.draw.rect(screen, (43,219,211), (text_position[0]-5 * self.factor_x, text_position[1], hovering_domestic_approval_rating_description_text.get_width()+24 * self.factor_x, hovering_domestic_approval_rating_description_text.get_height()+10 * self.factor_y), 3)				
+			
+			screen.blit(hovering_domestic_approval_rating_description_text, (text_position[0], text_position[1]+6 * self.factor_y))	
+		if self.hovering_midia_approval_rating_rect == True:
+			pygame.draw.rect(screen, (255,255,255), self.midia_approval_rating_rect, 3)
+			hovering_midia_approval_rating_description_text = self.small_scalable_font.render(f"MIDIA APPROVAL RATING:  {self.PlayerCountry.midia_approval_rating}%", True, (255, 255, 255))
+			text_position = (mouse_rect[0]+20 * self.factor_x, mouse_rect[1] + 10)	
+			
+			pygame.draw.rect(screen, (6,15,20), (text_position[0]-5 * self.factor_x, text_position[1], hovering_midia_approval_rating_description_text.get_width()+24 * self.factor_x, hovering_midia_approval_rating_description_text.get_height()+10 * self.factor_y))
+			pygame.draw.rect(screen, (43,219,211), (text_position[0]-5 * self.factor_x, text_position[1], hovering_midia_approval_rating_description_text.get_width()+24 * self.factor_x, hovering_midia_approval_rating_description_text.get_height()+10 * self.factor_y), 3)				
+			
+			screen.blit(hovering_midia_approval_rating_description_text, (text_position[0], text_position[1]+6 * self.factor_y))	
+		if self.hovering_secret_service_approval_rating_rect == True:
+			pygame.draw.rect(screen, (255,255,255), self.secret_service_approval_rating_rect, 3)
+			hovering_secret_service_approval_description_text = self.small_scalable_font.render(f"SECRET SERVICE APPROVAL RATING:  {self.PlayerCountry.secret_service_approval_rating}%", True, (255, 255, 255))
+			text_position = (mouse_rect[0]+20 * self.factor_x, mouse_rect[1] + 10)	
+			
+			pygame.draw.rect(screen, (6,15,20), (text_position[0]-5 * self.factor_x, text_position[1], hovering_secret_service_approval_description_text.get_width()+24 * self.factor_x, hovering_secret_service_approval_description_text.get_height()+10 * self.factor_y))
+			pygame.draw.rect(screen, (43,219,211), (text_position[0]-5 * self.factor_x, text_position[1], hovering_secret_service_approval_description_text.get_width()+24 * self.factor_x, hovering_secret_service_approval_description_text.get_height()+10 * self.factor_y), 3)				
+			
+			screen.blit(hovering_secret_service_approval_description_text, (text_position[0], text_position[1]+6 * self.factor_y))	
+		if self.hovering_politics_approval_rating_rect == True:
+			pygame.draw.rect(screen, (255,255,255), self.politics_approval_rating_rect, 3)
+			hovering_politics_approval_rating_description_text = self.small_scalable_font.render(f"POLITICIANS APPROVAL RATING:  {self.PlayerCountry.politics_approval_rating}%", True, (255, 255, 255))
+			text_position = (mouse_rect[0]+20 * self.factor_x, mouse_rect[1] + 10)	
+			
+			pygame.draw.rect(screen, (6,15,20), (text_position[0]-5 * self.factor_x, text_position[1], hovering_politics_approval_rating_description_text.get_width()+24 * self.factor_x, hovering_politics_approval_rating_description_text.get_height()+10 * self.factor_y))
+			pygame.draw.rect(screen, (43,219,211), (text_position[0]-5 * self.factor_x, text_position[1], hovering_politics_approval_rating_description_text.get_width()+24 * self.factor_x, hovering_politics_approval_rating_description_text.get_height()+10 * self.factor_y), 3)				
+			
+			screen.blit(hovering_politics_approval_rating_description_text, (text_position[0], text_position[1]+6 * self.factor_y))													
+
+
+		self.hovering_military_approval_rating_rect = False
+		self.hovering_domestic_approval_rating_rect = False
+		self.hovering_midia_approval_rating_rect = False
+		self.hovering_secret_service_approval_rating_rect = False
+		self.hovering_politics_approval_rating_rect = False	
+
 		#----------------------------------------------------------------------------------------------------------------------------------------#
 
 		#----------------------------------------------------------------------------------------------------------------------------------------#
