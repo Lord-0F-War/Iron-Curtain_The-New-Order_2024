@@ -700,7 +700,7 @@ your shoulders.
 				self.hovered_start_game_button, self.hovered_select_national_spirit_button_image, self.hovered_select_country_button_image, 
 				self.hovered_laws_button_image, self.generic_leader, self.CRT_flag_overlay_effect, self.blocked_select_national_spirit_button, 
 				self.blocked_select_country_button, self.blocked_start_game_button, self.blocked_full_right_side, self.blocked_all_laws, self.national_spirits_background,
-				self.generic_national_spirits)
+				self.generic_national_spirits, self.progressbar, self.progressbar_vertical, self.progressbar_small)
 		
 
 		self.Options_Menu = MenuManager.Options_Menu(self.screen_width, self.screen_height, self.menu_options_UI, 
