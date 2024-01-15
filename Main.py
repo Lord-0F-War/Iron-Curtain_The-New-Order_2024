@@ -177,7 +177,8 @@ class Main:
 		self.top_bar_flag_overlay = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'top_bar_flag_overlay.png')).convert_alpha()
 		self.top_bar_flag_overlay_hovering_over = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'top_bar_flag_overlay_hovering_over.png')).convert_alpha()		
 		self.country_overview = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'country_overview.png')).convert_alpha()	
-		self.popularity_circle_overlay = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'popularity_circle_overlay.png')).convert_alpha()	
+		self.popularity_circle_overlay = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'popularity_circle_overlay.png')).convert_alpha()
+		self.progressbar_huge = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'progressbar_huge.png')).convert_alpha()	
 		self.progressbar = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'progressbar.png')).convert_alpha()	
 		self.progressbar_vertical = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'progressbar_vertical.png')).convert_alpha()	
 		self.progressbar_small = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'progressbar_small.png')).convert_alpha()		
@@ -700,7 +701,7 @@ your shoulders.
 				self.hovered_start_game_button, self.hovered_select_national_spirit_button_image, self.hovered_select_country_button_image, 
 				self.hovered_laws_button_image, self.generic_leader, self.CRT_flag_overlay_effect, self.blocked_select_national_spirit_button, 
 				self.blocked_select_country_button, self.blocked_start_game_button, self.blocked_full_right_side, self.blocked_all_laws, self.national_spirits_background,
-				self.generic_national_spirits, self.progressbar, self.progressbar_vertical, self.progressbar_small)
+				self.generic_national_spirits, self.progressbar, self.progressbar_vertical, self.progressbar_small, self.progressbar_huge)
 		
 
 		self.Options_Menu = MenuManager.Options_Menu(self.screen_width, self.screen_height, self.menu_options_UI, 

@@ -2,6 +2,7 @@
 import GenericUtilitys
 from PygameManager import pygame
 from pyvidplayer import Video
+import random
 
 import locale
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
@@ -536,7 +537,7 @@ class Country_Selection_Screen:
 				hovered_start_game_button, hovered_select_national_spirit_button_image, hovered_select_country_button_image, 
 				hovered_laws_button_image, generic_leader, CRT_flag_overlay_effect, blocked_select_national_spirit_button, 
 				blocked_select_country_button, blocked_start_game_button, blocked_full_right_side, blocked_all_laws, national_spirits_background,
-				generic_national_spirits, progressbar, progressbar_vertical, progressbar_small):	
+				generic_national_spirits, progressbar, progressbar_vertical, progressbar_small, progressbar_huge):	
 		
 		self.Country_Selection_Menu = Country_Selection_Menu(
 				screen_width, screen_height, pygame, generic_hover_over_button_sound, generic_click_button_sound, 
@@ -544,7 +545,7 @@ class Country_Selection_Screen:
 				hovered_start_game_button, hovered_select_national_spirit_button_image, hovered_select_country_button_image, 
 				hovered_laws_button_image, generic_leader, CRT_flag_overlay_effect, blocked_select_national_spirit_button, 
 				blocked_select_country_button, blocked_start_game_button, blocked_full_right_side, blocked_all_laws, progressbar, progressbar_vertical,
-				progressbar_small)		
+				progressbar_small, progressbar_huge)		
 		
 		self.Flag_Selection_Menu = Flag_Selection_Menu(screen_width, screen_height, pygame, countries, 
 				generic_hover_over_button_sound, generic_click_button_sound, country_info_display_background)
@@ -630,7 +631,7 @@ class Country_Selection_Menu:
 		generic_hover_over_button_sound, generic_click_menu_sound, country_selection_background, political_compass_image, 
 		ideologies_CRT_overlay_effect, hovered_start_game_button, hovered_select_national_spirit_button_image, hovered_select_country_button_image, 
 		hovered_laws_button_image, generic_leader, CRT_flag_overlay_effect, blocked_select_national_spirit_button, blocked_select_country_button, blocked_start_game_button, 
-		blocked_full_right_side, blocked_all_laws, progressbar, progressbar_vertical, progressbar_small):
+		blocked_full_right_side, blocked_all_laws, progressbar, progressbar_vertical, progressbar_small, progressbar_huge):
 		
 		self.national_spirits_display_rects = []
 		self.hovered_national_spirit = None
@@ -664,6 +665,8 @@ class Country_Selection_Menu:
 
 		self.pygame = pygame
 
+
+		self.progressbar_huge = pygame.transform.smoothscale_by(progressbar_huge, (self.factor_x, self.factor_y))
 		self.progressbar = pygame.transform.smoothscale_by(progressbar, (self.factor_x, self.factor_y))
 		self.progressbar_vertical = pygame.transform.smoothscale_by(progressbar_vertical, (self.factor_x, self.factor_y))
 		self.progressbar_small = pygame.transform.smoothscale_by(progressbar_small, (self.factor_x, self.factor_y))
@@ -1069,6 +1072,27 @@ class Country_Selection_Menu:
 				
 				screen.blit(leader_name_text, self.leader_name_position)
 
+				# LAWS PROGRESS BAR	
+				for number in range(9):
+					button = getattr(self, f'political_law_button_{str(number+1)}', None)
+					law_rating = int((self.progressbar_huge.get_width()/100) * self.selected_country.political_laws_groups[number].active_law_rating)
+					screen.blit(self.progressbar_huge.subsurface((0, 0, law_rating, self.progressbar_huge.get_height())), (button.rect[:2]))
+				
+				for number in range(8):
+					button = getattr(self, f'military_law_button_{str(number+1)}', None)
+					law_rating = int((self.progressbar_huge.get_width()/100) * self.selected_country.military_laws_groups[number].active_law_rating)
+					screen.blit(self.progressbar_huge.subsurface((0, 0, law_rating, self.progressbar_huge.get_height())), (button.rect[:2]))	
+				
+				for number in range(9):
+					button = getattr(self, f'economic_law_button_{str(number+1)}', None)
+					law_rating = int((self.progressbar_huge.get_width()/100) * self.selected_country.economical_laws_groups[number].active_law_rating)
+					screen.blit(self.progressbar_huge.subsurface((0, 0, law_rating, self.progressbar_huge.get_height())), (button.rect[:2]))
+				
+				for number in range(9):
+					button = getattr(self, f'social_law_button_{str(number+1)}', None)
+					law_rating = int((self.progressbar_huge.get_width()/100) * self.selected_country.social_laws_groups[number].active_law_rating)
+					screen.blit(self.progressbar_huge.subsurface((0, 0, law_rating, self.progressbar_huge.get_height())), (button.rect[:2]))				
+
 				#----------------------------------------------------------------------------------------------------------------------------------------#
 				# COUNTRY INFOS
 					
@@ -1388,7 +1412,6 @@ class Country_Selection_Menu:
 				self.hovering_secret_service_approval_rating_rect = False
 				self.hovering_politics_approval_rating_rect = False	
 
-										
 
 		if self.clicked_ideology == None: # Blocked Buttons
 			screen.blit(self.blocked_select_country_button, (self.select_flag_style_button_x_offset, self.select_flag_style_button_y_offset))
@@ -1418,25 +1441,10 @@ class Country_Selection_Menu:
 				screen.blit(self.hovered_select_country_button_image, (self.select_flag_style_button_x_offset, self.select_flag_style_button_y_offset))				
 
 			else:
-				for number in range(9):
-					if self.hovered_button == f'political_law_button_{str(number+1)}':
-						button = getattr(self, f'political_law_button_{str(number+1)}', None)
-						screen.blit(self.hovered_laws_button_image, (button.rect[:2]))
-				
-				for number in range(9):
-					if self.hovered_button == f'military_law_button_{str(number+1)}':
-						button = getattr(self, f'military_law_button_{str(number+1)}', None)
-						screen.blit(self.hovered_laws_button_image, (button.rect[:2]))	
-				
-				for number in range(9):
-					if self.hovered_button == f'economic_law_button_{str(number+1)}':
-						button = getattr(self, f'economic_law_button_{str(number+1)}', None)
-						screen.blit(self.hovered_laws_button_image, (button.rect[:2]))
-				
-				for number in range(9):
-					if self.hovered_button == f'social_law_button_{str(number+1)}':
-						button = getattr(self, f'social_law_button_{str(number+1)}', None)
-						screen.blit(self.hovered_laws_button_image, (button.rect[:2]))															
+				button = getattr(self, self.hovered_button, None)
+				if button:
+					screen.blit(self.hovered_laws_button_image, (button.rect[:2]))
+		
 		else: # Fade Audio
 			self.hover_over_button_sound.fadeout(50)
 
