@@ -15,6 +15,7 @@ class Laws_Group:
     def __init__(self, group_name = str, laws = list, active_law_index = int) -> None:
         self.group_name = group_name
         self.laws = laws
+        self.active_law_index = active_law_index
 
         self.total_value = 0
 
@@ -26,14 +27,16 @@ class Laws_Group:
         self.active_law_rating = self.calculate_rating()
 
     def calculate_rating(self):
-        proportion = self.active_law.value / (self.total_value - len(self.laws))
+        proportion = self.active_law.value / len(self.laws)
         rating = int(proportion * 100)
 
         return max(1, min(100, rating))
 
 class Law:
-    def __init__(self, name = str) -> None:
+    def __init__(self, name = str, description = str) -> None:
         self.name = name
+        self.description = description
+
         self.value = 0
 
 
@@ -133,13 +136,32 @@ class Country:
 
         #   POLITICAL LAWS
 
-        self.political_parties_1 = Law('test')
-        self.political_parties_2 = Law('test')
-        self.political_parties_3 = Law('test')
+        self.political_parties_1 = Law('LAW NAME 1', 'desc')
+        self.political_parties_2 = Law('LAW NAME 2', '''
+As you  step  into  a  world  forever  altered  by  the
+relentless efforts of  the  KGB,  the  very  fabric  of
+society   quivers   beneath   the   sinister   art   of
+manipulation and deception.
+
+The KGB, ever vigilant,  works  tirelessly  to  maintain
+the  illusion  of  stability, even  as  the  foundations
+of the Soviet Union crumble beneath the surface.
+
+The cracks in  the  facade  of  the  once-mighty  empire
+have  grown  into  chasms, carefully  concealed  by  the
+KGB's  propaganda,  threatening  to   engulf   not  only
+the  Eastern   Bloc   but   the   entire   world   in  a
+catastrophic maelstrom.''')
+        self.political_parties_3 = Law('LAW NAME 3', 'desc')
+        self.political_parties_4 = Law('LAW NAME 4', 'desc')
+        self.political_parties_5 = Law('LAW NAME 5', 'desc')
+        self.political_parties_6 = Law('LAW NAME 6', 'desc')   
+        self.political_parties_7 = Law('LAW NAME 7', 'desc')
+        self.political_parties_8 = Law('LAW NAME 8', 'desc')             
 
         self.political_parties  =    Laws_Group('political_parties', [self.political_parties_1, self.political_parties_2, self.political_parties_3], 0)
-        self.religious_rights   =    Laws_Group('religious_rights', [self.political_parties_1, self.political_parties_2, self.political_parties_3], 1)
-        self.trade_unions       =    Laws_Group('trade_unions', [self.political_parties_1, self.political_parties_2, self.political_parties_3], 2)
+        self.religious_rights   =    Laws_Group('religious_rights', [self.political_parties_2, self.political_parties_1, self.political_parties_3], 1)
+        self.trade_unions       =    Laws_Group('trade_unions', [self.political_parties_1, self.political_parties_2, self.political_parties_3, self.political_parties_4, self.political_parties_5, self.political_parties_6, self.political_parties_7, self.political_parties_8], 3)
         self.public_protest     =    Laws_Group('public_protest', [self.political_parties_1, self.political_parties_2, self.political_parties_3], 1)
         self.gun_control        =    Laws_Group('gun_control', [self.political_parties_1, self.political_parties_2, self.political_parties_3], 1)
         self.privacy_rights     =    Laws_Group('privacy_rights', [self.political_parties_1, self.political_parties_2, self.political_parties_3], 1)

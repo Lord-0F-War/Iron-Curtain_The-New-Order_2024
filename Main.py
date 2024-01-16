@@ -160,13 +160,16 @@ class Main:
 		self.hovered_select_country_button_image			= self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_select_country_button.png')).convert_alpha()
 		self.hovered_select_national_spirit_button_image 	= self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_select_national_spirit_button.png')).convert_alpha()
 		
-		self.hovered_laws_button_image = self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_laws_button.png')).convert_alpha()
+		self.hovered_laws_button_image 						= self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_laws_button.png')).convert_alpha()
 
-		self.blocked_full_right_side 					= self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_full_right_side.png')).convert_alpha()
-		self.blocked_all_laws 							= self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_all_laws.png')).convert_alpha()
-		self.blocked_select_national_spirit_button 		= self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_select_national_spirit_button.png')).convert_alpha()
-		self.blocked_select_country_button 				= self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_select_country_button.png')).convert_alpha()
-		self.blocked_start_game_button 					= self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_start_game_button.png')).convert_alpha()
+		self.blocked_full_right_side 						= self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_full_right_side.png')).convert_alpha()
+		self.blocked_all_laws 								= self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_all_laws.png')).convert_alpha()
+		self.blocked_select_national_spirit_button 			= self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_select_national_spirit_button.png')).convert_alpha()
+		self.blocked_select_country_button 					= self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_select_country_button.png')).convert_alpha()
+		self.blocked_start_game_button 						= self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_start_game_button.png')).convert_alpha()
+
+		self.laws_description_image 						= self.pygame.image.load(os.path.join(self.country_selection_folder, 'laws_description_image.png')).convert_alpha()		
+
 
 		self.selected_law_background = self.pygame.image.load(os.path.join(self.country_selection_folder, 'selected_law_background.png')).convert_alpha()
 
@@ -704,7 +707,7 @@ your shoulders.
 				self.hovered_start_game_button, self.hovered_select_national_spirit_button_image, self.hovered_select_country_button_image, 
 				self.hovered_laws_button_image, self.generic_leader, self.CRT_flag_overlay_effect, self.blocked_select_national_spirit_button, 
 				self.blocked_select_country_button, self.blocked_start_game_button, self.blocked_full_right_side, self.blocked_all_laws, self.national_spirits_background,
-				self.generic_national_spirits, self.progressbar, self.progressbar_vertical, self.progressbar_small, self.progressbar_huge, self.selected_law_background)
+				self.generic_national_spirits, self.progressbar, self.progressbar_vertical, self.progressbar_small, self.progressbar_huge, self.selected_law_background, self.laws_description_image)
 		
 
 		self.Options_Menu = MenuManager.Options_Menu(self.screen_width, self.screen_height, self.menu_options_UI, 

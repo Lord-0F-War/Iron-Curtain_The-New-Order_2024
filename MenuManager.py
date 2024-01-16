@@ -2,7 +2,7 @@
 import GenericUtilitys
 from PygameManager import pygame
 from pyvidplayer import Video
-import random
+import CountriesManager
 
 import locale
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
@@ -537,7 +537,7 @@ class Country_Selection_Screen:
 				hovered_start_game_button, hovered_select_national_spirit_button_image, hovered_select_country_button_image, 
 				hovered_laws_button_image, generic_leader, CRT_flag_overlay_effect, blocked_select_national_spirit_button, 
 				blocked_select_country_button, blocked_start_game_button, blocked_full_right_side, blocked_all_laws, national_spirits_background,
-				generic_national_spirits, progressbar, progressbar_vertical, progressbar_small, progressbar_huge, selected_law_background):	
+				generic_national_spirits, progressbar, progressbar_vertical, progressbar_small, progressbar_huge, selected_law_background, laws_description_image):	
 		
 		self.Country_Selection_Menu = Country_Selection_Menu(
 				screen_width, screen_height, pygame, generic_hover_over_button_sound, generic_click_button_sound, 
@@ -553,7 +553,8 @@ class Country_Selection_Screen:
 		self.National_Spirits_Selection_Menu = National_Spirits_Selection_Menu(screen_width, screen_height,
 				national_spirits_background, generic_national_spirits, generic_hover_over_button_sound, generic_click_button_sound)
 		
-		self.Laws_Group_Menu = Laws_Group_Menu(screen_width, screen_height, pygame, generic_hover_over_button_sound, generic_click_button_sound, selected_law_background)
+		self.Laws_Group_Menu = Laws_Group_Menu(screen_width, screen_height, pygame, generic_hover_over_button_sound, generic_click_button_sound, selected_law_background,
+				laws_description_image)
 		
 		self.selected_flag_image = None
 
@@ -573,7 +574,8 @@ class Country_Selection_Screen:
 				self.Country_Selection_Menu.selected_flag_image = self.selected_flag_image
 				self.Country_Selection_Menu.selected_selectable_national_spirits = []
 				self.National_Spirits_Selection_Menu.selected_country = self.Flag_Selection_Menu.selected_country		
-				self.Country_Selection_Menu.selected_country = self.Flag_Selection_Menu.selected_country		
+				self.Country_Selection_Menu.selected_country = self.Flag_Selection_Menu.selected_country	
+				self.Laws_Group_Menu.selected_country = self.Flag_Selection_Menu.selected_country	
 				return clicked_button
 			
 		clicked_button = self.Country_Selection_Menu.get_clicked_button(mouse_rect)
@@ -584,10 +586,16 @@ class Country_Selection_Screen:
 		if self.Country_Selection_Menu.is_flag_national_spirits_selection_menu_open == True:
 			clicked_button = self.National_Spirits_Selection_Menu.get_clicked_national_spirit(mouse_rect)
 			if clicked_button != None:
-				return clicked_button	
+				return clicked_button
+
+		if self.Country_Selection_Menu.is_laws_group_menu_open == True:
+			clicked_button = self.Laws_Group_Menu.get_clicked_button(mouse_rect)
+			if clicked_button == 'close':
+				self.Country_Selection_Menu.is_laws_group_menu_open = False
+				self.Laws_Group_Menu.last_hovered_rect = None
+			return clicked_button
 
 	def get_hovered_button(self, mouse_rect):	
-
 		hovered_button = self.Country_Selection_Menu.get_hovered_button(mouse_rect)
 		if hovered_button != None:
 			return hovered_button	
@@ -613,6 +621,9 @@ class Country_Selection_Screen:
 				return hovered_button
 			else:
 				self.National_Spirits_Selection_Menu.hovered_national_spirit = hovered_button
+		
+		if self.Country_Selection_Menu.is_laws_group_menu_open == True:
+			hovered_rect = self.Laws_Group_Menu.get_hovered_rect(mouse_rect)
 	
 	def music_player(self):
 		if pygame.mixer.music.get_busy() == False and self.selected_flag_image != None:
@@ -646,7 +657,7 @@ class Country_Selection_Menu:
 		self.hovered_national_spirit = None
 		self.last_hovered_national_spirit = None
 
-		self.selected_country = None
+		self.selected_country: CountriesManager.Country = None
 
 		self.selected_selectable_national_spirits = []
 
@@ -792,17 +803,17 @@ class Country_Selection_Menu:
 		self.second_row_law_button_y_offset_9 = 1043 * self.factor_y	
 		
 		## ECONOMIC LAWS
-		self.economic_law_button_x_offset = 1269 * self.factor_x
+		self.economical_law_button_x_offset = 1269 * self.factor_x
 		
-		self.economic_law_button_1 = GenericUtilitys.Button(self.economic_law_button_x_offset, self.second_row_law_button_y_offset_1, law_button_width, law_button_height)
-		self.economic_law_button_2 = GenericUtilitys.Button(self.economic_law_button_x_offset, self.second_row_law_button_y_offset_2, law_button_width, law_button_height)
-		self.economic_law_button_3 = GenericUtilitys.Button(self.economic_law_button_x_offset, self.second_row_law_button_y_offset_3, law_button_width, law_button_height)
-		self.economic_law_button_4 = GenericUtilitys.Button(self.economic_law_button_x_offset, self.second_row_law_button_y_offset_4, law_button_width, law_button_height)
-		self.economic_law_button_5 = GenericUtilitys.Button(self.economic_law_button_x_offset, self.second_row_law_button_y_offset_5, law_button_width, law_button_height)
-		self.economic_law_button_6 = GenericUtilitys.Button(self.economic_law_button_x_offset, self.second_row_law_button_y_offset_6, law_button_width, law_button_height)
-		self.economic_law_button_7 = GenericUtilitys.Button(self.economic_law_button_x_offset, self.second_row_law_button_y_offset_7, law_button_width, law_button_height)
-		self.economic_law_button_8 = GenericUtilitys.Button(self.economic_law_button_x_offset, self.second_row_law_button_y_offset_8, law_button_width, law_button_height)
-		self.economic_law_button_9 = GenericUtilitys.Button(self.economic_law_button_x_offset, self.second_row_law_button_y_offset_9, law_button_width, law_button_height)				
+		self.economical_law_button_1 = GenericUtilitys.Button(self.economical_law_button_x_offset, self.second_row_law_button_y_offset_1, law_button_width, law_button_height)
+		self.economical_law_button_2 = GenericUtilitys.Button(self.economical_law_button_x_offset, self.second_row_law_button_y_offset_2, law_button_width, law_button_height)
+		self.economical_law_button_3 = GenericUtilitys.Button(self.economical_law_button_x_offset, self.second_row_law_button_y_offset_3, law_button_width, law_button_height)
+		self.economical_law_button_4 = GenericUtilitys.Button(self.economical_law_button_x_offset, self.second_row_law_button_y_offset_4, law_button_width, law_button_height)
+		self.economical_law_button_5 = GenericUtilitys.Button(self.economical_law_button_x_offset, self.second_row_law_button_y_offset_5, law_button_width, law_button_height)
+		self.economical_law_button_6 = GenericUtilitys.Button(self.economical_law_button_x_offset, self.second_row_law_button_y_offset_6, law_button_width, law_button_height)
+		self.economical_law_button_7 = GenericUtilitys.Button(self.economical_law_button_x_offset, self.second_row_law_button_y_offset_7, law_button_width, law_button_height)
+		self.economical_law_button_8 = GenericUtilitys.Button(self.economical_law_button_x_offset, self.second_row_law_button_y_offset_8, law_button_width, law_button_height)
+		self.economical_law_button_9 = GenericUtilitys.Button(self.economical_law_button_x_offset, self.second_row_law_button_y_offset_9, law_button_width, law_button_height)				
 		##
 
 		## SOCIAL LAWS
@@ -925,22 +936,22 @@ class Country_Selection_Menu:
 			for number in range(9):
 				button = getattr(self, f'political_law_button_{str(number+1)}', None)
 				if button.rect.colliderect(mouse_rect):
-					return f'political_law_button_{str(number+1)}'
+					return f'political_{str(number+1)}'
 			
 			for number in range(8):
 				button = getattr(self, f'military_law_button_{str(number+1)}', None)
 				if button.rect.colliderect(mouse_rect):
-					return f'military_law_button_{str(number+1)}'	
+					return f'military_{str(number+1)}'	
 
 			for number in range(9):
-				button = getattr(self, f'economic_law_button_{str(number+1)}', None)
+				button = getattr(self, f'economical_law_button_{str(number+1)}', None)
 				if button.rect.colliderect(mouse_rect):
-					return f'economic_law_button_{str(number+1)}'
+					return f'economical_{str(number+1)}'
 			
 			for number in range(9):
 				button = getattr(self, f'social_law_button_{str(number+1)}', None)
 				if button.rect.colliderect(mouse_rect):
-					return f'social_law_button_{str(number+1)}'						
+					return f'social_{str(number+1)}'						
 
 		return None
 
@@ -1058,7 +1069,6 @@ class Country_Selection_Menu:
 					return national_spirit
 			return None
 
-
 	def draw(self, screen, mouse_rect):
 		screen.blit(self.political_compass_image, (15 * self.factor_x, 31 * self.factor_y))
 		
@@ -1108,7 +1118,7 @@ class Country_Selection_Menu:
 					screen.blit(self.progressbar_huge.subsurface((0, 0, law_rating, self.progressbar_huge.get_height())), (button.rect[:2]))	
 				
 				for number in range(9):
-					button = getattr(self, f'economic_law_button_{str(number+1)}', None)
+					button = getattr(self, f'economical_law_button_{str(number+1)}', None)
 					law_rating = int((self.progressbar_huge.get_width()/100) * self.selected_country.economical_laws_groups[number].active_law_rating)
 					screen.blit(self.progressbar_huge.subsurface((0, 0, law_rating, self.progressbar_huge.get_height())), (button.rect[:2]))
 				
@@ -1464,8 +1474,10 @@ class Country_Selection_Menu:
 			elif self.hovered_button == 'select_country':
 				screen.blit(self.hovered_select_country_button_image, (self.select_flag_style_button_x_offset, self.select_flag_style_button_y_offset))				
 
-			else:
-				button = getattr(self, self.hovered_button, None)
+			elif type(self.hovered_button) is str:
+				self.hovered_button = self.hovered_button.split('_')
+				button_name = self.hovered_button[0] + '_law_button_' + self.hovered_button[1]
+				button = getattr(self, button_name, None)
 				if button:
 					screen.blit(self.hovered_laws_button_image, (button.rect[:2]))
 		
@@ -1503,7 +1515,7 @@ class Flag_Selection_Menu:
 		self.country_info_display_background = pygame.transform.smoothscale_by(country_info_display_background, (self.factor_x, self.factor_y))
 
 		self.last_selected_country_name = None
-		self.selected_country_name = None
+		self.selected_country_name: CountriesManager.Country = None
 
 		self.normal_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(30 * self.factor_y))
 		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(18 * self.factor_y))		
@@ -1679,7 +1691,7 @@ class National_Spirits_Selection_Menu:
 		self.selectable_national_spirits_list = selectable_national_spirits_list
 		self.selectable_national_spirits_rects = []
 		
-		self.selected_country = None
+		self.selected_country: CountriesManager.Country = None
 
 		self.hovered_national_spirit = None
 		self.last_hovered_national_spirit = None
@@ -1795,7 +1807,7 @@ class National_Spirits_Selection_Menu:
 
 			screen.blit(national_spirit_description_text, text_position)
 class Laws_Group_Menu:
-	def __init__(self, screen_width, screen_height, pygame, generic_hover_over_button_sound, generic_click_menu_sound, selected_law_background):
+	def __init__(self, screen_width, screen_height, pygame, generic_hover_over_button_sound, generic_click_menu_sound, selected_law_background, laws_description_image):
 		self.mouse_pos = [0, 0]
 
 		self.screen_width = screen_width 
@@ -1808,9 +1820,16 @@ class Laws_Group_Menu:
 
 		self.pygame = pygame
 
+		self.selected_country: CountriesManager.Country = None
+		self.laws_butons_rect = []
+		self.last_hovered_rect = None
+
 		self.background_position = [13 * self.factor_x, 29 * self.factor_y]
 
+		self.close_button = GenericUtilitys.Button(976 * self.factor_x + self.background_position[0], 14 * self.factor_y + self.background_position[1], 30 * self.factor_x, 30 * self.factor_y)		
+
 		self.selected_law_background = pygame.transform.smoothscale_by(selected_law_background, (self.factor_x, self.factor_y))		
+		self.laws_description_image = pygame.transform.smoothscale_by(laws_description_image, (self.factor_x, self.factor_y))	
 
 		self.opened_law_group = None
 
@@ -1820,17 +1839,87 @@ class Laws_Group_Menu:
 		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
 		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
 		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
-		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(13 * self.factor_y))		
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(13 * self.factor_y))
 
+	def get_hovered_rect(self, mouse_rect):
+		for rect in self.laws_butons_rect:
+			rect = pygame.Rect(rect)
+			if rect.colliderect(mouse_rect):
+				if rect != self.last_hovered_rect:
+					self.last_hovered_rect = rect
+					self.hover_over_button_sound.play()
+				return rect
+		if self.close_button.rect.colliderect(mouse_rect):
+			if self.close_button.rect != self.last_hovered_rect:
+				self.last_hovered_rect = self.close_button.rect
+				self.hover_over_button_sound.play()	
+			return rect		
+
+		self.last_hovered_rect = None		
+		return None		
+
+	def get_clicked_button(self, mouse_rect):
+		self.hover_over_button_sound.fadeout(50)
+		if self.close_button.rect.colliderect(mouse_rect):
+			self.click_menu_sound.play()
+			return 'close'
+	
 	def draw(self, screen):
 		screen.blit(self.selected_law_background, self.background_position)
 
+		self.laws_butons_rect = []
+
 		if self.opened_law_group != None:
-			law_opened = self.big_scalable_font.render(self.opened_law_group, True, (255, 255, 255))
-			text_position = (400, 400)
-			screen.blit(law_opened, text_position)	
+
+			if self.close_button.rect == self.last_hovered_rect:
+				pygame.draw.rect(screen, (255,255,255), self.close_button.rect, 2)
+
+			
+			splited = self.opened_law_group.split('_')
+			laws_group = None
+			if splited[0] == 'political':
+				laws_group = self.selected_country.political_laws_groups[int(splited[1]) - 1]
+			elif splited[0] == 'military':
+				laws_group = self.selected_country.military_laws_groups[int(splited[1]) - 1]
+			elif splited[0] == 'economical':
+				laws_group = self.selected_country.economical_laws_groups[int(splited[1]) - 1]
+			elif splited[0] == 'social':
+				laws_group = self.selected_country.social_laws_groups[int(splited[1]) - 1]											
+
+			if laws_group != None:
+				laws = laws_group.laws
+
+				height = 120 * len(laws) - 80
+				start_pos = (1017 - height) / 2
+				
+				for index, law in enumerate(laws):
+					rect = (70 * self.factor_x, (start_pos + 120 * index) * self.factor_y, 400 * self.factor_x, 80 * self.factor_y)
 
 
+					pygame.draw.rect(screen, (6,15,20), rect)
+					if self.last_hovered_rect != rect:
+						if index == laws_group.active_law_index:
+							pygame.draw.rect(screen, (255,38,42), rect, 2)
+						else:
+							pygame.draw.rect(screen, (43,219,211), rect, 2)
+					else:
+						pygame.draw.rect(screen, (38,255,38), rect, 2)
+
+						# desc
+						law_description = self.big_scalable_font.render(law.description, True, (255, 255, 255))
+						text_position = (500 * self.factor_x, 508 * self.factor_y - law_description.get_height()/2 + 63 * self.factor_y)						
+						pygame.draw.rect(screen, (6,15,20), (490 * self.factor_x, 498 * self.factor_y - law_description.get_height()/2, 525 * self.factor_x, law_description.get_height() + 20 * self.factor_y + 63 * self.factor_y))
+						screen.blit(self.laws_description_image, (495 * self.factor_x, 503 * self.factor_y - law_description.get_height()/2))
+						
+						pygame.draw.rect(screen, (43,219,211), (490 * self.factor_x, 498 * self.factor_y - law_description.get_height()/2, 525 * self.factor_x, law_description.get_height() + 20 * self.factor_y + 63 * self.factor_y), 2)
+						screen.blit(law_description, text_position)
+						
+
+					law_opened = self.big_scalable_font.render(law.name, True, (255, 255, 255))
+					text_position = (110 * self.factor_x, (start_pos + 120 * index) * self.factor_y + 40 * self.factor_y - law_opened.get_height()/2)
+					screen.blit(law_opened, text_position)					
+
+					self.laws_butons_rect.append(rect)
 
 
 
