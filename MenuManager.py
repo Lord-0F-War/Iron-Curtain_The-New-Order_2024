@@ -537,7 +537,7 @@ class Country_Selection_Screen:
 				hovered_start_game_button, hovered_select_national_spirit_button_image, hovered_select_country_button_image, 
 				hovered_laws_button_image, generic_leader, CRT_flag_overlay_effect, blocked_select_national_spirit_button, 
 				blocked_select_country_button, blocked_start_game_button, blocked_full_right_side, blocked_all_laws, national_spirits_background,
-				generic_national_spirits, progressbar, progressbar_vertical, progressbar_small, progressbar_huge):	
+				generic_national_spirits, progressbar, progressbar_vertical, progressbar_small, progressbar_huge, selected_law_background):	
 		
 		self.Country_Selection_Menu = Country_Selection_Menu(
 				screen_width, screen_height, pygame, generic_hover_over_button_sound, generic_click_button_sound, 
@@ -551,12 +551,14 @@ class Country_Selection_Screen:
 				generic_hover_over_button_sound, generic_click_button_sound, country_info_display_background)
 		
 		self.National_Spirits_Selection_Menu = National_Spirits_Selection_Menu(screen_width, screen_height,
-				national_spirits_background, generic_national_spirits, generic_hover_over_button_sound, generic_click_button_sound, political_compass_image)
+				national_spirits_background, generic_national_spirits, generic_hover_over_button_sound, generic_click_button_sound)
+		
+		self.Laws_Group_Menu = Laws_Group_Menu(screen_width, screen_height, pygame, generic_hover_over_button_sound, generic_click_button_sound, selected_law_background)
 		
 		self.selected_flag_image = None
 
 	def get_clicked_button(self, mouse_rect):
-		if self.Country_Selection_Menu.is_flag_national_spirits_selection_menu_open == False:
+		if self.Country_Selection_Menu.is_flag_national_spirits_selection_menu_open == False and self.Country_Selection_Menu.is_laws_group_menu_open == False:
 			clicked_button = self.Country_Selection_Menu.get_clicked_ideology(mouse_rect)
 			if clicked_button != None:
 				return clicked_button			
@@ -575,19 +577,22 @@ class Country_Selection_Screen:
 				return clicked_button
 			
 		clicked_button = self.Country_Selection_Menu.get_clicked_button(mouse_rect)
-		if clicked_button != None and (self.Country_Selection_Menu.is_flag_national_spirits_selection_menu_open == False and clicked_button != 'select_country'):
+		self.Laws_Group_Menu.opened_law_group = self.Country_Selection_Menu.clicked_law_group
+		if clicked_button != None and self.Country_Selection_Menu.is_flag_national_spirits_selection_menu_open == False and self.Country_Selection_Menu.is_laws_group_menu_open == False and clicked_button != 'select_country':
 			return clicked_button		
 		
-		clicked_button = self.National_Spirits_Selection_Menu.get_clicked_national_spirit(mouse_rect)
-		if clicked_button != None:
-			return clicked_button	
+		if self.Country_Selection_Menu.is_flag_national_spirits_selection_menu_open == True:
+			clicked_button = self.National_Spirits_Selection_Menu.get_clicked_national_spirit(mouse_rect)
+			if clicked_button != None:
+				return clicked_button	
 
 	def get_hovered_button(self, mouse_rect):	
-		if self.Country_Selection_Menu.is_flag_national_spirits_selection_menu_open == False:
-			hovered_button = self.Country_Selection_Menu.get_hovered_button(mouse_rect)
-			if hovered_button != None:
-				return hovered_button	
 
+		hovered_button = self.Country_Selection_Menu.get_hovered_button(mouse_rect)
+		if hovered_button != None:
+			return hovered_button	
+		
+		if self.Country_Selection_Menu.is_flag_national_spirits_selection_menu_open == False and self.Country_Selection_Menu.is_laws_group_menu_open == False:
 			hovered_button = self.Country_Selection_Menu.get_hovered_ideology_rect(mouse_rect)
 			if hovered_button != None:
 				self.Country_Selection_Menu.hovered_ideology_rect = hovered_button
@@ -601,12 +606,13 @@ class Country_Selection_Screen:
 		else:
 			self.Country_Selection_Menu.hovered_national_spirit = hovered_button				
 
-		hovered_button = self.National_Spirits_Selection_Menu.get_hovered_national_spirit(mouse_rect)
-		if hovered_button != None:
-			self.National_Spirits_Selection_Menu.hovered_national_spirit = hovered_button
-			return hovered_button
-		else:
-			self.National_Spirits_Selection_Menu.hovered_national_spirit = hovered_button
+		if self.Country_Selection_Menu.is_flag_national_spirits_selection_menu_open == True:
+			hovered_button = self.National_Spirits_Selection_Menu.get_hovered_national_spirit(mouse_rect)
+			if hovered_button != None:
+				self.National_Spirits_Selection_Menu.hovered_national_spirit = hovered_button
+				return hovered_button
+			else:
+				self.National_Spirits_Selection_Menu.hovered_national_spirit = hovered_button
 	
 	def music_player(self):
 		if pygame.mixer.music.get_busy() == False and self.selected_flag_image != None:
@@ -624,7 +630,10 @@ class Country_Selection_Screen:
 			self.Flag_Selection_Menu.draw(screen, self.Country_Selection_Menu.clicked_ideology, mouse_rect)
 
 		if self.Country_Selection_Menu.is_flag_national_spirits_selection_menu_open == True:
-			self.National_Spirits_Selection_Menu.draw(screen)									
+			self.National_Spirits_Selection_Menu.draw(screen)		
+
+		if self.Country_Selection_Menu.is_laws_group_menu_open == True:		
+			self.Laws_Group_Menu.draw(screen)				
 
 class Country_Selection_Menu:
 	def __init__(self, screen_width, screen_height, pygame, 
@@ -643,17 +652,20 @@ class Country_Selection_Menu:
 
 		self.mouse_pos = [0, 0]
 		
+		self.clicked_law_group = None
+
 		self.hovered_ideology_rect = None
 		self.last_hovered_ideology = None
 		
-		self.hovered_button = 'none'
-		self.last_hovered_button ='none'
+		self.hovered_button = None
+		self.last_hovered_button = None
 		
 		self.is_flag_selection_menu_open = False
 		self.selected_flag_image = None
 		self.flag_size = None
 
 		self.is_flag_national_spirits_selection_menu_open = False
+		self.is_laws_group_menu_open = False
 		
 		self.screen_width = screen_width 
 		self.screen_height = screen_height
@@ -938,12 +950,24 @@ class Country_Selection_Menu:
 			if clicked_button != None:
 				self.hover_over_button_sound.fadeout(50)
 				self.click_menu_sound.play()
+				self.clicked_law_group = None
 
-				if clicked_button == 'select_country' and self.is_flag_national_spirits_selection_menu_open == False:
+				if clicked_button == 'select_country' and self.is_flag_national_spirits_selection_menu_open == False and self.is_laws_group_menu_open == False:
 					self.is_flag_selection_menu_open = True
 
-				if clicked_button == 'select_national_spirit' and self.is_flag_selection_menu_open == False:
+				elif clicked_button == 'select_national_spirit' and self.is_flag_selection_menu_open == False and self.is_laws_group_menu_open == False:
 					self.is_flag_national_spirits_selection_menu_open = not self.is_flag_national_spirits_selection_menu_open
+
+				elif clicked_button == 'start_game':
+					pass
+
+				elif self.is_flag_selection_menu_open == False and self.is_flag_national_spirits_selection_menu_open == False and not (clicked_button == 'select_country' or clicked_button == 'select_national_spirit' or clicked_button == 'start_game'):
+					if self.is_laws_group_menu_open == False:
+						self.is_laws_group_menu_open = True
+						self.clicked_law_group = clicked_button
+					else:
+						self.clicked_law_group = clicked_button
+
 
 			return clicked_button
 	def get_clicked_ideology(self, mouse_rect):
@@ -1640,7 +1664,7 @@ class Flag_Selection_Menu:
 
 				screen.blit(flag, flag_position)
 class National_Spirits_Selection_Menu:
-	def __init__(self, screen_width, screen_height, national_spirits_background, selectable_national_spirits_list, hover_over_button_sound, click_sound, political_compass_image) -> None:
+	def __init__(self, screen_width, screen_height, national_spirits_background, selectable_national_spirits_list, hover_over_button_sound, click_sound) -> None:
 		self.screen_width = screen_width
 		self.screen_height = screen_height
 		reference_screen_size_x = 1920
@@ -1648,11 +1672,7 @@ class National_Spirits_Selection_Menu:
 		self.factor_x = screen_width / reference_screen_size_x
 		self.factor_y = screen_height / reference_screen_size_y	
 
-		self.political_compass_image = political_compass_image
-		political_compass_image_rect = self.political_compass_image.get_rect()
-		political_compass_image_rect[0] += 15 * self.factor_x
-		political_compass_image_rect[1] += 31 * self.factor_y
-		self.background_position = [political_compass_image_rect[0]*0.65, political_compass_image_rect[1]*0.95]
+		self.background_position = [13 * self.factor_x, 29 * self.factor_y]
 
 		self.national_spirits_background = national_spirits_background
 		
@@ -1774,6 +1794,44 @@ class National_Spirits_Selection_Menu:
 			pygame.draw.rect(screen, (43,219,211), (525 * self.factor_x, 125 * self.factor_y, 495 * self.factor_x, national_spirit_description_text.get_height() + 10 * self.factor_y), 2)
 
 			screen.blit(national_spirit_description_text, text_position)
+class Laws_Group_Menu:
+	def __init__(self, screen_width, screen_height, pygame, generic_hover_over_button_sound, generic_click_menu_sound, selected_law_background):
+		self.mouse_pos = [0, 0]
+
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+		reference_screen_size_x = 1920
+		reference_screen_size_y = 1080
+		self.factor_x = screen_width / reference_screen_size_x
+		self.factor_y = screen_height / reference_screen_size_y
+		self.factor = self.factor_x * self.factor_y
+
+		self.pygame = pygame
+
+		self.background_position = [13 * self.factor_x, 29 * self.factor_y]
+
+		self.selected_law_background = pygame.transform.smoothscale_by(selected_law_background, (self.factor_x, self.factor_y))		
+
+		self.opened_law_group = None
+
+		self.hover_over_button_sound = generic_hover_over_button_sound
+		self.click_menu_sound = generic_click_menu_sound
+
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(13 * self.factor_y))		
+
+	def draw(self, screen):
+		screen.blit(self.selected_law_background, self.background_position)
+
+		if self.opened_law_group != None:
+			law_opened = self.big_scalable_font.render(self.opened_law_group, True, (255, 255, 255))
+			text_position = (400, 400)
+			screen.blit(law_opened, text_position)	
+
+
+
 
 
 class Game_Screen:
@@ -1833,7 +1891,6 @@ class Game_Screen:
 		self.Earth_Map.draw(screen)		
 		self.Country_Overview.draw(screen, mouse_rect)
 		self.Clock_UI.draw(screen)
-
 
 class Country_Overview:
 	def __init__(self, factor_x, factor_y, pygame, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over, country_overview, popularity_circle_overlay,

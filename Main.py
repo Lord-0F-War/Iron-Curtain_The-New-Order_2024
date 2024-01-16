@@ -100,8 +100,8 @@ class Main:
 
 		self.map_folder = os.path.join(self.exe_folder, 'map')
 
-		self.earth_daymap = self.pygame.image.load(os.path.join(self.map_folder, 'earth_daymap.jpg')).convert_alpha()
-		self.earth_nightmap = self.pygame.image.load(os.path.join(self.map_folder, 'earth_nightmap.png')).convert_alpha()	
+		self.earth_daymap 		= self.pygame.image.load(os.path.join(self.map_folder, 'earth_daymap.jpg')).convert_alpha()
+		self.earth_nightmap 	= self.pygame.image.load(os.path.join(self.map_folder, 'earth_nightmap.png')).convert_alpha()	
 
 
 		self.gfx_folder = os.path.join(self.exe_folder, 'gfx')
@@ -118,70 +118,73 @@ class Main:
 
 		self.interface_folder = os.path.join(self.gfx_folder, 'Interface')
 
-		self.main_menu_backgound = self.pygame.image.load(os.path.join(self.interface_folder, 'main_menu.png')).convert_alpha()
-		self.main_menu_backgound = self.pygame.transform.smoothscale(self.main_menu_backgound, (screen_width, screen_height))
+		self.main_menu_backgound 				= self.pygame.image.load(os.path.join(self.interface_folder, 'main_menu.png')).convert_alpha()
+		self.main_menu_backgound 				= self.pygame.transform.smoothscale(self.main_menu_backgound, (screen_width, screen_height))
 
-		self.game_logo = self.pygame.image.load(os.path.join(self.interface_folder, 'game_logo.png')).convert_alpha()
+		self.game_logo 							= self.pygame.image.load(os.path.join(self.interface_folder, 'game_logo.png')).convert_alpha()
 
-		self.main_menu_UI = self.pygame.image.load(os.path.join(self.interface_folder, 'menu_UI.png')).convert_alpha()
-		self.menu_options_UI = self.pygame.image.load(os.path.join(self.interface_folder, 'options_UI.png')).convert_alpha()
-		self.hovered_green_button_menu_image = self.pygame.image.load(os.path.join(self.interface_folder, 'hovered_green_button_menu_image.png')).convert_alpha()
-		self.hovered_red_button_menu_image = self.pygame.image.load(os.path.join(self.interface_folder, 'hovered_red_button_menu_image.png')).convert_alpha()
+		self.main_menu_UI 						= self.pygame.image.load(os.path.join(self.interface_folder, 'menu_UI.png')).convert_alpha()
+		self.menu_options_UI 					= self.pygame.image.load(os.path.join(self.interface_folder, 'options_UI.png')).convert_alpha()
+		self.hovered_green_button_menu_image 	= self.pygame.image.load(os.path.join(self.interface_folder, 'hovered_green_button_menu_image.png')).convert_alpha()
+		self.hovered_red_button_menu_image 		= self.pygame.image.load(os.path.join(self.interface_folder, 'hovered_red_button_menu_image.png')).convert_alpha()
 
-		self.python_logo = self.pygame.image.load(os.path.join(self.interface_folder, 'python_logo.png')).convert_alpha()
-		self.python_logo = self.pygame.transform.smoothscale_by(self.python_logo, (self.factor_x, self.factor_y))
+		self.python_logo 						= self.pygame.image.load(os.path.join(self.interface_folder, 'python_logo.png')).convert_alpha()
+		self.python_logo 						= self.pygame.transform.smoothscale_by(self.python_logo, (self.factor_x, self.factor_y))
 
-		self.ESC_menu_background = self.pygame.image.load(os.path.join(self.interface_folder, 'ESC_menu_background.png')).convert_alpha()
-		self.ESC_menu_background = self.pygame.transform.smoothscale_by(self.ESC_menu_background, (self.factor_x, self.factor_y))
+		self.ESC_menu_background 				= self.pygame.image.load(os.path.join(self.interface_folder, 'ESC_menu_background.png')).convert_alpha()
+		self.ESC_menu_background 				= self.pygame.transform.smoothscale_by(self.ESC_menu_background, (self.factor_x, self.factor_y))
 
-		self.new_game_menu_background = self.pygame.image.load(os.path.join(self.interface_folder, 'new_game_menu_background.png')).convert_alpha()
-		self.new_game_menu_background = self.pygame.transform.smoothscale_by(self.new_game_menu_background, (self.factor_x, self.factor_y))		
+		self.new_game_menu_background 			= self.pygame.image.load(os.path.join(self.interface_folder, 'new_game_menu_background.png')).convert_alpha()
+		self.new_game_menu_background 			= self.pygame.transform.smoothscale_by(self.new_game_menu_background, (self.factor_x, self.factor_y))		
 
 		self.scenario_selection_folder = os.path.join(self.interface_folder, 'scenario_selection')
 
-		self.scenario_selection_menu_gui = self.pygame.image.load(os.path.join(self.scenario_selection_folder, 'select_date_background.png')).convert_alpha()
-		self.hovered_select_scenario_button_menu_image = self.pygame.image.load(os.path.join(self.scenario_selection_folder, 'hovered_select_scenario_button_menu.png')).convert_alpha()
-		self.hovered_back_to_main_menu_button_menu_image = self.pygame.image.load(os.path.join(self.scenario_selection_folder, 'hovered_back_button_menu.png')).convert_alpha()
+		self.scenario_selection_menu_gui 					= self.pygame.image.load(os.path.join(self.scenario_selection_folder, 'select_date_background.png')).convert_alpha()
+		self.hovered_select_scenario_button_menu_image 		= self.pygame.image.load(os.path.join(self.scenario_selection_folder, 'hovered_select_scenario_button_menu.png')).convert_alpha()
+		self.hovered_back_to_main_menu_button_menu_image 	= self.pygame.image.load(os.path.join(self.scenario_selection_folder, 'hovered_back_button_menu.png')).convert_alpha()
 
 		
 		self.country_selection_folder = os.path.join(self.interface_folder, 'country_selection')
 
 
-		self.country_selection_background = self.pygame.image.load(os.path.join(self.country_selection_folder, 'country_selection_background.png')).convert_alpha()
-		self.political_compass_image = self.pygame.image.load(os.path.join(self.country_selection_folder, 'political_compass.png')).convert_alpha()
-		self.ideologies_CRT_overlay_effect = self.pygame.image.load(os.path.join(self.country_selection_folder, 'ideologies_CRT_overlay_effect.png')).convert_alpha()
-		self.CRT_flag_overlay_effect = self.pygame.image.load(os.path.join(self.country_selection_folder, 'flag_overlay.png')).convert_alpha()
+		self.country_selection_background 					= self.pygame.image.load(os.path.join(self.country_selection_folder, 'country_selection_background.png')).convert_alpha()
+		self.political_compass_image 						= self.pygame.image.load(os.path.join(self.country_selection_folder, 'political_compass.png')).convert_alpha()
+		self.ideologies_CRT_overlay_effect 					= self.pygame.image.load(os.path.join(self.country_selection_folder, 'ideologies_CRT_overlay_effect.png')).convert_alpha()
+		self.CRT_flag_overlay_effect 						= self.pygame.image.load(os.path.join(self.country_selection_folder, 'flag_overlay.png')).convert_alpha()
 
-		self.country_info_display_background = self.pygame.image.load(os.path.join(self.country_selection_folder, 'country_info_display_background.png')).convert_alpha()
-		self.national_spirits_background = self.pygame.image.load(os.path.join(self.country_selection_folder, 'national_spirits_background.png')).convert_alpha()
-		self.national_spirits_background = pygame.transform.smoothscale_by(self.national_spirits_background, (self.factor_x, self.factor_y))
+		self.country_info_display_background 				= self.pygame.image.load(os.path.join(self.country_selection_folder, 'country_info_display_background.png')).convert_alpha()
+		self.national_spirits_background 					= self.pygame.image.load(os.path.join(self.country_selection_folder, 'national_spirits_background.png')).convert_alpha()
+		self.national_spirits_background 					= pygame.transform.smoothscale_by(self.national_spirits_background, (self.factor_x, self.factor_y))
 
-		self.hovered_start_game_button = self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_start_game_button.png')).convert_alpha()
-		self.hovered_select_country_button_image = self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_select_country_button.png')).convert_alpha()
-		self.hovered_select_national_spirit_button_image = self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_select_national_spirit_button.png')).convert_alpha()
+		self.hovered_start_game_button 						= self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_start_game_button.png')).convert_alpha()
+		self.hovered_select_country_button_image			= self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_select_country_button.png')).convert_alpha()
+		self.hovered_select_national_spirit_button_image 	= self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_select_national_spirit_button.png')).convert_alpha()
 		
 		self.hovered_laws_button_image = self.pygame.image.load(os.path.join(self.country_selection_folder, 'hovered_laws_button.png')).convert_alpha()
 
-		self.blocked_full_right_side = self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_full_right_side.png')).convert_alpha()
-		self.blocked_all_laws = self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_all_laws.png')).convert_alpha()
-		self.blocked_select_national_spirit_button = self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_select_national_spirit_button.png')).convert_alpha()
-		self.blocked_select_country_button = self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_select_country_button.png')).convert_alpha()
-		self.blocked_start_game_button = self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_start_game_button.png')).convert_alpha()
+		self.blocked_full_right_side 					= self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_full_right_side.png')).convert_alpha()
+		self.blocked_all_laws 							= self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_all_laws.png')).convert_alpha()
+		self.blocked_select_national_spirit_button 		= self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_select_national_spirit_button.png')).convert_alpha()
+		self.blocked_select_country_button 				= self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_select_country_button.png')).convert_alpha()
+		self.blocked_start_game_button 					= self.pygame.image.load(os.path.join(self.country_selection_folder, 'blocked_start_game_button.png')).convert_alpha()
+
+		self.selected_law_background = self.pygame.image.load(os.path.join(self.country_selection_folder, 'selected_law_background.png')).convert_alpha()
+
 
 		self.game_HUD_folder = os.path.join(self.interface_folder, 'game_HUD')
 
-		self.top_bar_right_background = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'top_bar_right_background.png')).convert_alpha()
-		self.top_bar_game_speed_indicator = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'top_bar_game_speed_indicator.png')).convert_alpha()
-		self.top_bar_defcon_levels = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'defcon_levels.png')).convert_alpha()		
-		self.top_bar_left_background = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'top_bar_left_background.png')).convert_alpha()
-		self.top_bar_flag_overlay = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'top_bar_flag_overlay.png')).convert_alpha()
-		self.top_bar_flag_overlay_hovering_over = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'top_bar_flag_overlay_hovering_over.png')).convert_alpha()		
-		self.country_overview = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'country_overview.png')).convert_alpha()	
-		self.popularity_circle_overlay = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'popularity_circle_overlay.png')).convert_alpha()
-		self.progressbar_huge = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'progressbar_huge.png')).convert_alpha()	
-		self.progressbar = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'progressbar.png')).convert_alpha()	
-		self.progressbar_vertical = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'progressbar_vertical.png')).convert_alpha()	
-		self.progressbar_small = self.pygame.image.load(os.path.join(self.game_HUD_folder, 'progressbar_small.png')).convert_alpha()		
+		self.top_bar_right_background 				= self.pygame.image.load(os.path.join(self.game_HUD_folder, 'top_bar_right_background.png')).convert_alpha()
+		self.top_bar_game_speed_indicator 			= self.pygame.image.load(os.path.join(self.game_HUD_folder, 'top_bar_game_speed_indicator.png')).convert_alpha()
+		self.top_bar_defcon_levels 					= self.pygame.image.load(os.path.join(self.game_HUD_folder, 'defcon_levels.png')).convert_alpha()		
+		self.top_bar_left_background 				= self.pygame.image.load(os.path.join(self.game_HUD_folder, 'top_bar_left_background.png')).convert_alpha()
+		self.top_bar_flag_overlay 					= self.pygame.image.load(os.path.join(self.game_HUD_folder, 'top_bar_flag_overlay.png')).convert_alpha()
+		self.top_bar_flag_overlay_hovering_over 	= self.pygame.image.load(os.path.join(self.game_HUD_folder, 'top_bar_flag_overlay_hovering_over.png')).convert_alpha()		
+		self.country_overview 						= self.pygame.image.load(os.path.join(self.game_HUD_folder, 'country_overview.png')).convert_alpha()	
+		self.popularity_circle_overlay 				= self.pygame.image.load(os.path.join(self.game_HUD_folder, 'popularity_circle_overlay.png')).convert_alpha()
+		self.progressbar_huge 						= self.pygame.image.load(os.path.join(self.game_HUD_folder, 'progressbar_huge.png')).convert_alpha()	
+		self.progressbar 							= self.pygame.image.load(os.path.join(self.game_HUD_folder, 'progressbar.png')).convert_alpha()	
+		self.progressbar_vertical 					= self.pygame.image.load(os.path.join(self.game_HUD_folder, 'progressbar_vertical.png')).convert_alpha()	
+		self.progressbar_small 						= self.pygame.image.load(os.path.join(self.game_HUD_folder, 'progressbar_small.png')).convert_alpha()		
 		
 		self.ideas_folder = os.path.join(self.interface_folder, 'ideas')
 		
@@ -191,8 +194,8 @@ class Main:
 		self.sounds_folder = os.path.join(self.exe_folder, 'Sounds')
 		self.sounds_menu_folder = os.path.join(self.sounds_folder, 'menu')
 
-		self.generic_hover_over_button_sound = self.pygame.mixer.Sound(os.path.join(self.sounds_menu_folder, 'generic_hover_over_button_sound.wav'))
-		self.generic_click_button_sound = self.pygame.mixer.Sound(os.path.join(self.sounds_menu_folder, 'generic_click_button_sound.wav'))
+		self.generic_hover_over_button_sound 	= self.pygame.mixer.Sound(os.path.join(self.sounds_menu_folder, 'generic_hover_over_button_sound.wav'))
+		self.generic_click_button_sound 		= self.pygame.mixer.Sound(os.path.join(self.sounds_menu_folder, 'generic_click_button_sound.wav'))
 
 
 		self.music_folder = os.path.join(self.exe_folder, 'Music')
@@ -701,7 +704,7 @@ your shoulders.
 				self.hovered_start_game_button, self.hovered_select_national_spirit_button_image, self.hovered_select_country_button_image, 
 				self.hovered_laws_button_image, self.generic_leader, self.CRT_flag_overlay_effect, self.blocked_select_national_spirit_button, 
 				self.blocked_select_country_button, self.blocked_start_game_button, self.blocked_full_right_side, self.blocked_all_laws, self.national_spirits_background,
-				self.generic_national_spirits, self.progressbar, self.progressbar_vertical, self.progressbar_small, self.progressbar_huge)
+				self.generic_national_spirits, self.progressbar, self.progressbar_vertical, self.progressbar_small, self.progressbar_huge, self.selected_law_background)
 		
 
 		self.Options_Menu = MenuManager.Options_Menu(self.screen_width, self.screen_height, self.menu_options_UI, 
