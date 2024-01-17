@@ -23,7 +23,7 @@ class Laws_Group:
             law.value = index + 1
             self.total_value += index + 1
 
-        self.active_law = self.laws[active_law_index]
+        self.active_law:Law = self.laws[active_law_index]
         self.active_law_rating = self.calculate_rating()
 
     def calculate_rating(self):
@@ -136,35 +136,69 @@ class Country:
 
         #   POLITICAL LAWS
 
-        self.political_parties_1 = Law('LAW NAME 1', 'desc')
-        self.political_parties_2 = Law('LAW NAME 2', '''
-As you  step  into  a  world  forever  altered  by  the
-relentless efforts of  the  KGB,  the  very  fabric  of
-society   quivers   beneath   the   sinister   art   of
-manipulation and deception.
-
-The KGB, ever vigilant,  works  tirelessly  to  maintain
-the  illusion  of  stability, even  as  the  foundations
-of the Soviet Union crumble beneath the surface.
-
-The cracks in  the  facade  of  the  once-mighty  empire
-have  grown  into  chasms, carefully  concealed  by  the
-KGB's  propaganda,  threatening  to   engulf   not  only
-the  Eastern   Bloc   but   the   entire   world   in  a
-catastrophic maelstrom.''')
-        self.political_parties_3 = Law('LAW NAME 3', 'desc')
-        self.political_parties_4 = Law('LAW NAME 4', 'desc')
-        self.political_parties_5 = Law('LAW NAME 5', 'desc')
-        self.political_parties_6 = Law('LAW NAME 6', 'desc')   
-        self.political_parties_7 = Law('LAW NAME 7', 'desc')
-        self.political_parties_8 = Law('LAW NAME 8', 'desc')             
-
-        self.political_parties  =    Laws_Group('political_parties', [self.political_parties_1, self.political_parties_2, self.political_parties_3], 0)
-        self.religious_rights   =    Laws_Group('religious_rights', [self.political_parties_2, self.political_parties_1, self.political_parties_3], 1)
-        self.trade_unions       =    Laws_Group('trade_unions', [self.political_parties_1, self.political_parties_2, self.political_parties_3, self.political_parties_4, self.political_parties_5, self.political_parties_6, self.political_parties_7, self.political_parties_8], 3)
-        self.public_protest     =    Laws_Group('public_protest', [self.political_parties_1, self.political_parties_2, self.political_parties_3], 1)
-        self.gun_control        =    Laws_Group('gun_control', [self.political_parties_1, self.political_parties_2, self.political_parties_3], 1)
-        self.privacy_rights     =    Laws_Group('privacy_rights', [self.political_parties_1, self.political_parties_2, self.political_parties_3], 1)
+        self._1 = Law('LAW NAME 1', description = 'desc') 
+        self._2 = Law('LAW NAME 1', description = 'desc')  
+        self._3 = Law('LAW NAME 1', description = 'desc')  
+        self._4 = Law('LAW NAME 1', description = 'desc')  
+        self._5 = Law('LAW NAME 1', description = 'desc')  
+        self._6 = Law('LAW NAME 1', description = 'desc')  
+        self._7 = Law('LAW NAME 1', description = 'desc')  
+        self._8 = Law('LAW NAME 1', description = 'desc')  
+            
+        self.political_parties_1 = Law('Total Ban on Political Parties',                description = 'The formation and existence of political\nparties are completely prohibited.\n\nAny attempt to organize or support a\npolitical party is met with severe\npenalties.')
+        self.political_parties_2 = Law('Single-Party System',                           description = 'Only one political party is allowed to\nexist, and it monopolizes political\npower.\n\nOpposition parties are banned, and\ndissent is not tolerated.')
+        self.political_parties_3 = Law('State Approval Required\nMulti-Party System',   description = 'Multiple political parties are allowed,\nbut strict government approval is\nrequired.\n\nThe state has significant control over\nthe formation and activities of\npolitical parties.')
+        self.political_parties_4 = Law('Limited Opposition',                            description = 'While multiple parties are allowed, the\ngovernment closely monitors the acts\nof opposition parties.\n\nThere are restrictions on political\ndissent, and opposition voices are\nconstrained.')
+        self.political_parties_5 = Law('Free and Fair Elections',                       description = 'Political parties operate freely, and\nelections are conducted in a free and\nfair manner.\n\nThe democratic process ensures that\ncitizens can choose their representatives\nwithout undue influence.')
+        self.political_parties_6 = Law('Inclusive Representation\nDiversity Enforced',  description = 'Political parties are required by law to\nensure inclusive representation that\nreflects the government diversity quota.\n\nMeasures, such as quotas or\naffirmative action, are mandatory and\nthe removal of already elected\npoliticians may happen if needed.')
+        self.political_parties  =    Laws_Group('political_parties', [self.political_parties_1, self.political_parties_2, self.political_parties_3, self.political_parties_4, self.political_parties_5, self.political_parties_6], 0)
+        
+        self.religious_rights_1 = Law('Total Religious Oppression',                             description = 'Any expression of religious beliefs is\nstrictly prohibited, and individuals face\nsevere consequences for practicing or\nprofessing any religion.') 
+        self.religious_rights_2 = Law('Limited Religious Practices\nState Approval Required',   description = 'Citizens are allowed limited religious\npractices, but strict government\napproval is required.\n\nThe state has significant\ncontrol over religious activities.')  
+        self.religious_rights_3 = Law('State-Endorsed Religion',                                description = 'The state endorses a particular religion\nas the official faith, and adherence to\nthis religion is mandated.\n\nOther religious practices may be\nrestricted or suppressed.')  
+        self.religious_rights_4 = Law('Official Faith',                                         description = 'The state considers a particular religion\nas the official faith but respects\nother religious practices without\nimposing any restrictions.')  
+        self.religious_rights_5 = Law('State Neutrality',                                       description = 'The state maintains neutrality regarding\nreligion, with no official endorsement\nof any faith.\n\nAll citizens have the right to practice\ntheir religion without interference from\nthe government.')  
+        self.religious_rights_6 = Law('Inclusive Religious Rights',                             description = 'The law actively protects religious\nminorities by granting them special\nrights and privileges')          
+        self.religious_rights   =    Laws_Group('religious_rights', [self.religious_rights_1, self.religious_rights_2, self.religious_rights_3, self.religious_rights_4, self.religious_rights_5, self.religious_rights_6], 0)
+        
+        self.trade_unions_1 = Law('Trade Union Ban',                                        description = 'The formation and existence of trade\nunions are completely prohibited.\n\nAny attempt to organize or support a\ntrade union is met with severe penalties.') 
+        self.trade_unions_2 = Law('State-Controlled Union',                                 description = 'Only one trade union is permitted to\nexist, and it monopolizes representation.\n\nAlternative unions are banned, and\ndissent within the labor movement is not\ntolerated.')  
+        self.trade_unions_3 = Law('Restricted Union Activities\nState Approval Required',   description = 'Trade unions are allowed, but their\nactivities are restricted, and government\napproval is required for major actions\nsuch as strikes.\n\nUnions may face limitations on collective\nbargaining.')  
+        self.trade_unions_4 = Law('Limited Collective Bargaining\nNegotiation Constraints', description = 'While trade unions have the right to\nengage in collective bargaining, there\nare constraints on the scope and nature\nof negotiations.\n\nCertain issues may be off-limits for\ndiscussion.')  
+        self.trade_unions_5 = Law('Union Autonomy\nLimited Interference',                   description = 'Trade unions operate with a significant\ndegree of autonomy, and the government\nrefrains from excessive interference in\ntheir internal affairs.\n\nUnions have the freedom to make\ndecisions independently.')  
+        self.trade_unions_6 = Law('Free Collective Bargaining',                             description = 'Trade unions have the freedom to engage\nin collective bargaining with no\nrestrictions.')  
+        self.trade_unions       =    Laws_Group('trade_unions', [self.trade_unions_1, self.trade_unions_2, self.trade_unions_3, self.trade_unions_4, self.trade_unions_5, self.trade_unions_6], 0)
+        
+        self.public_protest_1 = Law('Total Ban on Public Protests',                         description = 'Public protests are completely prohibited,\nand any attempt to gather for\ndemonstrations or express dissent is met\nwith severe penalties.') 
+        self.public_protest_2 = Law('Permitted Protests with\nGovernment Approval',         description = 'Protests are allowed, but individuals or\ngroups must obtain government approval\nbeforehand.\n\nThe government has significant control\nover the types of protests permitted and\nmay deny permission for certain causes.')  
+        self.public_protest_3 = Law('Designated Protest Zones\nLimited Expression',         description = 'Protests are permitted but are confined\nto specific designated zones.\n\nAny protest outside these areas is\nconsidered illegal, limiting the impact\nof public expression.')  
+        self.public_protest_4 = Law('Limited Gathering Size\nSmall Groups Allowed',         description = 'Small groups are allowed to gather for\nprotests, but there are limitations on\nthe number of participants.\n\nLarger gatherings may require special\npermits.')  
+        self.public_protest_5 = Law('Controlled Assemblies',                                description = 'Public protests are allowed, but strict\nregulations govern the assembly.\n\nOrganizers must adhere to specific rules\nset by the government, and any violation\nmay result in legal consequences.')  
+        self.public_protest_6 = Law('Peaceful Assembly\nMinimal Interference',              description = 'Peaceful assembly for protest purposes\nis allowed with minimal interference.\n\nThe government respects the right to\nprotest peacefully, and organizers are\nnot subjected to excessive regulations.')  
+        self.public_protest_7 = Law('Freedom of Assembly\nUnrestricted',                    description = 'Citizens have the unrestricted right to\npeacefully assemble for protests.')  
+        self.public_protest_8 = Law('Peacefully Armed Protest',                             description = 'Citizens have the right to engage in\npeaceful protests while openly carrying\nlegal firearms.\n\nThe law allows for the expression of\ndissent with the understanding that\nindividuals participating in the protest\ndo so peacefully and responsibly, without\nposing a direct threat to public safety.')         
+        self.public_protest     =    Laws_Group('public_protest', [self.public_protest_1, self.public_protest_2, self.public_protest_3, self.public_protest_4, self.public_protest_5, self.public_protest_6, self.public_protest_7, self.public_protest_8], 0)
+        
+        self.gun_control_1 = Law('Total Firearm Ban',                                       description = 'All citizens are prohibited from owning\nor possessing firearms.\n\nThe government strictly enforces a\ncomplete ban on civilian firearm\nownership.') 
+        self.gun_control_2 = Law('Exceptional Firearm Ownership\nLimited Permits',          description = 'Firearms are strictly regulated, and\nonly individuals meeting specific\ncriteria are granted permits for\nownership.\n\nThe process is rigorous, and the number\nof permits issued is limited.')  
+        self.gun_control_3 = Law('Restricted Firearm Ownership\nSpecific Types Allowed',    description = 'Citizens are allowed to own firearms,\nbut there are significant restrictions\non a lot of types of firearms permitted.\n\nCertain categories of firearms may be\nprohibited, and ownership requires\nlicenses.')  
+        self.gun_control_4 = Law('Limited Allowance\nHeavily Regulated',                    description = 'Citizens are allowed to own firearms,\nbut there are significant restrictions:\n\n-Certain categories of firearms may be\nprohibited.\n\n-Citizens are allowed to carry concealed\nfirearms, but only under specific\ncircumstances and with the issuance of\na concealed carry permit.\n\n-It is mandatory for gun owners to\nregister their firearms with the\ngovernment, the registration system\nincludes detailed records of firearm\ntransactions.\n\n-All firearm transactions, including\nprivate sales, require a comprehensive\nbackground check.\n\n-A mandatory waiting period is imposed\non firearm purchases to provide a\n"cooling-off" period.\n\n-There are restrictions on the maximum\ncapacity of firearm magazines.\n\n-Red flag laws allow for the temporary\nremoval of firearms from individuals.')  
+        self.gun_control_5 = Law('Firearm Ownership by Default\nMinimal Restrictions',      description = 'Citizens are allowed to own firearms by\ndefault, with minimal regulations on the\ntypes of firearms permitted.\n\nBackground checks may be conducted,\nbut the process is streamlined to\nfacilitate easy firearm ownership.')  
+        self.gun_control_6 = Law('Swiss-style Firearm Ownership',                           description = 'Citizens have the right to own firearms,\nand gun ownership is widespread,\nreflecting a well-regulated militia system.\n\nThe emphasis is on responsible firearm\nownership and participation in community\ndefense.')  
+        self.gun_control_7 = Law('Constitutional Right\nLimited Regulations',               description = 'Firearm ownership is protected\nas a constitutional right,\nand regulations are minimal:\n\n-There is no mandatory waiting period for\nfirearm purchases.\n\n-No restrictions on magazine capacity,\nallowing for greater flexibility in\nownership.\n\n-While firearm registration is available,\nit is voluntary, and gun owners are not\ncompelled to register their firearms.\n\n-Mininal ban on weapon types or automatic\nweapons.\n\n-Limited explosive devices ownership.')  
+        self.gun_control_8 = Law('Libertarian: Community-Defined',                          description = "The firearm regulations within a\njurisdiction are determined by each\nlocal community.\n\nCommunities have the autonomy to\nestablish their own rules and\nrestrictions based on the preferences\nand values of their residents.\n\nCitizens are permitted to possess\nexplosives and WMD, but their use must\nbe conducted with the explicit consent\nof the community or individuals within\nthe weapon's range, violations may face\nletal force.")        
+        self.gun_control        =    Laws_Group('gun_control', [self.gun_control_1, self.gun_control_2, self.gun_control_3, self.gun_control_4, self.gun_control_5, self.gun_control_6, self.gun_control_7, self.gun_control_8], 0)
+        
+        self.privacy_rights_1 = Law('No Privacy Protection',                                description = 'Citizens have no explicit privacy rights,\nand the government entities have\nunrestricted access to personal\ninformation without limitations.') 
+        self.privacy_rights_2 = Law('Limited Privacy Rights\nGovernment Oversight',         description = 'Some privacy rights exist, but the\ngovernment has broad authority to access\nand monitor personal information under\ncertain circumstances, with limited\noversight.')  
+        self.privacy_rights_3 = Law('Conditional Privacy\nCase-by-Case Basis',              description = 'Privacy rights are granted on a\ncase-by-case basis, subject to government\napproval.\n\nThe burden is on individuals to justify\nthe need for privacy in specific\nsituations.')  
+        self.privacy_rights_4 = Law('Basic Privacy Protection\nLimited Scope',              description = 'Citizens have basic privacy protections,\nbut the scope is limited.\n\nGovernment entities may still access\npersonal information under specific\nconditions.')  
+        self.privacy_rights_5 = Law('Data Protection Laws\nLimited Enforcement',            description = 'Comprehensive data protection laws exist,\nbut enforcement is limited.\n\nCitizens may have rights on paper, but\nviolations may occur without significant\nconsequences for the infringing parties.')  
+        self.privacy_rights_6 = Law('Privacy as a Fundamental Right',                       description = 'Privacy is recognized as a fundamental\nright protected by law.\n\nCitizens have the right to control their\npersonal information, and any\ninfringement is subject to legal\nconsequences.')  
+        self.privacy_rights_7 = Law('Autonomous Control',                                   description = 'Individuals have autonomous control over\ntheir identity.\n\nAdvanced technologies, such as\ndecentralized systems and blockchain,\nempower users to manage and protect\ntheir personal information without relying\non central authorities.')         
+        self.privacy_rights     =    Laws_Group('privacy_rights', [self.privacy_rights_1, self.privacy_rights_2, self.privacy_rights_3, self.privacy_rights_4, self.privacy_rights_5, self.privacy_rights_6, self.privacy_rights_7], 0)
+        
+        
         self.speach_rights      =    Laws_Group('speach_rights', [self.political_parties_1, self.political_parties_2, self.political_parties_3], 1)
         self.press_rights       =    Laws_Group('press_rights', [self.political_parties_1, self.political_parties_2, self.political_parties_3], 1)
         self.voting_rights      =    Laws_Group('voting_rights', [self.political_parties_1, self.political_parties_2, self.political_parties_3], 1)

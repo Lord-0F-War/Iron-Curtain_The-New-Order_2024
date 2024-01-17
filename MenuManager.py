@@ -1892,9 +1892,9 @@ class Laws_Group_Menu:
 				height = 120 * len(laws) - 80
 				start_pos = (1017 - height) / 2
 				
+				is_any_description_being_displayed = False
 				for index, law in enumerate(laws):
-					rect = (70 * self.factor_x, (start_pos + 120 * index) * self.factor_y, 400 * self.factor_x, 80 * self.factor_y)
-
+					rect = (40 * self.factor_x, (start_pos + 120 * index) * self.factor_y, 420 * self.factor_x, 80 * self.factor_y)
 
 					pygame.draw.rect(screen, (6,15,20), rect)
 					if self.last_hovered_rect != rect:
@@ -1905,21 +1905,32 @@ class Laws_Group_Menu:
 					else:
 						pygame.draw.rect(screen, (38,255,38), rect, 2)
 
-						# desc
+						is_any_description_being_displayed = True
+
+						# LAW DESCRIPTION
 						law_description = self.big_scalable_font.render(law.description, True, (255, 255, 255))
-						text_position = (500 * self.factor_x, 508 * self.factor_y - law_description.get_height()/2 + 63 * self.factor_y)						
-						pygame.draw.rect(screen, (6,15,20), (490 * self.factor_x, 498 * self.factor_y - law_description.get_height()/2, 525 * self.factor_x, law_description.get_height() + 20 * self.factor_y + 63 * self.factor_y))
+						text_position = (490 * self.factor_x, 508 * self.factor_y - law_description.get_height()/2 + 63 * self.factor_y)						
+						pygame.draw.rect(screen, (6,15,20), (480 * self.factor_x, 498 * self.factor_y - law_description.get_height()/2, 538 * self.factor_x, law_description.get_height() + 20 * self.factor_y + 63 * self.factor_y))
 						screen.blit(self.laws_description_image, (495 * self.factor_x, 503 * self.factor_y - law_description.get_height()/2))
 						
-						pygame.draw.rect(screen, (43,219,211), (490 * self.factor_x, 498 * self.factor_y - law_description.get_height()/2, 525 * self.factor_x, law_description.get_height() + 20 * self.factor_y + 63 * self.factor_y), 2)
+						pygame.draw.rect(screen, (43,219,211), (480 * self.factor_x, 498 * self.factor_y - law_description.get_height()/2, 538 * self.factor_x, law_description.get_height() + 20 * self.factor_y + 63 * self.factor_y), 2)
 						screen.blit(law_description, text_position)
-						
 
 					law_opened = self.big_scalable_font.render(law.name, True, (255, 255, 255))
-					text_position = (110 * self.factor_x, (start_pos + 120 * index) * self.factor_y + 40 * self.factor_y - law_opened.get_height()/2)
+					text_position = (60 * self.factor_x, (start_pos + 120 * index) * self.factor_y + 40 * self.factor_y - law_opened.get_height()/2)
 					screen.blit(law_opened, text_position)					
 
 					self.laws_butons_rect.append(rect)
+
+				if is_any_description_being_displayed == False:
+					# ACTIVE LAW DESCRIPTION
+					law_description = self.big_scalable_font.render(laws_group.active_law.description, True, (255, 255, 255))
+					text_position = (490 * self.factor_x, 508 * self.factor_y - law_description.get_height()/2 + 63 * self.factor_y)						
+					pygame.draw.rect(screen, (6,15,20), (480 * self.factor_x, 498 * self.factor_y - law_description.get_height()/2, 538 * self.factor_x, law_description.get_height() + 20 * self.factor_y + 63 * self.factor_y))
+					screen.blit(self.laws_description_image, (495 * self.factor_x, 503 * self.factor_y - law_description.get_height()/2))
+					
+					pygame.draw.rect(screen, (43,219,211), (480 * self.factor_x, 498 * self.factor_y - law_description.get_height()/2, 538 * self.factor_x, law_description.get_height() + 20 * self.factor_y + 63 * self.factor_y), 2)
+					screen.blit(law_description, text_position)					
 
 
 
