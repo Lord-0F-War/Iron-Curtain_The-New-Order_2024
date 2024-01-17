@@ -1894,21 +1894,25 @@ class Laws_Group_Menu:
 				
 				is_any_description_being_displayed = False
 				for index, law in enumerate(laws):
-					rect = (40 * self.factor_x, (start_pos + 120 * index) * self.factor_y, 420 * self.factor_x, 80 * self.factor_y)
+					rect = (40 * self.factor_x, (start_pos + 120 * index) * self.factor_y, 424 * self.factor_x, 80 * self.factor_y)
+					overlay_rect = (39 * self.factor_x, (start_pos-1 + 120 * index) * self.factor_y, 426 * self.factor_x, 82 * self.factor_y)
 
 					pygame.draw.rect(screen, (6,15,20), rect)
 					if self.last_hovered_rect != rect:
 						if index == laws_group.active_law_index:
-							pygame.draw.rect(screen, (255,38,42), rect, 2)
+							pygame.draw.rect(screen, (255,38,42), overlay_rect, 4)
 						else:
 							pygame.draw.rect(screen, (43,219,211), rect, 2)
 					else:
-						pygame.draw.rect(screen, (38,255,38), rect, 2)
+						pygame.draw.rect(screen, (38,255,38), overlay_rect, 4)
 
 						is_any_description_being_displayed = True
 
 						# LAW DESCRIPTION
-						law_description = self.big_scalable_font.render(law.description, True, (255, 255, 255))
+						if law.description_complement == None:
+							law_description = self.big_scalable_font.render(law.description, True, (255, 255, 255))
+						else:
+							law_description = self.big_scalable_font.render(law.description + getattr(self.selected_country, law.description_complement), True, (255, 255, 255))
 						text_position = (490 * self.factor_x, 508 * self.factor_y - law_description.get_height()/2 + 63 * self.factor_y)						
 						pygame.draw.rect(screen, (6,15,20), (480 * self.factor_x, 498 * self.factor_y - law_description.get_height()/2, 538 * self.factor_x, law_description.get_height() + 20 * self.factor_y + 63 * self.factor_y))
 						screen.blit(self.laws_description_image, (495 * self.factor_x, 503 * self.factor_y - law_description.get_height()/2))
@@ -1924,7 +1928,10 @@ class Laws_Group_Menu:
 
 				if is_any_description_being_displayed == False:
 					# ACTIVE LAW DESCRIPTION
-					law_description = self.big_scalable_font.render(laws_group.active_law.description, True, (255, 255, 255))
+					if laws_group.active_law.description_complement == None:
+						law_description = self.big_scalable_font.render(laws_group.active_law.description, True, (255, 255, 255))
+					else:
+						law_description = self.big_scalable_font.render(laws_group.active_law.description + getattr(self.selected_country, laws_group.active_law.description_complement), True, (255, 255, 255))
 					text_position = (490 * self.factor_x, 508 * self.factor_y - law_description.get_height()/2 + 63 * self.factor_y)						
 					pygame.draw.rect(screen, (6,15,20), (480 * self.factor_x, 498 * self.factor_y - law_description.get_height()/2, 538 * self.factor_x, law_description.get_height() + 20 * self.factor_y + 63 * self.factor_y))
 					screen.blit(self.laws_description_image, (495 * self.factor_x, 503 * self.factor_y - law_description.get_height()/2))
