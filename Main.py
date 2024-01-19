@@ -207,6 +207,7 @@ class Main:
 	def create_countries_default_frame(self):
 		self.countries = []
 
+
 		self.USSR = CountriesManager.Country(
 					'Leonid Ilyich Brezhnev',
 					self.capitals_images_dic['USA'],
@@ -232,98 +233,45 @@ The cracks in  the  facade  of  the  once-mighty  empire
 have  grown  into  chasms, carefully  concealed  by  the
 KGB's  propaganda,  threatening  to   engulf   not  only
 the  Eastern   Bloc   but   the   entire   world   in  a
-catastrophic maelstrom."""		
-		
-		self.CHI = CountriesManager.Country(
-				    'Mao Zedong',
-					self.capitals_images_dic['USA'],
-					self.leaders_image_dic['Portrait_CHI_Mao_Zedong'], 
-				    self.flags_image_dic['CHI'],
-					"People's Republic of China",
-					'Command_Socialism',
-					[self.music_files_dic['red_sun_in_the_sky']])
-
-		self.GNW = CountriesManager.Country(
-					'Ernst Thalmann',
-					self.capitals_images_dic['USA'],
-				    self.leaders_image_dic['Portrait_GNW_Ernst_Thalmann'], 
-				    self.flags_image_dic['GNW'],
-					'German National Worker State',
-					'National_Syndicalism',
-					[self.music_files_dic['roter_morgen_theme']])
-		
-		self.POR = CountriesManager.Country(
-					'Antonio de Oliveira Salazar',
-					self.capitals_images_dic['USA'],
-					self.leaders_image_dic['Portrait_POR_Antonio_de_Oliveira_Salazar'], 
-				    self.flags_image_dic['POR'],
-					'Estado Novo',
-					'Corporautocracy',
-					[self.music_files_dic['ressurreicao']])	
-		
-		self.KSA = CountriesManager.Country(
-					'Faisal Bin Abdulaziz Al Saud',
-					self.capitals_images_dic['USA'],
-					self.leaders_image_dic['Portrait_KSA_Faisal_Bin_Abdulaziz_Al_Saud'], 
-				    self.flags_image_dic['KSA'],
-					'Kingdom of Saudi Arabia',
-					'Absolute_Monarchism',
-					[self.music_files_dic['saudi_arabia_national_anthem']])
-		
-		self.GDR = CountriesManager.Country(
-					'Erich Ernst Paul Honecker',
-					self.capitals_images_dic['USA'],
-					self.leaders_image_dic['Portrait_GDR_Erich_Ernst_Paul_Honecker'], 
-				    self.flags_image_dic['GDR'],
-					'German Democratic Republic',
-					'Consumer_Socialism',
-					[self.music_files_dic['auferstanden_aus_ruinen']])	
-		
-		self.YUG = CountriesManager.Country(
-					'Josip Broz Tito',
-					self.capitals_images_dic['USA'],
-					self.leaders_image_dic['Portrait_YUG_Josip_Broz_Tito'], 
-				    self.flags_image_dic['YUG'],
-					'Socialist Federal Republic of Yugoslavia',
-					'Authoritarian_Market_Socialism', 
-					[self.music_files_dic['yugoslav_patriotic_song']])
-		
-		self.BRA = CountriesManager.Country(
-					'Emilio Garrastazu Medici',
-					self.capitals_images_dic['USA'],
-					self.leaders_image_dic['Portrait_BRA_Emilio_Garrastazu_Medici'], 
-				    self.flags_image_dic['BRA'],
-					'United States of Brazil',
-					'Social_Statism',
-					[self.music_files_dic['hino_da_independencia']])	
-		
-		self.CHL = CountriesManager.Country(
-					'Augusto Pinochet',
-					self.capitals_images_dic['USA'],
-					self.leaders_image_dic['Portrait_CHL_Augusto_Pinochet'], 
-				    self.flags_image_dic['CHL'],
-					'Chile',
-					'Pinochetism',
-					[self.music_files_dic['mi_general_augusto_pinochet']])	
-		
-		self.SWE = CountriesManager.Country(
-					'Sven Olof Joachim Palme',
-					self.capitals_images_dic['USA'],
-					self.leaders_image_dic['Portrait_SWE_Sven_Olof_Joachim_Palme'], 
-				    self.flags_image_dic['SWE'],
-					'Sweden',
-					'Democratic_Socialism',
-					[self.music_files_dic['national_anthem_of_sweden']])	
-		
-		self.WGR = CountriesManager.Country(
-					'Willy Brandt',
-					self.capitals_images_dic['USA'],
-					self.leaders_image_dic['Portrait_WGR_Willy_Brandt'], 
-				    self.flags_image_dic['WGR'],
-					'Federal Republic of Germany',
-					'Social_Democracy', 
-					[self.music_files_dic['national_anthem_of_west_germany']])
-		
+catastrophic maelstrom.
+"""		
+		self.USSR.political_parties.set_active_law(			0)
+		self.USSR.religious_rights.set_active_law(			0)
+		self.USSR.trade_unions.set_active_law(				0)
+		self.USSR.public_protest.set_active_law(			0)
+		self.USSR.gun_control.set_active_law(				0)
+		self.USSR.privacy_rights.set_active_law(			0)
+		self.USSR.speach_rights.set_active_law(				0)
+		self.USSR.press_rights.set_active_law(				0)
+		self.USSR.voting_rights.set_active_law(				0)
+		self.USSR.conscription.set_active_law(				0)
+		self.USSR.women_in_service.set_active_law(			0)
+		self.USSR.training_level.set_active_law(			0)
+		self.USSR.racial_admission.set_active_law(			0)
+		self.USSR.national_security.set_active_law(			0)
+		self.USSR.deployment.set_active_law(				0)
+		self.USSR.reserves.set_active_law(					0)
+		self.USSR.economical_militarization.set_active_law(	0)
+		self.USSR.economic_system.set_active_law(			0)
+		self.USSR.trade_laws.set_active_law(				0)
+		self.USSR.taxation_system.set_active_law(			0)
+		self.USSR.regulations.set_active_law(				0)
+		self.USSR.monetary_policy.set_active_law(			0)
+		self.USSR.property_rights.set_active_law(			0)
+		self.USSR.nationalization.set_active_law(			0)
+		self.USSR.brand_rights.set_active_law(				0)
+		self.USSR.public_services.set_active_law(			0)
+		self.USSR.emigration_immigration.set_active_law(	0)
+		self.USSR.minorities_rights.set_active_law(			0)
+		self.USSR.welfare.set_active_law(					0)
+		self.USSR.reproduction.set_active_law(				0)
+		self.USSR.morality_laws.set_active_law(				0)
+		self.USSR.drug_laws.set_active_law(					0)
+		self.USSR.work_laws.set_active_law(					0)
+		self.USSR.justice_system.set_active_law(			0)
+		self.USSR.environmental.set_active_law(				0)		
+		#----------------------------------------------------------------#
+		#----------------------------------------------------------------#
 		self.USA = CountriesManager.Country(
 					'Richard Nixon',
 					self.capitals_images_dic['USA'],
@@ -335,7 +283,7 @@ catastrophic maelstrom."""
 		self.USA.country_ruling_party = 'Republican'
 		self.USA.country_government = 'Federal Republic'
 		self.USA.country_elections = '4 years'
-		self.USA.country_brief_history = '''	
+		self.USA.country_brief_history = """	
 The land of the brave and the home of the free has been
 usurped by a sinister force, an unseen hand that tugs at
 the threads of democracy, trust, and truth.
@@ -350,36 +298,102 @@ ticks relentlessly toward an uncertain future.
 The relentless countdown of the cataclysm adds urgency
 to the fate of the nation, perhaps the world, rests on
 your shoulders.
-'''
+"""
+		# Country Stats
+		self.USA.country_national_spirits_total_points = 100
 		
-		self.SWI = CountriesManager.Country(
-					'Federal Council',
-					self.capitals_images_dic['USA'],
-					self.leaders_image_dic['Portrait_SWI_Federal_Council'], 
-				    self.flags_image_dic['SWI'],
-					'Switzerland',
-					'Social_Liberalism',
-					[self.music_files_dic['national_anthem_of_switzerland']])		
+		self.USA.country_stability = 100
+		self.USA.country_war_support = 100
+		self.USA.country_party_popularity = 100
+
+		# 		Country Diplomacy Stats
+		self.USA.diplomacy_rating = 100
 		
-		self.TEX = CountriesManager.Country(
-					'John Connally',
-					self.capitals_images_dic['USA'],
-					self.leaders_image_dic['Portrait_TEX_John_Connally'], 
-				    self.flags_image_dic['TEX'],
-					'Texas',
-					'Libertarian_Capitalism',
-					[self.music_files_dic['come_and_take_it']])	
+		# 		Country Military Stats
+		self.USA.military_rating = 100
+		self.USA.country_land_manpower = 150_000
+		self.USA.country_air_manpower = 150_000
+		self.USA.army_staff = self.USA.country_land_manpower + self.USA.country_air_manpower
+		self.USA.production_capacity_army = 0
+		self.USA.production_capacity_navy = 0
+		self.USA.production_capacity_air = 0
+		self.USA.production_capacity_special = 0
+		self.USA.production_capacity_total = f"{self.USA.production_capacity_army} / {self.USA.production_capacity_navy} / {self.USA.production_capacity_air} / {self.USA.production_capacity_special}"
 		
-		self.PCO = CountriesManager.Country(
-					'Hans Hermann Hoppe',
-					self.capitals_images_dic['USA'],
-					self.leaders_image_dic['Portrait_PCO_Hans_Hermann_Hoppe'], 
-				    self.flags_image_dic['PCO'],
-					'Propertarian Commonwealth',
-					'Anarcho_Capitalism',
-					[self.music_files_dic['clock-ticking']])													
+		# 		Country Economy Stats
+		self.USA.economy_rating = 100
+		self.USA.treasury = 85_952_542_000_000
+		self.USA.debt = 5_365_215_000_000
+		self.USA.credit_rating = 52.5
+		self.USA.inflation = 2.1
+		self.USA.unemployment = 5.2
+		self.USA.country_GDP = 10_550_000_000_000
+		self.USA.income = 10_550_000_000_000
+		self.USA.expenses = 550_600_000   
 		
-		self.countries.extend([self.USSR, self.CHI, self.GNW, self.POR, self.KSA, self.GDR, self.YUG, self.BRA, self.CHL, self.SWE, self.WGR, self.USA, self.SWI, self.TEX, self.PCO])
+		# 		Country Domestic Stats
+		self.USA.domestic_rating = 100
+		self.USA.country_population = 100_600_000
+		self.USA.country_immigration = 10000
+		self.USA.country_emigration = 2000
+		self.USA.country_births = 10400
+		self.USA.country_deaths = 25000
+		self.USA.country_literacy_rate = 94
+		self.USA.population_political_leaning = 'Moderate'
+
+		# 		Country Internal Approval Stats
+		self.USA.military_approval_rating = 100
+		self.USA.domestic_approval_rating = 80
+		self.USA.midia_approval_rating = 60
+		self.USA.secret_service_approval_rating = 40
+		self.USA.politics_approval_rating = 20 
+
+		self.USA.internal_economy_rating = 100
+		self.USA.external_economy_rating = 50
+		
+
+		# Country Laws
+		self.USA.country_immigration_policy = 'Not Implemented'
+		self.USA.country_moral_code = 'Not Implemented'
+
+		self.USA.political_parties.set_active_law(			0)
+		self.USA.religious_rights.set_active_law(			1)
+		self.USA.trade_unions.set_active_law(				2)
+		self.USA.public_protest.set_active_law(				3)
+		self.USA.gun_control.set_active_law(				4)
+		self.USA.privacy_rights.set_active_law(				5)
+		self.USA.speach_rights.set_active_law(				0)
+		self.USA.press_rights.set_active_law(				0)
+		self.USA.voting_rights.set_active_law(				0)
+		self.USA.conscription.set_active_law(				0)
+		self.USA.women_in_service.set_active_law(			0)
+		self.USA.training_level.set_active_law(				0)
+		self.USA.racial_admission.set_active_law(			0)
+		self.USA.national_security.set_active_law(			0)
+		self.USA.deployment.set_active_law(					0)
+		self.USA.reserves.set_active_law(					0)
+		self.USA.economical_militarization.set_active_law(	0)
+		self.USA.economic_system.set_active_law(			0)
+		self.USA.trade_laws.set_active_law(					0)
+		self.USA.taxation_system.set_active_law(			0)
+		self.USA.regulations.set_active_law(				0)
+		self.USA.monetary_policy.set_active_law(			0)
+		self.USA.property_rights.set_active_law(			0)
+		self.USA.nationalization.set_active_law(			0)
+		self.USA.brand_rights.set_active_law(				0)
+		self.USA.public_services.set_active_law(			0)
+		self.USA.emigration_immigration.set_active_law(		0)
+		self.USA.minorities_rights.set_active_law(			0)
+		self.USA.welfare.set_active_law(					0)
+		self.USA.reproduction.set_active_law(				0)
+		self.USA.morality_laws.set_active_law(				0)
+		self.USA.drug_laws.set_active_law(					0)
+		self.USA.work_laws.set_active_law(					0)
+		self.USA.justice_system.set_active_law(				0)
+		self.USA.environmental.set_active_law(				0)
+		#----------------------------------------------------------------#
+		#----------------------------------------------------------------#		
+		self.countries.extend([self.USSR, self.USA])
 	def create_national_spirits(self):
 		self.localization_folder = os.path.join(self.exe_folder, 'localization')
 		self.ideas_localization_folder = os.path.join(self.localization_folder, 'ideas')
@@ -559,89 +573,6 @@ your shoulders.
 		self.USSR.country_religion = self.Atheism
 
 
-		# China
-
-		self.CHI.country_national_spirits.extend([self.GENERIC])
-
-		self.CHI.country_culture = self.Ultraprogressive
-		self.CHI.country_religion = self.Ultraprogressive
-
-		# German National Worker State
-
-		self.GNW.country_national_spirits.extend([self.GENERIC])
-
-		self.GNW.country_culture = self.Reactionary
-		self.GNW.country_religion = self.Atheism
-
-
-		# Estado Novo Portugal
-
-		self.POR_ideas_localization_folder = os.path.join(self.ideas_localization_folder, 'POR')
-
-		with open(os.path.join(self.POR_ideas_localization_folder, 'lusitanian_haven.txt'), 'r') as file:
-			lusitanian_haven_description = file.read()
-		self.lusitanian_haven = CountriesManager.National_Spirit('Lusitanian Haven', self.national_spirits_image_dic['lusitanian_haven'], lusitanian_haven_description)
-		
-		self.POR.country_national_spirits.extend([self.lusitanian_haven])
-		self.POR.country_culture = self.Traditionalist
-		self.POR.country_religion = self.Christianity			
-
-
-		# Kingdom of Saudi Arabia
-
-		self.KSA.country_national_spirits.extend([self.GENERIC])
-
-		self.KSA.country_culture = self.Traditionalist
-		self.KSA.country_religion = self.Islam		
-
-
-		# German Democratic Republic
-
-		self.GDR.country_national_spirits.extend([self.GENERIC])
-
-		self.GDR.country_culture = self.Ultraprogressive
-		self.GDR.country_religion = self.Atheism		
-
-
-		# Socialist Federal Republic of Yugoslavia
-
-		self.YUG.country_national_spirits.extend([self.GENERIC])
-
-		self.YUG.country_culture = self.Centrist
-		self.YUG.country_religion = self.Atheism			
-
-		# United States of Brazil
-
-		self.BRA.country_national_spirits.extend([self.GENERIC])
-
-		self.BRA.country_culture = self.Conservative
-		self.BRA.country_religion = self.Christianity		
-
-
-		# Chile
-
-		self.CHL.country_national_spirits.extend([self.GENERIC])
-
-		self.CHL.country_culture = self.Reactionary
-		self.CHL.country_religion = self.Christianity			
-
-
-		# Sweden 
-
-		self.SWE.country_national_spirits.extend([self.GENERIC])
-
-		self.SWE.country_culture = self.Progressive
-		self.SWE.country_religion = self.Christianity			
-
-
-		# Federal Republic of Germany
-
-		self.WGR.country_national_spirits.extend([self.GENERIC])
-
-		self.WGR.country_culture = self.Progressive
-		self.WGR.country_religion = self.Christianity			
-
-
 		# United States of America
 
 		self.USA_ideas_localization_folder = os.path.join(self.ideas_localization_folder, 'USA')
@@ -665,30 +596,7 @@ your shoulders.
 		self.USA.country_national_spirits.extend([self.usa_pentagon, self.usa_anti_war, self.CIA, self.usa_race_riots, self.world_trade_center_half])
 
 		self.USA.country_culture = self.Liberal
-		self.USA.country_religion = self.Christianity
-
-		# Switzerland 
-
-		self.SWI.country_national_spirits.extend([self.GENERIC])
-
-		self.SWI.country_culture = self.Centrist
-		self.SWI.country_religion = self.Christianity		
-
-
-		# Texas
-
-		self.TEX.country_national_spirits.extend([self.GENERIC])
-
-		self.TEX.country_culture = self.Neoconservatism
-		self.TEX.country_religion = self.Christianity		
-
-
-		# Ancap
-
-		self.PCO.country_national_spirits.extend([self.GENERIC])
-
-		self.PCO.country_culture = self.Reactionary
-		self.PCO.country_religion = self.Christianity			
+		self.USA.country_religion = self.Christianity		
 
 	def create_classes(self):
 		self.Sounds_Manager = SoundsManager.Sounds_Manager(self.generic_hover_over_button_sound, self.generic_click_button_sound)

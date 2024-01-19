@@ -740,11 +740,11 @@ class Country_Selection_Menu:
 		self.select_national_spirit_button_y_offset = 248 * self.factor_y		
 		self.select_national_spirit_button = GenericUtilitys.Button(self.select_national_spirit_button_x_offset, self.select_national_spirit_button_y_offset, select_national_spirit_button_width, select_national_spirit_button_height)	
 
-		select_flag_style_button_width = 362 * self.factor_x
-		select_flag_style_button_height = 70 * self.factor_y
-		self.select_flag_style_button_x_offset = 1059 * self.factor_x
-		self.select_flag_style_button_y_offset = 248 * self.factor_y		
-		self.select_flag_style_button = GenericUtilitys.Button(self.select_flag_style_button_x_offset, self.select_flag_style_button_y_offset, select_flag_style_button_width, select_flag_style_button_height)					
+		select_country_button_width = 362 * self.factor_x
+		select_country_button_height = 70 * self.factor_y
+		self.select_country_button_x_offset = 1059 * self.factor_x
+		self.select_country_button_y_offset = 248 * self.factor_y		
+		self.select_country_button = GenericUtilitys.Button(self.select_country_button_x_offset, self.select_country_button_y_offset, select_country_button_width, select_country_button_height)					
 		####
 
 		#### LAWS BUTTONS
@@ -929,7 +929,7 @@ class Country_Selection_Menu:
 			return 'start_game'
 		elif self.select_national_spirit_button.rect.colliderect(mouse_rect) and self.selected_country != None:
 			return 'select_national_spirit'
-		elif self.select_flag_style_button.rect.colliderect(mouse_rect) and self.clicked_ideology != None:
+		elif self.select_country_button.rect.colliderect(mouse_rect):
 			return 'select_country'				
 		elif self.selected_country != None:
 			
@@ -956,17 +956,14 @@ class Country_Selection_Menu:
 		return None
 
 	def get_clicked_button(self, mouse_rect):
+		clicked_button = self.get_button_by_interaction(mouse_rect)
 		if self.is_flag_selection_menu_open == False:
-			clicked_button = self.get_button_by_interaction(mouse_rect)
 			if clicked_button != None:
 				self.hover_over_button_sound.fadeout(50)
 				self.click_menu_sound.play()
 				self.clicked_law_group = None
 
-				if clicked_button == 'select_country' and self.is_flag_national_spirits_selection_menu_open == False and self.is_laws_group_menu_open == False:
-					self.is_flag_selection_menu_open = True
-
-				elif clicked_button == 'select_national_spirit' and self.is_flag_selection_menu_open == False and self.is_laws_group_menu_open == False:
+				if clicked_button == 'select_national_spirit' and self.is_flag_selection_menu_open == False and self.is_laws_group_menu_open == False:
 					self.is_flag_national_spirits_selection_menu_open = not self.is_flag_national_spirits_selection_menu_open
 
 				elif clicked_button == 'start_game':
@@ -979,8 +976,10 @@ class Country_Selection_Menu:
 					else:
 						self.clicked_law_group = clicked_button
 
-
-			return clicked_button
+		if clicked_button == 'select_country' and self.is_flag_national_spirits_selection_menu_open == False and self.is_laws_group_menu_open == False:
+			self.is_flag_selection_menu_open = not self.is_flag_selection_menu_open
+			
+		return clicked_button
 	def get_clicked_ideology(self, mouse_rect):
 		if self.is_flag_selection_menu_open == False:
 			for ideology, rect in self.ideology_rects.items():
@@ -1448,7 +1447,7 @@ class Country_Selection_Menu:
 
 
 		if self.clicked_ideology == None: # Blocked Buttons
-			screen.blit(self.blocked_select_country_button, (self.select_flag_style_button_x_offset, self.select_flag_style_button_y_offset))
+			screen.blit(self.blocked_select_country_button, (self.select_country_button_x_offset, self.select_country_button_y_offset))
 			screen.blit(self.blocked_select_national_spirit_button, (self.select_national_spirit_button_x_offset, self.select_national_spirit_button_y_offset))
 			screen.blit(self.blocked_start_game_button, (self.start_game_button_x_offset, self.start_game_button_y_offset))				
 			screen.blit(self.blocked_full_right_side, (self.screen_width - self.blocked_full_right_side.get_width(), 0))		
@@ -1472,7 +1471,7 @@ class Country_Selection_Menu:
 				screen.blit(self.hovered_select_national_spirit_button_image, (self.select_national_spirit_button_x_offset, self.select_national_spirit_button_y_offset))
 			
 			elif self.hovered_button == 'select_country':
-				screen.blit(self.hovered_select_country_button_image, (self.select_flag_style_button_x_offset, self.select_flag_style_button_y_offset))				
+				screen.blit(self.hovered_select_country_button_image, (self.select_country_button_x_offset, self.select_country_button_y_offset))				
 
 			elif type(self.hovered_button) is str:
 				self.hovered_button = self.hovered_button.split('_')

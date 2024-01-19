@@ -23,7 +23,7 @@ class Laws_Group:
             law.value = index + 1
             self.total_value += index + 1
 
-        self.active_law:Law = self.laws[active_law_index]
+        self.active_law:Law = self.laws[self.active_law_index]
         self.active_law_rating = self.calculate_rating()
 
     def calculate_rating(self):
@@ -31,6 +31,11 @@ class Laws_Group:
         rating = int(proportion * 100)
 
         return max(1, min(100, rating))
+    
+    def set_active_law(self, index):
+        self.active_law_index = index
+        self.active_law:Law = self.laws[self.active_law_index]
+        self.active_law_rating = self.calculate_rating()
 
 class Law:
     def __init__(self, name = str, description = str, description_complement = None) -> None:
@@ -64,29 +69,29 @@ class Country:
         self.culture_popularity = [7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14]
         self.religion_popularity = [11.11, 11.11, 11.11, 11.11, 11.11, 11.11, 11.11, 11.11, 11.11]        
 
-        self.country_ruling_party = 'party demo'
-        self.country_government = 'government demo'
-        self.country_elections = 'Never'
+        self.country_ruling_party = 'None'
+        self.country_government = 'None'
+        self.country_elections = 'None'
 
-        self.country_brief_history = 'history demo'
+        self.country_brief_history = 'None'
 
-        self.country_national_spirits_total_points = 100
+        self.country_national_spirits_total_points = 0
         self.country_national_spirits_points_left = self.country_national_spirits_total_points
 
-        self.country_stability = 100
-        self.country_war_support = 100
-        self.country_party_popularity = 100
+        self.country_stability = 0
+        self.country_war_support = 0
+        self.country_party_popularity = 0
 
         # DIPLOMACY
-        self.diplomacy_rating = 100 
+        self.diplomacy_rating = 0 
 
         # ARMY  
-        self.military_rating = 75
+        self.military_rating = 0
 
-        self.country_land_manpower = 150_500
-        self.country_air_manpower = 150_500        
+        self.country_land_manpower = 0
+        self.country_air_manpower = 0        
         
-        self.army_staff = self.country_land_manpower + self.country_air_manpower
+        self.army_staff = 0
         
         self.production_capacity_army = 0
         self.production_capacity_navy = 0
@@ -95,48 +100,48 @@ class Country:
         self.production_capacity_total = f"{self.production_capacity_army} / {self.production_capacity_navy} / {self.production_capacity_air} / {self.production_capacity_special}" 
         
         # ECONOMY
-        self.economy_rating = 50 
+        self.economy_rating = 0 
         
-        self.treasury = 85_952_542_000_000
-        self.debt = 5_365_215_000_000
+        self.treasury = 0
+        self.debt = 0
 
-        self.credit_rating = 52.5
-        self.inflation = 2.1
-        self.unemployment = 5.2
+        self.credit_rating = 0
+        self.inflation = 0
+        self.unemployment = 0
 
-        self.country_GDP = 10_550_000_000_000
+        self.country_GDP = 1
 
-        self.income = 10_550_000_000_000
-        self.expenses = 550_600_000         
+        self.income = 0
+        self.expenses = 0         
 
         # DOMESTIC
-        self.domestic_rating = 25
+        self.domestic_rating = 0
 
-        self.country_population = 100_600_000
+        self.country_population = 1
 
-        self.country_immigration = 10000
-        self.country_emigration = 2000
-        self.country_births = 10400
-        self.country_deaths = 25000
-        self.country_literacy_rate = 94
+        self.country_immigration = 0
+        self.country_emigration = 0
+        self.country_births = 0
+        self.country_deaths = 0
+        self.country_literacy_rate = 0
 
-        self.population_political_leaning = "MODERATE"
+        self.population_political_leaning = "None"
 
 
-        self.military_approval_rating = 100
-        self.domestic_approval_rating = 80
-        self.midia_approval_rating = 60
-        self.secret_service_approval_rating = 40
-        self.politics_approval_rating = 20 
+        self.military_approval_rating = 0
+        self.domestic_approval_rating = 0
+        self.midia_approval_rating = 0
+        self.secret_service_approval_rating = 0
+        self.politics_approval_rating = 0 
 
-        self.internal_economy_rating = 100
-        self.external_economy_rating = 50    
+        self.internal_economy_rating = 0
+        self.external_economy_rating = 0    
 
 
         # LAWS
 
-        self.country_immigration_policy = 'Not Implemented'
-        self.country_moral_code = 'Not Implemented'
+        self.country_immigration_policy = 'None'
+        self.country_moral_code = 'None'
 
         self.due_process_types = {
             'Mandatory_Sentences': '-Implementing mandatory sentences for\ncertain offenses, limiting judicial\ndiscretion.\n\n',
@@ -441,6 +446,6 @@ class Country:
         self.environmental_4 = Law('Mixed Environmental\nManagement\nLimited Decentralization', description = 'Incorporating limited decentralization,\nthis model features a mix of centralized\nand decentralized environmentals\nmanagement.\n\nWhile the state sets overarching\npolicies, some decision-making authority\nis delegated to local or regional\nentities.')  
         self.environmental_5 = Law('Property Rights-Centric\nApproach',                         description = 'Advocating for a property rights-centric\napproach where individuals are stewards\nof their own land.\n\nThis model encourages individuals,\ncommunities, and businesses to work\ntogether voluntarily to address\nenvironmental challenges without\ncoercive measures but the state might\ninterfere if necessary.')  
         self.environmental_6 = Law('Externalities-Driven\nConservation',                        description = 'At the libertarian end of the spectrum,\nthis model emphasizes individual\nresponsibility and accountability for\nexternalities.\n\nThe idea is that individuals or entities\nshould be held accountable for the\nnegative externalities they impose on\nothers such as pollution.')       
-        self.environmental               =    Laws_Group('environmental', [self.environmental_1, self.environmental_2, self.environmental_3, self.environmental_4, self.environmental_5, self.environmental_6], 0)
+        self.environmental              =    Laws_Group('environmental', [self.environmental_1, self.environmental_2, self.environmental_3, self.environmental_4, self.environmental_5, self.environmental_6], 0)
 
         self.social_laws_groups = [self.emigration_immigration, self.minorities_rights, self.welfare, self.reproduction, self.morality_laws, self.drug_laws, self.work_laws, self.justice_system, self.environmental]
