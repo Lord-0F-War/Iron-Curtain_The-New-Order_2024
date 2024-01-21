@@ -100,8 +100,10 @@ class Main:
 
 		self.map_folder = os.path.join(self.exe_folder, 'map')
 
-		self.earth_daymap 		= self.pygame.image.load(os.path.join(self.map_folder, 'earth_daymap.jpg')).convert_alpha()
-		self.earth_nightmap 	= self.pygame.image.load(os.path.join(self.map_folder, 'earth_nightmap.png')).convert_alpha()	
+		self.earth_daymap 						= self.pygame.image.load(os.path.join(self.map_folder, 'earth_daymap.png')).convert_alpha()
+		self.earth_nightmap 					= self.pygame.image.load(os.path.join(self.map_folder, 'earth_nightmap.png')).convert_alpha()	
+		self.earth_political_map 				= self.pygame.image.load(os.path.join(self.map_folder, 'earth_political_map.png')).convert_alpha()
+		self.earth_political_map_filled 		= self.pygame.image.load(os.path.join(self.map_folder, 'earth_political_map_filled.png')).convert_alpha()
 
 
 		self.gfx_folder = os.path.join(self.exe_folder, 'gfx')
@@ -187,8 +189,10 @@ class Main:
 		self.progressbar_huge 						= self.pygame.image.load(os.path.join(self.game_HUD_folder, 'progressbar_huge.png')).convert_alpha()	
 		self.progressbar 							= self.pygame.image.load(os.path.join(self.game_HUD_folder, 'progressbar.png')).convert_alpha()	
 		self.progressbar_vertical 					= self.pygame.image.load(os.path.join(self.game_HUD_folder, 'progressbar_vertical.png')).convert_alpha()	
-		self.progressbar_small 						= self.pygame.image.load(os.path.join(self.game_HUD_folder, 'progressbar_small.png')).convert_alpha()		
+		self.progressbar_small 						= self.pygame.image.load(os.path.join(self.game_HUD_folder, 'progressbar_small.png')).convert_alpha()	
+		self.bottom_HUD 							= self.pygame.image.load(os.path.join(self.game_HUD_folder, 'bottom_HUD.png')).convert_alpha()	
 		
+
 		self.ideas_folder = os.path.join(self.interface_folder, 'ideas')
 		
 		self.national_spirits_folder = os.path.join(self.ideas_folder, 'national_spirits')
@@ -626,10 +630,10 @@ your shoulders.
 				self.hovered_red_button_menu_image, self.Options_Menu)
 		
 
-		self.Game_Screen = MenuManager.Game_Screen(self.screen_width, self.screen_height, self.pygame, self.Sounds_Manager.generic_hover_over_button_sound, self.Sounds_Manager.generic_click_button_sound, 
+		self.Game_Screen = MenuManager.Game_Screen(self.screen_width, self.screen_height, self.pygame, self.clock, self.Sounds_Manager.generic_hover_over_button_sound, self.Sounds_Manager.generic_click_button_sound, 
 			self.top_bar_right_background, self.top_bar_game_speed_indicator, self.top_bar_defcon_levels, self.top_bar_left_background, self.top_bar_flag_overlay,
-			self.top_bar_flag_overlay_hovering_over, self.country_overview, self.popularity_circle_overlay, self.earth_daymap, self.earth_nightmap, self.progressbar, self.progressbar_vertical,
-			self.progressbar_small)
+			self.top_bar_flag_overlay_hovering_over, self.country_overview, self.popularity_circle_overlay, self.earth_daymap, self.earth_nightmap, self.earth_political_map, self.earth_political_map_filled,
+			self.progressbar, self.progressbar_vertical, self.progressbar_small, self.bottom_HUD)
 
 
 		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.Main_Menu, self.Country_Selection_Screen,
@@ -1088,7 +1092,7 @@ your shoulders.
 				self.Country_Selection_Screen.music_player()
 
 
-			clock.tick(30)
+			clock.tick(144)
 
 		self.pygame.quit()
 

@@ -1941,9 +1941,9 @@ class Laws_Group_Menu:
 
 
 class Game_Screen:
-	def __init__(self, screen_width, screen_height, pygame, generic_hover_over_button_sound, generic_click_button_sound, top_bar_right_background, top_bar_game_speed_indicator,
+	def __init__(self, screen_width, screen_height, pygame, clock, generic_hover_over_button_sound, generic_click_button_sound, top_bar_right_background, top_bar_game_speed_indicator,
 			top_bar_defcon_level, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over, country_overview, popularity_circle_overlay, earth_daymap, earth_nightmap, 
-			progressbar, progressbar_vertical, progressbar_small):
+			earth_political_map, earth_political_map_filled, progressbar, progressbar_vertical, progressbar_small, bottom_HUD):
 
 		reference_screen_size_x = 1920
 		reference_screen_size_y = 1080
@@ -1960,16 +1960,22 @@ class Game_Screen:
 		self.Country_Overview = Country_Overview(self.factor_x, self.factor_y, pygame, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over,
 			country_overview, popularity_circle_overlay, generic_hover_over_button_sound, progressbar, progressbar_vertical, progressbar_small)
 		
-		self.Clock_UI = Clock_UI(self.factor_x, self.factor_y, screen_width, screen_height, pygame, top_bar_right_background, top_bar_game_speed_indicator, top_bar_defcon_level)
+		self.Clock_UI = Clock_UI(self.factor_x, self.factor_y, screen_width, screen_height, pygame, clock, top_bar_right_background, top_bar_game_speed_indicator, top_bar_defcon_level)
 
-		self.Earth_Map = Earth_Map(self.factor_x, self.factor_y, screen_width, screen_height, earth_daymap, earth_nightmap, self.Clock_UI)
+		self.Bottom_HUD = Bottom_HUD(self.factor_x, self.factor_y, screen_width, screen_height, pygame, bottom_HUD)
+
+		self.Earth_Map = Earth_Map(self.factor_x, self.factor_y, screen_width, screen_height, earth_daymap, earth_nightmap, earth_political_map, earth_political_map_filled, self.Clock_UI)
 	
-	def get_button_by_interaction(self, mouse_rect):
-		button = self.Country_Overview.get_button_by_interaction(mouse_rect)
-		return button
+	def get_button_by_interaction(self, mouse_rect, index):
+		if index == 0:
+			button = self.Country_Overview.get_button_by_interaction(mouse_rect)
+			return button
+		elif index == 1:
+			button = self.Bottom_HUD.get_button_by_interaction(mouse_rect)
+			return button
 
 	def get_clicked_button(self, mouse_rect):
-		clicked_button = self.get_button_by_interaction(mouse_rect)
+		clicked_button = self.get_button_by_interaction(mouse_rect, 0)
 		
 		if clicked_button != None:
 			if clicked_button == "country_viewer":
@@ -1977,10 +1983,17 @@ class Game_Screen:
 				self.Country_Overview.is_top_bar_country_viewer_open = not self.Country_Overview.is_top_bar_country_viewer_open
 			self.generic_hover_over_button_sound.fadeout(100)
 			self.generic_click_button_sound.play()
-			return clicked_button	
+			return clicked_button
+
+		clicked_button = self.get_button_by_interaction(mouse_rect, 1)
+
+		if clicked_button != None:
+			self.Earth_Map.map_overlay_index = clicked_button
+			self.Earth_Map.update_map()
+			return clicked_button
 
 	def get_hovered_button(self, mouse_rect):
-		hovered_button = self.get_button_by_interaction(mouse_rect)
+		hovered_button = self.get_button_by_interaction(mouse_rect, 0)
 		if hovered_button != None:
 			if self.last_hovered_button != hovered_button:
 				self.generic_hover_over_button_sound.play()
@@ -1997,6 +2010,7 @@ class Game_Screen:
 		self.Earth_Map.draw(screen)		
 		self.Country_Overview.draw(screen, mouse_rect)
 		self.Clock_UI.draw(screen)
+		self.Bottom_HUD.draw(screen)
 
 class Country_Overview:
 	def __init__(self, factor_x, factor_y, pygame, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over, country_overview, popularity_circle_overlay,
@@ -2839,13 +2853,15 @@ class Country_Overview:
 		else:
 			pass	
 class Clock_UI:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, top_bar_right_background, top_bar_game_speed_indicator, top_bar_defcon_level):
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, clock, top_bar_right_background, top_bar_game_speed_indicator, top_bar_defcon_level):
 
 		self.factor_x, self.factor_y = factor_x, factor_y	
 		self.screen_width = screen_width 
 		self.screen_height = screen_height
 
 		self.pygame = pygame
+
+		self.clock = clock
 
 		self.top_bar_right_background = pygame.transform.smoothscale_by(top_bar_right_background, (self.factor_x, self.factor_y))
 		self.top_bar_game_speed_indicator = pygame.transform.smoothscale_by(top_bar_game_speed_indicator, (self.factor_x, self.factor_y))
@@ -2948,9 +2964,46 @@ class Clock_UI:
 		screen.blit(hour_date_render, (date_x_position + (-2 + max(0, 38 - hour_date_render.get_width()))* self.factor_x, date_y_position))
 		screen.blit(day_date_render, (date_x_position + (48 + max(0, 38 * self.factor_x - day_date_render.get_width()))* self.factor_x, date_y_position))
 		screen.blit(month_date_render, (date_x_position + (86 + max(0, 41 * self.factor_x - month_date_render.get_width()))* self.factor_x, date_y_position))
-		screen.blit(year_date_render, (date_x_position + (135 + max(0, 49 * self.factor_x - year_date_render.get_width()))* self.factor_x, date_y_position))		
+		screen.blit(year_date_render, (date_x_position + (135 + max(0, 49 * self.factor_x - year_date_render.get_width()))* self.factor_x, date_y_position))	
+
+		# FPS
+		FPS_render = self.medium_scalable_font.render(' FPS:\n' + str(round(self.clock.get_fps(), 2)), True, (255, 255, 255))
+		screen.blit(FPS_render, (self.screen_width - 190 * self.factor_x, 75 * self.factor_y))
+class Bottom_HUD:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, bottom_HUD):
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.bottom_HUD = pygame.transform.smoothscale(bottom_HUD, (self.screen_width, bottom_HUD.get_height() * self.factor_y))
+
+		self.selcted_map_overlay = 1
+
+		offset_y = 	self.screen_height - self.bottom_HUD.get_height()
+
+		self.map_overlay_1 = GenericUtilitys.Button(1776 * self.factor_x, 12 * self.factor_y + offset_y, 59 * self.factor_x, 43 * self.factor_y)
+		self.map_overlay_2 = GenericUtilitys.Button(1845 * self.factor_x, 12 * self.factor_y + offset_y, 59 * self.factor_x, 43 * self.factor_y)
+
+	def get_button_by_interaction(self, mouse_rect):
+		if self.map_overlay_1.rect.colliderect(mouse_rect):
+			self.selcted_map_overlay = 1
+			return 1
+		elif self.map_overlay_2.rect.colliderect(mouse_rect):
+			self.selcted_map_overlay = 2
+			return 2
+		
+		return None
+
+	def draw(self, screen):		
+		screen.blit(self.bottom_HUD, (0, self.screen_height - self.bottom_HUD.get_height()))
+
+		self.pygame.draw.rect(screen, (255, 255, 255), getattr(self, 'map_overlay_'+str(self.selcted_map_overlay)).rect, 2)	
+		
+
 class Earth_Map:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, earth_daymap, earth_nightmap, Clock_UI):
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, earth_daymap, earth_nightmap, earth_political_map, earth_political_map_filled, Clock_UI):
 		self.factor_x = factor_x
 		self.factor_y = factor_y
 
@@ -2962,11 +3015,17 @@ class Earth_Map:
 
 		self.Clock_UI = Clock_UI
 
+		self.map_overlay_index = 1
+
 		self.source_earth_daymap = earth_daymap
 		self.source_earth_nightmap = earth_nightmap
+		self.source_earth_political_map = earth_political_map
+		self.source_earth_political_map_filled = earth_political_map_filled
 
 		self.earth_daymap = earth_daymap.copy()
 		self.earth_nightmap = earth_nightmap.copy()
+		self.earth_political_map = earth_political_map.copy()
+		self.earth_political_map_filled = earth_political_map_filled.copy()
 
 		self.night_strips = self.calculate_night_strips(interval_minutes = 1)
 
@@ -2977,6 +3036,8 @@ class Earth_Map:
 
 		self.map_position = [0, 0]
 		self.offset_y = 0
+
+		self.update_map()
 
 	def calculate_night_strips(self, interval_minutes):
 		night_strips = {}
@@ -3006,10 +3067,7 @@ class Earth_Map:
 				self.zoom_factor = 1
 
 			if self.last_zoom_factor != self.zoom_factor:
-
-
-				self.earth_daymap = pygame.transform.scale_by(self.source_earth_daymap, (self.zoom_factor))
-				self.earth_nightmap = pygame.transform.scale_by(self.source_earth_nightmap, (self.zoom_factor))
+				self.update_map()
 				
 				# DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER
 				# DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER
@@ -3019,7 +3077,25 @@ class Earth_Map:
 				if zoom_type == 'zoom_in':
 					pass
 
-			self.last_zoom_factor = self.zoom_factor	
+			self.last_zoom_factor = self.zoom_factor
+
+	def update_map(self):
+		if self.map_overlay_index != None:
+			self.earth_nightmap = pygame.transform.scale_by(self.source_earth_nightmap, (self.zoom_factor))
+			
+			result_surface = pygame.Surface((self.earth_nightmap.get_width(), self.earth_nightmap.get_height()), pygame.SRCALPHA)
+
+			result_surface.blit(pygame.transform.scale_by(self.source_earth_daymap, (self.zoom_factor)), (0, 0))
+
+			if self.map_overlay_index == 1:
+				self.earth_political_map = pygame.transform.scale_by(self.source_earth_political_map, (self.zoom_factor))	
+				result_surface.blit(self.earth_political_map, (0, 0))
+			elif self.map_overlay_index == 2:
+				self.earth_political_map_filled = pygame.transform.scale_by(self.source_earth_political_map_filled, (self.zoom_factor))	
+				result_surface.blit(self.earth_political_map_filled, (0, 0))
+
+			self.earth_daymap = result_surface.convert_alpha().copy()
+			del result_surface			
 
 	def draw(self, screen):
 		self.screen_sized_map_surface.fill((0, 0, 0, 0), (0, 0, self.screen_width, self.screen_height))

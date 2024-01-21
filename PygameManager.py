@@ -34,7 +34,7 @@ class Pygame:
 		pygame.time.set_timer(self.date_tick, 10) # 100 ticks per second
 		pygame.time.set_timer(self.FPS_update, 50)
 		pygame.time.set_timer(self.key_delay, 42)
-		pygame.time.set_timer(self.screen_update, 40) # 25 fps
+		pygame.time.set_timer(self.screen_update, 50) # 20 fps
 
 		pygame.mixer.init(buffer=8192) 
 		pygame.K_1
