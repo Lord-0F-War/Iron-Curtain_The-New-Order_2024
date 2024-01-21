@@ -1958,7 +1958,7 @@ class Game_Screen:
 
 
 		self.Country_Overview = Country_Overview(self.factor_x, self.factor_y, pygame, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over,
-			country_overview, popularity_circle_overlay, generic_hover_over_button_sound, progressbar, progressbar_vertical, progressbar_small)
+			country_overview, popularity_circle_overlay, self.generic_hover_over_button_sound, progressbar, progressbar_vertical, progressbar_small)
 		
 		self.Clock_UI = Clock_UI(self.factor_x, self.factor_y, screen_width, screen_height, pygame, clock, top_bar_right_background, top_bar_game_speed_indicator, top_bar_defcon_level)
 
@@ -1989,6 +1989,7 @@ class Game_Screen:
 
 		if clicked_button != None:
 			self.Earth_Map.map_overlay_index = clicked_button
+			self.Bottom_HUD.active_map_overlay = clicked_button
 			self.Earth_Map.update_map()
 			return clicked_button
 
@@ -2003,8 +2004,16 @@ class Game_Screen:
 			return hovered_button
 		else:
 			self.Country_Overview.highlight_country_viewer_button = False
-			self.last_hovered_button = None
-			self.generic_hover_over_button_sound.fadeout(100)	
+
+		hovered_button = self.get_button_by_interaction(mouse_rect, 1)
+		if hovered_button != None:
+			if self.last_hovered_button != hovered_button:
+				self.generic_hover_over_button_sound.play()
+			self.last_hovered_button = hovered_button	
+			return hovered_button
+
+		self.last_hovered_button = None
+		self.generic_hover_over_button_sound.fadeout(100)
 
 	def draw(self, screen, mouse_rect):
 		self.Earth_Map.draw(screen)		
@@ -2979,7 +2988,8 @@ class Bottom_HUD:
 
 		self.bottom_HUD = pygame.transform.smoothscale(bottom_HUD, (self.screen_width, bottom_HUD.get_height() * self.factor_y))
 
-		self.selcted_map_overlay = 1
+		self.selected_map_overlay = 1
+		self.active_map_overlay = 1
 
 		offset_y = 	self.screen_height - self.bottom_HUD.get_height()
 
@@ -2988,18 +2998,21 @@ class Bottom_HUD:
 
 	def get_button_by_interaction(self, mouse_rect):
 		if self.map_overlay_1.rect.colliderect(mouse_rect):
-			self.selcted_map_overlay = 1
+			self.selected_map_overlay = 1
 			return 1
 		elif self.map_overlay_2.rect.colliderect(mouse_rect):
-			self.selcted_map_overlay = 2
+			self.selected_map_overlay = 2
 			return 2
-		
+		self.selected_map_overlay = 0
 		return None
 
 	def draw(self, screen):		
 		screen.blit(self.bottom_HUD, (0, self.screen_height - self.bottom_HUD.get_height()))
 
-		self.pygame.draw.rect(screen, (255, 255, 255), getattr(self, 'map_overlay_'+str(self.selcted_map_overlay)).rect, 2)	
+		self.pygame.draw.rect(screen, (120, 255, 120), getattr(self, 'map_overlay_'+str(self.active_map_overlay)).rect, 2)	
+
+		if self.selected_map_overlay > 0:
+			self.pygame.draw.rect(screen, (255, 255, 255), getattr(self, 'map_overlay_'+str(self.selected_map_overlay)).rect, 2)	
 		
 
 class Earth_Map:
