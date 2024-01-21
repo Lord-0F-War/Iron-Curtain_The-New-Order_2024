@@ -568,7 +568,6 @@ class Country_Selection_Screen:
 			if clicked_button != None:
 				pygame.mixer.music.fadeout(200)
 				self.Flag_Selection_Menu.flag_rects = []
-				self.Country_Selection_Menu.flag_size = None
 				self.Country_Selection_Menu.is_flag_selection_menu_open = False
 				self.selected_flag_image = clicked_button
 				self.Country_Selection_Menu.selected_flag_image = self.selected_flag_image
@@ -673,7 +672,6 @@ class Country_Selection_Menu:
 		
 		self.is_flag_selection_menu_open = False
 		self.selected_flag_image = None
-		self.flag_size = None
 
 		self.is_flag_national_spirits_selection_menu_open = False
 		self.is_laws_group_menu_open = False
@@ -720,7 +718,7 @@ class Country_Selection_Menu:
 		#self.Country_Selection_National_Spirits_Selection_Menu.background_position = [political_compass_image_rect[0]*0.65, political_compass_image_rect[1]*0.95]
 
 		self.leader_portrait_position = (1059 * self.factor_x, 29 * self.factor_y)
-		self.country_flag_position = (1209 * self.factor_x, 89 * self.factor_y)
+		self.country_flag_position = (1209 * self.factor_x, 94 * self.factor_y)
 
 		self.country_name_position = (1212 * self.factor_x, 41 * self.factor_y)
 		self.leader_name_position = (1071 * self.factor_x, 222 * self.factor_y)
@@ -1080,10 +1078,6 @@ class Country_Selection_Menu:
 		
 		# Flag
 		if self.selected_country != None:
-			if self.flag_size == None:
-				self.selected_flag_image = pygame.transform.scale(self.selected_country.country_flag_image, (208, 126))
-				self.selected_flag_image = pygame.transform.smoothscale_by(self.selected_flag_image, (self.factor_x, self.factor_y))
-				self.flag_size = self.selected_flag_image.get_size()
 			screen.blit(self.selected_flag_image, self.country_flag_position)	
 			screen.blit(self.CRT_flag_overlay_effect, self.country_flag_position)	
 		
@@ -1570,7 +1564,7 @@ class Flag_Selection_Menu:
 
 			for rect in self.flag_rects:
 				if rect[0].colliderect(mouse_rect) and self.country_info_display_background != None:
-					pygame.draw.rect(screen, (255,40,30), rect[0], 4)
+					pygame.draw.rect(screen, (255,255,255), rect[0], 2)
 					
 					self.selected_country_name = countries_with_selected_ideology[rect[2]].country_name
 					country_name_text = self.normal_scalable_font.render(self.selected_country_name, True, (255, 255, 255))
@@ -1985,13 +1979,14 @@ class Game_Screen:
 			self.generic_click_button_sound.play()
 			return clicked_button
 
-		clicked_button = self.get_button_by_interaction(mouse_rect, 1)
+		if self.is_top_bar_country_viewer_open == False:
+			clicked_button = self.get_button_by_interaction(mouse_rect, 1)
 
-		if clicked_button != None:
-			self.Earth_Map.map_overlay_index = clicked_button
-			self.Bottom_HUD.active_map_overlay = clicked_button
-			self.Earth_Map.update_map()
-			return clicked_button
+			if clicked_button != None:
+				self.Earth_Map.map_overlay_index = clicked_button
+				self.Bottom_HUD.active_map_overlay = clicked_button
+				self.Earth_Map.update_map()
+				return clicked_button
 
 	def get_hovered_button(self, mouse_rect):
 		hovered_button = self.get_button_by_interaction(mouse_rect, 0)
@@ -2005,12 +2000,13 @@ class Game_Screen:
 		else:
 			self.Country_Overview.highlight_country_viewer_button = False
 
-		hovered_button = self.get_button_by_interaction(mouse_rect, 1)
-		if hovered_button != None:
-			if self.last_hovered_button != hovered_button:
-				self.generic_hover_over_button_sound.play()
-			self.last_hovered_button = hovered_button	
-			return hovered_button
+		if self.is_top_bar_country_viewer_open == False:
+			hovered_button = self.get_button_by_interaction(mouse_rect, 1)
+			if hovered_button != None:
+				if self.last_hovered_button != hovered_button:
+					self.generic_hover_over_button_sound.play()
+				self.last_hovered_button = hovered_button	
+				return hovered_button
 
 		self.last_hovered_button = None
 		self.generic_hover_over_button_sound.fadeout(100)
@@ -2043,7 +2039,7 @@ class Country_Overview:
 
 		self.country_overview = pygame.transform.smoothscale_by(country_overview, (self.factor_x, self.factor_y))
 		self.popularity_circle_overlay = pygame.transform.smoothscale_by(popularity_circle_overlay, (self.factor_x, self.factor_y))
-		self.country_overview_position = (0, 159 * self.factor_y)
+		self.country_overview_position = (0, 158 * self.factor_y)
 		self.national_spirits_display_rects = []
 		self.hovered_national_spirit = None	
 		self.last_hovered_national_spirit = None	
@@ -2234,41 +2230,42 @@ class Country_Overview:
 			if self.top_bar_country_viewer_button.rect.colliderect(mouse_rect):
 				return "country_viewer"	
 			
-			elif self.top_bar_decisions_button.rect.colliderect(mouse_rect):
-				self.hovered_top_bar_UI_button = "decisions_button"
-				return "decisions_button"	
-			elif self.top_bar_laws_button.rect.colliderect(mouse_rect):
-				self.hovered_top_bar_UI_button = "laws_button"
-				return "laws_button"	
-			elif self.top_bar_finances_button.rect.colliderect(mouse_rect):
-				self.hovered_top_bar_UI_button = "finances_button"
-				return "finances_button"	
-			elif self.top_bar_inteligence_button.rect.colliderect(mouse_rect):
-				self.hovered_top_bar_UI_button = "inteligence_button"
-				return "inteligence_button"	
-			elif self.top_bar_research_button.rect.colliderect(mouse_rect):
-				self.hovered_top_bar_UI_button = "research_button"
-				return "research_button"	
-			elif self.top_bar_global_market_button.rect.colliderect(mouse_rect):
-				self.hovered_top_bar_UI_button = "global_market_button"
-				return "global_market_button"	
-			elif self.top_bar_construction_button.rect.colliderect(mouse_rect):
-				self.hovered_top_bar_UI_button = "construction_button"
-				return "construction_button"	
-			elif self.top_bar_production_button.rect.colliderect(mouse_rect):
-				self.hovered_top_bar_UI_button = "production_button"
-				return "production_button"	
-			elif self.top_bar_army_button.rect.colliderect(mouse_rect):
-				self.hovered_top_bar_UI_button = "army_button"
-				return "army_button"	
-			elif self.top_bar_stockpile_button.rect.colliderect(mouse_rect):
-				self.hovered_top_bar_UI_button = "stockpile_button"
-				return "stockpile_button"	
+			if self.is_top_bar_country_viewer_open == False:
+				if self.top_bar_decisions_button.rect.colliderect(mouse_rect):
+					self.hovered_top_bar_UI_button = "decisions_button"
+					return "decisions_button"	
+				elif self.top_bar_laws_button.rect.colliderect(mouse_rect):
+					self.hovered_top_bar_UI_button = "laws_button"
+					return "laws_button"	
+				elif self.top_bar_finances_button.rect.colliderect(mouse_rect):
+					self.hovered_top_bar_UI_button = "finances_button"
+					return "finances_button"	
+				elif self.top_bar_inteligence_button.rect.colliderect(mouse_rect):
+					self.hovered_top_bar_UI_button = "inteligence_button"
+					return "inteligence_button"	
+				elif self.top_bar_research_button.rect.colliderect(mouse_rect):
+					self.hovered_top_bar_UI_button = "research_button"
+					return "research_button"	
+				elif self.top_bar_global_market_button.rect.colliderect(mouse_rect):
+					self.hovered_top_bar_UI_button = "global_market_button"
+					return "global_market_button"	
+				elif self.top_bar_construction_button.rect.colliderect(mouse_rect):
+					self.hovered_top_bar_UI_button = "construction_button"
+					return "construction_button"	
+				elif self.top_bar_production_button.rect.colliderect(mouse_rect):
+					self.hovered_top_bar_UI_button = "production_button"
+					return "production_button"	
+				elif self.top_bar_army_button.rect.colliderect(mouse_rect):
+					self.hovered_top_bar_UI_button = "army_button"
+					return "army_button"	
+				elif self.top_bar_stockpile_button.rect.colliderect(mouse_rect):
+					self.hovered_top_bar_UI_button = "stockpile_button"
+					return "stockpile_button"	
 
 		return None																													
 
 	def get_hovered_rect(self, mouse_rect):
-		if self.top_bar_left_background_rect.colliderect(mouse_rect):
+		if self.top_bar_left_background_rect.colliderect(mouse_rect) and self.is_top_bar_country_viewer_open == False:
 			self.hovered_rect = None
 
 			if self.diplomatic_information_rect.colliderect(mouse_rect):
@@ -2988,32 +2985,58 @@ class Bottom_HUD:
 
 		self.bottom_HUD = pygame.transform.smoothscale(bottom_HUD, (self.screen_width, bottom_HUD.get_height() * self.factor_y))
 
-		self.selected_map_overlay = 1
+		self.selected_map_overlay = 0
 		self.active_map_overlay = 1
 
 		offset_y = 	self.screen_height - self.bottom_HUD.get_height()
 
+		self.bottom_HUD_rect = self.pygame.Rect(0, offset_y, 1920 * self.factor_x, 110 * self.factor_y)
+
 		self.map_overlay_1 = GenericUtilitys.Button(1776 * self.factor_x, 12 * self.factor_y + offset_y, 59 * self.factor_x, 43 * self.factor_y)
 		self.map_overlay_2 = GenericUtilitys.Button(1845 * self.factor_x, 12 * self.factor_y + offset_y, 59 * self.factor_x, 43 * self.factor_y)
 
+		country_legislation_size_x = 210 * self.factor_x
+		country_legislation_size_y = 86 * self.factor_y
+		country_legislation_height = 12 * self.factor_y + offset_y
+		self.country_legislation_1 = GenericUtilitys.Button(12 * self.factor_x, country_legislation_height, country_legislation_size_x, country_legislation_size_y)
+		self.country_legislation_2 = GenericUtilitys.Button(240 * self.factor_x, country_legislation_height, country_legislation_size_x, country_legislation_size_y)
+		self.country_legislation_3 = GenericUtilitys.Button(468 * self.factor_x, country_legislation_height, country_legislation_size_x, country_legislation_size_y)
+		self.country_legislation_4 = GenericUtilitys.Button(696 * self.factor_x, country_legislation_height, country_legislation_size_x, country_legislation_size_y)
+		self.country_legislation_5 = GenericUtilitys.Button(924 * self.factor_x, country_legislation_height, country_legislation_size_x, country_legislation_size_y)
+		self.country_legislation_6 = GenericUtilitys.Button(1152 * self.factor_x, country_legislation_height, country_legislation_size_x, country_legislation_size_y)
+		self.country_legislation_7 = GenericUtilitys.Button(1380 * self.factor_x, country_legislation_height, country_legislation_size_x, country_legislation_size_y)
+
+		self.collided_country_legislation_button = None
+
 	def get_button_by_interaction(self, mouse_rect):
-		if self.map_overlay_1.rect.colliderect(mouse_rect):
-			self.selected_map_overlay = 1
-			return 1
-		elif self.map_overlay_2.rect.colliderect(mouse_rect):
-			self.selected_map_overlay = 2
-			return 2
+		if self.bottom_HUD_rect.colliderect(mouse_rect):
+			if self.map_overlay_1.rect.colliderect(mouse_rect):
+				self.selected_map_overlay = 1
+				return 1
+			elif self.map_overlay_2.rect.colliderect(mouse_rect):
+				self.selected_map_overlay = 2
+				return 2
+
+			self.collided_country_legislation_button = None
+			for button in range(7):
+				button_rect = getattr(self, 'country_legislation_'+str(button+1)).rect
+				if button_rect.colliderect(mouse_rect):
+					self.collided_country_legislation_button = button+1
+					return 'country_legislation_button_'+str(button+1)
+		
 		self.selected_map_overlay = 0
 		return None
 
 	def draw(self, screen):		
 		screen.blit(self.bottom_HUD, (0, self.screen_height - self.bottom_HUD.get_height()))
 
-		self.pygame.draw.rect(screen, (120, 255, 120), getattr(self, 'map_overlay_'+str(self.active_map_overlay)).rect, 2)	
+		self.pygame.draw.rect(screen, (0, 255, 0), getattr(self, 'map_overlay_'+str(self.active_map_overlay)).rect, 2)	
 
 		if self.selected_map_overlay > 0:
-			self.pygame.draw.rect(screen, (255, 255, 255), getattr(self, 'map_overlay_'+str(self.selected_map_overlay)).rect, 2)	
-		
+			self.pygame.draw.rect(screen, (255, 255, 255), getattr(self, 'map_overlay_'+str(self.selected_map_overlay)).rect, 2)
+
+		if self.collided_country_legislation_button != None:
+			self.pygame.draw.rect(screen, (255, 255, 255), getattr(self, 'country_legislation_'+str(self.collided_country_legislation_button)).rect, 2)
 
 class Earth_Map:
 	def __init__(self, factor_x, factor_y, screen_width, screen_height, earth_daymap, earth_nightmap, earth_political_map, earth_political_map_filled, Clock_UI):
