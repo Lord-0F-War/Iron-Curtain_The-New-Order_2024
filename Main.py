@@ -32,8 +32,10 @@ class Main:
 
 		self.countries = []
 
-		self.mouse_start_pos = None
-		self.mouse_end_pos = None
+		self.mouse_start_pos = (0,0)
+		self.mouse_end_pos = (0,0)
+		self.last_difference_x = 0
+		self.last_difference_y = 0
 
 		self.exe_folder = os.path.dirname(sys.argv[0])
 		self.leaders_image_dic = {}
@@ -228,74 +230,35 @@ class Main:
 		self.music_folder = os.path.join(self.exe_folder, 'Music')
 		self.load_music_files(self.music_folder)
 
+	def read_focus_from_file(self, location):
+		file_path = f'{location}.json'
+
+		try:
+			with open(file_path, 'r') as file:
+				focus_data = json_load(file)
+
+			focus_list = []
+			for focus_data_entry in focus_data:
+				focus = CountriesManager.National_Focus(
+					focus_data_entry['name'],
+					self.national_focus_image_dic[focus_data_entry['icon']],
+					focus_data_entry['description'],
+					focus_data_entry['x_offset'],
+					focus_data_entry['completion_time'],
+					focus_data_entry['next_focus']
+				)
+				focus_list.append(focus)
+
+			return focus_list
+
+		except FileNotFoundError:
+			print(f'Error: File {file_path} not found.')
+			return []
 	def create_countries_default_frame(self):
 		self.countries = []
+		self.common_folder = os.path.join(self.exe_folder, 'common')
+		self.national_focus_folder = os.path.join(self.common_folder, 'national_focus')		
 
-
-		self.USSR = CountriesManager.Country(
-					'Leonid Ilyich Brezhnev',
-					self.capitals_images_dic['USA'],
-				    self.leaders_image_dic['Portrait_USSR_Leonid_Ilyich_Brezhnev'], 
-				    self.flags_image_dic['USSR'],
-					'Union of Soviet Socialist Republics',
-					'Marxist_Leninism',
-					[self.music_files_dic['those_were_the_days']])
-		self.USSR.country_ruling_party = 'Communist Party of the Soviet Union'
-		self.USSR.country_government = 'Single-Party Socialist State'
-		self.USSR.country_elections = 'Never'
-		self.USSR.country_brief_history = """
-As you  step  into  a  world  forever  altered  by  the
-relentless efforts of  the  KGB,  the  very  fabric  of
-society   quivers   beneath   the   sinister   art   of
-manipulation and deception.
-
-The KGB, ever vigilant,  works  tirelessly  to  maintain
-the  illusion  of  stability, even  as  the  foundations
-of the Soviet Union crumble beneath the surface.
-
-The cracks in  the  facade  of  the  once-mighty  empire
-have  grown  into  chasms, carefully  concealed  by  the
-KGB's  propaganda,  threatening  to   engulf   not  only
-the  Eastern   Bloc   but   the   entire   world   in  a
-catastrophic maelstrom.
-"""		
-		self.USSR.political_parties.set_active_law(			0)
-		self.USSR.religious_rights.set_active_law(			0)
-		self.USSR.trade_unions.set_active_law(				0)
-		self.USSR.public_protest.set_active_law(			0)
-		self.USSR.gun_control.set_active_law(				0)
-		self.USSR.privacy_rights.set_active_law(			0)
-		self.USSR.speach_rights.set_active_law(				0)
-		self.USSR.press_rights.set_active_law(				0)
-		self.USSR.voting_rights.set_active_law(				0)
-		self.USSR.conscription.set_active_law(				0)
-		self.USSR.women_in_service.set_active_law(			0)
-		self.USSR.training_level.set_active_law(			0)
-		self.USSR.racial_admission.set_active_law(			0)
-		self.USSR.national_security.set_active_law(			0)
-		self.USSR.deployment.set_active_law(				0)
-		self.USSR.reserves.set_active_law(					0)
-		self.USSR.economical_militarization.set_active_law(	0)
-		self.USSR.economic_system.set_active_law(			0)
-		self.USSR.trade_laws.set_active_law(				0)
-		self.USSR.taxation_system.set_active_law(			0)
-		self.USSR.regulations.set_active_law(				0)
-		self.USSR.monetary_policy.set_active_law(			0)
-		self.USSR.property_rights.set_active_law(			0)
-		self.USSR.nationalization.set_active_law(			0)
-		self.USSR.brand_rights.set_active_law(				0)
-		self.USSR.public_services.set_active_law(			0)
-		self.USSR.emigration_immigration.set_active_law(	0)
-		self.USSR.minorities_rights.set_active_law(			0)
-		self.USSR.welfare.set_active_law(					0)
-		self.USSR.reproduction.set_active_law(				0)
-		self.USSR.morality_laws.set_active_law(				0)
-		self.USSR.drug_laws.set_active_law(					0)
-		self.USSR.work_laws.set_active_law(					0)
-		self.USSR.justice_system.set_active_law(			0)
-		self.USSR.environmental.set_active_law(				0)		
-		#----------------------------------------------------------------#
-		#----------------------------------------------------------------#
 		self.USA = CountriesManager.Country(
 					'Richard Nixon',
 					self.capitals_images_dic['USA'],
@@ -324,30 +287,8 @@ to the fate of the nation, perhaps the world, rests on
 your shoulders.
 """
 		# Country Focus
-		completion_time = {
-			'day': 1,
-			'month': 1,
-			'year': 1970
-		}		
-		focus_1 = CountriesManager.National_Focus('FOCUS NAME 1', self.national_focus_image_dic['test'],'desc test', 0, completion_time)
-
-		completion_time = {
-			'day': 10,
-			'month': 1,
-			'year': 1970
-		}
-		focus_2 = CountriesManager.National_Focus('FOCUS NAME 2', self.national_focus_image_dic['test'],'desc test', 150, completion_time)
-
-		completion_time = {
-			'day': 1,
-			'month': 2,
-			'year': 1970
-		}
-		focus_3 = CountriesManager.National_Focus('FOCUS NAME 3', self.national_focus_image_dic['test'],'desc test', 300, completion_time)
-	
-		self.USA.country_focus_tree.append(focus_1)
-		self.USA.country_focus_tree.append(focus_2)
-		self.USA.country_focus_tree.append(focus_3)
+		usa_focus_list = self.read_focus_from_file(location = os.path.join(self.national_focus_folder, 'USA'))
+		self.USA.country_focus_tree.extend(usa_focus_list)		
 
 		# Country Stats
 		self.USA.country_national_spirits_total_points = 100
@@ -443,7 +384,7 @@ your shoulders.
 		self.USA.environmental.set_active_law(				0)
 		#----------------------------------------------------------------#
 		#----------------------------------------------------------------#		
-		self.countries.extend([self.USSR, self.USA])
+		self.countries.extend([self.USA])
 	def create_national_spirits(self):
 		self.localization_folder = os.path.join(self.exe_folder, 'localization')
 		self.ideas_localization_folder = os.path.join(self.localization_folder, 'ideas')
@@ -593,35 +534,6 @@ your shoulders.
 			np.points_cost = 5
 
 		#### COUNTRIES
-		
-		# USSR
-
-		self.USSR_ideas_localization_folder = os.path.join(self.ideas_localization_folder, 'USSR')
-		
-		with open(os.path.join(self.USSR_ideas_localization_folder, 'KGB.txt'), 'r') as file:
-			KGB_description = file.read()			
-		self.kgb = CountriesManager.National_Spirit('KGB', self.national_spirits_image_dic['KGB'], KGB_description)
-
-		with open(os.path.join(self.USSR_ideas_localization_folder, 'army_race_cost.txt'), 'r') as file:
-			arms_race_cost_description = file.read()			
-		self.arms_race_cost = CountriesManager.National_Spirit('Arms Race Cost', self.national_spirits_image_dic['arms_race_cost'], arms_race_cost_description)
-		
-		with open(os.path.join(self.USSR_ideas_localization_folder, 'ussr_economical_stagnation.txt'), 'r') as file:
-			ussr_economical_stagnation_description = file.read()		
-		self.ussr_economical_stagnation = CountriesManager.National_Spirit('Economical Stagnation', self.national_spirits_image_dic['ussr_economical_stagnation'], ussr_economical_stagnation_description)
-
-		with open(os.path.join(self.USSR_ideas_localization_folder, 'ussr_huge_oil_reserves.txt'), 'r') as file:
-			ussr_huge_oil_reserves_description = file.read()			
-		self.ussr_huge_oil_reserves = CountriesManager.National_Spirit('Huge Oil Reserves', self.national_spirits_image_dic['ussr_huge_oil_reserves'], ussr_huge_oil_reserves_description)
-
-		with open(os.path.join(self.USSR_ideas_localization_folder, 'limitless_science.txt'), 'r') as file:
-			limitless_science_description = file.read()		
-		self.limitless_science = CountriesManager.National_Spirit('Limitless Science', self.national_spirits_image_dic['limitless_science'], limitless_science_description)
-
-		self.USSR.country_national_spirits.extend([self.kgb, self.arms_race_cost, self.ussr_economical_stagnation, self.ussr_huge_oil_reserves, self.limitless_science])
-		self.USSR.country_culture = self.Ultraprogressive
-		self.USSR.country_religion = self.Atheism
-
 
 		# United States of America
 
@@ -1061,12 +973,10 @@ your shoulders.
 					else:
 						if keys[self.pygame.K_w]:																												
 							self.Game_Screen.Earth_Map.map_position[1] += 10 if self.Game_Screen.Earth_Map.map_position[1] < 0 else 0
-							self.Game_Screen.Country_Focus_Tree.focus_movement_y -= 10
 						if keys[self.pygame.K_a]:																													
 							self.Game_Screen.Earth_Map.map_position[0] += 10
 						if keys[self.pygame.K_s]:																													
 							self.Game_Screen.Earth_Map.map_position[1] -= 10 if abs(self.Game_Screen.Earth_Map.map_position[1]) + self.screen_height < self.Game_Screen.Earth_Map.earth_daymap.get_height()*1.5 else 0
-							self.Game_Screen.Country_Focus_Tree.focus_movement_y += 10
 						if keys[self.pygame.K_d]:																													
 							self.Game_Screen.Earth_Map.map_position[0] -= 10
 
@@ -1136,21 +1046,29 @@ your shoulders.
 				# Check if the left mouse button is being held down
 				if mouse_buttons[0]:	
 					self.mouse_end_pos = self.mouse_pos
-					if self.Game_Screen.Country_Focus_Tree.is_top_bar_focus_tree_open == True:
-						difference_x = self.mouse_start_pos[0] - self.mouse_end_pos[0]
-						difference_y = self.mouse_start_pos[1] - self.mouse_end_pos[1]
+					
+					difference_x = self.mouse_start_pos[0] - self.mouse_end_pos[0]
+					difference_y = self.mouse_start_pos[1] - self.mouse_end_pos[1]
 
-						original_difference_x = difference_x
-						original_difference_y = difference_y
+					original_difference_x = difference_x
+					original_difference_y = difference_y
 
-						difference_x -= self.last_difference_x
-						difference_y -= self.last_difference_y
+					difference_x -= self.last_difference_x
+					difference_y -= self.last_difference_y
 
-						self.last_difference_x = original_difference_x
-						self.last_difference_y = original_difference_y							
+					self.last_difference_x = original_difference_x
+					self.last_difference_y = original_difference_y	
 
+					if self.Game_Screen.Country_Focus_Tree.is_top_bar_focus_tree_open == True:						
 						self.Game_Screen.Country_Focus_Tree.focus_movement_x -= difference_x
 						self.Game_Screen.Country_Focus_Tree.focus_movement_y -= difference_y
+
+					else:
+						self.Game_Screen.Earth_Map.map_position[0] -= difference_x 
+						if difference_y > 0:
+							self.Game_Screen.Earth_Map.map_position[1] -= difference_y if self.Game_Screen.Earth_Map.map_position[1] < 0 else 0
+						else:
+							self.Game_Screen.Earth_Map.map_position[1] -= difference_y if abs(self.Game_Screen.Earth_Map.map_position[1]) + self.screen_height < self.Game_Screen.Earth_Map.earth_daymap.get_height()*1.5 else 0
 				else:
 					self.mouse_start_pos = self.mouse_pos
 					self.last_difference_x = 0
@@ -1173,7 +1091,7 @@ your shoulders.
 				self.Country_Selection_Screen.music_player()
 
 
-			clock.tick(40)
+			clock.tick(30)
 
 		self.pygame.quit()
 

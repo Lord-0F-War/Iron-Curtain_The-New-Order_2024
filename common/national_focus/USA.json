@@ -1,0 +1,75 @@
+[
+    {
+        "name": "NOME 1",
+        "icon": "test",
+        "description": "desc test",
+        "x_offset": 0,
+        "completion_time": {
+            "day": 1,
+            "month": 1,
+            "year": 1970
+        },
+        "next_focus": [1]
+    },     
+    {
+        "name": "NOME 2",
+        "icon": "test",
+        "description": "desc test",
+        "x_offset": 0,
+        "completion_time": {
+            "day": 1,
+            "month": 2,
+            "year": 1970
+        },
+        "next_focus": [2, 3]
+    },
+    {
+        "name": "NOME 3",
+        "icon": "test",
+        "description": "desc test",
+        "x_offset": -150,
+        "completion_time": {
+            "day": 1,
+            "month": 3,
+            "year": 1970
+        },
+        "next_focus": [4]
+    },
+    {
+        "name": "NOME 4",
+        "icon": "test",
+        "description": "desc test",
+        "x_offset": 150,
+        "completion_time": {
+            "day": 1,
+            "month": 3,
+            "year": 1970
+        },
+        "next_focus": [5]
+    },
+    {
+        "name": "NOME 5",
+        "icon": "test",
+        "description": "desc test",
+        "x_offset": -150,
+        "completion_time": {
+            "day": 15,
+            "month": 3,
+            "year": 1970
+        },
+        "next_focus": []
+    },
+    {
+        "name": "NOME 6",
+        "icon": "test",
+        "description": "desc test",
+        "x_offset": 150,
+        "completion_time": {
+            "day": 15,
+            "month": 3,
+            "year": 1970
+        },
+        "next_focus": []
+    }                      
+    
+]

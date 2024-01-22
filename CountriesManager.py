@@ -1,7 +1,7 @@
 
 
 class National_Focus:
-    def __init__(self, national_focus_name, national_focus_icon, national_focus_description, x_offset, completion_time) -> None:
+    def __init__(self, national_focus_name, national_focus_icon, national_focus_description, x_offset, completion_time, next_focus):
         self.national_focus_name = national_focus_name
         self.national_focus_icon = national_focus_icon
         self.national_focus_description = national_focus_description
@@ -11,9 +11,11 @@ class National_Focus:
         self.x_offset = x_offset
         self.y_offset = self.completion_time['day'] * 10 + self.completion_time['month'] * 300
 
+        self.next_focus = next_focus
+
 
 class National_Spirit:
-    def __init__(self, national_spirit_name, national_spirit_icon, national_spirit_description) -> None:
+    def __init__(self, national_spirit_name, national_spirit_icon, national_spirit_description):
         self.national_spirit_name = national_spirit_name
         self.national_spirit_icon = national_spirit_icon
         self.national_spirit_description = national_spirit_description
@@ -24,7 +26,7 @@ class National_Spirit:
 
 
 class Laws_Group:
-    def __init__(self, group_name = str, laws = list, active_law_index = int) -> None:
+    def __init__(self, group_name = str, laws = list, active_law_index = int):
         self.group_name = group_name
         self.laws = laws
         self.active_law_index = active_law_index

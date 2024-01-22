@@ -2919,8 +2919,8 @@ class Country_Focus_Tree:
 		self.highlight_focus_button = False
 		self.is_top_bar_focus_tree_open = False
 
-		self.top_bar_flag_overlay = top_bar_flag_overlay
-		self.top_bar_flag_overlay_hovering_over = top_bar_flag_overlay_hovering_over
+		self.top_bar_flag_overlay = pygame.transform.smoothscale_by(top_bar_flag_overlay, (self.factor_x, self.factor_y))
+		self.top_bar_flag_overlay_hovering_over = pygame.transform.smoothscale_by(top_bar_flag_overlay_hovering_over, (self.factor_x, self.factor_y))	
 
 		self.top_bar_focus_tree_button = GenericUtilitys.Button(2 * self.factor_x, 81 * self.factor_y, 123 * self.factor_x, 74 * self.factor_y)
 
@@ -2950,17 +2950,36 @@ class Country_Focus_Tree:
 			self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.screen_width, self.screen_height - (158 + 110) * self.factor_y))
 
 			for focus in self.PlayerCountry.country_focus_tree:
+				current_focus_position = (self.screen_width/2 + (focus.x_offset + self.focus_movement_x) * self.factor_x + focus.national_focus_icon.get_width()/2, (focus.y_offset + self.focus_movement_y) * self.factor_y - focus.national_focus_icon.get_height()/2)
+				if focus.next_focus:
+					for focus_id in focus.next_focus:
+						next_focus_position = (self.screen_width/2 + (self.PlayerCountry.country_focus_tree[focus_id].x_offset + self.focus_movement_x) * self.factor_x + focus.national_focus_icon.get_width()/2, (self.PlayerCountry.country_focus_tree[focus_id].y_offset + self.focus_movement_y) * self.factor_y - focus.national_focus_icon.get_height()/2)					
+						self.pygame.draw.line(self.focus_tree_surface, (255, 255, 255), current_focus_position, next_focus_position, 2)
+
+				self.pygame.draw.rect(self.focus_tree_surface, (6,15,20), (self.screen_width/2 + (focus.x_offset + self.focus_movement_x - 40) * self.factor_x, (focus.y_offset + self.focus_movement_y - 5) * self.factor_y - focus.national_focus_icon.get_height(), focus.national_focus_icon.get_width() + 80 * self.factor_x, focus.national_focus_icon.get_height() + 40 * self.factor_y))
+
 				self.focus_tree_surface.blit(focus.national_focus_icon, (self.screen_width/2 + (focus.x_offset + self.focus_movement_x) * self.factor_x, (focus.y_offset + self.focus_movement_y) * self.factor_y - focus.national_focus_icon.get_height()))
 
-				focus_name = self.small_scalable_font.render(focus.national_focus_name, True, (255, 255, 255))
-				self.focus_tree_surface.blit(focus_name, (self.screen_width/2 + (focus.x_offset + self.focus_movement_x) * self.factor_x - focus_name.get_width()/2 + focus.national_focus_icon.get_width()/2, (focus.y_offset + self.focus_movement_y) * self.factor_y))
+				focus_name = self.medium_scalable_font.render(focus.national_focus_name, True, (255, 255, 255))
+				self.focus_tree_surface.blit(focus_name, (self.screen_width/2 + (focus.x_offset + self.focus_movement_x) * self.factor_x - focus_name.get_width()/2 + focus.national_focus_icon.get_width()/2, (focus.y_offset + self.focus_movement_y) * self.factor_y + 10 * self.factor_y))
 
-			for month in range(12):
-				dates_name = self.big_scalable_font.render(str(1970)+ ' - ' + str(month+1), True, (255, 255, 255))
-				self.focus_tree_surface.blit(dates_name, (15 * self.factor_x, (self.focus_movement_y + ((month+1) * 300)) * self.factor_y))
+				self.pygame.draw.rect(self.focus_tree_surface, (43,219,211), (self.screen_width/2 + (focus.x_offset + self.focus_movement_x - 40) * self.factor_x, (focus.y_offset + self.focus_movement_y - 5) * self.factor_y - focus.national_focus_icon.get_height(), focus.national_focus_icon.get_width() + 80 * self.factor_x, focus.national_focus_icon.get_height() + 40 * self.factor_y), 2)
+
+
+			for month in range(4):
+				years_offset = 0
+
+				months_offset = int(abs(self.focus_movement_y)/300)
+				months = month + 1 + months_offset
+			
+				years_offset = int((months-1)/12)
+				total_months = months - 12 * int((months-1)/12)		
+		
+				dates_name = self.big_scalable_font.render(str(1970+years_offset)+ ' - ' + str(total_months), True, (255, 255, 255))
+				self.focus_tree_surface.blit(dates_name, (15 * self.factor_x, (self.focus_movement_y + ((total_months + (years_offset*12)) * 300) + 35) * self.factor_y))
 
 			current_date_line_height = (self.current_day * 10 + self.current_month * 300 + self.focus_movement_y) * self.factor_y
-			pygame.draw.aaline(self.focus_tree_surface, (255, 0, 0), (0, current_date_line_height), (self.screen_width, current_date_line_height))
+			self.pygame.draw.line(self.focus_tree_surface, (255, 0, 0), (0, current_date_line_height + 35 * self.factor_y), (self.screen_width, current_date_line_height + 35 * self.factor_y), 1)
 
 			screen.blit(self.focus_tree_surface, (0, 158 * self.factor_y))
 
