@@ -1,5 +1,17 @@
 
 
+class National_Focus:
+    def __init__(self, national_focus_name, national_focus_icon, national_focus_description, x_offset, completion_time) -> None:
+        self.national_focus_name = national_focus_name
+        self.national_focus_icon = national_focus_icon
+        self.national_focus_description = national_focus_description
+
+        self.completion_time = completion_time
+
+        self.x_offset = x_offset
+        self.y_offset = self.completion_time['day'] * 10 + self.completion_time['month'] * 300
+
+
 class National_Spirit:
     def __init__(self, national_spirit_name, national_spirit_icon, national_spirit_description) -> None:
         self.national_spirit_name = national_spirit_name
@@ -64,6 +76,8 @@ class Country:
         self.country_national_spirits = []
         self.country_culture = None
         self.country_religion = None
+
+        self.country_focus_tree = []
 
         self.politics_popularity = [4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16]
         self.culture_popularity = [7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14]

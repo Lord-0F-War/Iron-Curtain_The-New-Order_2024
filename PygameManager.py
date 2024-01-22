@@ -32,11 +32,11 @@ class Pygame:
 		self.screen_update = pygame.USEREVENT + 4
 		
 		pygame.time.set_timer(self.date_tick, 10) # 100 ticks per second
-		pygame.time.set_timer(self.FPS_update, 50)
+		pygame.time.set_timer(self.FPS_update, 100)
 		pygame.time.set_timer(self.key_delay, 42)
-		pygame.time.set_timer(self.screen_update, 50) # 20 fps
+		pygame.time.set_timer(self.screen_update, 25) # 40 fps
 
 		pygame.mixer.init(buffer=8192) 
-		pygame.K_1
+
 		return (self.clock, QUIT, self.date_tick, self.FPS_update, self.key_delay, self.screen_update, self.display, self.screen, self.surface_alfa, self.territory_ownership_surface)
 

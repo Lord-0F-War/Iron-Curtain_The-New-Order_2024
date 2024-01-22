@@ -32,11 +32,15 @@ class Main:
 
 		self.countries = []
 
+		self.mouse_start_pos = None
+		self.mouse_end_pos = None
+
 		self.exe_folder = os.path.dirname(sys.argv[0])
 		self.leaders_image_dic = {}
 		self.capitals_images_dic = {}		
 		self.flags_image_dic = {}
 		self.national_spirits_image_dic = {}
+		self.national_focus_image_dic = {}
 		self.music_files_dic = {}
 		self.load_assets()
 		self.create_countries_default_frame()
@@ -82,6 +86,16 @@ class Main:
 						image_name = os.path.splitext(filename)[0]
 						self.national_spirits_image_dic[image_name] = self.pygame.image.load(image_path).convert_alpha()
 						self.national_spirits_image_dic[image_name] = self.pygame.transform.smoothscale_by(self.national_spirits_image_dic[image_name], (self.factor_x, self.factor_y))		
+	def load_national_focus(self, national_focus_folder):
+		for folder_name in os.listdir(national_focus_folder):
+			folder_path = os.path.join(national_focus_folder, folder_name)		
+			if os.path.isdir(folder_path):
+				for filename in os.listdir(folder_path):
+					if filename.endswith(".png") or filename.endswith(".jpg"):
+						image_path = os.path.join(folder_path, filename)
+						image_name = os.path.splitext(filename)[0]
+						self.national_focus_image_dic[image_name] = self.pygame.image.load(image_path).convert_alpha()
+						self.national_focus_image_dic[image_name] = self.pygame.transform.smoothscale_by(self.national_focus_image_dic[image_name], (self.factor_x, self.factor_y))			
 	def load_music_files(self, musics_folder):	
 		for folder_name in os.listdir(musics_folder):
 			folder_path = os.path.join(musics_folder, folder_name)
@@ -197,6 +211,12 @@ class Main:
 		
 		self.national_spirits_folder = os.path.join(self.ideas_folder, 'national_spirits')
 		self.load_national_spirits(self.national_spirits_folder)
+
+
+
+		self.national_focus_folder = os.path.join(self.interface_folder, 'national_focus')
+		self.load_national_focus(self.national_focus_folder)
+
 		
 		self.sounds_folder = os.path.join(self.exe_folder, 'Sounds')
 		self.sounds_menu_folder = os.path.join(self.sounds_folder, 'menu')
@@ -303,6 +323,32 @@ The relentless countdown of the cataclysm adds urgency
 to the fate of the nation, perhaps the world, rests on
 your shoulders.
 """
+		# Country Focus
+		completion_time = {
+			'day': 1,
+			'month': 1,
+			'year': 1970
+		}		
+		focus_1 = CountriesManager.National_Focus('FOCUS NAME 1', self.national_focus_image_dic['test'],'desc test', 0, completion_time)
+
+		completion_time = {
+			'day': 10,
+			'month': 1,
+			'year': 1970
+		}
+		focus_2 = CountriesManager.National_Focus('FOCUS NAME 2', self.national_focus_image_dic['test'],'desc test', 150, completion_time)
+
+		completion_time = {
+			'day': 1,
+			'month': 2,
+			'year': 1970
+		}
+		focus_3 = CountriesManager.National_Focus('FOCUS NAME 3', self.national_focus_image_dic['test'],'desc test', 300, completion_time)
+	
+		self.USA.country_focus_tree.append(focus_1)
+		self.USA.country_focus_tree.append(focus_2)
+		self.USA.country_focus_tree.append(focus_3)
+
 		# Country Stats
 		self.USA.country_national_spirits_total_points = 100
 		
@@ -668,8 +714,6 @@ your shoulders.
 
 	def main_loop(self):
 		while self.starting_the_game:
-			self.rects_of_active_UI = []
-
 			if self.is_in_main_menu_screen == True:
 				if self.main_menu_music_started == False or self.pygame.mixer.music.get_busy() == False:
 					self.main_menu_music_started = True
@@ -899,6 +943,8 @@ your shoulders.
 									self.Game_Screen.Country_Overview.politics_popularity = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country.politics_popularity
 									self.Game_Screen.Country_Overview.culture_popularity = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country.culture_popularity
 									self.Game_Screen.Country_Overview.religion_popularity = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country.religion_popularity
+
+									self.Game_Screen.Country_Focus_Tree.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
 						else:
 							self.clicked_button = self.ESC_Menu.get_clicked_button(self.mouse_rect, self.is_options_menu_open)
 							if self.clicked_button != 'none' and self.clicked_button != None:
@@ -960,6 +1006,8 @@ your shoulders.
 
 
 			if self.is_in_game_screen == True:
+				self.Screen_Manager.render_game_screen(self.Options_Menu.brightness_slider.value, self.is_in_esc_menu, self.is_options_menu_open, self.mouse_rect)
+				
 				for event in self.pygame.event.get():
 					keys = self.pygame.key.get_pressed()	
 					if event.type == QUIT:
@@ -967,10 +1015,11 @@ your shoulders.
 						self.is_in_game_screen = False		
 					if event.type == FPS_update:
 						self.pygame.display.set_caption(str(round(clock.get_fps(), 2)))							
-					if event.type == screen_update:
-						self.Screen_Manager.render_game_screen(self.Options_Menu.brightness_slider.value, self.is_in_esc_menu, self.is_options_menu_open, self.mouse_rect)
 					if event.type == date_tick:
 						self.Game_Screen.Clock_UI.date_tick()
+						self.Game_Screen.Country_Focus_Tree.current_day = self.Game_Screen.Clock_UI.current_day
+						self.Game_Screen.Country_Focus_Tree.current_month = self.Game_Screen.Clock_UI.current_month
+						self.Game_Screen.Country_Focus_Tree.current_year = self.Game_Screen.Clock_UI.current_year
 
 					if self.is_options_menu_open == True:
 						self.Options_Menu.interacting_with_UI_slides(event)
@@ -1011,11 +1060,13 @@ your shoulders.
 							self.Game_Screen.Earth_Map.scale_map(zoom_factor_change = -0.05, fps_freezing_avoidance = round(clock.get_fps(), 2), zoom_type = 'zoom_out')
 					else:
 						if keys[self.pygame.K_w]:																												
-							self.Game_Screen.Earth_Map.map_position[1] += 10 if self.Game_Screen.Earth_Map.map_position[1] < 0 else 0 
+							self.Game_Screen.Earth_Map.map_position[1] += 10 if self.Game_Screen.Earth_Map.map_position[1] < 0 else 0
+							self.Game_Screen.Country_Focus_Tree.focus_movement_y -= 10
 						if keys[self.pygame.K_a]:																													
 							self.Game_Screen.Earth_Map.map_position[0] += 10
 						if keys[self.pygame.K_s]:																													
 							self.Game_Screen.Earth_Map.map_position[1] -= 10 if abs(self.Game_Screen.Earth_Map.map_position[1]) + self.screen_height < self.Game_Screen.Earth_Map.earth_daymap.get_height()*1.5 else 0
+							self.Game_Screen.Country_Focus_Tree.focus_movement_y += 10
 						if keys[self.pygame.K_d]:																													
 							self.Game_Screen.Earth_Map.map_position[0] -= 10
 
@@ -1028,7 +1079,7 @@ your shoulders.
 						pass
 					
 					elif event.type == self.pygame.MOUSEBUTTONDOWN:
-						self.mouse_rect = self.pygame.Rect(self.mouse_pos, (1, 1))
+						self.mouse_rect = self.pygame.Rect(self.mouse_pos, (1, 1))				
 
 						if self.is_in_esc_menu == False:
 							self.clicked_button = self.Game_Screen.get_clicked_button(self.mouse_rect)
@@ -1078,11 +1129,41 @@ your shoulders.
 										with open(f'{self.exe_folder}\\settings.txt', 'w') as file:
 											json_dump(configs, file)									
 
+				#--------------------------------------------------------------------------------------------------------#
+				#--------------------------------------------------------------------------------------------------------#
+
+				mouse_buttons = pygame.mouse.get_pressed()
+				# Check if the left mouse button is being held down
+				if mouse_buttons[0]:	
+					self.mouse_end_pos = self.mouse_pos
+					if self.Game_Screen.Country_Focus_Tree.is_top_bar_focus_tree_open == True:
+						difference_x = self.mouse_start_pos[0] - self.mouse_end_pos[0]
+						difference_y = self.mouse_start_pos[1] - self.mouse_end_pos[1]
+
+						original_difference_x = difference_x
+						original_difference_y = difference_y
+
+						difference_x -= self.last_difference_x
+						difference_y -= self.last_difference_y
+
+						self.last_difference_x = original_difference_x
+						self.last_difference_y = original_difference_y							
+
+						self.Game_Screen.Country_Focus_Tree.focus_movement_x -= difference_x
+						self.Game_Screen.Country_Focus_Tree.focus_movement_y -= difference_y
+				else:
+					self.mouse_start_pos = self.mouse_pos
+					self.last_difference_x = 0
+					self.last_difference_y = 0
+
+				#--------------------------------------------------------------------------------------------------------#
+				#--------------------------------------------------------------------------------------------------------#
+
 				self.mouse_rect = self.pygame.Rect(self.mouse_pos, (1, 1))
 
 				if self.is_in_esc_menu == False:
 					self.hovered_rect = self.Game_Screen.Country_Overview.get_hovered_rect(self.mouse_rect)
-					if self.Game_Screen.is_top_bar_country_viewer_open == False:
+					if self.Game_Screen.is_any_top_bar_menu_open == False:
 						self.hovered_top_bar_button = self.Game_Screen.get_hovered_button(self.mouse_rect)
 				else:
 					self.hovered_button = self.ESC_Menu.get_hovered_button(self.mouse_rect, self.is_options_menu_open)
@@ -1092,7 +1173,7 @@ your shoulders.
 				self.Country_Selection_Screen.music_player()
 
 
-			clock.tick(144)
+			clock.tick(40)
 
 		self.pygame.quit()
 

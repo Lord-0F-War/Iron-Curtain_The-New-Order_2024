@@ -3,7 +3,7 @@ import sys
 import os
 from PygameManager import pygame
 from pygame.locals import *
-from shapely.geometry import Polygon, Point
+from shapely.geometry import Polygon
 import math
 
 

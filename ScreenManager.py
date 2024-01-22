@@ -1,6 +1,4 @@
 
-import GenericUtilitys
-
 
 class Screen:
 	def __init__(self, pygame, display, screen, surface_alfa, Main_Menu, Country_Selection_Screen, Scenario_Selection_Menu, ESC_Menu, Game_Screen, main_menu_backgound, python_logo):
@@ -97,8 +95,8 @@ class Screen:
 
 
 	def render_game_screen(self, brightness_value, is_in_esc_menu, is_options_menu_open, mouse_rect):
-		self.screen.fill((0, 0, 0))
-		self.surface_alfa.fill((0, 0, 0, 0))
+		self.screen.fill((0, 0, 0), (0, 0, self.screen_width, self.screen_height))
+		self.surface_alfa.fill((0, 0, 0, 0), (0, 0, self.screen_width, self.screen_height))
 
 		self.Game_Screen.draw(self.surface_alfa, mouse_rect)
 
