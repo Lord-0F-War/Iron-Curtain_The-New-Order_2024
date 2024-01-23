@@ -13,6 +13,8 @@ class National_Focus:
 
         self.next_focus = next_focus
 
+        self.is_active = True
+
 
 class National_Spirit:
     def __init__(self, national_spirit_name, national_spirit_icon, national_spirit_description):

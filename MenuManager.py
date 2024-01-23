@@ -1001,6 +1001,16 @@ class Country_Selection_Menu:
 				self.last_hovered_button = self.hovered_button
 
 				self.hovered_rect = None
+				self.hovering_diplomatic_information_rect = False
+				self.hovering_military_information_rect = False
+				self.hovering_economic_information_rect = False
+				self.hovering_domestic_information_rect = False	
+				self.hovering_internal_and_external_market_approval_rating_rect = False
+				self.hovering_military_approval_rating_rect = False
+				self.hovering_domestic_approval_rating_rect = False
+				self.hovering_midia_approval_rating_rect = False
+				self.hovering_secret_service_approval_rating_rect = False
+				self.hovering_politics_approval_rating_rect = False				
 
 				if self.diplomatic_information_rect.colliderect(mouse_rect):
 					self.hovered_rect = 1
@@ -1040,7 +1050,7 @@ class Country_Selection_Menu:
 						self.hover_over_button_sound.play()
 						self.last_hovered_rect = self.hovered_rect
 				else:
-					self.last_hovered_rect = None
+					self.last_hovered_rect = None										
 					self.hover_over_button_sound.fadeout(100)
 
 			return self.hovered_button
@@ -1367,12 +1377,6 @@ class Country_Selection_Menu:
 					screen.blit(hovering_domestic_information_description_title_text, (text_position[0] - hovering_domestic_information_description_title_text.get_width()/2 +10 * self.factor_x, text_position[1]+12 * self.factor_y))
 					screen.blit(hovering_domestic_information_description_text, (text_position[0] - hovering_domestic_information_description_title_text.get_width(), text_position[1]+15 * self.factor_y + hovering_domestic_information_description_title_text.get_height()))			
 					screen.blit(hovering_domestic_information_description_values_text, (text_position[0] - hovering_domestic_information_description_title_text.get_width() + 160 * self.factor_x, text_position[1]+15 * self.factor_y + hovering_domestic_information_description_title_text.get_height()))			
-				
-				self.hovering_diplomatic_information_rect = False
-				self.hovering_military_information_rect = False
-				self.hovering_economic_information_rect = False
-				self.hovering_domestic_information_rect = False	
-
 
 				if self.hovering_internal_and_external_market_approval_rating_rect == True:
 					pygame.draw.rect(screen, (255,255,255), self.internal_and_external_market_approval_rating_rect, 3)
@@ -1383,9 +1387,7 @@ class Country_Selection_Menu:
 					pygame.draw.rect(screen, (43,219,211), (text_position[0]-5 * self.factor_x, text_position[1], hovering_internal_and_external_market_approval_rating_rect.get_width()+24 * self.factor_x, hovering_internal_and_external_market_approval_rating_rect.get_height()+10 * self.factor_y), 2)				
 					
 					screen.blit(hovering_internal_and_external_market_approval_rating_rect, (text_position[0], text_position[1]+6 * self.factor_y))	
-				self.hovering_internal_and_external_market_approval_rating_rect = False
-
-
+				
 				if self.hovering_military_approval_rating_rect == True:
 					pygame.draw.rect(screen, (255,255,255), self.military_approval_rating_rect, 3)
 					hovering_military_approval_rating_description_text = self.small_scalable_font.render(f"MILITARY APPROVAL RATING:  {self.selected_country.military_approval_rating}%", True, (255, 255, 255))
@@ -1431,13 +1433,6 @@ class Country_Selection_Menu:
 					pygame.draw.rect(screen, (43,219,211), (text_position[0]-5 * self.factor_x, text_position[1], hovering_politics_approval_rating_description_text.get_width()+24 * self.factor_x, hovering_politics_approval_rating_description_text.get_height()+10 * self.factor_y), 3)				
 					
 					screen.blit(hovering_politics_approval_rating_description_text, (text_position[0], text_position[1]+6 * self.factor_y))													
-
-
-				self.hovering_military_approval_rating_rect = False
-				self.hovering_domestic_approval_rating_rect = False
-				self.hovering_midia_approval_rating_rect = False
-				self.hovering_secret_service_approval_rating_rect = False
-				self.hovering_politics_approval_rating_rect = False	
 
 
 		if self.clicked_ideology == None: # Blocked Buttons
@@ -2950,20 +2945,30 @@ class Country_Focus_Tree:
 			self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.screen_width, self.screen_height - (158 + 110) * self.factor_y))
 
 			for focus in self.PlayerCountry.country_focus_tree:
-				current_focus_position = (self.screen_width/2 + (focus.x_offset + self.focus_movement_x) * self.factor_x + focus.national_focus_icon.get_width()/2, (focus.y_offset + self.focus_movement_y) * self.factor_y - focus.national_focus_icon.get_height()/2)
-				if focus.next_focus:
-					for focus_id in focus.next_focus:
-						next_focus_position = (self.screen_width/2 + (self.PlayerCountry.country_focus_tree[focus_id].x_offset + self.focus_movement_x) * self.factor_x + focus.national_focus_icon.get_width()/2, (self.PlayerCountry.country_focus_tree[focus_id].y_offset + self.focus_movement_y) * self.factor_y - focus.national_focus_icon.get_height()/2)					
-						self.pygame.draw.line(self.focus_tree_surface, (255, 255, 255), current_focus_position, next_focus_position, 2)
+				if focus.completion_time['day'] <= self.current_day and focus.completion_time['month'] <= self.current_month and focus.completion_time['year'] <= self.current_year:
+					focus.is_active = False
+					if len(focus.next_focus) > 1:
+						self.PlayerCountry.country_focus_tree[focus.next_focus[0]].is_active = False
+						while len(self.PlayerCountry.country_focus_tree[focus.next_focus[0]].next_focus) > 0:
+							focus = self.PlayerCountry.country_focus_tree[focus.next_focus[0]]
+							self.PlayerCountry.country_focus_tree[focus.next_focus[0]].is_active = False
+							
+				
+				if focus.is_active == True:
+					current_focus_position = (self.screen_width/2 + (focus.x_offset + self.focus_movement_x) * self.factor_x + focus.national_focus_icon.get_width()/2, (focus.y_offset + self.focus_movement_y) * self.factor_y - focus.national_focus_icon.get_height()/2)
+					if focus.next_focus:
+						for focus_id in focus.next_focus:
+							next_focus_position = (self.screen_width/2 + (self.PlayerCountry.country_focus_tree[focus_id].x_offset + self.focus_movement_x) * self.factor_x + focus.national_focus_icon.get_width()/2, (self.PlayerCountry.country_focus_tree[focus_id].y_offset + self.focus_movement_y) * self.factor_y - focus.national_focus_icon.get_height()/2)					
+							self.pygame.draw.line(self.focus_tree_surface, (255, 255, 255), current_focus_position, next_focus_position, 2)
 
-				self.pygame.draw.rect(self.focus_tree_surface, (6,15,20), (self.screen_width/2 + (focus.x_offset + self.focus_movement_x - 40) * self.factor_x, (focus.y_offset + self.focus_movement_y - 5) * self.factor_y - focus.national_focus_icon.get_height(), focus.national_focus_icon.get_width() + 80 * self.factor_x, focus.national_focus_icon.get_height() + 40 * self.factor_y))
+					self.pygame.draw.rect(self.focus_tree_surface, (6,15,20), (self.screen_width/2 + (focus.x_offset + self.focus_movement_x - 40) * self.factor_x, (focus.y_offset + self.focus_movement_y - 5) * self.factor_y - focus.national_focus_icon.get_height(), focus.national_focus_icon.get_width() + 80 * self.factor_x, focus.national_focus_icon.get_height() + 40 * self.factor_y))
 
-				self.focus_tree_surface.blit(focus.national_focus_icon, (self.screen_width/2 + (focus.x_offset + self.focus_movement_x) * self.factor_x, (focus.y_offset + self.focus_movement_y) * self.factor_y - focus.national_focus_icon.get_height()))
+					self.focus_tree_surface.blit(focus.national_focus_icon, (self.screen_width/2 + (focus.x_offset + self.focus_movement_x) * self.factor_x, (focus.y_offset + self.focus_movement_y) * self.factor_y - focus.national_focus_icon.get_height()))
 
-				focus_name = self.medium_scalable_font.render(focus.national_focus_name, True, (255, 255, 255))
-				self.focus_tree_surface.blit(focus_name, (self.screen_width/2 + (focus.x_offset + self.focus_movement_x) * self.factor_x - focus_name.get_width()/2 + focus.national_focus_icon.get_width()/2, (focus.y_offset + self.focus_movement_y) * self.factor_y + 10 * self.factor_y))
+					focus_name = self.medium_scalable_font.render(focus.national_focus_name, True, (255, 255, 255))
+					self.focus_tree_surface.blit(focus_name, (self.screen_width/2 + (focus.x_offset + self.focus_movement_x) * self.factor_x - focus_name.get_width()/2 + focus.national_focus_icon.get_width()/2, (focus.y_offset + self.focus_movement_y) * self.factor_y + 10 * self.factor_y))
 
-				self.pygame.draw.rect(self.focus_tree_surface, (43,219,211), (self.screen_width/2 + (focus.x_offset + self.focus_movement_x - 40) * self.factor_x, (focus.y_offset + self.focus_movement_y - 5) * self.factor_y - focus.national_focus_icon.get_height(), focus.national_focus_icon.get_width() + 80 * self.factor_x, focus.national_focus_icon.get_height() + 40 * self.factor_y), 2)
+					self.pygame.draw.rect(self.focus_tree_surface, (43,219,211), (self.screen_width/2 + (focus.x_offset + self.focus_movement_x - 40) * self.factor_x, (focus.y_offset + self.focus_movement_y - 5) * self.factor_y - focus.national_focus_icon.get_height(), focus.national_focus_icon.get_width() + 80 * self.factor_x, focus.national_focus_icon.get_height() + 40 * self.factor_y), 2)
 
 
 			for month in range(4):
@@ -2978,7 +2983,7 @@ class Country_Focus_Tree:
 				dates_name = self.big_scalable_font.render(str(1970+years_offset)+ ' - ' + str(total_months), True, (255, 255, 255))
 				self.focus_tree_surface.blit(dates_name, (15 * self.factor_x, (self.focus_movement_y + ((total_months + (years_offset*12)) * 300) + 35) * self.factor_y))
 
-			current_date_line_height = (self.current_day * 10 + self.current_month * 300 + self.focus_movement_y) * self.factor_y
+			current_date_line_height = (self.current_day * 10 + ((self.current_month + (years_offset*12)) * 300) + self.focus_movement_y) * self.factor_y
 			self.pygame.draw.line(self.focus_tree_surface, (255, 0, 0), (0, current_date_line_height + 35 * self.factor_y), (self.screen_width, current_date_line_height + 35 * self.factor_y), 1)
 
 			screen.blit(self.focus_tree_surface, (0, 158 * self.factor_y))

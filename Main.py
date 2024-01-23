@@ -976,7 +976,7 @@ your shoulders.
 						if keys[self.pygame.K_a]:																													
 							self.Game_Screen.Earth_Map.map_position[0] += 10
 						if keys[self.pygame.K_s]:																													
-							self.Game_Screen.Earth_Map.map_position[1] -= 10 if abs(self.Game_Screen.Earth_Map.map_position[1]) + self.screen_height < self.Game_Screen.Earth_Map.earth_daymap.get_height()*1.5 else 0
+							self.Game_Screen.Earth_Map.map_position[1] -= 10 if abs(self.Game_Screen.Earth_Map.map_position[1]) + self.screen_height < self.Game_Screen.Earth_Map.earth_daymap.get_height()*1.1 else 0
 						if keys[self.pygame.K_d]:																													
 							self.Game_Screen.Earth_Map.map_position[0] -= 10
 
@@ -1065,10 +1065,9 @@ your shoulders.
 
 					else:
 						self.Game_Screen.Earth_Map.map_position[0] -= difference_x 
-						if difference_y > 0:
-							self.Game_Screen.Earth_Map.map_position[1] -= difference_y if self.Game_Screen.Earth_Map.map_position[1] < 0 else 0
-						else:
-							self.Game_Screen.Earth_Map.map_position[1] -= difference_y if abs(self.Game_Screen.Earth_Map.map_position[1]) + self.screen_height < self.Game_Screen.Earth_Map.earth_daymap.get_height()*1.5 else 0
+						self.Game_Screen.Earth_Map.map_position[1] -= difference_y 
+						if self.Game_Screen.Earth_Map.map_position[1] >= 0:
+							self.Game_Screen.Earth_Map.map_position[1] = 0	
 				else:
 					self.mouse_start_pos = self.mouse_pos
 					self.last_difference_x = 0
