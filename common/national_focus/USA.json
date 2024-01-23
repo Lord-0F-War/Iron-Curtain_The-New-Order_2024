@@ -17,11 +17,16 @@
         "description": "desc test",
         "x_offset": 0,
         "completion_time": {
-            "day": 1,
+            "day": 5,
             "month": 2,
             "year": 1970
         },
-        "next_focus": [2, 3]
+        "next_focus": [2, 3],
+        "decision_time": {
+            "day": 1,
+            "month": 2,
+            "year": 1970
+        }        
     },
     {
         "name": "NOME 3",
@@ -57,7 +62,7 @@
             "month": 3,
             "year": 1970
         },
-        "next_focus": []
+        "next_focus": [6, 7]
     },
     {
         "name": "NOME 6",
@@ -70,6 +75,30 @@
             "year": 1970
         },
         "next_focus": []
-    }                      
+    },
+    {
+        "name": "NOME 7",
+        "icon": "test",
+        "description": "desc test",
+        "x_offset": -350,
+        "completion_time": {
+            "day": 15,
+            "month": 4,
+            "year": 1970
+        },
+        "next_focus": []
+    },
+    {
+        "name": "NOME 8",
+        "icon": "test",
+        "description": "desc test",
+        "x_offset": 0,
+        "completion_time": {
+            "day": 15,
+            "month": 4,
+            "year": 1970
+        },
+        "next_focus": []
+    }                               
     
 ]

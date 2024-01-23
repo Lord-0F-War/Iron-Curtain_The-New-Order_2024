@@ -1986,14 +1986,17 @@ class Game_Screen:
 		
 		clicked_button = self.get_button_by_interaction(mouse_rect, 'Country_Focus_Tree')
 		if clicked_button != None:
+			if clicked_button == "focus_tree":
+				if self.Country_Focus_Tree.is_top_bar_focus_tree_open == False:
+					self.Country_Focus_Tree.is_top_bar_focus_tree_open = True
 
-			if self.Country_Focus_Tree.is_top_bar_focus_tree_open == False:
-				self.Country_Focus_Tree.is_top_bar_focus_tree_open = True
-
-				self.Country_Overview.is_country_overview_open = False
-		
-			elif self.Country_Focus_Tree.is_top_bar_focus_tree_open == True:
-				self.Country_Focus_Tree.is_top_bar_focus_tree_open = False	
+					self.Country_Overview.is_country_overview_open = False
+			
+				elif self.Country_Focus_Tree.is_top_bar_focus_tree_open == True:
+					self.Country_Focus_Tree.is_top_bar_focus_tree_open = False	
+			else:
+				self.Country_Focus_Tree.keep_game_paused = False
+				self.Country_Focus_Tree.focus_wating_player_path_selection = None
 
 			self.generic_hover_over_button_sound.fadeout(100)
 			self.generic_click_button_sound.play()
@@ -2028,12 +2031,16 @@ class Game_Screen:
 				self.generic_hover_over_button_sound.play()
 			self.last_hovered_button = hovered_button
 
-			self.Country_Focus_Tree.highlight_focus_button = True
-			self.Country_Overview.highlight_country_viewer_button = False
+			if hovered_button == "focus_tree":
+				self.Country_Focus_Tree.highlight_focus_button = True
+				self.Country_Overview.highlight_country_viewer_button = False
+			else:
+				self.Country_Focus_Tree.highlight_focus_path_selection_button_index = self.Country_Focus_Tree.focus_wating_player_path_selection.selected_path
 
 			return hovered_button
 		else:
-			self.Country_Focus_Tree.highlight_focus_button = False		
+			self.Country_Focus_Tree.highlight_focus_button = False
+			self.Country_Focus_Tree.highlight_focus_path_selection_button_index = None		
 
 
 		hovered_button = self.get_button_by_interaction(mouse_rect, 'Bottom_HUD')
@@ -2901,16 +2908,22 @@ class Country_Focus_Tree:
 		self.pygame = pygame
 
 		self.focus_tree_surface = pygame.Surface((self.screen_width, self.screen_height - (158 + 110) * self.factor_y), pygame.SRCALPHA)
+		self.focus_to_remove = []
+
+		self.focus_wating_player_path_selection = None
 
 		self.PlayerCountry = None
 
 		self.current_year = 1970
 		self.current_month = 1
-		self.current_day = 1		
+		self.current_day = 1	
+
+		self.keep_game_paused = False	
 
 		self.focus_movement_x = 0
 		self.focus_movement_y = 0
 
+		self.highlight_focus_path_selection_button_index = None
 		self.highlight_focus_button = False
 		self.is_top_bar_focus_tree_open = False
 
@@ -2927,50 +2940,85 @@ class Country_Focus_Tree:
 
 	def get_button_by_interaction(self, mouse_rect):	
 		if self.top_bar_focus_tree_button.rect.colliderect(mouse_rect):
-			return "focus_tree"	
+			return "focus_tree"
+
+		if self.focus_wating_player_path_selection:
+			for index, choice in enumerate(self.focus_wating_player_path_selection.next_focus): 
+				if getattr(self, f'choice_button_{index}').rect.colliderect(mouse_rect):
+					# Inverted so player chooses what path to keep instead of choosing what path to vanish
+					if index == 0:
+						index = 1
+					elif index == 1:
+						index = 0
+					self.focus_wating_player_path_selection.selected_path = index
+					return f'choice_button_{index}', index
 
 		return None		
 
+	def deactivate_branch(self, focus):
+		focus.is_active = False
+		self.focus_to_remove.append(focus.focus_id)
+
+		if len(focus.next_focus) > 0:
+			for next_focus_index in focus.next_focus:
+				next_focus = self.PlayerCountry.country_focus_tree[next_focus_index]
+				self.deactivate_branch(next_focus)
+
 	def draw(self, screen):
+
+		if len(self.focus_to_remove) > 0:
+			for focus in self.focus_to_remove:
+				try:
+					self.PlayerCountry.country_focus_tree.pop(focus)
+				except:
+					pass
+			self.focus_to_remove.clear()
+
 		self.focus_tree_surface.fill((0, 0, 0, 0), (0, 0, self.screen_width, self.screen_height - (158 + 110) * self.factor_y))
 		
-		screen.blit(self.PlayerCountry.country_focus_tree[0].national_focus_icon, (5 * self.factor_x, 84 * self.factor_y))	
+		#screen.blit(self.PlayerCountry.country_focus_tree[0].national_focus_icon, (5 * self.factor_x, 84 * self.factor_y))	
 
 		if self.highlight_focus_button == False and self.is_top_bar_focus_tree_open == False:
 			screen.blit(self.top_bar_flag_overlay, (2 * self.factor_x, 81 * self.factor_y))
 		else:
 			screen.blit(self.top_bar_flag_overlay_hovering_over, (2 * self.factor_x, 81 * self.factor_y))
 
-		if self.is_top_bar_focus_tree_open == True:	
-			self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.screen_width, self.screen_height - (158 + 110) * self.factor_y))
 
-			for focus in self.PlayerCountry.country_focus_tree:
-				if focus.completion_time['day'] <= self.current_day and focus.completion_time['month'] <= self.current_month and focus.completion_time['year'] <= self.current_year:
-					focus.is_active = False
-					if len(focus.next_focus) > 1:
-						self.PlayerCountry.country_focus_tree[focus.next_focus[0]].is_active = False
-						while len(self.PlayerCountry.country_focus_tree[focus.next_focus[0]].next_focus) > 0:
-							focus = self.PlayerCountry.country_focus_tree[focus.next_focus[0]]
-							self.PlayerCountry.country_focus_tree[focus.next_focus[0]].is_active = False
-							
-				
-				if focus.is_active == True:
-					current_focus_position = (self.screen_width/2 + (focus.x_offset + self.focus_movement_x) * self.factor_x + focus.national_focus_icon.get_width()/2, (focus.y_offset + self.focus_movement_y) * self.factor_y - focus.national_focus_icon.get_height()/2)
-					if focus.next_focus:
-						for focus_id in focus.next_focus:
-							next_focus_position = (self.screen_width/2 + (self.PlayerCountry.country_focus_tree[focus_id].x_offset + self.focus_movement_x) * self.factor_x + focus.national_focus_icon.get_width()/2, (self.PlayerCountry.country_focus_tree[focus_id].y_offset + self.focus_movement_y) * self.factor_y - focus.national_focus_icon.get_height()/2)					
-							self.pygame.draw.line(self.focus_tree_surface, (255, 255, 255), current_focus_position, next_focus_position, 2)
+		for focus in self.PlayerCountry.country_focus_tree.values():
+			if focus.completion_time['day'] <= self.current_day and focus.completion_time['month'] <= self.current_month and focus.completion_time['year'] <= self.current_year:
+				focus.is_active = False
+				self.focus_to_remove.append(focus.focus_id)
+				if len(focus.next_focus) > 1:
+					focus.next_focus = [focus.next_focus[focus.selected_path]]
+					self.deactivate_branch(focus)
+				continue
+			elif focus.decision_time:
+				if focus.decision_time['day'] <= self.current_day and focus.decision_time['month'] <= self.current_month and focus.decision_time['year'] <= self.current_year and self.keep_game_paused == False:
+					self.keep_game_paused = True
+					focus.decision_time = None
+					self.focus_wating_player_path_selection = focus
+					self.is_top_bar_focus_tree_open = False
+					for index, choice in enumerate(focus.next_focus):
+						setattr(self, f'choice_button_{index}', GenericUtilitys.Button(self.screen_width/2 - self.screen_width/8, self.screen_height - (180 + 55 + (95 * index)) * self.factor_y, self.screen_width/4, 75 * self.factor_y))
 
-					self.pygame.draw.rect(self.focus_tree_surface, (6,15,20), (self.screen_width/2 + (focus.x_offset + self.focus_movement_x - 40) * self.factor_x, (focus.y_offset + self.focus_movement_y - 5) * self.factor_y - focus.national_focus_icon.get_height(), focus.national_focus_icon.get_width() + 80 * self.factor_x, focus.national_focus_icon.get_height() + 40 * self.factor_y))
+			if self.is_top_bar_focus_tree_open == True:	
+				self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.screen_width, self.screen_height - (158 + 110) * self.factor_y))
 
-					self.focus_tree_surface.blit(focus.national_focus_icon, (self.screen_width/2 + (focus.x_offset + self.focus_movement_x) * self.factor_x, (focus.y_offset + self.focus_movement_y) * self.factor_y - focus.national_focus_icon.get_height()))
+				current_focus_position = (self.screen_width/2 + (focus.x_offset + self.focus_movement_x) * self.factor_x + focus.national_focus_icon.get_width()/2, (focus.y_offset + self.focus_movement_y) * self.factor_y - focus.national_focus_icon.get_height()/2)
+				if focus.next_focus:
+					for focus_id in focus.next_focus:
+						next_focus_position = (self.screen_width/2 + (self.PlayerCountry.country_focus_tree[focus_id].x_offset + self.focus_movement_x) * self.factor_x + focus.national_focus_icon.get_width()/2, (self.PlayerCountry.country_focus_tree[focus_id].y_offset + self.focus_movement_y) * self.factor_y - focus.national_focus_icon.get_height()/2)					
+						self.pygame.draw.line(self.focus_tree_surface, (255, 255, 255), current_focus_position, next_focus_position, 2)
 
-					focus_name = self.medium_scalable_font.render(focus.national_focus_name, True, (255, 255, 255))
-					self.focus_tree_surface.blit(focus_name, (self.screen_width/2 + (focus.x_offset + self.focus_movement_x) * self.factor_x - focus_name.get_width()/2 + focus.national_focus_icon.get_width()/2, (focus.y_offset + self.focus_movement_y) * self.factor_y + 10 * self.factor_y))
+				self.pygame.draw.rect(self.focus_tree_surface, (6,15,20), (self.screen_width/2 + (focus.x_offset + self.focus_movement_x - 40) * self.factor_x, (focus.y_offset + self.focus_movement_y - 5) * self.factor_y - focus.national_focus_icon.get_height(), focus.national_focus_icon.get_width() + 80 * self.factor_x, focus.national_focus_icon.get_height() + 40 * self.factor_y))
 
-					self.pygame.draw.rect(self.focus_tree_surface, (43,219,211), (self.screen_width/2 + (focus.x_offset + self.focus_movement_x - 40) * self.factor_x, (focus.y_offset + self.focus_movement_y - 5) * self.factor_y - focus.national_focus_icon.get_height(), focus.national_focus_icon.get_width() + 80 * self.factor_x, focus.national_focus_icon.get_height() + 40 * self.factor_y), 2)
+				self.focus_tree_surface.blit(focus.national_focus_icon, (self.screen_width/2 + (focus.x_offset + self.focus_movement_x) * self.factor_x, (focus.y_offset + self.focus_movement_y) * self.factor_y - focus.national_focus_icon.get_height()))
 
+				focus_name = self.medium_scalable_font.render(focus.national_focus_name, True, (255, 255, 255))
+				self.focus_tree_surface.blit(focus_name, (self.screen_width/2 + (focus.x_offset + self.focus_movement_x) * self.factor_x - focus_name.get_width()/2 + focus.national_focus_icon.get_width()/2, (focus.y_offset + self.focus_movement_y) * self.factor_y + 10 * self.factor_y))
 
+				self.pygame.draw.rect(self.focus_tree_surface, (43,219,211), (self.screen_width/2 + (focus.x_offset + self.focus_movement_x - 40) * self.factor_x, (focus.y_offset + self.focus_movement_y - 5) * self.factor_y - focus.national_focus_icon.get_height(), focus.national_focus_icon.get_width() + 80 * self.factor_x, focus.national_focus_icon.get_height() + 40 * self.factor_y), 2)
+		if self.is_top_bar_focus_tree_open == True:
 			for month in range(4):
 				years_offset = 0
 
@@ -2989,6 +3037,27 @@ class Country_Focus_Tree:
 			screen.blit(self.focus_tree_surface, (0, 158 * self.factor_y))
 
 			self.pygame.draw.rect(screen, (43,219,211), (0, 158 * self.factor_y, self.screen_width, self.screen_height - (158 + 110) * self.factor_y), 2)			
+
+		#----------------------------------------------------------------#
+		# FOCUS SELECT PATH POP UP
+		#----------------------------------------------------------------#
+		if self.focus_wating_player_path_selection:
+			self.pygame.draw.rect(screen, (6,15,20), (self.screen_width/2 - self.screen_width/4, 170 * self.factor_y, self.screen_width/2, self.screen_height - (180 + 110) * self.factor_y))
+			self.pygame.draw.rect(screen, (43,219,211), (self.screen_width/2 - self.screen_width/4, 170 * self.factor_y, self.screen_width/2, self.screen_height - (180 + 110) * self.factor_y), 2)
+			for index, choice in enumerate(self.focus_wating_player_path_selection.next_focus):
+				self.pygame.draw.rect(screen, (255,255,255), getattr(self, f'choice_button_{index}').rect, 2)
+				button_text = self.big_scalable_font.render('Choose Path: ' + str(index), True, (255, 255, 255))
+				screen.blit(button_text, (self.screen_width/2 - button_text.get_width()/2, self.screen_height - (180 + 55 + (95 * index)) * self.factor_y + button_text.get_height()))
+
+
+			if self.highlight_focus_path_selection_button_index != None:
+				# Inverted so player chooses what path to keep instead of choosing what path to vanish
+				if self.highlight_focus_path_selection_button_index == 0:
+					self.highlight_focus_path_selection_button_index = 1
+				elif self.highlight_focus_path_selection_button_index == 1:
+					self.highlight_focus_path_selection_button_index = 0
+				self.pygame.draw.rect(screen, (0,255,0), getattr(self, f'choice_button_{self.highlight_focus_path_selection_button_index}').rect, 4)
+			
 
 class Clock_UI:
 	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, clock, top_bar_right_background, top_bar_game_speed_indicator, top_bar_defcon_level):

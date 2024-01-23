@@ -1,17 +1,22 @@
 
 
 class National_Focus:
-    def __init__(self, national_focus_name, national_focus_icon, national_focus_description, x_offset, completion_time, next_focus):
+    def __init__(self, national_focus_name, national_focus_icon, national_focus_description, x_offset, completion_time, next_focus, decision_time = None):
+        
+        self.focus_id = None
         self.national_focus_name = national_focus_name
         self.national_focus_icon = national_focus_icon
         self.national_focus_description = national_focus_description
 
         self.completion_time = completion_time
+        self.decision_time = decision_time
 
         self.x_offset = x_offset
         self.y_offset = self.completion_time['day'] * 10 + self.completion_time['month'] * 300
 
         self.next_focus = next_focus
+
+        self.selected_path = 0
 
         self.is_active = True
 
@@ -81,7 +86,7 @@ class Country:
         self.country_culture = None
         self.country_religion = None
 
-        self.country_focus_tree = []
+        self.country_focus_tree = {}
 
         self.politics_popularity = [4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16]
         self.culture_popularity = [7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14]

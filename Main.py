@@ -237,7 +237,8 @@ class Main:
 			with open(file_path, 'r') as file:
 				focus_data = json_load(file)
 
-			focus_list = []
+			focus_id = 0
+			focus_dict = {}
 			for focus_data_entry in focus_data:
 				focus = CountriesManager.National_Focus(
 					focus_data_entry['name'],
@@ -245,11 +246,14 @@ class Main:
 					focus_data_entry['description'],
 					focus_data_entry['x_offset'],
 					focus_data_entry['completion_time'],
-					focus_data_entry['next_focus']
+					focus_data_entry['next_focus'],
+					focus_data_entry.get('decision_time', None)
 				)
-				focus_list.append(focus)
+				focus.focus_id = focus_id
+				focus_dict[focus_id] = focus
+				focus_id += 1
 
-			return focus_list
+			return focus_dict
 
 		except FileNotFoundError:
 			print(f'Error: File {file_path} not found.')
@@ -287,8 +291,8 @@ to the fate of the nation, perhaps the world, rests on
 your shoulders.
 """
 		# Country Focus
-		usa_focus_list = self.read_focus_from_file(location = os.path.join(self.national_focus_folder, 'USA'))
-		self.USA.country_focus_tree.extend(usa_focus_list)		
+		usa_focus_dict = self.read_focus_from_file(location = os.path.join(self.national_focus_folder, 'USA'))
+		self.USA.country_focus_tree = usa_focus_dict		
 
 		# Country Stats
 		self.USA.country_national_spirits_total_points = 100
@@ -919,6 +923,9 @@ your shoulders.
 
 			if self.is_in_game_screen == True:
 				self.Screen_Manager.render_game_screen(self.Options_Menu.brightness_slider.value, self.is_in_esc_menu, self.is_options_menu_open, self.mouse_rect)
+
+				if self.Game_Screen.Country_Focus_Tree.keep_game_paused == True:
+					self.Game_Screen.Clock_UI.game_speed = 0
 				
 				for event in self.pygame.event.get():
 					keys = self.pygame.key.get_pressed()	
