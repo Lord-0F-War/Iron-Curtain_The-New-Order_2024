@@ -247,7 +247,8 @@ class Main:
 					focus_data_entry['x_offset'],
 					focus_data_entry['completion_time'],
 					focus_data_entry['next_focus'],
-					focus_data_entry.get('decision_time', None)
+					focus_data_entry.get('decision_time', None),
+					focus_data_entry.get('path_selection_description', None)
 				)
 				focus.focus_id = focus_id
 				focus_dict[focus_id] = focus

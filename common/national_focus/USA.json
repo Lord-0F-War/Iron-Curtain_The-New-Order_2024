@@ -2,7 +2,7 @@
     {
         "name": "NOME 1",
         "icon": "test",
-        "description": "desc test",
+        "description": "desc test1",
         "x_offset": 0,
         "completion_time": {
             "day": 2,
@@ -14,7 +14,8 @@
     {
         "name": "NOME 2",
         "icon": "test",
-        "description": "desc test",
+        "description": "desc test2",
+        "path_selection_description": "desc tests",
         "x_offset": 0,
         "completion_time": {
             "day": 5,
@@ -31,7 +32,7 @@
     {
         "name": "NOME 3",
         "icon": "test",
-        "description": "desc test",
+        "description": "desc test3",
         "x_offset": -150,
         "completion_time": {
             "day": 1,
@@ -43,7 +44,7 @@
     {
         "name": "NOME 4",
         "icon": "test",
-        "description": "desc test",
+        "description": "desc test4",
         "x_offset": 150,
         "completion_time": {
             "day": 1,
@@ -55,19 +56,25 @@
     {
         "name": "NOME 5",
         "icon": "test",
-        "description": "desc test",
+        "description": "desc test5",
+        "path_selection_description": "desc tests2",
         "x_offset": -150,
         "completion_time": {
             "day": 15,
             "month": 3,
             "year": 1970
         },
-        "next_focus": [6, 7]
+        "next_focus": [6, 7],
+        "decision_time": {
+            "day": 10,
+            "month": 3,
+            "year": 1970
+        } 
     },
     {
         "name": "NOME 6",
         "icon": "test",
-        "description": "desc test",
+        "description": "desc test6",
         "x_offset": 150,
         "completion_time": {
             "day": 15,
@@ -79,7 +86,7 @@
     {
         "name": "NOME 7",
         "icon": "test",
-        "description": "desc test",
+        "description": "desc test7",
         "x_offset": -350,
         "completion_time": {
             "day": 15,
@@ -91,7 +98,7 @@
     {
         "name": "NOME 8",
         "icon": "test",
-        "description": "desc test",
+        "description": "desc test8",
         "x_offset": 0,
         "completion_time": {
             "day": 15,

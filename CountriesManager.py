@@ -1,7 +1,7 @@
 
 
 class National_Focus:
-    def __init__(self, national_focus_name, national_focus_icon, national_focus_description, x_offset, completion_time, next_focus, decision_time = None):
+    def __init__(self, national_focus_name, national_focus_icon, national_focus_description, x_offset, completion_time, next_focus, decision_time = None, national_focus_path_selection_description = ''):
         
         self.focus_id = None
         self.national_focus_name = national_focus_name
@@ -17,6 +17,7 @@ class National_Focus:
         self.next_focus = next_focus
 
         self.selected_path = 0
+        self.national_focus_path_selection_description = national_focus_path_selection_description
 
         self.is_active = True
 
