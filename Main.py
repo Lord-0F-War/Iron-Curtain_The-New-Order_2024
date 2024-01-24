@@ -208,6 +208,8 @@ class Main:
 		self.progressbar_small 						= self.pygame.image.load(os.path.join(self.game_HUD_folder, 'progressbar_small.png')).convert_alpha()	
 		self.bottom_HUD 							= self.pygame.image.load(os.path.join(self.game_HUD_folder, 'bottom_HUD.png')).convert_alpha()	
 		
+		self.country_laws_background 				= self.pygame.image.load(os.path.join(self.game_HUD_folder, 'country_laws_background.png')).convert_alpha()
+		
 
 		self.ideas_folder = os.path.join(self.interface_folder, 'ideas')
 		
@@ -596,7 +598,7 @@ your shoulders.
 		self.Game_Screen = MenuManager.Game_Screen(self.screen_width, self.screen_height, self.pygame, self.clock, self.Sounds_Manager.generic_hover_over_button_sound, self.Sounds_Manager.generic_click_button_sound, 
 			self.top_bar_right_background, self.top_bar_game_speed_indicator, self.top_bar_defcon_levels, self.top_bar_left_background, self.top_bar_flag_overlay,
 			self.top_bar_flag_overlay_hovering_over, self.country_overview, self.popularity_circle_overlay, self.earth_daymap, self.earth_nightmap, self.earth_political_map, self.earth_political_map_filled,
-			self.progressbar, self.progressbar_vertical, self.progressbar_small, self.bottom_HUD)
+			self.progressbar_huge, self.progressbar, self.progressbar_vertical, self.progressbar_small, self.bottom_HUD, self.country_laws_background)
 
 
 		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.Main_Menu, self.Country_Selection_Screen,
@@ -862,6 +864,8 @@ your shoulders.
 									self.Game_Screen.Country_Overview.religion_popularity = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country.religion_popularity
 
 									self.Game_Screen.Country_Focus_Tree.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
+
+									self.Game_Screen.Laws_Menu.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
 						else:
 							self.clicked_button = self.ESC_Menu.get_clicked_button(self.mouse_rect, self.is_options_menu_open)
 							if self.clicked_button != 'none' and self.clicked_button != None:

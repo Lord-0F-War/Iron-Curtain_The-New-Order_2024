@@ -993,24 +993,25 @@ class Country_Selection_Menu:
 	def get_hovered_button(self, mouse_rect):
 		if self.is_flag_selection_menu_open == False:
 			self.hovered_button = self.get_button_by_interaction(mouse_rect)
+
+			self.hovered_rect = None
+			self.hovering_diplomatic_information_rect = False
+			self.hovering_military_information_rect = False
+			self.hovering_economic_information_rect = False
+			self.hovering_domestic_information_rect = False	
+			self.hovering_internal_and_external_market_approval_rating_rect = False
+			self.hovering_military_approval_rating_rect = False
+			self.hovering_domestic_approval_rating_rect = False
+			self.hovering_midia_approval_rating_rect = False
+			self.hovering_secret_service_approval_rating_rect = False
+			self.hovering_politics_approval_rating_rect = False
+
 			if self.hovered_button != None:
 				if self.hovered_button != self.last_hovered_button:
 					self.hover_over_button_sound.play()
 					self.last_hovered_button = self.hovered_button
 			else:
-				self.last_hovered_button = self.hovered_button
-
-				self.hovered_rect = None
-				self.hovering_diplomatic_information_rect = False
-				self.hovering_military_information_rect = False
-				self.hovering_economic_information_rect = False
-				self.hovering_domestic_information_rect = False	
-				self.hovering_internal_and_external_market_approval_rating_rect = False
-				self.hovering_military_approval_rating_rect = False
-				self.hovering_domestic_approval_rating_rect = False
-				self.hovering_midia_approval_rating_rect = False
-				self.hovering_secret_service_approval_rating_rect = False
-				self.hovering_politics_approval_rating_rect = False				
+				self.last_hovered_button = self.hovered_button				
 
 				if self.diplomatic_information_rect.colliderect(mouse_rect):
 					self.hovered_rect = 1
@@ -1932,7 +1933,7 @@ class Laws_Group_Menu:
 class Game_Screen:
 	def __init__(self, screen_width, screen_height, pygame, clock, generic_hover_over_button_sound, generic_click_button_sound, top_bar_right_background, top_bar_game_speed_indicator,
 			top_bar_defcon_level, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over, country_overview, popularity_circle_overlay, earth_daymap, earth_nightmap, 
-			earth_political_map, earth_political_map_filled, progressbar, progressbar_vertical, progressbar_small, bottom_HUD):
+			earth_political_map, earth_political_map_filled, progressbar_huge, progressbar, progressbar_vertical, progressbar_small, bottom_HUD, country_laws_background):
 
 		reference_screen_size_x = 1920
 		reference_screen_size_y = 1080
@@ -1956,7 +1957,14 @@ class Game_Screen:
 		self.Bottom_HUD = Bottom_HUD(self.factor_x, self.factor_y, screen_width, screen_height, pygame, bottom_HUD)
 
 		self.Earth_Map = Earth_Map(self.factor_x, self.factor_y, screen_width, screen_height, earth_daymap, earth_nightmap, earth_political_map, earth_political_map_filled, self.Clock_UI)
+
+
+		self.Decisions_Menu = Decisions_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
 	
+		self.Laws_Menu = Laws_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, progressbar_huge, country_laws_background)
+
+
+
 	def get_button_by_interaction(self, mouse_rect, index):
 		if index == 'Country_Overview':
 			button = self.Country_Overview.get_button_by_interaction(mouse_rect)
@@ -1966,8 +1974,14 @@ class Game_Screen:
 			return button
 		elif index == 'Country_Focus_Tree':
 			button = self.Country_Focus_Tree.get_button_by_interaction(mouse_rect)
-			return button		
-
+			return button	
+		elif index == 'Decisions_Menu':
+			button = self.Decisions_Menu.get_button_by_interaction(mouse_rect)
+			return button				
+		elif index == 'Laws_Menu':
+			button = self.Laws_Menu.get_button_by_interaction(mouse_rect)
+			return button
+		
 	def get_clicked_button(self, mouse_rect):
 		clicked_button = self.get_button_by_interaction(mouse_rect, 'Country_Overview')
 		if clicked_button != None:
@@ -1976,6 +1990,8 @@ class Game_Screen:
 				self.Country_Overview.is_country_overview_open = True
 
 				self.Country_Focus_Tree.is_top_bar_focus_tree_open = False
+				self.Decisions_Menu.is_decisions_menu_open = False
+				self.Laws_Menu.is_laws_menu_open = False
 		
 			elif self.Country_Overview.is_country_overview_open == True:
 				self.Country_Overview.is_country_overview_open = False
@@ -1983,7 +1999,8 @@ class Game_Screen:
 			self.generic_hover_over_button_sound.fadeout(100)
 			self.generic_click_button_sound.play()
 			return clicked_button
-		
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#
 		clicked_button = self.get_button_by_interaction(mouse_rect, 'Country_Focus_Tree')
 		if clicked_button != None:
 			if clicked_button == "focus_tree":
@@ -1991,6 +2008,8 @@ class Game_Screen:
 					self.Country_Focus_Tree.is_top_bar_focus_tree_open = True
 
 					self.Country_Overview.is_country_overview_open = False
+					self.Decisions_Menu.is_decisions_menu_open = False
+					self.Laws_Menu.is_laws_menu_open = False
 			
 				elif self.Country_Focus_Tree.is_top_bar_focus_tree_open == True:
 					self.Country_Focus_Tree.is_top_bar_focus_tree_open = False	
@@ -2005,7 +2024,44 @@ class Game_Screen:
 			self.generic_hover_over_button_sound.fadeout(100)
 			self.generic_click_button_sound.play()
 			return clicked_button		
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		clicked_button = self.get_button_by_interaction(mouse_rect, 'Decisions_Menu')
+		if clicked_button != None:
 
+			if self.Decisions_Menu.is_decisions_menu_open == False:
+				self.Decisions_Menu.is_decisions_menu_open = True
+
+				self.Country_Overview.is_country_overview_open = False
+				self.Country_Focus_Tree.is_top_bar_focus_tree_open = False
+				self.Laws_Menu.is_laws_menu_open = False
+		
+			elif self.Decisions_Menu.is_decisions_menu_open == True:
+				self.Decisions_Menu.is_decisions_menu_open = False
+
+			self.generic_hover_over_button_sound.fadeout(100)
+			self.generic_click_button_sound.play()
+			return clicked_button
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		clicked_button = self.get_button_by_interaction(mouse_rect, 'Laws_Menu')
+		if clicked_button != None:
+
+			if self.Laws_Menu.is_laws_menu_open == False:
+				self.Laws_Menu.is_laws_menu_open = True
+
+				self.Country_Overview.is_country_overview_open = False
+				self.Country_Focus_Tree.is_top_bar_focus_tree_open = False
+				self.Decisions_Menu.is_decisions_menu_open = False
+		
+			elif self.Laws_Menu.is_laws_menu_open == True:
+				self.Laws_Menu.is_laws_menu_open = False
+
+			self.generic_hover_over_button_sound.fadeout(100)
+			self.generic_click_button_sound.play()
+			return clicked_button
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#					
 		if self.is_any_top_bar_menu_open == False:
 			clicked_button = self.get_button_by_interaction(mouse_rect, 'Bottom_HUD')
 
@@ -2016,24 +2072,29 @@ class Game_Screen:
 				return clicked_button
 
 	def get_hovered_button(self, mouse_rect):
+		any_button_was_hovered = False
+
 		hovered_button = self.get_button_by_interaction(mouse_rect, 'Country_Overview')
 		if hovered_button != None:
 			if self.last_hovered_button != hovered_button:
 				self.generic_hover_over_button_sound.play()
 			self.last_hovered_button = hovered_button
 
+			any_button_was_hovered = True
+
 			self.Country_Overview.highlight_country_viewer_button = True
 			self.Country_Focus_Tree.highlight_focus_button = False
-
-			return hovered_button
 		else:
 			self.Country_Overview.highlight_country_viewer_button = False
-		
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#
 		hovered_button = self.get_button_by_interaction(mouse_rect, 'Country_Focus_Tree')
 		if hovered_button != None:
 			if self.last_hovered_button != hovered_button:
 				self.generic_hover_over_button_sound.play()
 			self.last_hovered_button = hovered_button
+
+			any_button_was_hovered = True
 
 			if hovered_button == "focus_tree":
 				self.Country_Focus_Tree.highlight_focus_button = True
@@ -2042,24 +2103,54 @@ class Game_Screen:
 				self.Country_Focus_Tree.highlight_focus_path_selection_button_index = self.Country_Focus_Tree.focus_wating_player_path_selection.selected_path
 			elif hovered_button == "accept_button":
 				self.Country_Focus_Tree.highlight_focus_completion_wating_player_visualization_button = True
-
-			return hovered_button
 		else:
 			self.Country_Focus_Tree.highlight_focus_button = False
 			self.Country_Focus_Tree.highlight_focus_completion_wating_player_visualization_button = False
-			self.Country_Focus_Tree.highlight_focus_path_selection_button_index = None		
+			self.Country_Focus_Tree.highlight_focus_path_selection_button_index = None	
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		hovered_button = self.get_button_by_interaction(mouse_rect, 'Decisions_Menu')
+		if hovered_button != None:
+			if self.last_hovered_button != hovered_button:
+				self.generic_hover_over_button_sound.play()
+			self.last_hovered_button = hovered_button
 
+			any_button_was_hovered = True
 
+			self.Decisions_Menu.highlight_decisions_menu_button = True
+		else:
+			self.Decisions_Menu.highlight_decisions_menu_button = False				
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		hovered_button = self.get_button_by_interaction(mouse_rect, 'Laws_Menu')
+		if hovered_button != None:
+			if self.last_hovered_button != hovered_button:
+				self.generic_hover_over_button_sound.play()
+			self.last_hovered_button = hovered_button
+
+			any_button_was_hovered = True
+
+			self.Laws_Menu.highlight_laws_menu_button = True
+		else:
+			self.Laws_Menu.highlight_laws_menu_button = False				
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#			
 		hovered_button = self.get_button_by_interaction(mouse_rect, 'Bottom_HUD')
 		if hovered_button != None:
 			if self.last_hovered_button != hovered_button:
 				self.generic_hover_over_button_sound.play()
-			self.last_hovered_button = hovered_button	
-			
-			return hovered_button
+			self.last_hovered_button = hovered_button
 
-		self.last_hovered_button = None
-		self.generic_hover_over_button_sound.fadeout(100)
+			any_button_was_hovered = True
+
+		else:
+			pass
+
+		#---------------------------------------------------------------------------------------------------------------------------------------#	
+		if any_button_was_hovered == False:
+			self.last_hovered_button = None
+			self.generic_hover_over_button_sound.fadeout(100)
+		#---------------------------------------------------------------------------------------------------------------------------------------#	
 
 	def draw(self, screen, mouse_rect):
 		self.Earth_Map.draw(screen)		
@@ -2067,7 +2158,10 @@ class Game_Screen:
 		self.Country_Focus_Tree.draw(screen)
 		self.Clock_UI.draw(screen)
 		self.Bottom_HUD.draw(screen)
-		
+
+		self.Decisions_Menu.draw(screen)
+		self.Laws_Menu.draw(screen)
+
 class Country_Overview:
 	def __init__(self, factor_x, factor_y, pygame, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over, country_overview, popularity_circle_overlay,
 			generic_hover_over_button_sound, progressbar, progressbar_vertical, progressbar_small):
@@ -2257,8 +2351,6 @@ class Country_Overview:
 		height = 112 * self.factor_y
 		button_size = (57 * self.factor_x, 41 * self.factor_y)
 
-		self.top_bar_decisions_button = 		GenericUtilitys.Button(129 * self.factor_x, height, button_size[0], button_size[1])
-		self.top_bar_laws_button = 				GenericUtilitys.Button(188 * self.factor_x, height, button_size[0], button_size[1])
 		self.top_bar_finances_button = 			GenericUtilitys.Button(247 * self.factor_x, height, button_size[0], button_size[1])
 		self.top_bar_inteligence_button = 		GenericUtilitys.Button(306 * self.factor_x, height, button_size[0], button_size[1])
 		self.top_bar_research_button = 			GenericUtilitys.Button(365 * self.factor_x, height, button_size[0], button_size[1])
@@ -2279,14 +2371,7 @@ class Country_Overview:
 		self.hovered_top_bar_UI_button = None
 
 		if self.top_bar_country_viewer_button.rect.colliderect(mouse_rect):
-			return "country_viewer"					
-		
-		elif self.top_bar_decisions_button.rect.colliderect(mouse_rect):
-			self.hovered_top_bar_UI_button = "decisions_button"
-			return "decisions_button"	
-		elif self.top_bar_laws_button.rect.colliderect(mouse_rect):
-			self.hovered_top_bar_UI_button = "laws_button"
-			return "laws_button"	
+			return "country_viewer"							
 		elif self.top_bar_finances_button.rect.colliderect(mouse_rect):
 			self.hovered_top_bar_UI_button = "finances_button"
 			return "finances_button"	
@@ -2989,7 +3074,7 @@ class Country_Focus_Tree:
 
 		self.focus_tree_surface.fill((0, 0, 0, 0), (0, 0, self.screen_width, self.screen_height - (158 + 110) * self.factor_y))
 		
-		#screen.blit(self.PlayerCountry.country_focus_tree[0].national_focus_icon, (5 * self.factor_x, 84 * self.factor_y))	
+		screen.blit(next(iter(self.PlayerCountry.country_focus_tree.values())).national_focus_icon, (5 * self.factor_x, 84 * self.factor_y))	
 
 		if self.highlight_focus_button == False and self.is_top_bar_focus_tree_open == False:
 			screen.blit(self.top_bar_flag_overlay, (2 * self.factor_x, 81 * self.factor_y))
@@ -3097,9 +3182,6 @@ class Country_Focus_Tree:
 
 			if self.highlight_focus_completion_wating_player_visualization_button == True:
 				self.pygame.draw.rect(screen, (0,255,0), getattr(self, 'accept_button').rect, 4)
-
-
-
 
 class Clock_UI:
 	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, clock, top_bar_right_background, top_bar_game_speed_indicator, top_bar_defcon_level):
@@ -3473,8 +3555,191 @@ class Earth_Map:
 		
 		screen.blit(self._8k_sized_map_surface, (0, 0))
 
+# TOP BAR BUTTONS
+class Decisions_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame):
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
 
+		self.pygame = pygame
 
+		self.is_decisions_menu_open = False
+		self.highlight_decisions_menu_button = False
+
+		height = 112 * self.factor_y
+		button_size = (57 * self.factor_x, 41 * self.factor_y)
+
+		self.top_bar_decisions_button = GenericUtilitys.Button(129 * self.factor_x, height, button_size[0], button_size[1])
+
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))		
+
+	def get_button_by_interaction(self, mouse_rect):	
+		if self.top_bar_decisions_button.rect.colliderect(mouse_rect):
+			return "decisions_button"
+		
+		return None
+
+	def draw(self, screen):
+		if self.is_decisions_menu_open == True:
+			self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y))
+			self.pygame.draw.rect(screen, (43,219,211), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), 2)			
+
+		if self.highlight_decisions_menu_button == True or self.is_decisions_menu_open == True:
+			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_decisions_button.rect, 2)		
+
+class Laws_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, progressbar_huge, country_laws_background):
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.is_laws_menu_open = False
+		self.highlight_laws_menu_button = False
+
+		self.PlayerCountry = None
+
+		self.progressbar_huge 			= pygame.transform.smoothscale_by(progressbar_huge, (self.factor_x, self.factor_y))	
+		self.country_laws_background 	= pygame.transform.smoothscale_by(country_laws_background, (self.factor_x, self.factor_y))	
+
+		height = 112 * self.factor_y
+		button_size = (57 * self.factor_x, 41 * self.factor_y)
+
+		self.top_bar_laws_button = GenericUtilitys.Button(188 * self.factor_x, height, button_size[0], button_size[1])
+
+		#### LAWS BUTTONS
+		law_button_width = 208 * self.factor_x
+		law_button_height = 27 * self.factor_y		
+
+		x_offset = 15
+		y_offset = 15 + 158
+
+		### FIRST ROW
+		self.first_row_law_button_y_offset_1 = (50 + y_offset) * self.factor_y
+		self.first_row_law_button_y_offset_2 = (83 + y_offset) * self.factor_y
+		self.first_row_law_button_y_offset_3 = (116 + y_offset) * self.factor_y
+		self.first_row_law_button_y_offset_4 = (149 + y_offset) * self.factor_y
+		self.first_row_law_button_y_offset_5 = (182 + y_offset) * self.factor_y
+		self.first_row_law_button_y_offset_6 = (215 + y_offset) * self.factor_y
+		self.first_row_law_button_y_offset_7 = (248 + y_offset) * self.factor_y
+		self.first_row_law_button_y_offset_8 = (281 + y_offset) * self.factor_y
+		self.first_row_law_button_y_offset_9 = (314 + y_offset) * self.factor_y	
+		
+		## POLITICAL LAWS
+		self.political_law_button_x_offset = (214 + x_offset) * self.factor_x
+		
+		self.political_law_button_1 = GenericUtilitys.Button(self.political_law_button_x_offset, self.first_row_law_button_y_offset_1, law_button_width, law_button_height)
+		self.political_law_button_2 = GenericUtilitys.Button(self.political_law_button_x_offset, self.first_row_law_button_y_offset_2, law_button_width, law_button_height)
+		self.political_law_button_3 = GenericUtilitys.Button(self.political_law_button_x_offset, self.first_row_law_button_y_offset_3, law_button_width, law_button_height)
+		self.political_law_button_4 = GenericUtilitys.Button(self.political_law_button_x_offset, self.first_row_law_button_y_offset_4, law_button_width, law_button_height)
+		self.political_law_button_5 = GenericUtilitys.Button(self.political_law_button_x_offset, self.first_row_law_button_y_offset_5, law_button_width, law_button_height)
+		self.political_law_button_6 = GenericUtilitys.Button(self.political_law_button_x_offset, self.first_row_law_button_y_offset_6, law_button_width, law_button_height)
+		self.political_law_button_7 = GenericUtilitys.Button(self.political_law_button_x_offset, self.first_row_law_button_y_offset_7, law_button_width, law_button_height)
+		self.political_law_button_8 = GenericUtilitys.Button(self.political_law_button_x_offset, self.first_row_law_button_y_offset_8, law_button_width, law_button_height)
+		self.political_law_button_9 = GenericUtilitys.Button(self.political_law_button_x_offset, self.first_row_law_button_y_offset_9, law_button_width, law_button_height)				
+		##
+
+		## MILITARY LAWS
+		self.military_law_button_x_offset = (646 + x_offset) * self.factor_x
+
+		self.military_law_button_1 = GenericUtilitys.Button(self.military_law_button_x_offset, self.first_row_law_button_y_offset_1, law_button_width, law_button_height)
+		self.military_law_button_2 = GenericUtilitys.Button(self.military_law_button_x_offset, self.first_row_law_button_y_offset_2, law_button_width, law_button_height)
+		self.military_law_button_3 = GenericUtilitys.Button(self.military_law_button_x_offset, self.first_row_law_button_y_offset_3, law_button_width, law_button_height)
+		self.military_law_button_4 = GenericUtilitys.Button(self.military_law_button_x_offset, self.first_row_law_button_y_offset_4, law_button_width, law_button_height)
+		self.military_law_button_5 = GenericUtilitys.Button(self.military_law_button_x_offset, self.first_row_law_button_y_offset_5, law_button_width, law_button_height)
+		self.military_law_button_6 = GenericUtilitys.Button(self.military_law_button_x_offset, self.first_row_law_button_y_offset_6, law_button_width, law_button_height)
+		self.military_law_button_7 = GenericUtilitys.Button(self.military_law_button_x_offset, self.first_row_law_button_y_offset_7, law_button_width, law_button_height)
+		self.military_law_button_8 = GenericUtilitys.Button(self.military_law_button_x_offset, (294 + y_offset) * self.factor_y, law_button_width, law_button_height)		
+		##
+		###
+
+		### SECOND ROW
+		self.second_row_law_button_y_offset_1 = (401 + y_offset) * self.factor_y
+		self.second_row_law_button_y_offset_2 = (434 + y_offset) * self.factor_y
+		self.second_row_law_button_y_offset_3 = (467 + y_offset) * self.factor_y
+		self.second_row_law_button_y_offset_4 = (500 + y_offset) * self.factor_y
+		self.second_row_law_button_y_offset_5 = (533 + y_offset) * self.factor_y
+		self.second_row_law_button_y_offset_6 = (566 + y_offset) * self.factor_y
+		self.second_row_law_button_y_offset_7 = (599 + y_offset) * self.factor_y
+		self.second_row_law_button_y_offset_8 = (632 + y_offset) * self.factor_y
+		self.second_row_law_button_y_offset_9 = (665 + y_offset) * self.factor_y	
+		
+		## ECONOMIC LAWS
+		self.economical_law_button_x_offset = (214 + x_offset) * self.factor_x
+		
+		self.economical_law_button_1 = GenericUtilitys.Button(self.economical_law_button_x_offset, self.second_row_law_button_y_offset_1, law_button_width, law_button_height)
+		self.economical_law_button_2 = GenericUtilitys.Button(self.economical_law_button_x_offset, self.second_row_law_button_y_offset_2, law_button_width, law_button_height)
+		self.economical_law_button_3 = GenericUtilitys.Button(self.economical_law_button_x_offset, self.second_row_law_button_y_offset_3, law_button_width, law_button_height)
+		self.economical_law_button_4 = GenericUtilitys.Button(self.economical_law_button_x_offset, self.second_row_law_button_y_offset_4, law_button_width, law_button_height)
+		self.economical_law_button_5 = GenericUtilitys.Button(self.economical_law_button_x_offset, self.second_row_law_button_y_offset_5, law_button_width, law_button_height)
+		self.economical_law_button_6 = GenericUtilitys.Button(self.economical_law_button_x_offset, self.second_row_law_button_y_offset_6, law_button_width, law_button_height)
+		self.economical_law_button_7 = GenericUtilitys.Button(self.economical_law_button_x_offset, self.second_row_law_button_y_offset_7, law_button_width, law_button_height)
+		self.economical_law_button_8 = GenericUtilitys.Button(self.economical_law_button_x_offset, self.second_row_law_button_y_offset_8, law_button_width, law_button_height)
+		self.economical_law_button_9 = GenericUtilitys.Button(self.economical_law_button_x_offset, self.second_row_law_button_y_offset_9, law_button_width, law_button_height)				
+		##
+
+		## SOCIAL LAWS
+		self.social_law_button_x_offset = (646 + x_offset) * self.factor_x
+
+		self.social_law_button_1 = GenericUtilitys.Button(self.social_law_button_x_offset, self.second_row_law_button_y_offset_1, law_button_width, law_button_height)
+		self.social_law_button_2 = GenericUtilitys.Button(self.social_law_button_x_offset, self.second_row_law_button_y_offset_2, law_button_width, law_button_height)
+		self.social_law_button_3 = GenericUtilitys.Button(self.social_law_button_x_offset, self.second_row_law_button_y_offset_3, law_button_width, law_button_height)
+		self.social_law_button_4 = GenericUtilitys.Button(self.social_law_button_x_offset, self.second_row_law_button_y_offset_4, law_button_width, law_button_height)
+		self.social_law_button_5 = GenericUtilitys.Button(self.social_law_button_x_offset, self.second_row_law_button_y_offset_5, law_button_width, law_button_height)
+		self.social_law_button_6 = GenericUtilitys.Button(self.social_law_button_x_offset, self.second_row_law_button_y_offset_6, law_button_width, law_button_height)
+		self.social_law_button_7 = GenericUtilitys.Button(self.social_law_button_x_offset, self.second_row_law_button_y_offset_7, law_button_width, law_button_height)
+		self.social_law_button_8 = GenericUtilitys.Button(self.social_law_button_x_offset, self.second_row_law_button_y_offset_8, law_button_width, law_button_height)
+		self.social_law_button_9 = GenericUtilitys.Button(self.social_law_button_x_offset, self.second_row_law_button_y_offset_9, law_button_width, law_button_height)			
+
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))		
+
+	def get_button_by_interaction(self, mouse_rect):	
+		if self.top_bar_laws_button.rect.colliderect(mouse_rect):
+			return "laws_button"
+		
+		return None
+
+	def draw(self, screen):		
+
+		if self.highlight_laws_menu_button == True or self.is_laws_menu_open == True:
+			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_laws_button.rect, 2)	
+
+		if self.is_laws_menu_open == True:
+			self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.country_laws_background.get_width() + 30 * self.factor_x, self.screen_height - (158 + 110) * self.factor_y))
+			self.pygame.draw.rect(screen, (43,219,211), (0, 158 * self.factor_y, self.country_laws_background.get_width() + 30 * self.factor_x, self.screen_height - (158 + 110) * self.factor_y), 2)	
+
+			screen.blit(self.country_laws_background, (15 * self.factor_x, 158 * self.factor_y + 15 * self.factor_y))				
+
+			# LAWS PROGRESS BAR	
+			for number in range(9):
+				button = getattr(self, f'political_law_button_{str(number+1)}', None)
+				law_rating = int((self.progressbar_huge.get_width()/100) * self.PlayerCountry.political_laws_groups[number].active_law_rating)
+				screen.blit(self.progressbar_huge.subsurface((0, 0, law_rating, self.progressbar_huge.get_height())), (button.rect[:2]))
+			
+			for number in range(8):
+				button = getattr(self, f'military_law_button_{str(number+1)}', None)
+				law_rating = int((self.progressbar_huge.get_width()/100) * self.PlayerCountry.military_laws_groups[number].active_law_rating)
+				screen.blit(self.progressbar_huge.subsurface((0, 0, law_rating, self.progressbar_huge.get_height())), (button.rect[:2]))	
+			
+			for number in range(9):
+				button = getattr(self, f'economical_law_button_{str(number+1)}', None)
+				law_rating = int((self.progressbar_huge.get_width()/100) * self.PlayerCountry.economical_laws_groups[number].active_law_rating)
+				screen.blit(self.progressbar_huge.subsurface((0, 0, law_rating, self.progressbar_huge.get_height())), (button.rect[:2]))
+			
+			for number in range(9):
+				button = getattr(self, f'social_law_button_{str(number+1)}', None)
+				law_rating = int((self.progressbar_huge.get_width()/100) * self.PlayerCountry.social_laws_groups[number].active_law_rating)
+				screen.blit(self.progressbar_huge.subsurface((0, 0, law_rating, self.progressbar_huge.get_height())), (button.rect[:2]))						
 
 
 
