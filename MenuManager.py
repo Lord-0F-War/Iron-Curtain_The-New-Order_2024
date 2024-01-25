@@ -1928,12 +1928,10 @@ class Laws_Group_Menu:
 					pygame.draw.rect(screen, (43,219,211), (480 * self.factor_x, 498 * self.factor_y - law_description.get_height()/2, 538 * self.factor_x, law_description.get_height() + 20 * self.factor_y + 63 * self.factor_y), 2)
 					screen.blit(law_description, text_position)					
 
-
-
 class Game_Screen:
 	def __init__(self, screen_width, screen_height, pygame, clock, generic_hover_over_button_sound, generic_click_button_sound, top_bar_right_background, top_bar_game_speed_indicator,
 			top_bar_defcon_level, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over, country_overview, popularity_circle_overlay, earth_daymap, earth_nightmap, 
-			earth_political_map, earth_political_map_filled, progressbar_huge, progressbar, progressbar_vertical, progressbar_small, bottom_HUD, country_laws_background):
+			earth_political_map, earth_political_map_filled, progressbar_huge, progressbar, progressbar_vertical, progressbar_small, bottom_HUD, country_laws_background, laws_description_image):
 
 		reference_screen_size_x = 1920
 		reference_screen_size_y = 1080
@@ -1961,9 +1959,7 @@ class Game_Screen:
 
 		self.Decisions_Menu = Decisions_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
 	
-		self.Laws_Menu = Laws_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, progressbar_huge, country_laws_background)
-
-
+		self.Laws_Menu = Laws_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, progressbar_huge, country_laws_background, laws_description_image)
 
 	def get_button_by_interaction(self, mouse_rect, index):
 		if index == 'Country_Overview':
@@ -3593,7 +3589,7 @@ class Decisions_Menu:
 			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_decisions_button.rect, 2)		
 
 class Laws_Menu:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, progressbar_huge, country_laws_background):
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, progressbar_huge, country_laws_background, laws_description_image):
 		self.factor_x, self.factor_y = factor_x, factor_y	
 		self.screen_width = screen_width 
 		self.screen_height = screen_height
@@ -3603,10 +3599,13 @@ class Laws_Menu:
 		self.is_laws_menu_open = False
 		self.highlight_laws_menu_button = False
 
+		self.hovered_law_button = None
+
 		self.PlayerCountry = None
 
 		self.progressbar_huge 			= pygame.transform.smoothscale_by(progressbar_huge, (self.factor_x, self.factor_y))	
-		self.country_laws_background 	= pygame.transform.smoothscale_by(country_laws_background, (self.factor_x, self.factor_y))	
+		self.country_laws_background 	= pygame.transform.smoothscale_by(country_laws_background, (self.factor_x, self.factor_y))
+		self.laws_description_image		= pygame.transform.smoothscale_by(laws_description_image, (self.factor_x, self.factor_y))
 
 		height = 112 * self.factor_y
 		button_size = (57 * self.factor_x, 41 * self.factor_y)
@@ -3707,6 +3706,32 @@ class Laws_Menu:
 		if self.top_bar_laws_button.rect.colliderect(mouse_rect):
 			return "laws_button"
 		
+		if self.is_laws_menu_open == True:
+			self.hovered_law_button = None
+			for number in range(9):
+				button = getattr(self, f'political_law_button_{str(number+1)}', None)
+				if button.rect.colliderect(mouse_rect):
+					self.hovered_law_button = f'political_law_button_{str(number+1)}'
+					return f'political_{str(number+1)}'
+			
+			for number in range(8):
+				button = getattr(self, f'military_law_button_{str(number+1)}', None)
+				if button.rect.colliderect(mouse_rect):
+					self.hovered_law_button = f'military_law_button_{str(number+1)}'
+					return f'military_{str(number+1)}'	
+
+			for number in range(9):
+				button = getattr(self, f'economical_law_button_{str(number+1)}', None)
+				if button.rect.colliderect(mouse_rect):
+					self.hovered_law_button = f'economical_law_button_{str(number+1)}'
+					return f'economical_{str(number+1)}'
+			
+			for number in range(9):
+				button = getattr(self, f'social_law_button_{str(number+1)}', None)
+				if button.rect.colliderect(mouse_rect):
+					self.hovered_law_button = f'social_law_button_{str(number+1)}'
+					return f'social_{str(number+1)}'
+
 		return None
 
 	def draw(self, screen):		
@@ -3715,7 +3740,7 @@ class Laws_Menu:
 			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_laws_button.rect, 2)	
 
 		if self.is_laws_menu_open == True:
-			self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.country_laws_background.get_width() + 30 * self.factor_x, self.screen_height - (158 + 110) * self.factor_y))
+			self.pygame.draw.rect(screen, (0,0,0), (0, 158 * self.factor_y, self.country_laws_background.get_width() + 30 * self.factor_x, self.screen_height - (158 + 110) * self.factor_y))
 			self.pygame.draw.rect(screen, (43,219,211), (0, 158 * self.factor_y, self.country_laws_background.get_width() + 30 * self.factor_x, self.screen_height - (158 + 110) * self.factor_y), 2)	
 
 			screen.blit(self.country_laws_background, (15 * self.factor_x, 158 * self.factor_y + 15 * self.factor_y))				
@@ -3739,7 +3764,66 @@ class Laws_Menu:
 			for number in range(9):
 				button = getattr(self, f'social_law_button_{str(number+1)}', None)
 				law_rating = int((self.progressbar_huge.get_width()/100) * self.PlayerCountry.social_laws_groups[number].active_law_rating)
-				screen.blit(self.progressbar_huge.subsurface((0, 0, law_rating, self.progressbar_huge.get_height())), (button.rect[:2]))						
+				screen.blit(self.progressbar_huge.subsurface((0, 0, law_rating, self.progressbar_huge.get_height())), (button.rect[:2]))	
+
+
+			if self.hovered_law_button != None:
+				self.pygame.draw.rect(screen, (6,15,20), (self.country_laws_background.get_width() + 30 * self.factor_x, 158 * self.factor_y, self.screen_width - (self.country_laws_background.get_width() + 30 * self.factor_x), self.screen_height - (158 + 110) * self.factor_y))
+				self.pygame.draw.rect(screen, (43,219,211), (self.country_laws_background.get_width() + 30 * self.factor_x, 158 * self.factor_y, self.screen_width - (self.country_laws_background.get_width() + 30 * self.factor_x), self.screen_height - (158 + 110) * self.factor_y), 2)	
+
+
+				button = getattr(self, self.hovered_law_button, None)	
+				self.pygame.draw.rect(screen, (255,255,255), button.rect, 4)
+
+				splited = self.hovered_law_button.split('_')
+				laws_group = None
+				if splited[0] == 'political':
+					laws_group = self.PlayerCountry.political_laws_groups[int(splited[-1]) - 1]
+				elif splited[0] == 'military':
+					laws_group = self.PlayerCountry.military_laws_groups[int(splited[-1]) - 1]
+				elif splited[0] == 'economical':
+					laws_group = self.PlayerCountry.economical_laws_groups[int(splited[-1]) - 1]
+				elif splited[0] == 'social':
+					laws_group = self.PlayerCountry.social_laws_groups[int(splited[-1]) - 1]											
+
+				laws = laws_group.laws
+
+				height = 95 * len(laws) - 80
+				start_pos = (self.screen_height - height) / 2
+				
+				for index, law in enumerate(laws):
+					rect = (self.country_laws_background.get_width() + 30 * self.factor_x + 40 * self.factor_x, (start_pos + 95 * index) * self.factor_y, 424 * self.factor_x, 80 * self.factor_y)
+					overlay_rect = (self.country_laws_background.get_width() + 30 * self.factor_x + 39 * self.factor_x, (start_pos-1 + 95 * index) * self.factor_y, 426 * self.factor_x, 82 * self.factor_y)
+
+					self.pygame.draw.rect(screen, (6,15,20), rect)
+
+					show_description = False
+					if index == laws_group.active_law_index:
+						self.pygame.draw.rect(screen, (255,38,42), overlay_rect, 4)
+						show_description = True
+					elif index == splited[-1]:
+						self.pygame.draw.rect(screen, (0,255,0), overlay_rect, 4)
+						show_description = True
+					else:
+						self.pygame.draw.rect(screen, (43,219,211), overlay_rect, 2)
+
+					if show_description == True:
+						# LAW DESCRIPTION
+						if law.description_complement == None:
+							law_description = self.big_scalable_font.render(law.description, True, (255, 255, 255))
+						else:
+							law_description = self.big_scalable_font.render(law.description + getattr(self.selected_country, law.description_complement), True, (255, 255, 255))
+						text_position = (self.country_laws_background.get_width() + 30 * self.factor_x + 490 * self.factor_x, (self.screen_height/2) * self.factor_y - law_description.get_height()/2 + 63 * self.factor_y)						
+						self.pygame.draw.rect(screen, (6,15,20), (self.country_laws_background.get_width() + 30 * self.factor_x + 480 * self.factor_x, ((self.screen_height - 20)/2) * self.factor_y - law_description.get_height()/2, 538 * self.factor_x, law_description.get_height() + 20 * self.factor_y + 63 * self.factor_y))
+						screen.blit(self.laws_description_image, (self.country_laws_background.get_width() + 30 * self.factor_x + 495 * self.factor_x, ((self.screen_height - 10)/2) * self.factor_y - law_description.get_height()/2))
+						
+						self.pygame.draw.rect(screen, (43,219,211), (self.country_laws_background.get_width() + 30 * self.factor_x + 480 * self.factor_x, ((self.screen_height - 20)/2) * self.factor_y - law_description.get_height()/2, 538 * self.factor_x, law_description.get_height() + 20 * self.factor_y + 63 * self.factor_y), 2)
+						screen.blit(law_description, text_position)
+
+					law_opened = self.big_scalable_font.render(law.name, True, (255, 255, 255))
+					text_position = (self.country_laws_background.get_width() + 30 * self.factor_x + 60 * self.factor_x, (start_pos + 95 * index) * self.factor_y + 40 * self.factor_y - law_opened.get_height()/2)
+					screen.blit(law_opened, text_position)	
+
 
 
 
