@@ -7,6 +7,8 @@ import CountriesManager
 import locale
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 
+#----------------------------------------------------#
+
 class ESC_Menu:
 	def __init__(self, screen_width, screen_height, ESC_menu_background, generic_hover_over_button_sound, generic_click_menu_sound, 
 			  hovered_green_button_menu_image, hovered_red_button_menu_image, Options_Menu) -> None:
@@ -256,6 +258,7 @@ class Options_Menu:
 		elif self.clicked_resolution_button == 'resolution_1280x1024':
 			surface_alfa.blit(self.hovered_green_button_menu_image, self.resolution_1280x1024_button.rect)	
 
+#----------------------------------------------------#
 
 class Main_Menu:
 	def __init__(self, screen_width, screen_height, pygame, game_logo, python_logo, menu_gui, hovered_green_button_menu_image, hovered_red_button_menu_image, 
@@ -438,6 +441,7 @@ class Main_Menu:
 			else:
 				self.hover_over_button_sound.fadeout(200)
 
+#----------------------------------------------------#
 
 class Scenario_Selection_Menu:
 	def __init__(self, screen_width, screen_height, pygame, game_logo, python_logo, menu_gui, hovered_select_scenario_button_menu_image, hovered_back_button_menu_image,
@@ -529,6 +533,7 @@ class Scenario_Selection_Menu:
 		else:
 			self.hover_over_button_sound.fadeout(200)	
 
+#----------------------------------------------------#
 
 class Country_Selection_Screen:
 	def __init__(self,
@@ -1928,6 +1933,8 @@ class Laws_Group_Menu:
 					pygame.draw.rect(screen, (43,219,211), (480 * self.factor_x, 498 * self.factor_y - law_description.get_height()/2, 538 * self.factor_x, law_description.get_height() + 20 * self.factor_y + 63 * self.factor_y), 2)
 					screen.blit(law_description, text_position)					
 
+#----------------------------------------------------#
+
 class Game_Screen:
 	def __init__(self, screen_width, screen_height, pygame, clock, generic_hover_over_button_sound, generic_click_button_sound, top_bar_right_background, top_bar_game_speed_indicator,
 			top_bar_defcon_level, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over, country_overview, popularity_circle_overlay, earth_daymap, earth_nightmap, 
@@ -1961,6 +1968,24 @@ class Game_Screen:
 	
 		self.Laws_Menu = Laws_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, progressbar_huge, country_laws_background, laws_description_image)
 
+		self.Finances_Menu = Finances_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
+
+		self.Inteligence_Menu = Inteligence_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
+
+		self.Research_Menu = Research_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
+		
+		self.Global_Market_Menu = Global_Market_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)#
+
+		self.Construction_Menu = Construction_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)#
+
+		self.Production_Menu = Production_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
+
+		self.Army_Menu = Army_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)#
+
+		self.Stockpile_Menu = Stockpile_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)	#	
+
+		self.menu_list = [self.Country_Overview, self.Country_Focus_Tree, self.Decisions_Menu, self.Laws_Menu, self.Finances_Menu, self.Inteligence_Menu, self.Research_Menu, self.Global_Market_Menu, self.Construction_Menu, self.Production_Menu, self.Army_Menu, self.Stockpile_Menu]					
+
 	def get_button_by_interaction(self, mouse_rect, index):
 		if index == 'Country_Overview':
 			button = self.Country_Overview.get_button_by_interaction(mouse_rect)
@@ -1977,20 +2002,43 @@ class Game_Screen:
 		elif index == 'Laws_Menu':
 			button = self.Laws_Menu.get_button_by_interaction(mouse_rect)
 			return button
+		elif index == 'Finances_Menu':
+			button = self.Finances_Menu.get_button_by_interaction(mouse_rect)
+			return button	
+		elif index == 'Inteligence_Menu':
+			button = self.Inteligence_Menu.get_button_by_interaction(mouse_rect)
+			return button	
+		elif index == 'Research_Menu':
+			button = self.Research_Menu.get_button_by_interaction(mouse_rect)
+			return button				
+		elif index == 'Global_Market_Menu':
+			button = self.Global_Market_Menu.get_button_by_interaction(mouse_rect)
+			return button
+		elif index == 'Construction_Menu':
+			button = self.Construction_Menu.get_button_by_interaction(mouse_rect)
+			return button		
+		elif index == 'Production_Menu':
+			button = self.Production_Menu.get_button_by_interaction(mouse_rect)
+			return button
+		elif index == 'Army_Menu':
+			button = self.Army_Menu.get_button_by_interaction(mouse_rect)
+			return button	
+		elif index == 'Stockpile_Menu':
+			button = self.Stockpile_Menu.get_button_by_interaction(mouse_rect)
+			return button					
 		
 	def get_clicked_button(self, mouse_rect):
 		clicked_button = self.get_button_by_interaction(mouse_rect, 'Country_Overview')
 		if clicked_button != None:
 
-			if self.Country_Overview.is_country_overview_open == False:
-				self.Country_Overview.is_country_overview_open = True
-
-				self.Country_Focus_Tree.is_top_bar_focus_tree_open = False
-				self.Decisions_Menu.is_decisions_menu_open = False
-				self.Laws_Menu.is_laws_menu_open = False
+			if self.Country_Overview.is_menu_open == False:
+				for menu in self.menu_list:
+					menu.is_menu_open = False
+															
+				self.Country_Overview.is_menu_open = True
 		
-			elif self.Country_Overview.is_country_overview_open == True:
-				self.Country_Overview.is_country_overview_open = False
+			elif self.Country_Overview.is_menu_open == True:
+				self.Country_Overview.is_menu_open = False
 
 			self.generic_hover_over_button_sound.fadeout(100)
 			self.generic_click_button_sound.play()
@@ -2000,15 +2048,13 @@ class Game_Screen:
 		clicked_button = self.get_button_by_interaction(mouse_rect, 'Country_Focus_Tree')
 		if clicked_button != None:
 			if clicked_button == "focus_tree":
-				if self.Country_Focus_Tree.is_top_bar_focus_tree_open == False:
-					self.Country_Focus_Tree.is_top_bar_focus_tree_open = True
-
-					self.Country_Overview.is_country_overview_open = False
-					self.Decisions_Menu.is_decisions_menu_open = False
-					self.Laws_Menu.is_laws_menu_open = False
+				if self.Country_Focus_Tree.is_menu_open == False:
+					for menu in self.menu_list:
+						menu.is_menu_open = False					
+					self.Country_Focus_Tree.is_menu_open = True
 			
-				elif self.Country_Focus_Tree.is_top_bar_focus_tree_open == True:
-					self.Country_Focus_Tree.is_top_bar_focus_tree_open = False	
+				elif self.Country_Focus_Tree.is_menu_open == True:
+					self.Country_Focus_Tree.is_menu_open = False	
 			elif clicked_button == "choice_button":
 				self.Country_Focus_Tree.keep_game_paused = False
 				self.Country_Focus_Tree.focus_wating_player_path_selection = None
@@ -2025,15 +2071,14 @@ class Game_Screen:
 		clicked_button = self.get_button_by_interaction(mouse_rect, 'Decisions_Menu')
 		if clicked_button != None:
 			if clicked_button == "decisions_button":
-				if self.Decisions_Menu.is_decisions_menu_open == False:
-					self.Decisions_Menu.is_decisions_menu_open = True
+				if self.Decisions_Menu.is_menu_open == False:
+					for menu in self.menu_list:
+						menu.is_menu_open = False
 
-					self.Country_Overview.is_country_overview_open = False
-					self.Country_Focus_Tree.is_top_bar_focus_tree_open = False
-					self.Laws_Menu.is_laws_menu_open = False
-			
-				elif self.Decisions_Menu.is_decisions_menu_open == True:
-					self.Decisions_Menu.is_decisions_menu_open = False
+					self.Decisions_Menu.is_menu_open = True
+
+				elif self.Decisions_Menu.is_menu_open == True:
+					self.Decisions_Menu.is_menu_open = False
 
 			self.generic_hover_over_button_sound.fadeout(100)
 			self.generic_click_button_sound.play()
@@ -2043,15 +2088,14 @@ class Game_Screen:
 		clicked_button = self.get_button_by_interaction(mouse_rect, 'Laws_Menu')
 		if clicked_button != None:
 			if clicked_button == "laws_button":
-				if self.Laws_Menu.is_laws_menu_open == False:
-					self.Laws_Menu.is_laws_menu_open = True
+				if self.Laws_Menu.is_menu_open == False:
+					for menu in self.menu_list:
+						menu.is_menu_open = False
 
-					self.Country_Overview.is_country_overview_open = False
-					self.Country_Focus_Tree.is_top_bar_focus_tree_open = False
-					self.Decisions_Menu.is_decisions_menu_open = False
+					self.Laws_Menu.is_menu_open = True
 			
-				elif self.Laws_Menu.is_laws_menu_open == True:
-					self.Laws_Menu.is_laws_menu_open = False
+				elif self.Laws_Menu.is_menu_open == True:
+					self.Laws_Menu.is_menu_open = False
 					self.Laws_Menu.selected_law_group_index = None
 			elif clicked_button[-1].isalnum():
 				self.Laws_Menu.selected_law_group_index = clicked_button
@@ -2063,7 +2107,143 @@ class Game_Screen:
 			self.generic_click_button_sound.play()
 			return clicked_button
 		#---------------------------------------------------------------------------------------------------------------------------------------#
-		#---------------------------------------------------------------------------------------------------------------------------------------#					
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		clicked_button = self.get_button_by_interaction(mouse_rect, 'Finances_Menu')
+		if clicked_button != None:
+			if clicked_button == "finances_button":
+				if self.Finances_Menu.is_menu_open == False:
+					for menu in self.menu_list:
+						menu.is_menu_open = False
+
+					self.Finances_Menu.is_menu_open = True
+
+				elif self.Finances_Menu.is_menu_open == True:
+					self.Finances_Menu.is_menu_open = False
+
+			self.generic_hover_over_button_sound.fadeout(100)
+			self.generic_click_button_sound.play()
+			return clicked_button
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		clicked_button = self.get_button_by_interaction(mouse_rect, 'Inteligence_Menu')
+		if clicked_button != None:
+			if clicked_button == "inteligence_button":
+				if self.Inteligence_Menu.is_menu_open == False:
+					for menu in self.menu_list:
+						menu.is_menu_open = False
+
+					self.Inteligence_Menu.is_menu_open = True
+
+				elif self.Inteligence_Menu.is_menu_open == True:
+					self.Inteligence_Menu.is_menu_open = False
+
+			self.generic_hover_over_button_sound.fadeout(100)
+			self.generic_click_button_sound.play()
+			return clicked_button
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		clicked_button = self.get_button_by_interaction(mouse_rect, 'Research_Menu')
+		if clicked_button != None:
+			if clicked_button == "research_button":
+				if self.Research_Menu.is_menu_open == False:
+					for menu in self.menu_list:
+						menu.is_menu_open = False
+
+					self.Research_Menu.is_menu_open = True
+
+				elif self.Research_Menu.is_menu_open == True:
+					self.Research_Menu.is_menu_open = False
+
+			self.generic_hover_over_button_sound.fadeout(100)
+			self.generic_click_button_sound.play()
+			return clicked_button
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		clicked_button = self.get_button_by_interaction(mouse_rect, 'Global_Market_Menu')
+		if clicked_button != None:
+			if clicked_button == "global_market_button":
+				if self.Global_Market_Menu.is_menu_open == False:
+					for menu in self.menu_list:
+						menu.is_menu_open = False
+
+					self.Global_Market_Menu.is_menu_open = True
+
+				elif self.Global_Market_Menu.is_menu_open == True:
+					self.Global_Market_Menu.is_menu_open = False
+
+			self.generic_hover_over_button_sound.fadeout(100)
+			self.generic_click_button_sound.play()
+			return clicked_button
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		clicked_button = self.get_button_by_interaction(mouse_rect, 'Construction_Menu')
+		if clicked_button != None:
+			if clicked_button == "construction_button":
+				if self.Construction_Menu.is_menu_open == False:
+					for menu in self.menu_list:
+						menu.is_menu_open = False
+
+					self.Construction_Menu.is_menu_open = True
+
+				elif self.Construction_Menu.is_menu_open == True:
+					self.Construction_Menu.is_menu_open = False
+
+			self.generic_hover_over_button_sound.fadeout(100)
+			self.generic_click_button_sound.play()
+			return clicked_button
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		clicked_button = self.get_button_by_interaction(mouse_rect, 'Production_Menu')
+		if clicked_button != None:
+			if clicked_button == "production_button":
+				if self.Production_Menu.is_menu_open == False:
+					for menu in self.menu_list:
+						menu.is_menu_open = False
+
+					self.Production_Menu.is_menu_open = True
+
+				elif self.Production_Menu.is_menu_open == True:
+					self.Production_Menu.is_menu_open = False
+
+			self.generic_hover_over_button_sound.fadeout(100)
+			self.generic_click_button_sound.play()
+			return clicked_button
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		clicked_button = self.get_button_by_interaction(mouse_rect, 'Army_Menu')
+		if clicked_button != None:
+			if clicked_button == "army_button":
+				if self.Army_Menu.is_menu_open == False:
+					for menu in self.menu_list:
+						menu.is_menu_open = False
+
+					self.Army_Menu.is_menu_open = True
+
+				elif self.Army_Menu.is_menu_open == True:
+					self.Army_Menu.is_menu_open = False
+
+			self.generic_hover_over_button_sound.fadeout(100)
+			self.generic_click_button_sound.play()
+			return clicked_button
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		clicked_button = self.get_button_by_interaction(mouse_rect, 'Stockpile_Menu')
+		if clicked_button != None:
+			if clicked_button == "stockpile_button":
+				if self.Stockpile_Menu.is_menu_open == False:
+					for menu in self.menu_list:
+						menu.is_menu_open = False
+
+					self.Stockpile_Menu.is_menu_open = True
+
+				elif self.Stockpile_Menu.is_menu_open == True:
+					self.Stockpile_Menu.is_menu_open = False
+
+			self.generic_hover_over_button_sound.fadeout(100)
+			self.generic_click_button_sound.play()
+			return clicked_button
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#																					
 		if self.is_any_top_bar_menu_open == False:
 			clicked_button = self.get_button_by_interaction(mouse_rect, 'Bottom_HUD')
 
@@ -2084,10 +2264,13 @@ class Game_Screen:
 
 			any_button_was_hovered = True
 
-			self.Country_Overview.highlight_country_viewer_button = True
-			self.Country_Focus_Tree.highlight_focus_button = False
+			for menu in self.menu_list:
+				menu.highlight_button = False
+
+			self.Country_Overview.highlight_button = True
+
 		else:
-			self.Country_Overview.highlight_country_viewer_button = False
+			self.Country_Overview.highlight_button = False
 		#---------------------------------------------------------------------------------------------------------------------------------------#
 		#---------------------------------------------------------------------------------------------------------------------------------------#
 		hovered_button = self.get_button_by_interaction(mouse_rect, 'Country_Focus_Tree')
@@ -2099,14 +2282,15 @@ class Game_Screen:
 			any_button_was_hovered = True
 
 			if hovered_button == "focus_tree":
-				self.Country_Focus_Tree.highlight_focus_button = True
-				self.Country_Overview.highlight_country_viewer_button = False
+				for menu in self.menu_list:
+					menu.highlight_button = False				
+				self.Country_Focus_Tree.highlight_button = True
 			elif hovered_button == "choice_button":
 				self.Country_Focus_Tree.highlight_focus_path_selection_button_index = self.Country_Focus_Tree.focus_wating_player_path_selection.selected_path
 			elif hovered_button == "accept_button":
 				self.Country_Focus_Tree.highlight_focus_completion_wating_player_visualization_button = True
 		else:
-			self.Country_Focus_Tree.highlight_focus_button = False
+			self.Country_Focus_Tree.highlight_button = False
 			self.Country_Focus_Tree.highlight_focus_completion_wating_player_visualization_button = False
 			self.Country_Focus_Tree.highlight_focus_path_selection_button_index = None	
 		#---------------------------------------------------------------------------------------------------------------------------------------#
@@ -2119,9 +2303,13 @@ class Game_Screen:
 
 			any_button_was_hovered = True
 
-			self.Decisions_Menu.highlight_decisions_menu_button = True
+			for menu in self.menu_list:
+				menu.highlight_button = False
+
+			self.Decisions_Menu.highlight_button = True
+
 		else:
-			self.Decisions_Menu.highlight_decisions_menu_button = False				
+			self.Decisions_Menu.highlight_button = False				
 		#---------------------------------------------------------------------------------------------------------------------------------------#
 		#---------------------------------------------------------------------------------------------------------------------------------------#
 		hovered_button = self.get_button_by_interaction(mouse_rect, 'Laws_Menu')
@@ -2132,11 +2320,151 @@ class Game_Screen:
 
 			any_button_was_hovered = True
 
-			self.Laws_Menu.highlight_laws_menu_button = True
+			for menu in self.menu_list:
+				menu.highlight_button = False
+
+			self.Laws_Menu.highlight_button = True
+
 		else:
-			self.Laws_Menu.highlight_laws_menu_button = False				
+			self.Laws_Menu.highlight_button = False				
 		#---------------------------------------------------------------------------------------------------------------------------------------#
-		#---------------------------------------------------------------------------------------------------------------------------------------#			
+		#---------------------------------------------------------------------------------------------------------------------------------------#	
+		hovered_button = self.get_button_by_interaction(mouse_rect, 'Finances_Menu')
+		if hovered_button != None:
+			if self.last_hovered_button != hovered_button:
+				self.generic_hover_over_button_sound.play()
+			self.last_hovered_button = hovered_button
+
+			any_button_was_hovered = True
+
+			for menu in self.menu_list:
+				menu.highlight_button = False
+
+			self.Finances_Menu.highlight_button = True
+
+		else:
+			self.Finances_Menu.highlight_button = False				
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#	
+		hovered_button = self.get_button_by_interaction(mouse_rect, 'Inteligence_Menu')
+		if hovered_button != None:
+			if self.last_hovered_button != hovered_button:
+				self.generic_hover_over_button_sound.play()
+			self.last_hovered_button = hovered_button
+
+			any_button_was_hovered = True
+
+			for menu in self.menu_list:
+				menu.highlight_button = False
+
+			self.Inteligence_Menu.highlight_button = True
+
+		else:
+			self.Inteligence_Menu.highlight_button = False				
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#	
+		hovered_button = self.get_button_by_interaction(mouse_rect, 'Research_Menu')
+		if hovered_button != None:
+			if self.last_hovered_button != hovered_button:
+				self.generic_hover_over_button_sound.play()
+			self.last_hovered_button = hovered_button
+
+			any_button_was_hovered = True
+
+			for menu in self.menu_list:
+				menu.highlight_button = False
+
+			self.Research_Menu.highlight_button = True
+
+		else:
+			self.Research_Menu.highlight_button = False				
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#	
+		hovered_button = self.get_button_by_interaction(mouse_rect, 'Global_Market_Menu')
+		if hovered_button != None:
+			if self.last_hovered_button != hovered_button:
+				self.generic_hover_over_button_sound.play()
+			self.last_hovered_button = hovered_button
+
+			any_button_was_hovered = True
+
+			for menu in self.menu_list:
+				menu.highlight_button = False
+
+			self.Global_Market_Menu.highlight_button = True
+
+		else:
+			self.Global_Market_Menu.highlight_button = False				
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#	
+		hovered_button = self.get_button_by_interaction(mouse_rect, 'Construction_Menu')
+		if hovered_button != None:
+			if self.last_hovered_button != hovered_button:
+				self.generic_hover_over_button_sound.play()
+			self.last_hovered_button = hovered_button
+
+			any_button_was_hovered = True
+
+			for menu in self.menu_list:
+				menu.highlight_button = False
+
+			self.Construction_Menu.highlight_button = True
+
+		else:
+			self.Construction_Menu.highlight_button = False				
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#	
+		hovered_button = self.get_button_by_interaction(mouse_rect, 'Production_Menu')
+		if hovered_button != None:
+			if self.last_hovered_button != hovered_button:
+				self.generic_hover_over_button_sound.play()
+			self.last_hovered_button = hovered_button
+
+			any_button_was_hovered = True
+
+			for menu in self.menu_list:
+				menu.highlight_button = False
+
+			self.Production_Menu.highlight_button = True
+
+		else:
+			self.Production_Menu.highlight_button = False				
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#	
+		hovered_button = self.get_button_by_interaction(mouse_rect, 'Army_Menu')
+		if hovered_button != None:
+			if self.last_hovered_button != hovered_button:
+				self.generic_hover_over_button_sound.play()
+			self.last_hovered_button = hovered_button
+
+			any_button_was_hovered = True
+
+			for menu in self.menu_list:
+				menu.highlight_button = False
+
+			self.Army_Menu.highlight_button = True
+
+		else:
+			self.Army_Menu.highlight_button = False				
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#	
+		hovered_button = self.get_button_by_interaction(mouse_rect, 'Stockpile_Menu')
+		if hovered_button != None:
+			if self.last_hovered_button != hovered_button:
+				self.generic_hover_over_button_sound.play()
+			self.last_hovered_button = hovered_button
+
+			any_button_was_hovered = True
+
+			for menu in self.menu_list:
+				menu.highlight_button = False
+
+			self.Stockpile_Menu.highlight_button = True
+
+		else:
+			self.Stockpile_Menu.highlight_button = False				
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#																											
 		hovered_button = self.get_button_by_interaction(mouse_rect, 'Bottom_HUD')
 		if hovered_button != None:
 			if self.last_hovered_button != hovered_button:
@@ -2163,7 +2491,326 @@ class Game_Screen:
 
 		self.Decisions_Menu.draw(screen)
 		self.Laws_Menu.draw(screen)
+		self.Finances_Menu.draw(screen)
+		self.Inteligence_Menu.draw(screen)
+		self.Research_Menu.draw(screen)
+		self.Global_Market_Menu.draw(screen)
+		self.Construction_Menu.draw(screen)
+		self.Production_Menu.draw(screen)
+		self.Army_Menu.draw(screen)
+		self.Stockpile_Menu.draw(screen)
 
+# TIME
+class Clock_UI:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, clock, top_bar_right_background, top_bar_game_speed_indicator, top_bar_defcon_level):
+
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.clock = clock
+
+		self.top_bar_right_background = pygame.transform.smoothscale_by(top_bar_right_background, (self.factor_x, self.factor_y))
+		self.top_bar_game_speed_indicator = pygame.transform.smoothscale_by(top_bar_game_speed_indicator, (self.factor_x, self.factor_y))
+		self.top_bar_defcon_level = pygame.transform.smoothscale_by(top_bar_defcon_level, (self.factor_x, self.factor_y))	
+
+
+		self.game_speed = 1	
+		self.defcon_level = 5
+
+		self.current_year = 1970
+		self.current_month = 1
+		self.current_day = 1
+		self.current_hour = 1
+		self.current_minute = 0
+
+		self.days_in_each_mounth = {
+			'1': 31,
+			'2': 28,
+			'3': 31,
+			'4': 30,
+			'5': 31,
+			'6': 30,
+			'7': 31,
+			'8': 31,
+			'9': 30,
+			'10': 31,
+			'11': 30,
+			'12': 31,
+		}						
+		
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))	
+
+	def date_tick(self):
+		if self.game_speed == 0:
+			self.current_minute += 0
+		elif self.game_speed == 1:
+			self.current_minute += 1
+		elif self.game_speed == 2:
+			self.current_minute += 5
+		elif self.game_speed == 3:
+			self.current_minute += 10
+		elif self.game_speed == 4:
+			self.current_minute += 30
+		elif self.game_speed == 5:
+			self.current_minute += 120														
+
+		if self.current_minute >= 60:
+			self.current_hour += int(self.current_minute/60)
+			self.current_minute = 0
+			if self.current_hour >= 24:
+				self.current_hour = self.current_hour - 24
+				self.current_day += 1
+				if self.current_day == self.days_in_each_mounth[str(self.current_month)] + 1:
+					self.current_day = 1
+					self.current_month += 1
+					if self.current_month == 13:
+						self.current_month = 1
+						self.current_year += 1
+
+	def draw(self, screen):
+		screen.blit(self.top_bar_right_background, (self.screen_width - self.top_bar_right_background.get_width(), 0))
+
+		# SPEED
+		speed_indicator_alignment_offset = 8 * self.factor_x
+		speed_indicator_sprite_width = 43 * self.factor_x * self.game_speed
+
+		top_bar_game_speed_indicator_surface = self.pygame.Surface((speed_indicator_sprite_width, self.top_bar_game_speed_indicator.get_height()), self.pygame.SRCALPHA)	
+		top_bar_game_speed_indicator_surface.blit(self.top_bar_game_speed_indicator, (0, 0), self.pygame.Rect(0, 0, speed_indicator_sprite_width, self.top_bar_game_speed_indicator.get_height()))		
+
+		screen.blit(top_bar_game_speed_indicator_surface, (self.screen_width - self.top_bar_right_background.get_width() + 62 * self.factor_x + speed_indicator_alignment_offset, 42 * self.factor_y))	
+
+		# DEFCON
+		top_bar_defcon_level_height = (18.4 * (self.defcon_level - 1) * self.factor_y)
+
+		top_bar_defcon_level_surface = self.pygame.Surface((self.top_bar_defcon_level.get_width(), 92 * self.factor_y), self.pygame.SRCALPHA)	
+		top_bar_defcon_level_surface.blit(self.top_bar_defcon_level, (0, top_bar_defcon_level_height), self.pygame.Rect(0, top_bar_defcon_level_height, self.top_bar_defcon_level.get_width(), 18.4 * self.factor_y))		
+
+		screen.blit(top_bar_defcon_level_surface, (self.screen_width - self.top_bar_right_background.get_width() + 300 * self.factor_x, 9 * self.factor_y))	
+
+		# DATE
+		date_font_color = (255,255,255) if self.game_speed != 0 else (255,40,40)	
+
+		hour_date_text = f"{self.current_hour:02d}H"
+		day_date_text = f"{self.current_day:02d}D"
+		month_date_text = f"{self.current_month:02d}M"
+		year_date_text = f"{self.current_year:04d}Y"
+
+		hour_date_render = self.medium_scalable_font.render(hour_date_text, True, date_font_color)
+		day_date_render = self.medium_scalable_font.render(day_date_text, True, date_font_color)
+		month_date_render = self.medium_scalable_font.render(month_date_text, True, date_font_color)
+		year_date_render = self.medium_scalable_font.render(year_date_text, True, date_font_color)
+
+		date_x_position = self.screen_width - 312 * self.factor_x
+		date_y_position = 17 * self.factor_y
+
+		screen.blit(hour_date_render, (date_x_position + (-2 + max(0, 38 - hour_date_render.get_width()))* self.factor_x, date_y_position))
+		screen.blit(day_date_render, (date_x_position + (48 + max(0, 38 * self.factor_x - day_date_render.get_width()))* self.factor_x, date_y_position))
+		screen.blit(month_date_render, (date_x_position + (86 + max(0, 41 * self.factor_x - month_date_render.get_width()))* self.factor_x, date_y_position))
+		screen.blit(year_date_render, (date_x_position + (135 + max(0, 49 * self.factor_x - year_date_render.get_width()))* self.factor_x, date_y_position))	
+
+		# FPS
+		FPS_render = self.medium_scalable_font.render(' FPS:\n' + str(round(self.clock.get_fps(), 2)), True, (255, 255, 255))
+		screen.blit(FPS_render, (self.screen_width - 190 * self.factor_x, 75 * self.factor_y))
+
+# MAP
+class Earth_Map:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, earth_daymap, earth_nightmap, earth_political_map, earth_political_map_filled, Clock_UI):
+		self.factor_x = factor_x
+		self.factor_y = factor_y
+
+		self.last_zoom_factor = 1
+		self.zoom_factor = 1
+
+		self.screen_width = screen_width
+		self.screen_height = screen_height
+
+		self.Clock_UI = Clock_UI
+
+		self.map_overlay_index = 1
+
+		self.source_earth_daymap = earth_daymap
+		self.source_earth_nightmap = earth_nightmap
+		self.source_earth_political_map = earth_political_map
+		self.source_earth_political_map_filled = earth_political_map_filled
+
+		self.earth_daymap = earth_daymap.copy()
+		self.earth_nightmap = earth_nightmap.copy()
+		self.earth_political_map = earth_political_map.copy()
+		self.earth_political_map_filled = earth_political_map_filled.copy()
+
+		self.night_strips = self.calculate_night_strips(interval_minutes = 1)
+
+		self.screen_sized_map_surface = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA)
+		self._8k_sized_map_surface = pygame.Surface((self.source_earth_daymap.get_width(), self.source_earth_nightmap.get_height()), pygame.SRCALPHA)	
+
+		self.time_zone = 6.1 # 6.1 == Greenwich
+
+		self.map_position = [0, 0]
+		self.offset_y = 0
+
+		self.update_map()
+
+	def calculate_night_strips(self, interval_minutes):
+		night_strips = {}
+
+		for minute in range(0, 1440, interval_minutes):
+			longitude_start, longitude_end = self.calculate_night_longitude_range(minute)
+			night_strips[minute] = [(longitude_start, longitude_end)]
+
+			# Check if the night strip crosses the right edge
+			if longitude_end > 360:
+				night_strips[minute].append((0, longitude_end - 360))
+
+		return night_strips
+
+	def calculate_night_longitude_range(self, minute):
+		# Calculate longitude range based on the minute of the day
+		longitude_start = (minute / 1440) * 360
+		longitude_end = ((minute + 720) / 1440) * 360
+		return longitude_start, longitude_end
+
+	def scale_map(self, zoom_factor_change, fps_freezing_avoidance, zoom_type):
+		if fps_freezing_avoidance > 10:
+			self.zoom_factor += zoom_factor_change
+			if self.zoom_factor < 0.25:
+				self.zoom_factor = 0.25
+			if self.zoom_factor > 1:
+				self.zoom_factor = 1
+
+			if self.last_zoom_factor != self.zoom_factor:
+				self.update_map()
+				
+				# DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER
+				# DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER
+
+				if zoom_type == 'zoom_out':
+					pass
+				if zoom_type == 'zoom_in':
+					pass
+
+			self.last_zoom_factor = self.zoom_factor
+
+	def update_map(self):
+		if self.map_overlay_index != None:
+			self.earth_nightmap = pygame.transform.scale_by(self.source_earth_nightmap, (self.zoom_factor))
+			
+			result_surface = pygame.Surface((self.earth_nightmap.get_width(), self.earth_nightmap.get_height()), pygame.SRCALPHA)
+
+			result_surface.blit(pygame.transform.scale_by(self.source_earth_daymap, (self.zoom_factor)), (0, 0))
+
+			if self.map_overlay_index == 1:
+				self.earth_political_map = pygame.transform.scale_by(self.source_earth_political_map, (self.zoom_factor))	
+				result_surface.blit(self.earth_political_map, (0, 0))
+			elif self.map_overlay_index == 2:
+				self.earth_political_map_filled = pygame.transform.scale_by(self.source_earth_political_map_filled, (self.zoom_factor))	
+				result_surface.blit(self.earth_political_map_filled, (0, 0))
+
+			self.earth_daymap = result_surface.convert_alpha().copy()
+			del result_surface			
+
+	def draw(self, screen):
+		self.screen_sized_map_surface.fill((0, 0, 0, 0), (0, 0, self.screen_width, self.screen_height))
+		self._8k_sized_map_surface.fill((0, 0, 0, 0), (0, 0, self.screen_width, self.screen_height))
+
+		# HEIGHT
+		self.offset_y = abs(self.map_position[1]) if abs(self.map_position[1]) <  self.earth_daymap.get_height() else self.earth_daymap.get_height() - 1
+		#--------------#
+				
+
+		# DAYMAP		
+		if self.map_position[0] == 0:
+			start = 0
+			width = self.screen_width
+			height = self.screen_height if self.screen_height + self.offset_y <= self.earth_daymap.get_height() else self.earth_daymap.get_height()
+			
+			if start + width > self.earth_daymap.get_width():
+				width = self.earth_daymap.get_width() - start			
+			if self.offset_y + height > self.earth_daymap.get_height():
+				height = self.earth_daymap.get_height() - self.offset_y
+
+			if height > 0 and width > 0:
+				self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((start, self.offset_y, width, height)), (0, 0))
+
+				if self.earth_daymap.get_width() < self.screen_width:
+					difference = self.screen_width - self.earth_daymap.get_width()
+					width = difference
+					self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((0, self.offset_y, width, height)), (self.screen_width - difference, 0))
+		
+		if self.map_position[0] > 0:
+			start = self.earth_daymap.get_width() - self.map_position[0]
+			width = min(self.screen_width, self.map_position[0])
+			height = self.screen_height if self.screen_height + self.offset_y <= self.earth_daymap.get_height() else self.earth_daymap.get_height()
+			
+			if start + width > self.earth_daymap.get_width():
+				width = self.earth_daymap.get_width() - start
+			if self.offset_y + height > self.earth_daymap.get_height():
+				height = self.earth_daymap.get_height() - self.offset_y	
+
+			if height > 0 and width > 0:			
+				self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((start, self.offset_y, width, height)), (0, 0))			
+				
+				if self.screen_width - self.map_position[0] > 0:
+					self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((0, self.offset_y, self.screen_width - self.map_position[0], height)), (abs(self.map_position[0]), 0))
+		
+		if self.map_position[0] < 0:
+			start = max(self.screen_width, abs(self.map_position[0]))
+			width = min(abs(self.map_position[0]), min(self.screen_width, self.earth_daymap.get_width() - abs(self.map_position[0])))
+			height = self.screen_height if self.screen_height + self.offset_y <= self.earth_daymap.get_height() else self.earth_daymap.get_height()
+			
+			if start + width > self.earth_daymap.get_width():
+				width = self.earth_daymap.get_width() - start
+			if self.offset_y + height > self.earth_daymap.get_height():
+				height = self.earth_daymap.get_height() - self.offset_y
+
+			if height > 0 and width > 0:		
+				self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((start, self.offset_y, width, height)), (max(0, self.screen_width - abs(self.map_position[0])), 0))
+				
+				if self.screen_width - abs(self.map_position[0]) > 0:
+					self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((abs(self.map_position[0]), self.offset_y, self.screen_width - abs(self.map_position[0]), height)), (0, 0))
+				
+				if self.earth_daymap.get_width() - abs(self.map_position[0]) < self.screen_width:
+					self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((0, self.offset_y, self.screen_width - (self.earth_daymap.get_width() - abs(self.map_position[0])), height)), (self.earth_daymap.get_width() - abs(self.map_position[0]), 0))
+		#--------------#
+		
+		self._8k_sized_map_surface.blit(self.screen_sized_map_surface, (0, 0))
+
+
+		current_minute = (1440 - (self.Clock_UI.current_hour * 60 + self.Clock_UI.current_minute)) + self.time_zone * 60
+		if current_minute >= 1440:
+			current_minute -= 1440
+
+		closest_key = min(self.night_strips.keys(), key=lambda x: abs(x - current_minute))
+		current_night_strips = self.night_strips[closest_key]
+
+		for start, end in current_night_strips:
+			x_start = int((start / 360) * self.earth_nightmap.get_width())
+			x_end = int((end / 360) * self.earth_nightmap.get_width())
+
+			# Blit night map for the current night strips
+			columns_to_copy = min(x_end - x_start, self.earth_nightmap.get_width() - x_start)
+			if self.map_position[0] > 0:
+				height = self.screen_height if self.screen_height + self.offset_y <= self.earth_nightmap.get_height() else self.earth_nightmap.get_height() - self.offset_y
+
+				self._8k_sized_map_surface.blit(self.earth_nightmap.subsurface((x_start, self.offset_y, columns_to_copy, height)), (x_start + abs(self.map_position[0]), 0))
+				if x_start + columns_to_copy + abs(self.map_position[0]) > self.earth_nightmap.get_width():
+					difference = (x_start + columns_to_copy + abs(self.map_position[0])) - self.earth_nightmap.get_width()
+					self._8k_sized_map_surface.blit(self.earth_nightmap.subsurface((x_start, self.offset_y, columns_to_copy, height)), (-columns_to_copy + difference, 0))
+			else:
+				height = self.screen_height if self.screen_height + self.offset_y <= self.earth_nightmap.get_height() else self.earth_nightmap.get_height() - self.offset_y
+
+				self._8k_sized_map_surface.blit(self.earth_nightmap.subsurface((x_start, self.offset_y, columns_to_copy, height)), (x_start - abs(self.map_position[0]), 0))
+				self._8k_sized_map_surface.blit(self.earth_nightmap.subsurface((x_start, self.offset_y, columns_to_copy, height)), (self.earth_nightmap.get_width() - abs(self.map_position[0]) + x_start, 0))
+		
+		screen.blit(self._8k_sized_map_surface, (0, 0))
+
+# TOP BAR MENUS:
 class Country_Overview:
 	def __init__(self, factor_x, factor_y, pygame, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over, country_overview, popularity_circle_overlay,
 			generic_hover_over_button_sound, progressbar, progressbar_vertical, progressbar_small):
@@ -2181,8 +2828,8 @@ class Country_Overview:
 		self.progressbar_vertical = pygame.transform.smoothscale_by(progressbar_vertical, (self.factor_x, self.factor_y))
 		self.progressbar_small = pygame.transform.smoothscale_by(progressbar_small, (self.factor_x, self.factor_y))
 
-		self.highlight_country_viewer_button = False
-		self.is_country_overview_open = False
+		self.highlight_button = False
+		self.is_menu_open = False
 
 		self.country_overview = pygame.transform.smoothscale_by(country_overview, (self.factor_x, self.factor_y))
 		self.popularity_circle_overlay = pygame.transform.smoothscale_by(popularity_circle_overlay, (self.factor_x, self.factor_y))
@@ -2345,24 +2992,6 @@ class Country_Overview:
 
 		self.internal_and_external_market_approval_rating_rect = self.pygame.Rect(370 * self.factor_x, 74 * self.factor_y, 101 * self.factor_x, 28 * self.factor_y)	
 
-		# INFORMATION ------------#
-
-		# UI BUTTONS ------------#
-		self.hovered_top_bar_UI_button = None
-
-		height = 112 * self.factor_y
-		button_size = (57 * self.factor_x, 41 * self.factor_y)
-
-		self.top_bar_finances_button = 			GenericUtilitys.Button(247 * self.factor_x, height, button_size[0], button_size[1])
-		self.top_bar_inteligence_button = 		GenericUtilitys.Button(306 * self.factor_x, height, button_size[0], button_size[1])
-		self.top_bar_research_button = 			GenericUtilitys.Button(365 * self.factor_x, height, button_size[0], button_size[1])
-		self.top_bar_global_market_button = 	GenericUtilitys.Button(424 * self.factor_x, height, button_size[0], button_size[1])
-		self.top_bar_construction_button = 		GenericUtilitys.Button(483 * self.factor_x, height, button_size[0], button_size[1])
-		self.top_bar_production_button = 		GenericUtilitys.Button(542 * self.factor_x, height, button_size[0], button_size[1])
-		self.top_bar_army_button = 				GenericUtilitys.Button(601 * self.factor_x, height, button_size[0], button_size[1])
-		self.top_bar_stockpile_button = 		GenericUtilitys.Button(660 * self.factor_x, height, button_size[0], button_size[1])
-
-
 		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
 		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
 		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
@@ -2370,34 +2999,8 @@ class Country_Overview:
 		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(13 * self.factor_y))	
 
 	def get_button_by_interaction(self, mouse_rect):
-		self.hovered_top_bar_UI_button = None
-
 		if self.top_bar_country_viewer_button.rect.colliderect(mouse_rect):
 			return "country_viewer"							
-		elif self.top_bar_finances_button.rect.colliderect(mouse_rect):
-			self.hovered_top_bar_UI_button = "finances_button"
-			return "finances_button"	
-		elif self.top_bar_inteligence_button.rect.colliderect(mouse_rect):
-			self.hovered_top_bar_UI_button = "inteligence_button"
-			return "inteligence_button"	
-		elif self.top_bar_research_button.rect.colliderect(mouse_rect):
-			self.hovered_top_bar_UI_button = "research_button"
-			return "research_button"	
-		elif self.top_bar_global_market_button.rect.colliderect(mouse_rect):
-			self.hovered_top_bar_UI_button = "global_market_button"
-			return "global_market_button"	
-		elif self.top_bar_construction_button.rect.colliderect(mouse_rect):
-			self.hovered_top_bar_UI_button = "construction_button"
-			return "construction_button"	
-		elif self.top_bar_production_button.rect.colliderect(mouse_rect):
-			self.hovered_top_bar_UI_button = "production_button"
-			return "production_button"	
-		elif self.top_bar_army_button.rect.colliderect(mouse_rect):
-			self.hovered_top_bar_UI_button = "army_button"
-			return "army_button"	
-		elif self.top_bar_stockpile_button.rect.colliderect(mouse_rect):
-			self.hovered_top_bar_UI_button = "stockpile_button"
-			return "stockpile_button"	
 
 		return None																													
 
@@ -2446,7 +3049,7 @@ class Country_Overview:
 				self.last_hovered_rect = None
 				self.generic_hover_over_button_sound.fadeout(100)
 
-		if self.is_country_overview_open == True:
+		if self.is_menu_open == True:
 			self.is_touching_cicle_rects = False
 			if mouse_rect[1] - self.country_overview_position[1] > 308 * self.factor_y and mouse_rect[1] - self.country_overview_position[1] < 475 * self.factor_y:
 				if  mouse_rect[0] > 60 * self.factor_x and  mouse_rect[0] < 227 * self.factor_x:
@@ -2489,32 +3092,10 @@ class Country_Overview:
 			self.PlayerCountry.country_flag_image = self.pygame.transform.smoothscale(self.PlayerCountry.country_flag_image, (115 * self.factor_x, 66 * self.factor_y))
 		screen.blit(self.PlayerCountry.country_flag_image, (5 * self.factor_x, 5 * self.factor_y))
 
-		if self.highlight_country_viewer_button == False and self.is_country_overview_open == False:
+		if self.highlight_button == False and self.is_menu_open == False:
 			screen.blit(self.top_bar_flag_overlay, (2 * self.factor_x, 2 * self.factor_y))
 		else:
 			screen.blit(self.top_bar_flag_overlay_hovering_over, (2 * self.factor_x, 2 * self.factor_y))
-
-		if self.hovered_top_bar_UI_button != None:
-			if self.hovered_top_bar_UI_button == "decisions_button":
-				pygame.draw.rect(screen, (255,255,255), self.top_bar_decisions_button.rect, 2)
-			elif self.hovered_top_bar_UI_button == "laws_button":
-				pygame.draw.rect(screen, (255,255,255), self.top_bar_laws_button.rect, 2)
-			elif self.hovered_top_bar_UI_button == "finances_button":
-				pygame.draw.rect(screen, (255,255,255), self.top_bar_finances_button.rect, 2)
-			elif self.hovered_top_bar_UI_button == "inteligence_button":
-				pygame.draw.rect(screen, (255,255,255), self.top_bar_inteligence_button.rect, 2)
-			elif self.hovered_top_bar_UI_button == "research_button":
-				pygame.draw.rect(screen, (255,255,255), self.top_bar_research_button.rect, 2)
-			elif self.hovered_top_bar_UI_button == "global_market_button":
-				pygame.draw.rect(screen, (255,255,255), self.top_bar_global_market_button.rect, 2)
-			elif self.hovered_top_bar_UI_button == "construction_button":
-				pygame.draw.rect(screen, (255,255,255), self.top_bar_construction_button.rect, 2)
-			elif self.hovered_top_bar_UI_button == "production_button":
-				pygame.draw.rect(screen, (255,255,255), self.top_bar_production_button.rect, 2)
-			elif self.hovered_top_bar_UI_button == "army_button":
-				pygame.draw.rect(screen, (255,255,255), self.top_bar_army_button.rect, 2)
-			elif self.hovered_top_bar_UI_button == "stockpile_button":																																				
-				pygame.draw.rect(screen, (255,255,255), self.top_bar_stockpile_button.rect, 2)
 
 		#----------------------------------------------------------------------------------------------------------------------------------------#
 		# TOP BAR INFOS
@@ -2816,7 +3397,7 @@ class Country_Overview:
 		#----------------------------------------------------------------------------------------------------------------------------------------#
 		# COUNTRY VIEWER
 
-		if self.is_country_overview_open == True:
+		if self.is_menu_open == True:
 			screen.blit(self.PlayerCountry.country_leader_image, (12 * self.factor_x, 27 * self.factor_y + self.country_overview_position[1]))
 			screen.blit(self.country_overview, self.country_overview_position)
 
@@ -3020,8 +3601,8 @@ class Country_Focus_Tree:
 		self.focus_movement_y = 0
 
 		self.highlight_focus_path_selection_button_index = None
-		self.highlight_focus_button = False
-		self.is_top_bar_focus_tree_open = False
+		self.highlight_button = False
+		self.is_menu_open = False
 
 		self.top_bar_flag_overlay = pygame.transform.smoothscale_by(top_bar_flag_overlay, (self.factor_x, self.factor_y))
 		self.top_bar_flag_overlay_hovering_over = pygame.transform.smoothscale_by(top_bar_flag_overlay_hovering_over, (self.factor_x, self.factor_y))	
@@ -3078,7 +3659,7 @@ class Country_Focus_Tree:
 		
 		screen.blit(next(iter(self.PlayerCountry.country_focus_tree.values())).national_focus_icon, (5 * self.factor_x, 84 * self.factor_y))	
 
-		if self.highlight_focus_button == False and self.is_top_bar_focus_tree_open == False:
+		if self.highlight_button == False and self.is_menu_open == False:
 			screen.blit(self.top_bar_flag_overlay, (2 * self.factor_x, 81 * self.factor_y))
 		else:
 			screen.blit(self.top_bar_flag_overlay_hovering_over, (2 * self.factor_x, 81 * self.factor_y))
@@ -3090,7 +3671,6 @@ class Country_Focus_Tree:
 					focus.is_active = False
 					self.keep_game_paused = True
 					self.focus_completion_wating_player_visualization = focus
-					self.is_top_bar_focus_tree_open = False
 					setattr(self, 'accept_button', GenericUtilitys.Button(self.screen_width/2 - self.screen_width/8, self.screen_height - (180 + 55) * self.factor_y, self.screen_width/4, 75 * self.factor_y))
 					if len(focus.next_focus) > 1:
 						focus.next_focus = [focus.next_focus[focus.selected_path]]
@@ -3101,11 +3681,10 @@ class Country_Focus_Tree:
 						self.keep_game_paused = True
 						focus.decision_time = None
 						self.focus_wating_player_path_selection = focus
-						self.is_top_bar_focus_tree_open = False
 						for index, choice in enumerate(focus.next_focus):
 							setattr(self, f'choice_button_{index}', GenericUtilitys.Button(self.screen_width/2 - self.screen_width/8, self.screen_height - (180 + 55 + (95 * index)) * self.factor_y, self.screen_width/4, 75 * self.factor_y))
 
-				if self.is_top_bar_focus_tree_open == True:	
+				if self.is_menu_open == True:	
 					self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.screen_width, self.screen_height - (158 + 110) * self.factor_y))
 
 					current_focus_position = (self.screen_width/2 + (focus.x_offset + self.focus_movement_x) * self.factor_x + focus.national_focus_icon.get_width()/2, (focus.y_offset + self.focus_movement_y) * self.factor_y - focus.national_focus_icon.get_height()/2)
@@ -3122,7 +3701,7 @@ class Country_Focus_Tree:
 					self.focus_tree_surface.blit(focus_name, (self.screen_width/2 + (focus.x_offset + self.focus_movement_x) * self.factor_x - focus_name.get_width()/2 + focus.national_focus_icon.get_width()/2, (focus.y_offset + self.focus_movement_y) * self.factor_y + 10 * self.factor_y))
 
 					self.pygame.draw.rect(self.focus_tree_surface, (43,219,211), (self.screen_width/2 + (focus.x_offset + self.focus_movement_x - 40) * self.factor_x, (focus.y_offset + self.focus_movement_y - 5) * self.factor_y - focus.national_focus_icon.get_height(), focus.national_focus_icon.get_width() + 80 * self.factor_x, focus.national_focus_icon.get_height() + 40 * self.factor_y), 2)
-		if self.is_top_bar_focus_tree_open == True:
+		if self.is_menu_open == True:
 			for month in range(4):
 				years_offset = 0
 
@@ -3185,379 +3764,7 @@ class Country_Focus_Tree:
 			if self.highlight_focus_completion_wating_player_visualization_button == True:
 				self.pygame.draw.rect(screen, (0,255,0), getattr(self, 'accept_button').rect, 4)
 
-class Clock_UI:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, clock, top_bar_right_background, top_bar_game_speed_indicator, top_bar_defcon_level):
-
-		self.factor_x, self.factor_y = factor_x, factor_y	
-		self.screen_width = screen_width 
-		self.screen_height = screen_height
-
-		self.pygame = pygame
-
-		self.clock = clock
-
-		self.top_bar_right_background = pygame.transform.smoothscale_by(top_bar_right_background, (self.factor_x, self.factor_y))
-		self.top_bar_game_speed_indicator = pygame.transform.smoothscale_by(top_bar_game_speed_indicator, (self.factor_x, self.factor_y))
-		self.top_bar_defcon_level = pygame.transform.smoothscale_by(top_bar_defcon_level, (self.factor_x, self.factor_y))	
-
-
-		self.game_speed = 1	
-		self.defcon_level = 5
-
-		self.current_year = 1970
-		self.current_month = 1
-		self.current_day = 1
-		self.current_hour = 1
-		self.current_minute = 0
-
-		self.days_in_each_mounth = {
-			'1': 31,
-			'2': 28,
-			'3': 31,
-			'4': 30,
-			'5': 31,
-			'6': 30,
-			'7': 31,
-			'8': 31,
-			'9': 30,
-			'10': 31,
-			'11': 30,
-			'12': 31,
-		}						
-		
-		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
-		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
-		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
-		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
-		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))	
-
-	def date_tick(self):
-		if self.game_speed == 0:
-			self.current_minute += 0
-		elif self.game_speed == 1:
-			self.current_minute += 1
-		elif self.game_speed == 2:
-			self.current_minute += 5
-		elif self.game_speed == 3:
-			self.current_minute += 10
-		elif self.game_speed == 4:
-			self.current_minute += 30
-		elif self.game_speed == 5:
-			self.current_minute += 120														
-
-		if self.current_minute >= 60:
-			self.current_hour += int(self.current_minute/60)
-			self.current_minute = 0
-			if self.current_hour >= 24:
-				self.current_hour = self.current_hour - 24
-				self.current_day += 1
-				if self.current_day == self.days_in_each_mounth[str(self.current_month)] + 1:
-					self.current_day = 1
-					self.current_month += 1
-					if self.current_month == 13:
-						self.current_month = 1
-						self.current_year += 1
-
-	def draw(self, screen):
-		screen.blit(self.top_bar_right_background, (self.screen_width - self.top_bar_right_background.get_width(), 0))
-
-		# SPEED
-		speed_indicator_alignment_offset = 8 * self.factor_x
-		speed_indicator_sprite_width = 43 * self.factor_x * self.game_speed
-
-		top_bar_game_speed_indicator_surface = self.pygame.Surface((speed_indicator_sprite_width, self.top_bar_game_speed_indicator.get_height()), self.pygame.SRCALPHA)	
-		top_bar_game_speed_indicator_surface.blit(self.top_bar_game_speed_indicator, (0, 0), self.pygame.Rect(0, 0, speed_indicator_sprite_width, self.top_bar_game_speed_indicator.get_height()))		
-
-		screen.blit(top_bar_game_speed_indicator_surface, (self.screen_width - self.top_bar_right_background.get_width() + 62 * self.factor_x + speed_indicator_alignment_offset, 42 * self.factor_y))	
-
-		# DEFCON
-		top_bar_defcon_level_height = (18.4 * (self.defcon_level - 1) * self.factor_y)
-
-		top_bar_defcon_level_surface = self.pygame.Surface((self.top_bar_defcon_level.get_width(), 92 * self.factor_y), self.pygame.SRCALPHA)	
-		top_bar_defcon_level_surface.blit(self.top_bar_defcon_level, (0, top_bar_defcon_level_height), self.pygame.Rect(0, top_bar_defcon_level_height, self.top_bar_defcon_level.get_width(), 18.4 * self.factor_y))		
-
-		screen.blit(top_bar_defcon_level_surface, (self.screen_width - self.top_bar_right_background.get_width() + 300 * self.factor_x, 9 * self.factor_y))	
-
-		# DATE
-		date_font_color = (255,255,255) if self.game_speed != 0 else (255,40,40)	
-
-		hour_date_text = f"{self.current_hour:02d}H"
-		day_date_text = f"{self.current_day:02d}D"
-		month_date_text = f"{self.current_month:02d}M"
-		year_date_text = f"{self.current_year:04d}Y"
-
-		hour_date_render = self.medium_scalable_font.render(hour_date_text, True, date_font_color)
-		day_date_render = self.medium_scalable_font.render(day_date_text, True, date_font_color)
-		month_date_render = self.medium_scalable_font.render(month_date_text, True, date_font_color)
-		year_date_render = self.medium_scalable_font.render(year_date_text, True, date_font_color)
-
-		date_x_position = self.screen_width - 312 * self.factor_x
-		date_y_position = 17 * self.factor_y
-
-		screen.blit(hour_date_render, (date_x_position + (-2 + max(0, 38 - hour_date_render.get_width()))* self.factor_x, date_y_position))
-		screen.blit(day_date_render, (date_x_position + (48 + max(0, 38 * self.factor_x - day_date_render.get_width()))* self.factor_x, date_y_position))
-		screen.blit(month_date_render, (date_x_position + (86 + max(0, 41 * self.factor_x - month_date_render.get_width()))* self.factor_x, date_y_position))
-		screen.blit(year_date_render, (date_x_position + (135 + max(0, 49 * self.factor_x - year_date_render.get_width()))* self.factor_x, date_y_position))	
-
-		# FPS
-		FPS_render = self.medium_scalable_font.render(' FPS:\n' + str(round(self.clock.get_fps(), 2)), True, (255, 255, 255))
-		screen.blit(FPS_render, (self.screen_width - 190 * self.factor_x, 75 * self.factor_y))
-
-class Bottom_HUD:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, bottom_HUD):
-		self.factor_x, self.factor_y = factor_x, factor_y	
-		self.screen_width = screen_width 
-		self.screen_height = screen_height
-
-		self.pygame = pygame
-
-		self.bottom_HUD = pygame.transform.smoothscale(bottom_HUD, (self.screen_width, bottom_HUD.get_height() * self.factor_y))
-
-		self.selected_map_overlay = 0
-		self.active_map_overlay = 1
-
-		offset_y = 	self.screen_height - self.bottom_HUD.get_height()
-
-		self.bottom_HUD_rect = self.pygame.Rect(0, offset_y, 1920 * self.factor_x, 110 * self.factor_y)
-
-		self.map_overlay_1 = GenericUtilitys.Button(1776 * self.factor_x, 12 * self.factor_y + offset_y, 59 * self.factor_x, 43 * self.factor_y)
-		self.map_overlay_2 = GenericUtilitys.Button(1845 * self.factor_x, 12 * self.factor_y + offset_y, 59 * self.factor_x, 43 * self.factor_y)
-
-		country_legislation_size_x = 210 * self.factor_x
-		country_legislation_size_y = 86 * self.factor_y
-		country_legislation_height = 12 * self.factor_y + offset_y
-		self.country_legislation_1 = GenericUtilitys.Button(12 * self.factor_x, country_legislation_height, country_legislation_size_x, country_legislation_size_y)
-		self.country_legislation_2 = GenericUtilitys.Button(240 * self.factor_x, country_legislation_height, country_legislation_size_x, country_legislation_size_y)
-		self.country_legislation_3 = GenericUtilitys.Button(468 * self.factor_x, country_legislation_height, country_legislation_size_x, country_legislation_size_y)
-		self.country_legislation_4 = GenericUtilitys.Button(696 * self.factor_x, country_legislation_height, country_legislation_size_x, country_legislation_size_y)
-		self.country_legislation_5 = GenericUtilitys.Button(924 * self.factor_x, country_legislation_height, country_legislation_size_x, country_legislation_size_y)
-		self.country_legislation_6 = GenericUtilitys.Button(1152 * self.factor_x, country_legislation_height, country_legislation_size_x, country_legislation_size_y)
-		self.country_legislation_7 = GenericUtilitys.Button(1380 * self.factor_x, country_legislation_height, country_legislation_size_x, country_legislation_size_y)
-
-		self.collided_country_legislation_button = None
-
-	def get_button_by_interaction(self, mouse_rect):
-		if self.bottom_HUD_rect.colliderect(mouse_rect):
-			if self.map_overlay_1.rect.colliderect(mouse_rect):
-				self.selected_map_overlay = 1
-				return 1
-			elif self.map_overlay_2.rect.colliderect(mouse_rect):
-				self.selected_map_overlay = 2
-				return 2
-
-			self.collided_country_legislation_button = None
-			for button in range(7):
-				button_rect = getattr(self, 'country_legislation_'+str(button+1)).rect
-				if button_rect.colliderect(mouse_rect):
-					self.collided_country_legislation_button = button+1
-					return 'country_legislation_button_'+str(button+1)
-		
-		self.selected_map_overlay = 0
-		self.collided_country_legislation_button = None
-		return None
-
-	def draw(self, screen):		
-		screen.blit(self.bottom_HUD, (0, self.screen_height - self.bottom_HUD.get_height()))
-
-		self.pygame.draw.rect(screen, (0, 255, 0), getattr(self, 'map_overlay_'+str(self.active_map_overlay)).rect, 2)	
-
-		if self.selected_map_overlay > 0:
-			self.pygame.draw.rect(screen, (255, 255, 255), getattr(self, 'map_overlay_'+str(self.selected_map_overlay)).rect, 2)
-
-		if self.collided_country_legislation_button != None:
-			self.pygame.draw.rect(screen, (255, 255, 255), getattr(self, 'country_legislation_'+str(self.collided_country_legislation_button)).rect, 2)
-
-class Earth_Map:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, earth_daymap, earth_nightmap, earth_political_map, earth_political_map_filled, Clock_UI):
-		self.factor_x = factor_x
-		self.factor_y = factor_y
-
-		self.last_zoom_factor = 1
-		self.zoom_factor = 1
-
-		self.screen_width = screen_width
-		self.screen_height = screen_height
-
-		self.Clock_UI = Clock_UI
-
-		self.map_overlay_index = 1
-
-		self.source_earth_daymap = earth_daymap
-		self.source_earth_nightmap = earth_nightmap
-		self.source_earth_political_map = earth_political_map
-		self.source_earth_political_map_filled = earth_political_map_filled
-
-		self.earth_daymap = earth_daymap.copy()
-		self.earth_nightmap = earth_nightmap.copy()
-		self.earth_political_map = earth_political_map.copy()
-		self.earth_political_map_filled = earth_political_map_filled.copy()
-
-		self.night_strips = self.calculate_night_strips(interval_minutes = 1)
-
-		self.screen_sized_map_surface = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA)
-		self._8k_sized_map_surface = pygame.Surface((self.source_earth_daymap.get_width(), self.source_earth_nightmap.get_height()), pygame.SRCALPHA)	
-
-		self.time_zone = 6.1 # 6.1 == Greenwich
-
-		self.map_position = [0, 0]
-		self.offset_y = 0
-
-		self.update_map()
-
-	def calculate_night_strips(self, interval_minutes):
-		night_strips = {}
-
-		for minute in range(0, 1440, interval_minutes):
-			longitude_start, longitude_end = self.calculate_night_longitude_range(minute)
-			night_strips[minute] = [(longitude_start, longitude_end)]
-
-			# Check if the night strip crosses the right edge
-			if longitude_end > 360:
-				night_strips[minute].append((0, longitude_end - 360))
-
-		return night_strips
-
-	def calculate_night_longitude_range(self, minute):
-		# Calculate longitude range based on the minute of the day
-		longitude_start = (minute / 1440) * 360
-		longitude_end = ((minute + 720) / 1440) * 360
-		return longitude_start, longitude_end
-
-	def scale_map(self, zoom_factor_change, fps_freezing_avoidance, zoom_type):
-		if fps_freezing_avoidance > 10:
-			self.zoom_factor += zoom_factor_change
-			if self.zoom_factor < 0.25:
-				self.zoom_factor = 0.25
-			if self.zoom_factor > 1:
-				self.zoom_factor = 1
-
-			if self.last_zoom_factor != self.zoom_factor:
-				self.update_map()
-				
-				# DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER
-				# DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER DO LATER
-
-				if zoom_type == 'zoom_out':
-					pass
-				if zoom_type == 'zoom_in':
-					pass
-
-			self.last_zoom_factor = self.zoom_factor
-
-	def update_map(self):
-		if self.map_overlay_index != None:
-			self.earth_nightmap = pygame.transform.scale_by(self.source_earth_nightmap, (self.zoom_factor))
-			
-			result_surface = pygame.Surface((self.earth_nightmap.get_width(), self.earth_nightmap.get_height()), pygame.SRCALPHA)
-
-			result_surface.blit(pygame.transform.scale_by(self.source_earth_daymap, (self.zoom_factor)), (0, 0))
-
-			if self.map_overlay_index == 1:
-				self.earth_political_map = pygame.transform.scale_by(self.source_earth_political_map, (self.zoom_factor))	
-				result_surface.blit(self.earth_political_map, (0, 0))
-			elif self.map_overlay_index == 2:
-				self.earth_political_map_filled = pygame.transform.scale_by(self.source_earth_political_map_filled, (self.zoom_factor))	
-				result_surface.blit(self.earth_political_map_filled, (0, 0))
-
-			self.earth_daymap = result_surface.convert_alpha().copy()
-			del result_surface			
-
-	def draw(self, screen):
-		self.screen_sized_map_surface.fill((0, 0, 0, 0), (0, 0, self.screen_width, self.screen_height))
-		self._8k_sized_map_surface.fill((0, 0, 0, 0), (0, 0, self.screen_width, self.screen_height))
-
-		# HEIGHT
-		self.offset_y = abs(self.map_position[1]) if abs(self.map_position[1]) <  self.earth_daymap.get_height() else self.earth_daymap.get_height() - 1
-		#--------------#
-				
-
-		# DAYMAP		
-		if self.map_position[0] == 0:
-			start = 0
-			width = self.screen_width
-			height = self.screen_height if self.screen_height + self.offset_y <= self.earth_daymap.get_height() else self.earth_daymap.get_height()
-			
-			if start + width > self.earth_daymap.get_width():
-				width = self.earth_daymap.get_width() - start			
-			if self.offset_y + height > self.earth_daymap.get_height():
-				height = self.earth_daymap.get_height() - self.offset_y
-
-			if height > 0 and width > 0:
-				self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((start, self.offset_y, width, height)), (0, 0))
-
-				if self.earth_daymap.get_width() < self.screen_width:
-					difference = self.screen_width - self.earth_daymap.get_width()
-					width = difference
-					self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((0, self.offset_y, width, height)), (self.screen_width - difference, 0))
-		
-		if self.map_position[0] > 0:
-			start = self.earth_daymap.get_width() - self.map_position[0]
-			width = min(self.screen_width, self.map_position[0])
-			height = self.screen_height if self.screen_height + self.offset_y <= self.earth_daymap.get_height() else self.earth_daymap.get_height()
-			
-			if start + width > self.earth_daymap.get_width():
-				width = self.earth_daymap.get_width() - start
-			if self.offset_y + height > self.earth_daymap.get_height():
-				height = self.earth_daymap.get_height() - self.offset_y	
-
-			if height > 0 and width > 0:			
-				self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((start, self.offset_y, width, height)), (0, 0))			
-				
-				if self.screen_width - self.map_position[0] > 0:
-					self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((0, self.offset_y, self.screen_width - self.map_position[0], height)), (abs(self.map_position[0]), 0))
-		
-		if self.map_position[0] < 0:
-			start = max(self.screen_width, abs(self.map_position[0]))
-			width = min(abs(self.map_position[0]), min(self.screen_width, self.earth_daymap.get_width() - abs(self.map_position[0])))
-			height = self.screen_height if self.screen_height + self.offset_y <= self.earth_daymap.get_height() else self.earth_daymap.get_height()
-			
-			if start + width > self.earth_daymap.get_width():
-				width = self.earth_daymap.get_width() - start
-			if self.offset_y + height > self.earth_daymap.get_height():
-				height = self.earth_daymap.get_height() - self.offset_y
-
-			if height > 0 and width > 0:		
-				self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((start, self.offset_y, width, height)), (max(0, self.screen_width - abs(self.map_position[0])), 0))
-				
-				if self.screen_width - abs(self.map_position[0]) > 0:
-					self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((abs(self.map_position[0]), self.offset_y, self.screen_width - abs(self.map_position[0]), height)), (0, 0))
-				
-				if self.earth_daymap.get_width() - abs(self.map_position[0]) < self.screen_width:
-					self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((0, self.offset_y, self.screen_width - (self.earth_daymap.get_width() - abs(self.map_position[0])), height)), (self.earth_daymap.get_width() - abs(self.map_position[0]), 0))
-		#--------------#
-		
-		self._8k_sized_map_surface.blit(self.screen_sized_map_surface, (0, 0))
-
-
-		current_minute = (1440 - (self.Clock_UI.current_hour * 60 + self.Clock_UI.current_minute)) + self.time_zone * 60
-		if current_minute >= 1440:
-			current_minute -= 1440
-
-		closest_key = min(self.night_strips.keys(), key=lambda x: abs(x - current_minute))
-		current_night_strips = self.night_strips[closest_key]
-
-		for start, end in current_night_strips:
-			x_start = int((start / 360) * self.earth_nightmap.get_width())
-			x_end = int((end / 360) * self.earth_nightmap.get_width())
-
-			# Blit night map for the current night strips
-			columns_to_copy = min(x_end - x_start, self.earth_nightmap.get_width() - x_start)
-			if self.map_position[0] > 0:
-				height = self.screen_height if self.screen_height + self.offset_y <= self.earth_nightmap.get_height() else self.earth_nightmap.get_height() - self.offset_y
-
-				self._8k_sized_map_surface.blit(self.earth_nightmap.subsurface((x_start, self.offset_y, columns_to_copy, height)), (x_start + abs(self.map_position[0]), 0))
-				if x_start + columns_to_copy + abs(self.map_position[0]) > self.earth_nightmap.get_width():
-					difference = (x_start + columns_to_copy + abs(self.map_position[0])) - self.earth_nightmap.get_width()
-					self._8k_sized_map_surface.blit(self.earth_nightmap.subsurface((x_start, self.offset_y, columns_to_copy, height)), (-columns_to_copy + difference, 0))
-			else:
-				height = self.screen_height if self.screen_height + self.offset_y <= self.earth_nightmap.get_height() else self.earth_nightmap.get_height() - self.offset_y
-
-				self._8k_sized_map_surface.blit(self.earth_nightmap.subsurface((x_start, self.offset_y, columns_to_copy, height)), (x_start - abs(self.map_position[0]), 0))
-				self._8k_sized_map_surface.blit(self.earth_nightmap.subsurface((x_start, self.offset_y, columns_to_copy, height)), (self.earth_nightmap.get_width() - abs(self.map_position[0]) + x_start, 0))
-		
-		screen.blit(self._8k_sized_map_surface, (0, 0))
-
-# TOP BAR BUTTONS
+# 	TOP BAR BUTTONS
 class Decisions_Menu:
 	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame):
 		self.factor_x, self.factor_y = factor_x, factor_y	
@@ -3566,8 +3773,8 @@ class Decisions_Menu:
 
 		self.pygame = pygame
 
-		self.is_decisions_menu_open = False
-		self.highlight_decisions_menu_button = False
+		self.is_menu_open = False
+		self.highlight_button = False
 
 		height = 112 * self.factor_y
 		button_size = (57 * self.factor_x, 41 * self.factor_y)
@@ -3587,11 +3794,11 @@ class Decisions_Menu:
 		return None
 
 	def draw(self, screen):
-		if self.is_decisions_menu_open == True:
+		if self.is_menu_open == True:
 			self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y))
 			self.pygame.draw.rect(screen, (43,219,211), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), 2)			
 
-		if self.highlight_decisions_menu_button == True or self.is_decisions_menu_open == True:
+		if self.highlight_button == True or self.is_menu_open == True:
 			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_decisions_button.rect, 2)		
 
 class Laws_Menu:
@@ -3602,8 +3809,8 @@ class Laws_Menu:
 
 		self.pygame = pygame
 
-		self.is_laws_menu_open = False
-		self.highlight_laws_menu_button = False
+		self.is_menu_open = False
+		self.highlight_button = False
 		self.selected_law_group_index = None
 
 		self.hovered_law_button = None
@@ -3716,7 +3923,7 @@ class Laws_Menu:
 		if self.top_bar_laws_button.rect.colliderect(mouse_rect):
 			return "laws_button"
 		
-		elif self.is_laws_menu_open == True:
+		elif self.is_menu_open == True:
 			self.hovered_law_button = None
 			self.hovered_rect = None
 			for number in range(9):
@@ -3752,10 +3959,10 @@ class Laws_Menu:
 
 	def draw(self, screen):		
 
-		if self.highlight_laws_menu_button == True or self.is_laws_menu_open == True:
+		if self.highlight_button == True or self.is_menu_open == True:
 			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_laws_button.rect, 2)	
 
-		if self.is_laws_menu_open == True:
+		if self.is_menu_open == True:
 			self.pygame.draw.rect(screen, (0,0,0), (0, 158 * self.factor_y, self.country_laws_background.get_width() + 30 * self.factor_x, self.screen_height - (158 + 110) * self.factor_y))
 			self.pygame.draw.rect(screen, (43,219,211), (0, 158 * self.factor_y, self.country_laws_background.get_width() + 30 * self.factor_x, self.screen_height - (158 + 110) * self.factor_y), 2)	
 
@@ -3850,6 +4057,383 @@ class Laws_Menu:
 						screen.blit(law_opened, text_position)	
 
 						self.laws_butons_rect.append(rect)
+
+class Finances_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame):
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.is_menu_open = False
+		self.highlight_button = False
+
+		height = 112 * self.factor_y
+		button_size = (57 * self.factor_x, 41 * self.factor_y)
+
+		self.top_bar_finances_button = GenericUtilitys.Button(247 * self.factor_x, height, button_size[0], button_size[1])
+
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))		
+
+	def get_button_by_interaction(self, mouse_rect):	
+		if self.top_bar_finances_button.rect.colliderect(mouse_rect):
+			return "finances_button"
+		
+		return None
+
+	def draw(self, screen):
+		if self.is_menu_open == True:
+			self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y))
+			self.pygame.draw.rect(screen, (43,219,211), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), 2)			
+
+		if self.highlight_button == True or self.is_menu_open == True:
+			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_finances_button.rect, 2)		
+
+class Inteligence_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame):
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.is_menu_open = False
+		self.highlight_button = False
+
+		height = 112 * self.factor_y
+		button_size = (57 * self.factor_x, 41 * self.factor_y)
+
+		self.top_bar_inteligence_button = GenericUtilitys.Button(306 * self.factor_x, height, button_size[0], button_size[1])
+
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))		
+
+	def get_button_by_interaction(self, mouse_rect):	
+		if self.top_bar_inteligence_button.rect.colliderect(mouse_rect):
+			return "inteligence_button"
+		
+		return None
+
+	def draw(self, screen):
+		if self.is_menu_open == True:
+			self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y))
+			self.pygame.draw.rect(screen, (43,219,211), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), 2)			
+
+		if self.highlight_button == True or self.is_menu_open == True:
+			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_inteligence_button.rect, 2)
+
+class Research_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame):
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.is_menu_open = False
+		self.highlight_button = False
+
+		height = 112 * self.factor_y
+		button_size = (57 * self.factor_x, 41 * self.factor_y)
+
+		self.top_bar_research_button = GenericUtilitys.Button(365 * self.factor_x, height, button_size[0], button_size[1])
+
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))		
+
+	def get_button_by_interaction(self, mouse_rect):	
+		if self.top_bar_research_button.rect.colliderect(mouse_rect):
+			return "research_button"
+		
+		return None
+
+	def draw(self, screen):
+		if self.is_menu_open == True:
+			self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y))
+			self.pygame.draw.rect(screen, (43,219,211), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), 2)			
+
+		if self.highlight_button == True or self.is_menu_open == True:
+			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_research_button.rect, 2)
+
+class Global_Market_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame):
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.is_menu_open = False
+		self.highlight_button = False
+
+		height = 112 * self.factor_y
+		button_size = (57 * self.factor_x, 41 * self.factor_y)
+
+		self.top_bar_global_market_button = GenericUtilitys.Button(424 * self.factor_x, height, button_size[0], button_size[1])
+
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))		
+
+	def get_button_by_interaction(self, mouse_rect):	
+		if self.top_bar_global_market_button.rect.colliderect(mouse_rect):
+			return "global_market_button"
+		
+		return None
+
+	def draw(self, screen):
+		if self.is_menu_open == True:
+			self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y))
+			self.pygame.draw.rect(screen, (43,219,211), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), 2)			
+
+		if self.highlight_button == True or self.is_menu_open == True:
+			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_global_market_button.rect, 2)
+
+class Construction_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame):
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.is_menu_open = False
+		self.highlight_button = False
+
+		height = 112 * self.factor_y
+		button_size = (57 * self.factor_x, 41 * self.factor_y)
+
+		self.top_bar_construction_button = GenericUtilitys.Button(483 * self.factor_x, height, button_size[0], button_size[1])
+
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))		
+
+	def get_button_by_interaction(self, mouse_rect):	
+		if self.top_bar_construction_button.rect.colliderect(mouse_rect):
+			return "construction_button"
+		
+		return None
+
+	def draw(self, screen):
+		if self.is_menu_open == True:
+			self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y))
+			self.pygame.draw.rect(screen, (43,219,211), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), 2)			
+
+		if self.highlight_button == True or self.is_menu_open == True:
+			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_construction_button.rect, 2)
+
+class Production_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame):
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.is_menu_open = False
+		self.highlight_button = False
+
+		height = 112 * self.factor_y
+		button_size = (57 * self.factor_x, 41 * self.factor_y)
+
+		self.top_bar_production_button = GenericUtilitys.Button(542 * self.factor_x, height, button_size[0], button_size[1])
+
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))		
+
+	def get_button_by_interaction(self, mouse_rect):	
+		if self.top_bar_production_button.rect.colliderect(mouse_rect):
+			return "production_button"
+		
+		return None
+
+	def draw(self, screen):
+		if self.is_menu_open == True:
+			self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y))
+			self.pygame.draw.rect(screen, (43,219,211), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), 2)			
+
+		if self.highlight_button == True or self.is_menu_open == True:
+			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_production_button.rect, 2)
+
+class Army_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame):
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.is_menu_open = False
+		self.highlight_button = False
+
+		height = 112 * self.factor_y
+		button_size = (57 * self.factor_x, 41 * self.factor_y)
+
+		self.top_bar_army_button = GenericUtilitys.Button(601 * self.factor_x, height, button_size[0], button_size[1])
+
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))		
+
+	def get_button_by_interaction(self, mouse_rect):	
+		if self.top_bar_army_button.rect.colliderect(mouse_rect):
+			return "army_button"
+		
+		return None
+
+	def draw(self, screen):
+		if self.is_menu_open == True:
+			self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y))
+			self.pygame.draw.rect(screen, (43,219,211), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), 2)			
+
+		if self.highlight_button == True or self.is_menu_open == True:
+			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_army_button.rect, 2)
+
+class Stockpile_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame):
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.is_menu_open = False
+		self.highlight_button = False
+
+		height = 112 * self.factor_y
+		button_size = (57 * self.factor_x, 41 * self.factor_y)
+
+		self.top_bar_stockpile_button = GenericUtilitys.Button(660 * self.factor_x, height, button_size[0], button_size[1])
+
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))		
+
+	def get_button_by_interaction(self, mouse_rect):	
+		if self.top_bar_stockpile_button.rect.colliderect(mouse_rect):
+			return "stockpile_button"
+		
+		return None
+
+	def draw(self, screen):
+		if self.is_menu_open == True:
+			self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y))
+			self.pygame.draw.rect(screen, (43,219,211), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), 2)			
+
+		if self.highlight_button == True or self.is_menu_open == True:
+			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_stockpile_button.rect, 2)
+
+# BOTTOM BAR MENUS:
+class Bottom_HUD:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, bottom_HUD):
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.bottom_HUD = pygame.transform.smoothscale(bottom_HUD, (self.screen_width, bottom_HUD.get_height() * self.factor_y))
+
+		self.selected_map_overlay = 0
+		self.active_map_overlay = 1
+
+		offset_y = 	self.screen_height - self.bottom_HUD.get_height()
+
+		self.bottom_HUD_rect = self.pygame.Rect(0, offset_y, 1920 * self.factor_x, 110 * self.factor_y)
+
+		self.map_overlay_1 = GenericUtilitys.Button(1776 * self.factor_x, 12 * self.factor_y + offset_y, 59 * self.factor_x, 43 * self.factor_y)
+		self.map_overlay_2 = GenericUtilitys.Button(1845 * self.factor_x, 12 * self.factor_y + offset_y, 59 * self.factor_x, 43 * self.factor_y)
+
+		country_legislation_size_x = 210 * self.factor_x
+		country_legislation_size_y = 86 * self.factor_y
+		country_legislation_height = 12 * self.factor_y + offset_y
+		self.country_legislation_1 = GenericUtilitys.Button(12 * self.factor_x, country_legislation_height, country_legislation_size_x, country_legislation_size_y)
+		self.country_legislation_2 = GenericUtilitys.Button(240 * self.factor_x, country_legislation_height, country_legislation_size_x, country_legislation_size_y)
+		self.country_legislation_3 = GenericUtilitys.Button(468 * self.factor_x, country_legislation_height, country_legislation_size_x, country_legislation_size_y)
+		self.country_legislation_4 = GenericUtilitys.Button(696 * self.factor_x, country_legislation_height, country_legislation_size_x, country_legislation_size_y)
+		self.country_legislation_5 = GenericUtilitys.Button(924 * self.factor_x, country_legislation_height, country_legislation_size_x, country_legislation_size_y)
+		self.country_legislation_6 = GenericUtilitys.Button(1152 * self.factor_x, country_legislation_height, country_legislation_size_x, country_legislation_size_y)
+		self.country_legislation_7 = GenericUtilitys.Button(1380 * self.factor_x, country_legislation_height, country_legislation_size_x, country_legislation_size_y)
+
+		self.collided_country_legislation_button = None
+
+	def get_button_by_interaction(self, mouse_rect):
+		if self.bottom_HUD_rect.colliderect(mouse_rect):
+			if self.map_overlay_1.rect.colliderect(mouse_rect):
+				self.selected_map_overlay = 1
+				return 1
+			elif self.map_overlay_2.rect.colliderect(mouse_rect):
+				self.selected_map_overlay = 2
+				return 2
+
+			self.collided_country_legislation_button = None
+			for button in range(7):
+				button_rect = getattr(self, 'country_legislation_'+str(button+1)).rect
+				if button_rect.colliderect(mouse_rect):
+					self.collided_country_legislation_button = button+1
+					return 'country_legislation_button_'+str(button+1)
+		
+		self.selected_map_overlay = 0
+		self.collided_country_legislation_button = None
+		return None
+
+	def draw(self, screen):		
+		screen.blit(self.bottom_HUD, (0, self.screen_height - self.bottom_HUD.get_height()))
+
+		self.pygame.draw.rect(screen, (0, 255, 0), getattr(self, 'map_overlay_'+str(self.active_map_overlay)).rect, 2)	
+
+		if self.selected_map_overlay > 0:
+			self.pygame.draw.rect(screen, (255, 255, 255), getattr(self, 'map_overlay_'+str(self.selected_map_overlay)).rect, 2)
+
+		if self.collided_country_legislation_button != None:
+			self.pygame.draw.rect(screen, (255, 255, 255), getattr(self, 'country_legislation_'+str(self.collided_country_legislation_button)).rect, 2)
+
+
+#----------------------------------------------------#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

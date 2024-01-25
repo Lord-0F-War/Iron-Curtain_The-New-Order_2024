@@ -1069,7 +1069,7 @@ your shoulders.
 					self.last_difference_x = original_difference_x
 					self.last_difference_y = original_difference_y	
 
-					if self.Game_Screen.Country_Focus_Tree.is_top_bar_focus_tree_open == True:						
+					if self.Game_Screen.Country_Focus_Tree.is_menu_open == True:						
 						self.Game_Screen.Country_Focus_Tree.focus_movement_x -= difference_x
 						self.Game_Screen.Country_Focus_Tree.focus_movement_y -= difference_y
 
