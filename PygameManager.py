@@ -21,8 +21,6 @@ class Pygame:
 		self.screen = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA)
 		self.surface_alfa = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA)
 
-		self.territory_ownership_surface = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA)
-
 		self.screen.fill((0, 0, 0))
 		self.surface_alfa.fill((0, 0, 0, 0))
 
@@ -38,5 +36,5 @@ class Pygame:
 
 		pygame.mixer.init(buffer=8192) 
 
-		return (self.clock, QUIT, self.date_tick, self.FPS_update, self.key_delay, self.screen_update, self.display, self.screen, self.surface_alfa, self.territory_ownership_surface)
+		return (self.clock, QUIT, self.date_tick, self.FPS_update, self.key_delay, self.screen_update, self.display, self.screen, self.surface_alfa)
 

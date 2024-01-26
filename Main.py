@@ -13,7 +13,7 @@ with open(f'{exe_folder}\settings.txt', 'r') as file:
 import PygameManager
 Pygame_Manager = PygameManager.Pygame(screen_width, screen_height)
 pygame = Pygame_Manager.start_pygame()
-clock, QUIT, date_tick, FPS_update, key_delay, screen_update, display, screen, surface_alfa, territory_ownership_surface = Pygame_Manager.config_pygame()
+clock, QUIT, date_tick, FPS_update, key_delay, screen_update, display, screen, surface_alfa = Pygame_Manager.config_pygame()
 
 import ScreenManager
 import SoundsManager
@@ -946,6 +946,9 @@ your shoulders.
 					if self.is_options_menu_open == True:
 						self.Options_Menu.interacting_with_UI_slides(event)
 
+					if self.Game_Screen.Game_Introduction_Menu.is_menu_open == True:
+						self.Game_Screen.Game_Introduction_Menu.text_scroll_bar.handle_event(event)
+
 					if event.type == self.pygame.KEYDOWN:
 						if keys[self.pygame.K_ESCAPE]:
 							self.is_in_esc_menu = not self.is_in_esc_menu
@@ -1051,37 +1054,37 @@ your shoulders.
 
 				#--------------------------------------------------------------------------------------------------------#
 				#--------------------------------------------------------------------------------------------------------#
+				if self.Game_Screen.Game_Introduction_Menu.is_menu_open == False:
+					mouse_buttons = pygame.mouse.get_pressed()
+					# Check if the left mouse button is being held down
+					if mouse_buttons[0]:	
+						self.mouse_end_pos = self.mouse_pos
+						
+						difference_x = self.mouse_start_pos[0] - self.mouse_end_pos[0]
+						difference_y = self.mouse_start_pos[1] - self.mouse_end_pos[1]
 
-				mouse_buttons = pygame.mouse.get_pressed()
-				# Check if the left mouse button is being held down
-				if mouse_buttons[0]:	
-					self.mouse_end_pos = self.mouse_pos
-					
-					difference_x = self.mouse_start_pos[0] - self.mouse_end_pos[0]
-					difference_y = self.mouse_start_pos[1] - self.mouse_end_pos[1]
+						original_difference_x = difference_x
+						original_difference_y = difference_y
 
-					original_difference_x = difference_x
-					original_difference_y = difference_y
+						difference_x -= self.last_difference_x
+						difference_y -= self.last_difference_y
 
-					difference_x -= self.last_difference_x
-					difference_y -= self.last_difference_y
+						self.last_difference_x = original_difference_x
+						self.last_difference_y = original_difference_y	
 
-					self.last_difference_x = original_difference_x
-					self.last_difference_y = original_difference_y	
+						if self.Game_Screen.Country_Focus_Tree.is_menu_open == True:						
+							self.Game_Screen.Country_Focus_Tree.focus_movement_x -= difference_x
+							self.Game_Screen.Country_Focus_Tree.focus_movement_y -= difference_y
 
-					if self.Game_Screen.Country_Focus_Tree.is_menu_open == True:						
-						self.Game_Screen.Country_Focus_Tree.focus_movement_x -= difference_x
-						self.Game_Screen.Country_Focus_Tree.focus_movement_y -= difference_y
-
+						else:
+							self.Game_Screen.Earth_Map.map_position[0] -= difference_x 
+							self.Game_Screen.Earth_Map.map_position[1] -= difference_y 
+							if self.Game_Screen.Earth_Map.map_position[1] >= 0:
+								self.Game_Screen.Earth_Map.map_position[1] = 0	
 					else:
-						self.Game_Screen.Earth_Map.map_position[0] -= difference_x 
-						self.Game_Screen.Earth_Map.map_position[1] -= difference_y 
-						if self.Game_Screen.Earth_Map.map_position[1] >= 0:
-							self.Game_Screen.Earth_Map.map_position[1] = 0	
-				else:
-					self.mouse_start_pos = self.mouse_pos
-					self.last_difference_x = 0
-					self.last_difference_y = 0
+						self.mouse_start_pos = self.mouse_pos
+						self.last_difference_x = 0
+						self.last_difference_y = 0
 
 				#--------------------------------------------------------------------------------------------------------#
 				#--------------------------------------------------------------------------------------------------------#

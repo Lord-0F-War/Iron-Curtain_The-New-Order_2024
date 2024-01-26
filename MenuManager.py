@@ -999,12 +999,23 @@ class Country_Selection_Menu:
 			self.hovered_button = self.get_button_by_interaction(mouse_rect)
 
 			if self.hovered_button != None:
+				self.hovered_rect = None
+				self.hovering_diplomatic_information_rect = False
+				self.hovering_military_information_rect = False
+				self.hovering_economic_information_rect = False
+				self.hovering_domestic_information_rect = False	
+				self.hovering_internal_and_external_market_approval_rating_rect = False
+				self.hovering_military_approval_rating_rect = False
+				self.hovering_domestic_approval_rating_rect = False
+				self.hovering_midia_approval_rating_rect = False
+				self.hovering_secret_service_approval_rating_rect = False
+				self.hovering_politics_approval_rating_rect = False					
 				if self.hovered_button != self.last_hovered_button:
 					self.hover_over_button_sound.play()
 					self.last_hovered_button = self.hovered_button
 					return self.hovered_button
 			else:
-				self.last_hovered_button = self.hovered_button				
+				self.last_hovered_button = None			
 				
 				self.hovering_diplomatic_information_rect = False
 				self.hovering_military_information_rect = False
@@ -1059,7 +1070,7 @@ class Country_Selection_Menu:
 					self.last_hovered_rect = None										
 					self.hover_over_button_sound.fadeout(100)				
 
-			return self.hovered_rect
+				return self.hovered_rect
 	def get_hovered_ideology_rect(self, mouse_rect):
 		if self.is_flag_selection_menu_open == False:
 			for ideology, rect in self.ideology_rects.items():
@@ -1457,7 +1468,7 @@ class Country_Selection_Menu:
 
 		screen.blit(self.ideologies_CRT_overlay_effect, (15 * self.factor_x, 31 * self.factor_y))			
 
-		if self.hovered_button != None: # Buttons Selection 
+		if self.hovered_button != None and self.hovered_rect == None: # Buttons Selection 
 			
 			if self.hovered_button == 'start_game':
 				screen.blit(self.hovered_start_game_button, (self.start_game_button_x_offset, self.start_game_button_y_offset))
@@ -1974,17 +1985,20 @@ class Game_Screen:
 
 		self.Research_Menu = Research_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
 		
-		self.Global_Market_Menu = Global_Market_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)#
+		self.Global_Market_Menu = Global_Market_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
 
-		self.Construction_Menu = Construction_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)#
+		self.Construction_Menu = Construction_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
 
 		self.Production_Menu = Production_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
 
-		self.Army_Menu = Army_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)#
+		self.Army_Menu = Army_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
 
-		self.Stockpile_Menu = Stockpile_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)	#	
+		self.Stockpile_Menu = Stockpile_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
 
 		self.menu_list = [self.Country_Overview, self.Country_Focus_Tree, self.Decisions_Menu, self.Laws_Menu, self.Finances_Menu, self.Inteligence_Menu, self.Research_Menu, self.Global_Market_Menu, self.Construction_Menu, self.Production_Menu, self.Army_Menu, self.Stockpile_Menu]					
+
+		
+		self.Game_Introduction_Menu = Game_Introduction_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
 
 	def get_button_by_interaction(self, mouse_rect, index):
 		if index == 'Country_Overview':
@@ -2025,7 +2039,10 @@ class Game_Screen:
 			return button	
 		elif index == 'Stockpile_Menu':
 			button = self.Stockpile_Menu.get_button_by_interaction(mouse_rect)
-			return button					
+			return button		
+		elif index == 'Game_Introduction_Menu':
+			button = self.Game_Introduction_Menu.get_button_by_interaction(mouse_rect)
+			return button						
 		
 	def get_clicked_button(self, mouse_rect):
 		clicked_button = self.get_button_by_interaction(mouse_rect, 'Country_Overview')
@@ -2224,7 +2241,7 @@ class Game_Screen:
 
 			self.generic_hover_over_button_sound.fadeout(100)
 			self.generic_click_button_sound.play()
-			return clicked_button
+			return clicked_button	
 		#---------------------------------------------------------------------------------------------------------------------------------------#
 		#---------------------------------------------------------------------------------------------------------------------------------------#
 		clicked_button = self.get_button_by_interaction(mouse_rect, 'Stockpile_Menu')
@@ -2242,6 +2259,17 @@ class Game_Screen:
 			self.generic_hover_over_button_sound.fadeout(100)
 			self.generic_click_button_sound.play()
 			return clicked_button
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		clicked_button = self.get_button_by_interaction(mouse_rect, 'Game_Introduction_Menu')
+		if clicked_button != None:
+			if clicked_button == "close_introduction_button":
+				if self.Game_Introduction_Menu.is_menu_open == True:
+					self.Game_Introduction_Menu.is_menu_open = False
+
+			self.generic_hover_over_button_sound.fadeout(100)
+			self.generic_click_button_sound.play()
+			return clicked_button			
 		#---------------------------------------------------------------------------------------------------------------------------------------#
 		#---------------------------------------------------------------------------------------------------------------------------------------#																					
 		if self.is_any_top_bar_menu_open == False:
@@ -2462,7 +2490,24 @@ class Game_Screen:
 			self.Stockpile_Menu.highlight_button = True
 
 		else:
-			self.Stockpile_Menu.highlight_button = False				
+			self.Stockpile_Menu.highlight_button = False	
+		#---------------------------------------------------------------------------------------------------------------------------------------#
+		#---------------------------------------------------------------------------------------------------------------------------------------#	
+		hovered_button = self.get_button_by_interaction(mouse_rect, 'Game_Introduction_Menu')
+		if hovered_button != None:
+			if self.last_hovered_button != hovered_button:
+				self.generic_hover_over_button_sound.play()
+			self.last_hovered_button = hovered_button
+
+			any_button_was_hovered = True
+
+			for menu in self.menu_list:
+				menu.highlight_button = False
+
+			self.Game_Introduction_Menu.highlight_button = True
+
+		else:
+			self.Game_Introduction_Menu.highlight_button = False							
 		#---------------------------------------------------------------------------------------------------------------------------------------#
 		#---------------------------------------------------------------------------------------------------------------------------------------#																											
 		hovered_button = self.get_button_by_interaction(mouse_rect, 'Bottom_HUD')
@@ -2500,6 +2545,8 @@ class Game_Screen:
 		self.Army_Menu.draw(screen)
 		self.Stockpile_Menu.draw(screen)
 
+		self.Game_Introduction_Menu.draw(screen)
+
 # TIME
 class Clock_UI:
 	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, clock, top_bar_right_background, top_bar_game_speed_indicator, top_bar_defcon_level):
@@ -2517,7 +2564,7 @@ class Clock_UI:
 		self.top_bar_defcon_level = pygame.transform.smoothscale_by(top_bar_defcon_level, (self.factor_x, self.factor_y))	
 
 
-		self.game_speed = 1	
+		self.game_speed = 0	
 		self.defcon_level = 5
 
 		self.current_year = 1970
@@ -4411,6 +4458,144 @@ class Bottom_HUD:
 		if self.collided_country_legislation_button != None:
 			self.pygame.draw.rect(screen, (255, 255, 255), getattr(self, 'country_legislation_'+str(self.collided_country_legislation_button)).rect, 2)
 
+
+
+# POP UP
+class Game_Introduction_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame):
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.is_menu_open = True
+		self.highlight_button = False
+
+		self.height = self.screen_height - (158 + 35) * self.factor_y
+		self.button_size = (self.screen_width/4, 60 * self.factor_y)
+
+		self.close_introduction_button = GenericUtilitys.Button(self.screen_width/2 - self.button_size[0]/2, self.height, self.button_size[0], self.button_size[1])
+
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))		
+
+		# TEXT
+		self.text_scroll_bar = GenericUtilitys.Scroll_Bar(6, 164  * self.factor_y, self.screen_height - (158 + 110 + 10) * self.factor_y, 2250 * self.factor_y - (self.height-(198 * self.factor_y)), (255,255,255), (255,0,0), 10 * self.factor_x)
+
+		self.text_offset_y = 0
+
+		self.introduction_text = """
+FIRST ACT - 1943-1947
+
+
+The year is 1943 the daring move by Mussolini to abandon his alliance with Nazi Germany left the Axis powers in disarray.
+As the Mediterranean theater became the focal point of conflict, the Allies, now bolstered by the addition of Italian southern forces, launched a bold offensive into\nGerman-occupied Italy.
+
+The German High Command, already stretched thin on the Eastern Front against the relentless Soviet advance, found themselves facing a three-front war.
+In the East, the Soviets capitalized on the weakened German forces and pushed relentlessly towards Berlin.
+
+By mid-1945, the Allies emerged basically victorious, defeating the Axis powers. However, the once-unified Allied forces found themselves divided along ideological\nlines.
+The Allies, with remnants of the defeated Axis now as allies, launched a surprise offensive against the Soviet Union right as American and Soviet troops found\nthemselves at the outskirts of Berlin.
+
+The vast plains of Eastern Europe once again became the theater of war. The Allied forces, along with troops from Italy and other former Axis nations, pushed deep\ninto Soviet-occupied territory reaching Belarus.
+However, the Soviets, having learned from the brutal years of war against Nazi Germany, proved resilient, with their industry protected in the Urals and with a new\nbeast rushed into production, the Red Army, under the leadership of seasoned generals, launched a counteroffensive that caught the Allies off guard.
+The T-54, the first prototype was completed at Nizhny Tagil by the end of 1945, the T-54 was a significant advancement in Soviet tank design, featuring sloped armor,\n a powerful 100mm gun, and good mobility.
+
+In contrast, many of the Allied tanks, like the American M4 Sherman or the British Churchill, were based on designs from earlier in World War II.
+Tanks like the American M26 Pershing and the British Centurion, introduced shortly after WW2, represented a desperate response against the advancements seen in Soviet\ntank designs.
+
+As the conflict raged on, the Soviets managed to push the Western Allies back. The vast expanse of Eastern Europe witnessed the ebb and flow of armies, with cities\nchanging hands multiple times.
+In a bid to halt the Soviet advance, the Allies made a final stand at the Rhine River and the formidable Alps.
+
+The mountainous terrain proved to be a natural barrier and the picturesque Alps became a fortified zone, with the Allied side entrenched in a bitter and protracted\nstruggle.
+In a desperate bid to halt the Soviet onslaught and bring an end to the escalating conflict, the Allies turned to a weapon that had previously been planned to be\nused against Japan - nuclear weapons.
+
+The nuclear strikes caught the Soviet leadership off guard, forcing them to reassess their aggressive stance. The devastating power of these weapons shocked the\nworld and pushed both sides to the negotiating table.
+The world watched with bated breath as the conflict in Europe reached a stalemate. The once-victorious Allies now found themselves on the defensive, holding the\nline against the determined Soviet forces.
+
+The world, once on the brink of an all-out war, now faced an uneasy peace. The Cold War continued, but the specter of nuclear annihilation served as a constant\nreminder.
+As the nuclear strikes brought the conflict to a halt, the diplomatic negotiations that followed aimed to reshape the political landscape of post-war Europe: 
+
+Among the notable changes was the unification of Belgium with the remaining Allied-held parts of the Netherlands west of the Rhine.
+Another notable development unfolded in the heart of the continent. Switzerland, known for its neutrality during World War II, entered into diplomatic discussions\nwith the Allied powers.
+In a strategic move to strengthen the region against potential future threats, Switzerland unified with the remaining parts of the Austrian Alps.
+
+However a shadow waited in the corner..
+
+Mussolini, having switched sides during the war and joined the Allied forces, found himself in a precarious position.
+The Allied leaders, recognizing the complexity of the situation, weighed the potential consequences of removing Mussolini from power.
+Italy, like many other war-torn nations, faced the daunting task of rebuilding its infrastructure, economy, and political institutions.
+The Allies were concerned that a power vacuum in Italy could lead to political instability, internal strife, and the potential resurgence of an even more extremist\nform of statism… Socialism.
+
+However, this decision came with certain conditions. The Allies closely monitored Italian political developments, Mussolini, although allowed to stay in power, was\nforced to navigate a delicate balance between maintaining order and implementing reforms that aligned with liberal principles.
+
+As Europe recovered from the devastation of war, the focus shifted towards rebuilding, both physically and politically. The uneasy peace forged in the aftermath of\nnuclear strikes laid the groundwork for a new world order.
+
+
+
+
+SECOND ACT - 1947-1970
+
+
+With the dust settling on the nuclear stalemate and the world transitioning into an era marked by uneasy peace, the Soviets seized the opportunity to reshape the\nglobal order.
+The defeat in the European theater prompted a strategic shift, as the focus turned from overt military conflict to more subtle forms of influence.
+
+The Soviets embraced subversion, espionage, and political warfare as their primary tools. This era marked the beginning of a prolonged ideological struggle, a silent\nwar fought in the shadows.
+As the Cold War intensified, the focus shifted from the open confrontation seen in the first act to the intricate dance of intelligence agencies and covert operatives.
+The KGB became a formidable force, operating globally to undermine Western powers.
+
+The Soviets, understanding the power of ideas, embarked on a sophisticated campaign of ideological subversion. They infiltrated academic institutions, media\norganizations, and cultural spheres, aiming to manipulate public perception:
+
+False narratives, fabricated stories, and misleading information were disseminated to create confusion and manipulate public opinion. This tactic proved particularly\neffective in sowing discord and breeding mistrust within Western societies.
+
+Recognizing the impact of culture on public perception, the Soviets sought to manipulate cultural outputs.
+They supported artists, writers, and filmmakers who aligned with their ideology, influencing the narratives that reached the public.
+
+Through a network of proxies, they fueled conflicts in regions like Southeast Asia, Africa, and Latin America.
+By backing movements and governments sympathetic to communism, the Soviets aimed to expand their sphere of influence without direct military confrontation.
+
+The absence of direct military conflict did not signify an era of peace but rather a shift to a covert and ideological battleground.
+
+By 1970, the world had become a battleground of ideas, with the Soviets employing psychological tactics to exploit divisions and weaken the resolve of their adversaries. 
+
+The second act of the Cold War was defined not by the roar of tanks and the clash of armies but by the quiet and persistent erosion of the values that had once defined\nthe Western world.
+
+The silent war of ideologies had begun, and its effects would reverberate for decades to come.
+"""
+
+		self.introduction_text_surface = pygame.Surface((self.screen_width, 2250 * self.factor_y), pygame.SRCALPHA)
+
+		introduction_text_render = self.big_scalable_font.render(self.introduction_text, False, (255,255,255))
+		self.introduction_text_surface.blit(introduction_text_render, (0, 0))
+
+	def get_button_by_interaction(self, mouse_rect):	
+		if self.close_introduction_button.rect.colliderect(mouse_rect) and self.is_menu_open == True:
+			return "close_introduction_button"
+		
+		return None
+
+	def draw(self, screen):
+		if self.is_menu_open == True:
+			self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.screen_width, self.screen_height - (158 + 110) * self.factor_y))
+			self.pygame.draw.rect(screen, (43,219,211), (0, 158 * self.factor_y, self.screen_width, self.screen_height - (158 + 110) * self.factor_y), 2)
+
+			self.text_scroll_bar.draw(screen)
+
+			self.text_offset_y = self.text_scroll_bar.get_scroll_position()
+
+			screen.blit(self.introduction_text_surface.subsurface(0, self.text_offset_y, self.screen_width, self.height-(198 * self.factor_y)), (20, 178 * self.factor_y))
+
+			self.pygame.draw.rect(screen, (255,255,255), self.close_introduction_button.rect, 2)	
+
+			close_text_render = self.huge_scalable_font.render('CLOSE', False, (255,0,0))
+			screen.blit(close_text_render, (self.screen_width/2 - close_text_render.get_width()/2, (self.height) + (self.button_size[1])/2 - close_text_render.get_height()/2 + 2))		
+
+		if self.highlight_button == True:
+			self.pygame.draw.rect(screen, (255,0,0), self.close_introduction_button.rect, 3)
 
 #----------------------------------------------------#
 
