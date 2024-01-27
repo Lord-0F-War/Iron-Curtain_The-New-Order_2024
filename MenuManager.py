@@ -1949,7 +1949,8 @@ class Laws_Group_Menu:
 class Game_Screen:
 	def __init__(self, screen_width, screen_height, pygame, clock, generic_hover_over_button_sound, generic_click_button_sound, top_bar_right_background, top_bar_game_speed_indicator,
 			top_bar_defcon_level, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over, country_overview, popularity_circle_overlay, earth_daymap, earth_nightmap, 
-			earth_political_map, earth_political_map_filled, progressbar_huge, progressbar, progressbar_vertical, progressbar_small, bottom_HUD, country_laws_background, laws_description_image):
+			earth_political_map, earth_political_map_filled, progressbar_huge, progressbar, progressbar_vertical, progressbar_small, bottom_HUD, country_laws_background, laws_description_image,
+			game_logo):
 
 		reference_screen_size_x = 1920
 		reference_screen_size_y = 1080
@@ -1998,7 +1999,7 @@ class Game_Screen:
 		self.menu_list = [self.Country_Overview, self.Country_Focus_Tree, self.Decisions_Menu, self.Laws_Menu, self.Finances_Menu, self.Inteligence_Menu, self.Research_Menu, self.Global_Market_Menu, self.Construction_Menu, self.Production_Menu, self.Army_Menu, self.Stockpile_Menu]					
 
 		
-		self.Game_Introduction_Menu = Game_Introduction_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
+		self.Game_Introduction_Menu = Game_Introduction_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, game_logo)
 
 	def get_button_by_interaction(self, mouse_rect, index):
 		if index == 'Country_Overview':
@@ -4462,12 +4463,14 @@ class Bottom_HUD:
 
 # POP UP
 class Game_Introduction_Menu:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame):
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, game_logo):
 		self.factor_x, self.factor_y = factor_x, factor_y	
 		self.screen_width = screen_width 
 		self.screen_height = screen_height
 
 		self.pygame = pygame
+
+		self.game_logo = pygame.transform.smoothscale_by(game_logo, (self.factor_x, self.factor_y))			
 
 		self.is_menu_open = True
 		self.highlight_button = False
@@ -4484,93 +4487,80 @@ class Game_Introduction_Menu:
 		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))		
 
 		# TEXT
-		self.text_scroll_bar = GenericUtilitys.Scroll_Bar(6, 164  * self.factor_y, self.screen_height - (158 + 110 + 10) * self.factor_y, 2250 * self.factor_y - (self.height-(198 * self.factor_y)), (255,255,255), (255,0,0), 10 * self.factor_x)
+		self.text_scroll_bar = GenericUtilitys.Scroll_Bar(6, 164  * self.factor_y, self.screen_height - (158 + 110 + 10) * self.factor_y, 2250 * self.factor_y - (self.height-(198 * self.factor_y)) + self.game_logo.get_height()*1.1, (255,255,255), (255,0,0), 10 * self.factor_x)
 
 		self.text_offset_y = 0
 
 		self.introduction_text = """
-FIRST ACT - 1943-1947
+ACT I - 1943-1947
 
 
-The year is 1943 the daring move by Mussolini to abandon his alliance with Nazi Germany left the Axis powers in disarray.
-As the Mediterranean theater became the focal point of conflict, the Allies, now bolstered by the addition of Italian southern forces, launched a bold offensive into\nGerman-occupied Italy.
+In the tumultuous year of 1943, Mussolini's audacious betrayal shattered the Axis alliance, leaving chaos in its wake.
+As the Mediterranean theater became the epicenter of conflict, the Allies, bolstered by Italian southern forces, launched a daring offensive into German-occupied Italy.
+The German High Command, already stretched thin on the Eastern Front against the relentless Soviet advance, now faced
+a three-front war. By 1945, the Allies began to emerge totally victorious.
 
-The German High Command, already stretched thin on the Eastern Front against the relentless Soviet advance, found themselves facing a three-front war.
-In the East, the Soviets capitalized on the weakened German forces and pushed relentlessly towards Berlin.
+In the wake of the uneasy peace, the Allies faced a growing unease regarding the Soviet threat, their leadership grew
+wary of the growing influence of the Soviet Union in Eastern Europe.
+As Soviet troops and their American counterparts stood on the outskirts of Berlin, with remnants of the defeated Axis now as allies, the Allies launched a surprise
+offensive against the Soviet Union. The Eastern Front, weakened by the relentless Soviet advance, presented an opportunity to challenge the Soviet might.
 
-By mid-1945, the Allies emerged basically victorious, defeating the Axis powers. However, the once-unified Allied forces found themselves divided along ideological\nlines.
-The Allies, with remnants of the defeated Axis now as allies, launched a surprise offensive against the Soviet Union right as American and Soviet troops found\nthemselves at the outskirts of Berlin.
+The vast plains of Eastern Europe once again became the theater of war. The Soviets got pushed deep, reaching Warsaw, yet, drawing lessons from the brutal conflict 
+against Nazi Germany, displayed resilience. 
+Safeguarded by industry in the Urals and with a new beast rushed into production, the Red Army, under the leadership of seasoned generals, launched a counteroffensive
+that caught the Allies off guard.
 
-The vast plains of Eastern Europe once again became the theater of war. The Allied forces, along with troops from Italy and other former Axis nations, pushed deep\ninto Soviet-occupied territory reaching Belarus.
-However, the Soviets, having learned from the brutal years of war against Nazi Germany, proved resilient, with their industry protected in the Urals and with a new\nbeast rushed into production, the Red Army, under the leadership of seasoned generals, launched a counteroffensive that caught the Allies off guard.
-The T-54, the first prototype was completed at Nizhny Tagil by the end of 1945, the T-54 was a significant advancement in Soviet tank design, featuring sloped armor,\n a powerful 100mm gun, and good mobility.
+By march 1945, the first T-54 prototype appeared, initially conceived as an experimental design, transitioned swiftly into full-scale production at Nizhny Tagil
+production lines.
+The T-54 stood as a symbol of Soviet innovation, embodying a significant leap in tank design. Its sloped armor, boasting superior defensive capabilities, coupled
+with a formidable 100mm gun, presented a formidable threat on the battlefield but with too little numbers.
+The IS-3, another formidable tank however, characterized by its heavy armor and a potent 122mm gun, by mid-1946, more than 3000 units were ready.
 
-In contrast, many of the Allied tanks, like the American M4 Sherman or the British Churchill, were based on designs from earlier in World War II.
-Tanks like the American M26 Pershing and the British Centurion, introduced shortly after WW2, represented a desperate response against the advancements seen in Soviet\ntank designs.
+In contrast, many of the Allied tanks, like the American M4 Sherman or the British Churchill, were based on designs from earlier in World War II and with Germany
+never being able to produce more formidable beasts before the collapse of their industrial complexes, tanks like the American M26 Pershing and the British Centurion
+had to be rushedly conceived, representing a desperate response against the advancements seen in Soviet tank designs.
 
-As the conflict raged on, the Soviets managed to push the Western Allies back. The vast expanse of Eastern Europe witnessed the ebb and flow of armies, with cities\nchanging hands multiple times.
-In a bid to halt the Soviet advance, the Allies made a final stand at the Rhine River and the formidable Alps.
+As the conflict raged on, the Soviets managed to push the Western Allies back. The vast expanse of Eastern Europe witnessed the ebb and flow of armies, with cities
+changing hands multiple times. The Allies made a final stand at the Rhine River and the formidable Alps. In a desperate gambit to stop the Soviet onslaught and end
+the escalating conflict, the Allies turned to a weapon initially planned for use against Japan - nuclear weapons:
 
-The mountainous terrain proved to be a natural barrier and the picturesque Alps became a fortified zone, with the Allied side entrenched in a bitter and protracted\nstruggle.
-In a desperate bid to halt the Soviet onslaught and bring an end to the escalating conflict, the Allies turned to a weapon that had previously been planned to be\nused against Japan - nuclear weapons.
+The first nuclear strike, unleashed upon Soviet military concentrations near the Rhine River, sent shockwaves through the conflict zone. The devastating power of the
+explosion caught the Soviet forces off guard, disrupting their advance and causing significant casualties.
+Simultaneously, the second nuclear strike, strategically aimed at military troops entrenched in the formidable Alps, further underscored the Allies' resolve to halt
+the Soviet onslaught. 
 
-The nuclear strikes caught the Soviet leadership off guard, forcing them to reassess their aggressive stance. The devastating power of these weapons shocked the\nworld and pushed both sides to the negotiating table.
-The world watched with bated breath as the conflict in Europe reached a stalemate. The once-victorious Allies now found themselves on the defensive, holding the\nline against the determined Soviet forces.
+The world watched with bated breath the conflict in Europe reaching a stalemate, as the nuclear strikes brought the conflict to a halt, the subsequent diplomatic
+negotiations aimed to reshape the political landscape of post-war Europe:
 
-The world, once on the brink of an all-out war, now faced an uneasy peace. The Cold War continued, but the specter of nuclear annihilation served as a constant\nreminder.
-As the nuclear strikes brought the conflict to a halt, the diplomatic negotiations that followed aimed to reshape the political landscape of post-war Europe: 
+Among the notable changes was the unification of Belgium with the remaining Allied-held parts of the Netherlands west of the Rhine. However, such geopolitical
+realignments were not without challenges. The integration of two distinct nations into a unified entity demanded careful navigation of cultural, administrative, and
+political differences.
 
-Among the notable changes was the unification of Belgium with the remaining Allied-held parts of the Netherlands west of the Rhine.
-Another notable development unfolded in the heart of the continent. Switzerland, known for its neutrality during World War II, entered into diplomatic discussions\nwith the Allied powers.
+Another notable development unfolded in the heart of the continent. Switzerland, known for its neutrality during World War II, entered into diplomatic discussions with
+the Allied powers.
 In a strategic move to strengthen the region against potential future threats, Switzerland unified with the remaining parts of the Austrian Alps.
 
-However a shadow waited in the corner..
+However, a shadow lurked in the corner…
 
-Mussolini, having switched sides during the war and joined the Allied forces, found himself in a precarious position.
-The Allied leaders, recognizing the complexity of the situation, weighed the potential consequences of removing Mussolini from power.
-Italy, like many other war-torn nations, faced the daunting task of rebuilding its infrastructure, economy, and political institutions.
-The Allies were concerned that a power vacuum in Italy could lead to political instability, internal strife, and the potential resurgence of an even more extremist\nform of statism… Socialism.
+Mussolini, after a strategic shift in alliances during the war, found himself in a precarious position as the dust settled. Understanding the intricate nature of the
+situation, Allied leaders carefully weighed the potential ramifications of totally ousting Mussolini from power.
+The Allies harbored concerns that removing Mussolini abruptly might create a power vacuum, leading to political instability, internal strife, and the risk of an upsurge
+in more radical statism, potentially inclining towards socialism.
 
-However, this decision came with certain conditions. The Allies closely monitored Italian political developments, Mussolini, although allowed to stay in power, was\nforced to navigate a delicate balance between maintaining order and implementing reforms that aligned with liberal principles.
+Despite these reservations, the decision to allow Mussolini to retain power came with certain stipulations. The Allies, keenly aware of the delicate balance required in
+post-war Italy, instituted a system of close monitoring over Italian political developments. Mussolini, granted the latitude to remain in a position of authority, was
+compelled to navigate a nuanced path. 
 
-As Europe recovered from the devastation of war, the focus shifted towards rebuilding, both physically and politically. The uneasy peace forged in the aftermath of\nnuclear strikes laid the groundwork for a new world order.
-
-
-
-
-SECOND ACT - 1947-1970
-
-
-With the dust settling on the nuclear stalemate and the world transitioning into an era marked by uneasy peace, the Soviets seized the opportunity to reshape the\nglobal order.
-The defeat in the European theater prompted a strategic shift, as the focus turned from overt military conflict to more subtle forms of influence.
-
-The Soviets embraced subversion, espionage, and political warfare as their primary tools. This era marked the beginning of a prolonged ideological struggle, a silent\nwar fought in the shadows.
-As the Cold War intensified, the focus shifted from the open confrontation seen in the first act to the intricate dance of intelligence agencies and covert operatives.
-The KGB became a formidable force, operating globally to undermine Western powers.
-
-The Soviets, understanding the power of ideas, embarked on a sophisticated campaign of ideological subversion. They infiltrated academic institutions, media\norganizations, and cultural spheres, aiming to manipulate public perception:
-
-False narratives, fabricated stories, and misleading information were disseminated to create confusion and manipulate public opinion. This tactic proved particularly\neffective in sowing discord and breeding mistrust within Western societies.
-
-Recognizing the impact of culture on public perception, the Soviets sought to manipulate cultural outputs.
-They supported artists, writers, and filmmakers who aligned with their ideology, influencing the narratives that reached the public.
-
-Through a network of proxies, they fueled conflicts in regions like Southeast Asia, Africa, and Latin America.
-By backing movements and governments sympathetic to communism, the Soviets aimed to expand their sphere of influence without direct military confrontation.
-
-The absence of direct military conflict did not signify an era of peace but rather a shift to a covert and ideological battleground.
-
-By 1970, the world had become a battleground of ideas, with the Soviets employing psychological tactics to exploit divisions and weaken the resolve of their adversaries. 
-
-The second act of the Cold War was defined not by the roar of tanks and the clash of armies but by the quiet and persistent erosion of the values that had once defined\nthe Western world.
-
-The silent war of ideologies had begun, and its effects would reverberate for decades to come.
+His leadership was contingent on maintaining order while simultaneously implementing reforms that aligned with liberal principles—an intricate dance between stability and
+progressive change. This perspective contemplated whether, in the complexities of post-war Italy, 'fraternité' could somehow ,once the antagonist, now seek reconciliation
+with his more celebrated brothers of the Enlightenment.
 """
 
-		self.introduction_text_surface = pygame.Surface((self.screen_width, 2250 * self.factor_y), pygame.SRCALPHA)
+		self.introduction_text_surface = pygame.Surface((self.screen_width, 2250 * self.factor_y + self.game_logo.get_height()*1.1), pygame.SRCALPHA)
+		self.introduction_text_surface.blit(self.game_logo, (self.screen_width/2 - self.game_logo.get_width()/2, 0))
 
 		introduction_text_render = self.big_scalable_font.render(self.introduction_text, False, (255,255,255))
-		self.introduction_text_surface.blit(introduction_text_render, (0, 0))
+		self.introduction_text_surface.blit(introduction_text_render, (0, self.game_logo.get_height()*1.1))
 
 	def get_button_by_interaction(self, mouse_rect):	
 		if self.close_introduction_button.rect.colliderect(mouse_rect) and self.is_menu_open == True:
