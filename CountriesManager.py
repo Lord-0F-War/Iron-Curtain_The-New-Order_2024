@@ -1,3 +1,18 @@
+import GenericUtilitys
+
+
+
+
+class Decision:
+    def __init__(self, buttons, buttons_descriptions, buttons_icons, main_image, decision_description):
+        self.buttons = buttons
+        self.buttons_descriptions = buttons_descriptions
+        self.buttons_icons = buttons_icons
+        
+        self.main_image = main_image
+        self.decision_description = decision_description
+
+        self.last_height = 0
 
 
 class National_Focus:
@@ -20,7 +35,6 @@ class National_Focus:
         self.national_focus_path_selection_description = national_focus_path_selection_description
 
         self.is_active = True
-
 
 class National_Spirit:
     def __init__(self, national_spirit_name, national_spirit_icon, national_spirit_description):
@@ -87,7 +101,17 @@ class Country:
         self.country_culture = None
         self.country_religion = None
 
+        # FOCUS TREE
         self.country_focus_tree = {}
+
+        # DECISIONS TREE
+        self.decisions_tree = {}
+        bu1 =  GenericUtilitys.Button(0, 0, 64, 64)
+        bu2 =  GenericUtilitys.Button(0, 0, 64, 64)
+        d1 = Decision([bu1, bu2], ['Button Description 1', 'Button Description 2'], [country_capital_image], country_leader_image, 'Decision Description 1:\nFlsjahfjlhash\nAfhjkash')
+        d2 = Decision([bu1, bu2], ['Button Description 3', 'Button Description 4'], [country_capital_image], country_leader_image, 'Decision Description 2:\nFlsjahfjlhash\nAfhjkash')
+        self.decisions_tree[1] = d1
+        self.decisions_tree[2] = d2
 
         self.politics_popularity = [4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16]
         self.culture_popularity = [7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14]

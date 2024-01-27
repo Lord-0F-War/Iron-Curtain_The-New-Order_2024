@@ -2098,6 +2098,9 @@ class Game_Screen:
 				elif self.Decisions_Menu.is_menu_open == True:
 					self.Decisions_Menu.is_menu_open = False
 
+			elif clicked_button == "open_decision_tree_button":
+				self.Decisions_Menu.is_decision_tree_menu_open = not self.Decisions_Menu.is_decision_tree_menu_open
+
 			self.generic_hover_over_button_sound.fadeout(100)
 			self.generic_click_button_sound.play()
 			return clicked_button
@@ -2330,15 +2333,21 @@ class Game_Screen:
 				self.generic_hover_over_button_sound.play()
 			self.last_hovered_button = hovered_button
 
-			any_button_was_hovered = True
+			if hovered_button == 'decisions_button':
+				any_button_was_hovered = True
 
-			for menu in self.menu_list:
-				menu.highlight_button = False
+				for menu in self.menu_list:
+					menu.highlight_button = False
 
-			self.Decisions_Menu.highlight_button = True
+				self.Decisions_Menu.highlight_button = True
 
+			elif hovered_button == 'open_decision_tree_button':
+				any_button_was_hovered = True
+
+				self.Decisions_Menu.hovered_decision_tree_button = True
 		else:
-			self.Decisions_Menu.highlight_button = False				
+			self.Decisions_Menu.highlight_button = False
+			self.Decisions_Menu.hovered_decision_tree_button = False				
 		#---------------------------------------------------------------------------------------------------------------------------------------#
 		#---------------------------------------------------------------------------------------------------------------------------------------#
 		hovered_button = self.get_button_by_interaction(mouse_rect, 'Laws_Menu')
@@ -3821,30 +3830,94 @@ class Decisions_Menu:
 
 		self.pygame = pygame
 
+		self.PlayerCountry = None
+
 		self.is_menu_open = False
 		self.highlight_button = False
+
+		self.is_decision_tree_menu_open = False
+		self.hovered_decision_tree_button = False
+
+		self.decisions_tree_surface = pygame.Surface((self.screen_width/2, 3000 * self.factor_y), pygame.SRCALPHA)
 
 		height = 112 * self.factor_y
 		button_size = (57 * self.factor_x, 41 * self.factor_y)
 
 		self.top_bar_decisions_button = GenericUtilitys.Button(129 * self.factor_x, height, button_size[0], button_size[1])
 
+		button_size = ((self.screen_width/2) * 0.6, 60 * self.factor_y)
+		self.open_decision_tree_button = GenericUtilitys.Button(self.screen_width/4 - button_size[0]/2, 178 * self.factor_y, button_size[0], button_size[1])
+
+		self.text_scroll_bar = GenericUtilitys.Scroll_Bar(6, 164  * self.factor_y, self.screen_height - (158 + 110 + 10) * self.factor_y, 3000 * self.factor_y - (self.screen_height - (158 + 120) * self.factor_y), (255,255,255), (255,0,0), 10 * self.factor_x)
+
 		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
 		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
 		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
 		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
-		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))		
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))	
+
+		self.open_decisions_tree_text_render = self.huge_scalable_font.render('OPEN DECISIONS TREE', False, (255,255,255))	
 
 	def get_button_by_interaction(self, mouse_rect):	
 		if self.top_bar_decisions_button.rect.colliderect(mouse_rect):
 			return "decisions_button"
+		
+		if self.is_menu_open == True:
+			if self.open_decision_tree_button.rect.colliderect(mouse_rect):
+				return "open_decision_tree_button"		
 		
 		return None
 
 	def draw(self, screen):
 		if self.is_menu_open == True:
 			self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y))
-			self.pygame.draw.rect(screen, (43,219,211), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), 2)			
+			self.pygame.draw.rect(screen, (43,219,211), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), 2)		
+
+			self.text_scroll_bar.draw(screen)
+
+			if self.hovered_decision_tree_button == False:
+				self.pygame.draw.rect(screen, (255,255,255), self.open_decision_tree_button.rect, 2)
+			else:
+				self.pygame.draw.rect(screen, (0,255,0), self.open_decision_tree_button.rect, 2)	
+
+			screen.blit(self.open_decisions_tree_text_render, (self.screen_width/4 - self.open_decisions_tree_text_render.get_width()/2, (60 * self.factor_y)/2 - self.open_decisions_tree_text_render.get_height()/2 + 178 * self.factor_y))		
+
+
+			if self.is_decision_tree_menu_open == True:
+				self.pygame.draw.rect(screen, (6,15,20), (self.screen_width/2, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y))
+				self.pygame.draw.rect(screen, (43,219,211), (self.screen_width/2, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), 2)	
+
+
+
+			for index, decision in enumerate(self.PlayerCountry.decisions_tree.values()):
+				if index > 0:
+					last_decision_menu = list(self.PlayerCountry.decisions_tree.values())[index-1]
+					last_decision_height = last_decision_menu.last_height + 25 * self.factor_y
+				else:
+					last_decision_height = 0
+					
+				self.pygame.draw.rect(self.decisions_tree_surface, (43,219,211), (self.screen_width/2 * 0.05, last_decision_height, self.screen_width/2 * 0.9, decision.main_image.get_height()*1.2), 2)	
+				self.decisions_tree_surface.blit(decision.main_image, (self.screen_width/2 * 0.07, decision.main_image.get_height()*0.1 + last_decision_height))
+
+				decision_description_text_render = self.huge_scalable_font.render(decision.decision_description, False, (255,255,255))	
+				self.decisions_tree_surface.blit(decision_description_text_render, (self.screen_width/2 * 0.09 + decision.main_image.get_width(), decision.main_image.get_height()*0.1 + last_decision_height))
+
+				for index, button in enumerate(decision.buttons):
+					button_x = button.x * self.factor_x
+					button_y = button.y * self.factor_y + last_decision_height
+					button_width = button.width * self.factor_x
+					button_height = button.height * self.factor_y
+
+					self.pygame.draw.rect(self.decisions_tree_surface, (43,219,211), (self.screen_width/2 * 0.05 + button_x, button_y + decision.main_image.get_height()*1.3 + index*(button_height*1.25), button_width, button_height), 2)
+
+					button_description_text_render = self.huge_scalable_font.render(decision.buttons_descriptions[index], False, (255,255,255))
+					self.decisions_tree_surface.blit(button_description_text_render, (self.screen_width/2 * 0.05 + button_x + button_width*1.1, button_y + decision.main_image.get_height()*1.3 + button_height/2 - button_description_text_render.get_height()/2 + index*(button_height*1.25)))
+
+				decision.last_height = button_y + decision.main_image.get_height()*1.3 + index*(button_height*1.25) + button_height
+
+			offset_y = self.text_scroll_bar.get_scroll_position()
+			screen.blit(self.decisions_tree_surface.subsurface(0, offset_y, self.decisions_tree_surface.get_width(), self.screen_height - (258 + 120) * self.factor_y), (0, 258 * self.factor_y))
+
 
 		if self.highlight_button == True or self.is_menu_open == True:
 			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_decisions_button.rect, 2)		
@@ -4554,6 +4627,39 @@ compelled to navigate a nuanced path.
 His leadership was contingent on maintaining order while simultaneously implementing reforms that aligned with liberal principles—an intricate dance between stability and
 progressive change. This perspective contemplated whether, in the complexities of post-war Italy, 'fraternité' could somehow ,once the antagonist, now seek reconciliation
 with his more celebrated brothers of the Enlightenment.
+
+
+ACT II - 1947-1970
+
+
+In the wake of the nuclear stalemate, as the dust of global uncertainty settled, an ominous shadow descended upon the world. The Soviets, lurking in the sinister aftermath,
+seized the opportunity to mold the very fabric of reality.
+
+Embracing the tools of subversion, espionage, and political manipulation, the Soviets ushered in a chilling era, a clandestine war fought in the obscurity of shadows.
+The Cold War, now transformed into a macabre dance orchestrated by intelligence agencies and covert operatives, wove a sinister tapestry of deceit that ensnared nations in
+a malevolent embrace.
+
+As the world watched, unaware of the unseen puppeteers pulling the strings, this dark ballet of silent malevolence tightened, the KGB emerged as an unholy force, spreading
+its dark influence across the globe, like a malignant web ensnaring the unsuspecting prey of Western powers.
+
+The Soviets, architects of a malevolent symphony, understood the potency of ideas. A sinister campaign of ideological subversion unfolded, infiltrating the sanctuaries of 
+knowledge; academic institutions, media citadels, and the very soul of culture. A toxic brew of false narratives, fabricated stories, and deceitful information oozed forth,
+creating a miasma of confusion and manipulating the fragile tapestry of public opinion.
+
+Within the realm of culture, the Soviets wielded a malevolent brush, supporting artists, writers, and filmmakers whose creations resonated with their dark ideology.
+The narratives that unfolded became insidious whispers, seeping into the collective consciousness, like a slow poison corrupting the very essence of truth.
+
+Through a network of faceless proxies, they orchestrated conflicts in far-flung realms; Southeast Asia, Africa, and Latin America. Movements and governments, puppets of a
+malevolent force, danced to the tune of communism, expanding the Soviet sphere without the need for the overt clash of armies.
+
+The absence of thundering tanks and warring armies did not herald an era of tranquility, but rather a shift to a covert and ideological battleground, where minds were the
+weapons, and truth became a casualty.
+
+The second act of the Cold War was defined not by the roar of tanks and the clash of armies but by the quiet and persistent erosion of the values that had once defined the
+Western world.
+
+The silent war of ideologies had begun, and its effects would reverberate for decades to come.
+
 """
 
 		self.introduction_text_surface = pygame.Surface((self.screen_width, 2250 * self.factor_y + self.game_logo.get_height()*1.1), pygame.SRCALPHA)

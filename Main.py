@@ -864,6 +864,8 @@ your shoulders.
 									self.Game_Screen.Country_Focus_Tree.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
 
 									self.Game_Screen.Laws_Menu.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
+
+									self.Game_Screen.Decisions_Menu.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
 						else:
 							self.clicked_button = self.ESC_Menu.get_clicked_button(self.mouse_rect, self.is_options_menu_open)
 							if self.clicked_button != 'none' and self.clicked_button != None:
@@ -948,6 +950,8 @@ your shoulders.
 
 					if self.Game_Screen.Game_Introduction_Menu.is_menu_open == True:
 						self.Game_Screen.Game_Introduction_Menu.text_scroll_bar.handle_event(event)
+					elif self.Game_Screen.Decisions_Menu.is_menu_open == True:
+						self.Game_Screen.Decisions_Menu.text_scroll_bar.handle_event(event)
 
 					if event.type == self.pygame.KEYDOWN:
 						if keys[self.pygame.K_ESCAPE]:
@@ -1054,7 +1058,7 @@ your shoulders.
 
 				#--------------------------------------------------------------------------------------------------------#
 				#--------------------------------------------------------------------------------------------------------#
-				if self.Game_Screen.Game_Introduction_Menu.is_menu_open == False:
+				if self.Game_Screen.Game_Introduction_Menu.is_menu_open == False and self.Game_Screen.Decisions_Menu.is_menu_open == False:
 					mouse_buttons = pygame.mouse.get_pressed()
 					# Check if the left mouse button is being held down
 					if mouse_buttons[0]:	
