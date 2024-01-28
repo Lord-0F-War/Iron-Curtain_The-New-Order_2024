@@ -4,7 +4,7 @@ import GenericUtilitys
 
 
 class Decision:
-    def __init__(self, buttons, buttons_descriptions, buttons_icons, main_image, decision_description):
+    def __init__(self, buttons, buttons_descriptions, buttons_icons, main_image, decision_description, x_pos, y_pos):
         self.buttons = buttons
         self.buttons_descriptions = buttons_descriptions
         self.buttons_icons = buttons_icons
@@ -13,6 +13,11 @@ class Decision:
         self.decision_description = decision_description
 
         self.last_height = 0
+
+        self.x_pos = x_pos
+        self.y_pos = y_pos
+
+        self.decision_on_tree_menu_icon = None
 
 
 class National_Focus:
@@ -84,7 +89,7 @@ class Law:
 
 
 class Country:
-    def __init__(self, country_leader_name, country_capital_image,  country_leader_image, country_flag_image, country_name, country_ruler_ideology, country_music_playlist, decICON) -> None:
+    def __init__(self, country_leader_name, country_capital_image,  country_leader_image, country_flag_image, country_name, country_ruler_ideology, country_music_playlist) -> None:
         self.country_leader_name = country_leader_name
         self.country_capital_image = country_capital_image
         self.country_leader_image = country_leader_image
@@ -104,19 +109,12 @@ class Country:
         # FOCUS TREE
         self.country_focus_tree = {}
 
-        # DECISIONS TREE
-        self.decICON = decICON
-        self.decisions_tree = {}
-        bu1 =  GenericUtilitys.Button(0, 0, 64, 64)
-        bu2 =  GenericUtilitys.Button(0, 0, 64, 64)
-        bu3 =  GenericUtilitys.Button(0, 0, 64, 64)
-        buu1 =  GenericUtilitys.Button(0, 0, 64, 64)
-        buu2 =  GenericUtilitys.Button(0, 0, 64, 64)
-        d1 = Decision([bu1, bu2, bu3], ['Button Description 1', 'Button Description 2', '1'], [self.decICON, self.decICON, self.decICON], country_leader_image, 'Decision Description 1:\nFlsjahfjlhash\nAfhjkash')
-        d2 = Decision([buu1, buu2], ['Button Description 3', 'Button Description 4'], [self.decICON, self.decICON], country_leader_image, 'Decision Description 2:\nFlsjahfjlhash\nAfhjkash')
-        self.decisions_tree[1] = d1
-        self.decisions_tree[2] = d2
+        # DECISIONS
+        self.country_decisions_tree  = {}
 
+        self.country_active_decisions = {}        
+
+        # POLITICS
         self.politics_popularity = [4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16, 4.16]
         self.culture_popularity = [7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14, 7.14]
         self.religion_popularity = [11.11, 11.11, 11.11, 11.11, 11.11, 11.11, 11.11, 11.11, 11.11]        

@@ -3852,7 +3852,8 @@ class Decisions_Menu:
 
 		self.interected_decision_button = None
 
-		self.decisions_tree_surface = pygame.Surface((self.screen_width/2, 3000 * self.factor_y), pygame.SRCALPHA)
+		self.active_decisions_surface = pygame.Surface((self.screen_width/2, 3000 * self.factor_y), pygame.SRCALPHA)
+		self.decisions_tree_surface = pygame.Surface((3000 * self.factor_x, 3000 * self.factor_y), pygame.SRCALPHA)
 
 		height = 112 * self.factor_y
 		button_size = (57 * self.factor_x, 41 * self.factor_y)
@@ -3873,7 +3874,7 @@ class Decisions_Menu:
 		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
 		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))	
 
-		self.open_decisions_tree_text_render = self.huge_scalable_font.render('OPEN DECISIONS TREE', False, (255,255,255))	
+		self.open_active_decisions_text_render = self.huge_scalable_font.render('OPEN DECISIONS TREE', False, (255,255,255))	
 
 	def get_button_by_interaction(self, mouse_rect):	
 		if self.top_bar_decisions_button.rect.colliderect(mouse_rect):
@@ -3896,7 +3897,7 @@ class Decisions_Menu:
 			self.decision_buttons_rect_list.clear()
 			self.decision_buttons_lits.clear()
 
-			self.decisions_tree_surface.fill((0, 0, 0, 0), (0, 0, self.decisions_tree_surface.get_width(), self.screen_height - (258 + 120) * self.factor_y))
+			self.active_decisions_surface.fill((0, 0, 0, 0), (0, 0, self.active_decisions_surface.get_width(), self.screen_height - (258 + 120) * self.factor_y))
 
 			self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y))
 			self.pygame.draw.rect(screen, (43,219,211), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), 2)		
@@ -3908,27 +3909,41 @@ class Decisions_Menu:
 			else:
 				self.pygame.draw.rect(screen, (0,255,0), self.open_decision_tree_button.rect, 2)	
 
-			screen.blit(self.open_decisions_tree_text_render, (self.screen_width/4 - self.open_decisions_tree_text_render.get_width()/2, (60 * self.factor_y)/2 - self.open_decisions_tree_text_render.get_height()/2 + 178 * self.factor_y))		
+			screen.blit(self.open_active_decisions_text_render, (self.screen_width/4 - self.open_active_decisions_text_render.get_width()/2, (60 * self.factor_y)/2 - self.open_active_decisions_text_render.get_height()/2 + 178 * self.factor_y))		
 
 
 			if self.is_decision_tree_menu_open == True:
 				self.pygame.draw.rect(screen, (6,15,20), (self.screen_width/2, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y))
 				self.pygame.draw.rect(screen, (43,219,211), (self.screen_width/2, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), 2)	
 
+				for decision in self.PlayerCountry.country_decisions_tree.values():
+					size_x = 50
+					size_y = 50
+
+					icon_image = getattr(decision, 'decision_on_tree_menu_icon', None)
+					if icon_image:
+						self.decisions_tree_surface.blit(icon_image, (decision.x_pos, decision.y_pos))
+
+						size_x = icon_image.get_width()
+						size_y = icon_image.get_height()
+
+					self.pygame.draw.rect(self.decisions_tree_surface, (43,219,211), (decision.x_pos * self.factor_x, decision.y_pos * self.factor_y, size_x, size_y), 2)
+
+				screen.blit(self.decisions_tree_surface.subsurface(0, 0, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), (self.screen_width/2, 158 * self.factor_y))
 
 			offset_y = self.text_scroll_bar.get_scroll_position()
-			for index, decision in enumerate(self.PlayerCountry.decisions_tree.values()):
+			for index, decision in enumerate(self.PlayerCountry.country_active_decisions.values()):
 				if index > 0:
-					last_decision_menu = list(self.PlayerCountry.decisions_tree.values())[index-1]
+					last_decision_menu = list(self.PlayerCountry.country_active_decisions.values())[index-1]
 					last_decision_height = last_decision_menu.last_height + 25 * self.factor_y
 				else:
 					last_decision_height = 0
 					
-				self.pygame.draw.rect(self.decisions_tree_surface, (43,219,211), (self.screen_width/2 * 0.05, last_decision_height, self.screen_width/2 * 0.9, decision.main_image.get_height()*1.2), 2)	
-				self.decisions_tree_surface.blit(decision.main_image, (self.screen_width/2 * 0.07, decision.main_image.get_height()*0.1 + last_decision_height))
+				self.pygame.draw.rect(self.active_decisions_surface, (43,219,211), (self.screen_width/2 * 0.05, last_decision_height, self.screen_width/2 * 0.9, decision.main_image.get_height()*1.2), 2)	
+				self.active_decisions_surface.blit(decision.main_image, (self.screen_width/2 * 0.07, decision.main_image.get_height()*0.1 + last_decision_height))
 
 				decision_description_text_render = self.huge_scalable_font.render(decision.decision_description, False, (255,255,255))	
-				self.decisions_tree_surface.blit(decision_description_text_render, (self.screen_width/2 * 0.09 + decision.main_image.get_width(), decision.main_image.get_height()*0.1 + last_decision_height))
+				self.active_decisions_surface.blit(decision_description_text_render, (self.screen_width/2 * 0.09 + decision.main_image.get_width(), decision.main_image.get_height()*0.1 + last_decision_height))
 
 				for button_index, button in enumerate(decision.buttons):
 					button_x = button.x * self.factor_x
@@ -3944,23 +3959,23 @@ class Decisions_Menu:
 					self.decision_buttons_rect_list.append(self.pygame.Rect((self.screen_width/2 * 0.05 + button_x, button_position_y, button_width, button_height)))
 					self.decision_buttons_lits.append(button)
 
-					self.decisions_tree_surface.blit(decision.buttons_icons[button_index], (self.screen_width/2 * 0.05 + button_x, button_y + decision.main_image.get_height()*1.3 + button_index*(button_height*1.25)))
+					self.active_decisions_surface.blit(decision.buttons_icons[button_index], (self.screen_width/2 * 0.05 + button_x, button_y + decision.main_image.get_height()*1.3 + button_index*(button_height*1.25)))
 
 					if self.hovered_decision_button == False or self.interected_decision_button != button:
-						self.pygame.draw.rect(self.decisions_tree_surface, (43,219,211), (self.screen_width/2 * 0.05 + button_x, button_y + decision.main_image.get_height()*1.3 + button_index*(button_height*1.25), button_width, button_height), 2)
+						self.pygame.draw.rect(self.active_decisions_surface, (43,219,211), (self.screen_width/2 * 0.05 + button_x, button_y + decision.main_image.get_height()*1.3 + button_index*(button_height*1.25), button_width, button_height), 2)
 					elif self.hovered_decision_button == True and self.interected_decision_button == button:
-						self.pygame.draw.rect(self.decisions_tree_surface, (0,255,0), (self.screen_width/2 * 0.05 + button_x, button_y + decision.main_image.get_height()*1.3 + button_index*(button_height*1.25), button_width, button_height), 2)
+						self.pygame.draw.rect(self.active_decisions_surface, (0,255,0), (self.screen_width/2 * 0.05 + button_x, button_y + decision.main_image.get_height()*1.3 + button_index*(button_height*1.25), button_width, button_height), 2)
 
 					if self.interected_decision_button == button and self.clicked_decision_button == True:
-						self.pygame.draw.rect(self.decisions_tree_surface, (255,0,0), (self.screen_width/2 * 0.05 + button_x, button_y + decision.main_image.get_height()*1.3 + button_index*(button_height*1.25), button_width, button_height), 2)
+						self.pygame.draw.rect(self.active_decisions_surface, (255,0,0), (self.screen_width/2 * 0.05 + button_x, button_y + decision.main_image.get_height()*1.3 + button_index*(button_height*1.25), button_width, button_height), 2)
 						self.clicked_decision_button = False
 
 					button_description_text_render = self.huge_scalable_font.render(decision.buttons_descriptions[button_index], False, (255,255,255))
-					self.decisions_tree_surface.blit(button_description_text_render, (self.screen_width/2 * 0.05 + button_x + button_width*1.1, button_y + decision.main_image.get_height()*1.3 + button_height/2 - button_description_text_render.get_height()/2 + button_index*(button_height*1.25)))
+					self.active_decisions_surface.blit(button_description_text_render, (self.screen_width/2 * 0.05 + button_x + button_width*1.1, button_y + decision.main_image.get_height()*1.3 + button_height/2 - button_description_text_render.get_height()/2 + button_index*(button_height*1.25)))
 
 				decision.last_height = button_y + decision.main_image.get_height()*1.3 + button_index*(button_height*1.25) + button_height
 
-			screen.blit(self.decisions_tree_surface.subsurface(0, offset_y, self.decisions_tree_surface.get_width(), self.screen_height - (258 + 120) * self.factor_y), (0, 258 * self.factor_y))
+			screen.blit(self.active_decisions_surface.subsurface(0, offset_y, self.active_decisions_surface.get_width(), self.screen_height - (258 + 120) * self.factor_y), (0, 258 * self.factor_y))
 
 
 		if self.highlight_button == True or self.is_menu_open == True:

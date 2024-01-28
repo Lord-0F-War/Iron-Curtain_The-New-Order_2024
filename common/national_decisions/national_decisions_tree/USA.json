@@ -1,0 +1,30 @@
+[
+    {
+    "decision_name": "name 2",
+    "buttons": [
+        [0, 0, 64, 64],
+        [0, 0, 64, 64]
+    ],
+    "button_descriptions": ["Button Description 3", "Button Description 4"],
+    "button_icon_image_names": ["decision_generic", "decision_generic"],
+    "decision_image_name": "generic_main_image",
+    "decision_description": "Decision Description",
+    "x_pos": 50,
+    "y_pos": 150,
+    "decision_on_tree_menu_icon": "generic_on_tree_icon"
+    },
+    {
+    "decision_name": "name 3",
+    "buttons": [
+        [0, 0, 64, 64],
+        [0, 0, 64, 64]
+    ],
+    "button_descriptions": ["Button Description A", "Button Description B"],
+    "button_icon_image_names": ["decision_generic", "decision_generic"],
+    "decision_image_name": "generic_main_image",
+    "decision_description": "Decision Description A",
+    "x_pos": 250,
+    "y_pos": 200,
+    "decision_on_tree_menu_icon": "generic_on_tree_icon"
+    }
+]

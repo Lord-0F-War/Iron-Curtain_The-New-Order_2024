@@ -38,12 +38,17 @@ class Main:
 		self.last_difference_y = 0
 
 		self.exe_folder = os.path.dirname(sys.argv[0])
+		
 		self.leaders_image_dic = {}
 		self.capitals_images_dic = {}		
 		self.flags_image_dic = {}
+		
 		self.national_spirits_image_dic = {}
 		self.national_focus_image_dic = {}
-		self.decision_button_icons_image_dic = {}
+		
+		self.decision_icons_image_dic = {}
+		self.decision_on_tree_menu_icons_dic = {}
+		
 		self.music_files_dic = {}
 		self.load_assets()
 		self.create_countries_default_frame()
@@ -79,16 +84,28 @@ class Main:
 					image_name = os.path.splitext(filename)[0]
 					self.flags_image_dic[image_name] = self.pygame.image.load(image_path).convert()
 					self.flags_image_dic[image_name] = self.pygame.transform.smoothscale_by(self.flags_image_dic[image_name], (self.factor_x, self.factor_y))	
-	def load_decision_button_icons(self, decision_button_icons_folder):
-		for folder_name in os.listdir(decision_button_icons_folder):
-			folder_path = os.path.join(decision_button_icons_folder, folder_name)		
+	
+	def load_decision_icons(self, decision_icons_folder):
+		for folder_name in os.listdir(decision_icons_folder):
+			folder_path = os.path.join(decision_icons_folder, folder_name)		
 			if os.path.isdir(folder_path):
 				for filename in os.listdir(folder_path):
 					if filename.endswith(".png") or filename.endswith(".jpg"):
 						image_path = os.path.join(folder_path, filename)
 						image_name = os.path.splitext(filename)[0]
-						self.decision_button_icons_image_dic[image_name] = self.pygame.image.load(image_path).convert_alpha()
-						self.decision_button_icons_image_dic[image_name] = self.pygame.transform.smoothscale_by(self.decision_button_icons_image_dic[image_name], (self.factor_x, self.factor_y))		
+						self.decision_icons_image_dic[image_name] = self.pygame.image.load(image_path).convert_alpha()
+						self.decision_icons_image_dic[image_name] = self.pygame.transform.smoothscale_by(self.decision_icons_image_dic[image_name], (self.factor_x, self.factor_y))		
+	def load_decision_on_tree_menu_icon(self, decision_on_tree_menu_icon_folder):
+		for folder_name in os.listdir(decision_on_tree_menu_icon_folder):
+			folder_path = os.path.join(decision_on_tree_menu_icon_folder, folder_name)		
+			if os.path.isdir(folder_path):
+				for filename in os.listdir(folder_path):
+					if filename.endswith(".png") or filename.endswith(".jpg"):
+						image_path = os.path.join(folder_path, filename)
+						image_name = os.path.splitext(filename)[0]
+						self.decision_on_tree_menu_icons_dic[image_name] = self.pygame.image.load(image_path).convert_alpha()
+						self.decision_on_tree_menu_icons_dic[image_name] = self.pygame.transform.smoothscale_by(self.decision_on_tree_menu_icons_dic[image_name], (self.factor_x, self.factor_y))	
+	
 	def load_national_spirits(self, national_spirits_folder):
 		for folder_name in os.listdir(national_spirits_folder):
 			folder_path = os.path.join(national_spirits_folder, folder_name)		
@@ -109,6 +126,7 @@ class Main:
 						image_name = os.path.splitext(filename)[0]
 						self.national_focus_image_dic[image_name] = self.pygame.image.load(image_path).convert_alpha()
 						self.national_focus_image_dic[image_name] = self.pygame.transform.smoothscale_by(self.national_focus_image_dic[image_name], (self.factor_x, self.factor_y))			
+	
 	def load_music_files(self, musics_folder):	
 		for folder_name in os.listdir(musics_folder):
 			folder_path = os.path.join(musics_folder, folder_name)
@@ -118,6 +136,7 @@ class Main:
 						music_path = os.path.join(folder_path, filename)
 						image_name = os.path.splitext(filename)[0]
 						self.music_files_dic[image_name] = music_path						
+	
 	def load_assets(self):
 		self.reference_screen_size_x = 1920
 		self.reference_screen_size_y = 1080
@@ -229,8 +248,11 @@ class Main:
 
 		self.decisions_folder = os.path.join(self.interface_folder, 'decisions')
 
-		self.decision_icons_folder = os.path.join(self.decisions_folder, 'icons')
-		self.load_decision_button_icons(self.decision_icons_folder)
+		self.decision_icons_folder = os.path.join(self.decisions_folder, 'decision_icons')
+		self.load_decision_icons(self.decision_icons_folder)
+		
+		self.decision_on_tree_menu_icons_folder = os.path.join(self.decisions_folder, 'decision_on_tree_menu_icons')
+		self.load_decision_on_tree_menu_icon(self.decision_on_tree_menu_icons_folder)
 
 
 
@@ -277,10 +299,53 @@ class Main:
 		except FileNotFoundError:
 			print(f'Error: File {file_path} not found.')
 			return []
+	def read_decision_tree_from_file(self, location):
+		file_path = f'{location}.json'
+
+		try:
+			with open(file_path, 'r') as file:
+				decision_data = json_load(file)
+
+			decisions_tree_dict = {}
+			for decision_data_entry in decision_data:
+				decision_data_entry:dict
+
+				button_list = []
+				for button in decision_data_entry['buttons']:
+					button_list.append(GenericUtilitys.Button(button[0], button[1], button[2], button[3]))
+
+				button_icon_list = []
+				for button_icon_name in decision_data_entry['button_icon_image_names']:
+					button_icon_list.append(self.decision_icons_image_dic[button_icon_name])
+				
+				decision = CountriesManager.Decision(
+					button_list,
+					decision_data_entry['button_descriptions'],
+					button_icon_list,
+					self.decision_icons_image_dic[decision_data_entry['decision_image_name']],
+					decision_data_entry['decision_description'],
+					decision_data_entry['x_pos'],
+					decision_data_entry['y_pos']
+				)
+				decision_on_tree_menu_icon = decision_data_entry.get('decision_on_tree_menu_icon', None)
+				if decision_on_tree_menu_icon:
+					decision.decision_on_tree_menu_icon = self.decision_on_tree_menu_icons_dic[decision_on_tree_menu_icon]
+				
+				decisions_tree_dict[decision_data_entry['decision_name']] = decision
+
+			return decisions_tree_dict
+
+		except FileNotFoundError:
+			print(f'Error: File {file_path} not found.')
+			return []		
 	def create_countries_default_frame(self):
 		self.countries = []
 		self.common_folder = os.path.join(self.exe_folder, 'common')
-		self.national_focus_folder = os.path.join(self.common_folder, 'national_focus')		
+		self.national_focus_folder = os.path.join(self.common_folder, 'national_focus')	
+
+		self.national_decisions_folder = os.path.join(self.common_folder, 'national_decisions')	
+		self.national_active_decisions_folder = os.path.join(self.national_decisions_folder, 'national_active_decisions')	
+		self.national_decisions_tree_folder = os.path.join(self.national_decisions_folder, 'national_decisions_tree')	
 
 		self.USA = CountriesManager.Country(
 					'Richard Nixon',
@@ -289,8 +354,7 @@ class Main:
 					self.flags_image_dic['USA'],
 					'United States of America',
 					'Keynesianism',
-					[self.music_files_dic['house_of_the_black_sun']],
-					self.decision_button_icons_image_dic['decision_generic']
+					[self.music_files_dic['house_of_the_black_sun']]
 					)
 		
 		self.USA.country_ruling_party = 'Republican'
@@ -317,7 +381,11 @@ your shoulders.
 		self.USA.country_focus_tree = usa_focus_dict	
 
 		# Country Decisions
-		#self.USA.decICON =  self.decision_button_icons_image_dic['decision_generic']
+		usa_decision_tree_dict = self.read_decision_tree_from_file(location = os.path.join(self.national_decisions_tree_folder, 'USA'))
+		self.USA.country_decisions_tree = usa_decision_tree_dict
+
+		usa_active_decisions_dict = self.read_decision_tree_from_file(location = os.path.join(self.national_active_decisions_folder, 'USA'))
+		self.USA.country_active_decisions = usa_active_decisions_dict
 
 		# Country Stats
 		self.USA.country_national_spirits_total_points = 100
