@@ -84,7 +84,7 @@ class Law:
 
 
 class Country:
-    def __init__(self, country_leader_name, country_capital_image,  country_leader_image, country_flag_image, country_name, country_ruler_ideology, country_music_playlist) -> None:
+    def __init__(self, country_leader_name, country_capital_image,  country_leader_image, country_flag_image, country_name, country_ruler_ideology, country_music_playlist, decICON) -> None:
         self.country_leader_name = country_leader_name
         self.country_capital_image = country_capital_image
         self.country_leader_image = country_leader_image
@@ -105,11 +105,15 @@ class Country:
         self.country_focus_tree = {}
 
         # DECISIONS TREE
+        self.decICON = decICON
         self.decisions_tree = {}
         bu1 =  GenericUtilitys.Button(0, 0, 64, 64)
         bu2 =  GenericUtilitys.Button(0, 0, 64, 64)
-        d1 = Decision([bu1, bu2], ['Button Description 1', 'Button Description 2'], [country_capital_image], country_leader_image, 'Decision Description 1:\nFlsjahfjlhash\nAfhjkash')
-        d2 = Decision([bu1, bu2], ['Button Description 3', 'Button Description 4'], [country_capital_image], country_leader_image, 'Decision Description 2:\nFlsjahfjlhash\nAfhjkash')
+        bu3 =  GenericUtilitys.Button(0, 0, 64, 64)
+        buu1 =  GenericUtilitys.Button(0, 0, 64, 64)
+        buu2 =  GenericUtilitys.Button(0, 0, 64, 64)
+        d1 = Decision([bu1, bu2, bu3], ['Button Description 1', 'Button Description 2', '1'], [self.decICON, self.decICON, self.decICON], country_leader_image, 'Decision Description 1:\nFlsjahfjlhash\nAfhjkash')
+        d2 = Decision([buu1, buu2], ['Button Description 3', 'Button Description 4'], [self.decICON, self.decICON], country_leader_image, 'Decision Description 2:\nFlsjahfjlhash\nAfhjkash')
         self.decisions_tree[1] = d1
         self.decisions_tree[2] = d2
 

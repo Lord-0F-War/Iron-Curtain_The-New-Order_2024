@@ -131,6 +131,8 @@ class Scroll_Bar:
 		self.bar_color = bar_color
 		self.bar_width = bar_width
 
+		self.dragging = False
+
 		self.scroll_position = 0  # Initial scroll position
 
 	def draw(self, screen):

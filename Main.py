@@ -43,6 +43,7 @@ class Main:
 		self.flags_image_dic = {}
 		self.national_spirits_image_dic = {}
 		self.national_focus_image_dic = {}
+		self.decision_button_icons_image_dic = {}
 		self.music_files_dic = {}
 		self.load_assets()
 		self.create_countries_default_frame()
@@ -78,6 +79,16 @@ class Main:
 					image_name = os.path.splitext(filename)[0]
 					self.flags_image_dic[image_name] = self.pygame.image.load(image_path).convert()
 					self.flags_image_dic[image_name] = self.pygame.transform.smoothscale_by(self.flags_image_dic[image_name], (self.factor_x, self.factor_y))	
+	def load_decision_button_icons(self, decision_button_icons_folder):
+		for folder_name in os.listdir(decision_button_icons_folder):
+			folder_path = os.path.join(decision_button_icons_folder, folder_name)		
+			if os.path.isdir(folder_path):
+				for filename in os.listdir(folder_path):
+					if filename.endswith(".png") or filename.endswith(".jpg"):
+						image_path = os.path.join(folder_path, filename)
+						image_name = os.path.splitext(filename)[0]
+						self.decision_button_icons_image_dic[image_name] = self.pygame.image.load(image_path).convert_alpha()
+						self.decision_button_icons_image_dic[image_name] = self.pygame.transform.smoothscale_by(self.decision_button_icons_image_dic[image_name], (self.factor_x, self.factor_y))		
 	def load_national_spirits(self, national_spirits_folder):
 		for folder_name in os.listdir(national_spirits_folder):
 			folder_path = os.path.join(national_spirits_folder, folder_name)		
@@ -216,6 +227,13 @@ class Main:
 
 
 
+		self.decisions_folder = os.path.join(self.interface_folder, 'decisions')
+
+		self.decision_icons_folder = os.path.join(self.decisions_folder, 'icons')
+		self.load_decision_button_icons(self.decision_icons_folder)
+
+
+
 		self.national_focus_folder = os.path.join(self.interface_folder, 'national_focus')
 		self.load_national_focus(self.national_focus_folder)
 
@@ -268,10 +286,13 @@ class Main:
 					'Richard Nixon',
 					self.capitals_images_dic['USA'],
 					self.leaders_image_dic['Portrait_USA_Richard_Nixon'], 
-				    self.flags_image_dic['USA'],
+					self.flags_image_dic['USA'],
 					'United States of America',
 					'Keynesianism',
-					[self.music_files_dic['house_of_the_black_sun']])
+					[self.music_files_dic['house_of_the_black_sun']],
+					self.decision_button_icons_image_dic['decision_generic']
+					)
+		
 		self.USA.country_ruling_party = 'Republican'
 		self.USA.country_government = 'Federal Republic'
 		self.USA.country_elections = '4 years'
@@ -293,7 +314,10 @@ your shoulders.
 """
 		# Country Focus
 		usa_focus_dict = self.read_focus_from_file(location = os.path.join(self.national_focus_folder, 'USA'))
-		self.USA.country_focus_tree = usa_focus_dict		
+		self.USA.country_focus_tree = usa_focus_dict	
+
+		# Country Decisions
+		#self.USA.decICON =  self.decision_button_icons_image_dic['decision_generic']
 
 		# Country Stats
 		self.USA.country_national_spirits_total_points = 100

@@ -2101,6 +2101,9 @@ class Game_Screen:
 			elif clicked_button == "open_decision_tree_button":
 				self.Decisions_Menu.is_decision_tree_menu_open = not self.Decisions_Menu.is_decision_tree_menu_open
 
+			elif clicked_button == "decision_button":
+				self.Decisions_Menu.clicked_decision_button = True
+
 			self.generic_hover_over_button_sound.fadeout(100)
 			self.generic_click_button_sound.play()
 			return clicked_button
@@ -2345,9 +2348,16 @@ class Game_Screen:
 				any_button_was_hovered = True
 
 				self.Decisions_Menu.hovered_decision_tree_button = True
+			
+			elif hovered_button == 'decision_button':
+				any_button_was_hovered = True
+
+				self.Decisions_Menu.hovered_decision_button = True
+
 		else:
 			self.Decisions_Menu.highlight_button = False
-			self.Decisions_Menu.hovered_decision_tree_button = False				
+			self.Decisions_Menu.hovered_decision_tree_button = False
+			self.Decisions_Menu.hovered_decision_button = False				
 		#---------------------------------------------------------------------------------------------------------------------------------------#
 		#---------------------------------------------------------------------------------------------------------------------------------------#
 		hovered_button = self.get_button_by_interaction(mouse_rect, 'Laws_Menu')
@@ -3837,6 +3847,10 @@ class Decisions_Menu:
 
 		self.is_decision_tree_menu_open = False
 		self.hovered_decision_tree_button = False
+		self.hovered_decision_button = False
+		self.clicked_decision_button = False
+
+		self.interected_decision_button = None
 
 		self.decisions_tree_surface = pygame.Surface((self.screen_width/2, 3000 * self.factor_y), pygame.SRCALPHA)
 
@@ -3844,6 +3858,9 @@ class Decisions_Menu:
 		button_size = (57 * self.factor_x, 41 * self.factor_y)
 
 		self.top_bar_decisions_button = GenericUtilitys.Button(129 * self.factor_x, height, button_size[0], button_size[1])
+		
+		self.decision_buttons_rect_list = []
+		self.decision_buttons_lits = []
 
 		button_size = ((self.screen_width/2) * 0.6, 60 * self.factor_y)
 		self.open_decision_tree_button = GenericUtilitys.Button(self.screen_width/4 - button_size[0]/2, 178 * self.factor_y, button_size[0], button_size[1])
@@ -3864,12 +3881,23 @@ class Decisions_Menu:
 		
 		if self.is_menu_open == True:
 			if self.open_decision_tree_button.rect.colliderect(mouse_rect):
-				return "open_decision_tree_button"		
+				return "open_decision_tree_button"	
+
+			elif mouse_rect[1] > 258 * self.factor_y and mouse_rect[1] < (self.screen_height - (258 + 120) * self.factor_y) + 258 * self.factor_y:
+				for index, rect in enumerate(self.decision_buttons_rect_list):
+					if rect.colliderect(mouse_rect):
+						self.interected_decision_button = self.decision_buttons_lits[index]
+						return "decision_button"
 		
 		return None
 
 	def draw(self, screen):
 		if self.is_menu_open == True:
+			self.decision_buttons_rect_list.clear()
+			self.decision_buttons_lits.clear()
+
+			self.decisions_tree_surface.fill((0, 0, 0, 0), (0, 0, self.decisions_tree_surface.get_width(), self.screen_height - (258 + 120) * self.factor_y))
+
 			self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y))
 			self.pygame.draw.rect(screen, (43,219,211), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), 2)		
 
@@ -3888,7 +3916,7 @@ class Decisions_Menu:
 				self.pygame.draw.rect(screen, (43,219,211), (self.screen_width/2, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), 2)	
 
 
-
+			offset_y = self.text_scroll_bar.get_scroll_position()
 			for index, decision in enumerate(self.PlayerCountry.decisions_tree.values()):
 				if index > 0:
 					last_decision_menu = list(self.PlayerCountry.decisions_tree.values())[index-1]
@@ -3902,20 +3930,36 @@ class Decisions_Menu:
 				decision_description_text_render = self.huge_scalable_font.render(decision.decision_description, False, (255,255,255))	
 				self.decisions_tree_surface.blit(decision_description_text_render, (self.screen_width/2 * 0.09 + decision.main_image.get_width(), decision.main_image.get_height()*0.1 + last_decision_height))
 
-				for index, button in enumerate(decision.buttons):
+				for button_index, button in enumerate(decision.buttons):
 					button_x = button.x * self.factor_x
 					button_y = button.y * self.factor_y + last_decision_height
 					button_width = button.width * self.factor_x
 					button_height = button.height * self.factor_y
+				
+					button_position_y = button_y + decision.main_image.get_height()*1.3 + button_index*(button_height*1.25) + 258 * self.factor_y - offset_y
 
-					self.pygame.draw.rect(self.decisions_tree_surface, (43,219,211), (self.screen_width/2 * 0.05 + button_x, button_y + decision.main_image.get_height()*1.3 + index*(button_height*1.25), button_width, button_height), 2)
+					if button_position_y + button_height < 258 * self.factor_y or button_position_y > (self.screen_height - (258 + 120) * self.factor_y) + 258 * self.factor_y:
+						button_position_y = -1000
 
-					button_description_text_render = self.huge_scalable_font.render(decision.buttons_descriptions[index], False, (255,255,255))
-					self.decisions_tree_surface.blit(button_description_text_render, (self.screen_width/2 * 0.05 + button_x + button_width*1.1, button_y + decision.main_image.get_height()*1.3 + button_height/2 - button_description_text_render.get_height()/2 + index*(button_height*1.25)))
+					self.decision_buttons_rect_list.append(self.pygame.Rect((self.screen_width/2 * 0.05 + button_x, button_position_y, button_width, button_height)))
+					self.decision_buttons_lits.append(button)
 
-				decision.last_height = button_y + decision.main_image.get_height()*1.3 + index*(button_height*1.25) + button_height
+					self.decisions_tree_surface.blit(decision.buttons_icons[button_index], (self.screen_width/2 * 0.05 + button_x, button_y + decision.main_image.get_height()*1.3 + button_index*(button_height*1.25)))
 
-			offset_y = self.text_scroll_bar.get_scroll_position()
+					if self.hovered_decision_button == False or self.interected_decision_button != button:
+						self.pygame.draw.rect(self.decisions_tree_surface, (43,219,211), (self.screen_width/2 * 0.05 + button_x, button_y + decision.main_image.get_height()*1.3 + button_index*(button_height*1.25), button_width, button_height), 2)
+					elif self.hovered_decision_button == True and self.interected_decision_button == button:
+						self.pygame.draw.rect(self.decisions_tree_surface, (0,255,0), (self.screen_width/2 * 0.05 + button_x, button_y + decision.main_image.get_height()*1.3 + button_index*(button_height*1.25), button_width, button_height), 2)
+
+					if self.interected_decision_button == button and self.clicked_decision_button == True:
+						self.pygame.draw.rect(self.decisions_tree_surface, (255,0,0), (self.screen_width/2 * 0.05 + button_x, button_y + decision.main_image.get_height()*1.3 + button_index*(button_height*1.25), button_width, button_height), 2)
+						self.clicked_decision_button = False
+
+					button_description_text_render = self.huge_scalable_font.render(decision.buttons_descriptions[button_index], False, (255,255,255))
+					self.decisions_tree_surface.blit(button_description_text_render, (self.screen_width/2 * 0.05 + button_x + button_width*1.1, button_y + decision.main_image.get_height()*1.3 + button_height/2 - button_description_text_render.get_height()/2 + button_index*(button_height*1.25)))
+
+				decision.last_height = button_y + decision.main_image.get_height()*1.3 + button_index*(button_height*1.25) + button_height
+
 			screen.blit(self.decisions_tree_surface.subsurface(0, offset_y, self.decisions_tree_surface.get_width(), self.screen_height - (258 + 120) * self.factor_y), (0, 258 * self.factor_y))
 
 
@@ -4658,8 +4702,8 @@ weapons, and truth became a casualty.
 The second act of the Cold War was defined not by the roar of tanks and the clash of armies but by the quiet and persistent erosion of the values that had once defined the
 Western world.
 
-The silent war of ideologies had begun, and its effects would reverberate for decades to come.
 
+	The silent war of ideologies had begun, and its effects would reverberate for decades to come.
 """
 
 		self.introduction_text_surface = pygame.Surface((self.screen_width, 2250 * self.factor_y + self.game_logo.get_height()*1.1), pygame.SRCALPHA)
