@@ -259,6 +259,23 @@ class Main:
 		self.national_focus_folder = os.path.join(self.interface_folder, 'national_focus')
 		self.load_national_focus(self.national_focus_folder)
 
+
+
+		self.economic_overview_folder = os.path.join(self.interface_folder, 'economic_overview')
+		self.economic_overview_background			= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'economic_overview_background.png')).convert_alpha()
+		
+		self.poverty_rate_0				= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'poverty_rate_0.png')).convert_alpha()
+		self.poverty_rate_5				= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'poverty_rate_5.png')).convert_alpha()
+		self.poverty_rate_10			= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'poverty_rate_10.png')).convert_alpha()
+		self.poverty_rate_15			= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'poverty_rate_15.png')).convert_alpha()
+		self.poverty_rate_25			= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'poverty_rate_25.png')).convert_alpha()
+		self.poverty_rate_50			= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'poverty_rate_50.png')).convert_alpha()
+		self.poverty_rate_80			= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'poverty_rate_80.png')).convert_alpha()
+
+		self.credit_ratings				= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'credit_ratings.png')).convert_alpha()
+		self.economic_warning			= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'economic_warning.png')).convert_alpha()
+
+
 		
 		self.sounds_folder = os.path.join(self.exe_folder, 'Sounds')
 		self.sounds_menu_folder = os.path.join(self.sounds_folder, 'menu')
@@ -688,7 +705,9 @@ your shoulders.
 		self.Game_Screen = MenuManager.Game_Screen(self.screen_width, self.screen_height, self.pygame, self.clock, self.Sounds_Manager.generic_hover_over_button_sound, self.Sounds_Manager.generic_click_button_sound, 
 			self.top_bar_right_background, self.top_bar_game_speed_indicator, self.top_bar_defcon_levels, self.top_bar_left_background, self.top_bar_flag_overlay,
 			self.top_bar_flag_overlay_hovering_over, self.country_overview, self.popularity_circle_overlay, self.earth_daymap, self.earth_nightmap, self.earth_political_map, self.earth_political_map_filled,
-			self.progressbar_huge, self.progressbar, self.progressbar_vertical, self.progressbar_small, self.bottom_HUD, self.country_laws_background, self.laws_description_image, self.game_logo)
+			self.progressbar_huge, self.progressbar, self.progressbar_vertical, self.progressbar_small, self.bottom_HUD, self.country_laws_background, self.laws_description_image, self.game_logo,
+			self.economic_overview_background, self.poverty_rate_0, self.poverty_rate_5, self.poverty_rate_10, self.poverty_rate_15, self.poverty_rate_25, self.poverty_rate_50,
+			self.poverty_rate_80, self.credit_ratings, self.economic_warning)
 
 
 		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.Main_Menu, self.Country_Selection_Screen,
@@ -958,6 +977,8 @@ your shoulders.
 									self.Game_Screen.Laws_Menu.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
 
 									self.Game_Screen.Decisions_Menu.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
+
+									self.Game_Screen.Finances_Menu.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
 						else:
 							self.clicked_button = self.ESC_Menu.get_clicked_button(self.mouse_rect, self.is_options_menu_open)
 							if self.clicked_button != 'none' and self.clicked_button != None:

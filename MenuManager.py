@@ -1950,7 +1950,8 @@ class Game_Screen:
 	def __init__(self, screen_width, screen_height, pygame, clock, generic_hover_over_button_sound, generic_click_button_sound, top_bar_right_background, top_bar_game_speed_indicator,
 			top_bar_defcon_level, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over, country_overview, popularity_circle_overlay, earth_daymap, earth_nightmap, 
 			earth_political_map, earth_political_map_filled, progressbar_huge, progressbar, progressbar_vertical, progressbar_small, bottom_HUD, country_laws_background, laws_description_image,
-			game_logo):
+			game_logo, economic_overview_background, poverty_rate_0, poverty_rate_5, poverty_rate_10, poverty_rate_15, poverty_rate_25, poverty_rate_50, poverty_rate_80, credit_ratings,
+			economic_warning):
 
 		reference_screen_size_x = 1920
 		reference_screen_size_y = 1080
@@ -1980,7 +1981,8 @@ class Game_Screen:
 	
 		self.Laws_Menu = Laws_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, progressbar_huge, country_laws_background, laws_description_image)
 
-		self.Finances_Menu = Finances_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
+		self.Finances_Menu = Finances_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, economic_overview_background, poverty_rate_0, poverty_rate_5, poverty_rate_10,
+			poverty_rate_15, poverty_rate_25, poverty_rate_50, poverty_rate_80, credit_ratings, economic_warning)
 
 		self.Inteligence_Menu = Inteligence_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
 
@@ -4239,15 +4241,52 @@ class Laws_Menu:
 						self.laws_butons_rect.append(rect)
 
 class Finances_Menu:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame):
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, economic_overview_background, poverty_rate_0, poverty_rate_5, poverty_rate_10,
+			poverty_rate_15, poverty_rate_25, poverty_rate_50, poverty_rate_80, credit_ratings, economic_warning):
+		
 		self.factor_x, self.factor_y = factor_x, factor_y	
 		self.screen_width = screen_width 
 		self.screen_height = screen_height
 
 		self.pygame = pygame
 
+		self.PlayerCountry = None		
+
+		self.economic_overview_background = pygame.transform.smoothscale_by(economic_overview_background, (self.factor_x, self.factor_y))	
+		
+		self.poverty_rate_0 	= pygame.transform.smoothscale_by(poverty_rate_0, (self.factor_x, self.factor_y))
+		self.poverty_rate_5 	= pygame.transform.smoothscale_by(poverty_rate_5, (self.factor_x, self.factor_y))
+		self.poverty_rate_10 	= pygame.transform.smoothscale_by(poverty_rate_10, (self.factor_x, self.factor_y))
+		self.poverty_rate_15 	= pygame.transform.smoothscale_by(poverty_rate_15, (self.factor_x, self.factor_y))
+		self.poverty_rate_25	= pygame.transform.smoothscale_by(poverty_rate_25, (self.factor_x, self.factor_y))
+		self.poverty_rate_50 	= pygame.transform.smoothscale_by(poverty_rate_50, (self.factor_x, self.factor_y))
+		self.poverty_rate_80 	= pygame.transform.smoothscale_by(poverty_rate_80, (self.factor_x, self.factor_y))		
+
+		self.credit_ratings		= pygame.transform.smoothscale_by(credit_ratings, (self.factor_x, self.factor_y))
+		self.economic_warning	= pygame.transform.smoothscale_by(economic_warning, (self.factor_x, self.factor_y))
+
+
 		self.is_menu_open = False
 		self.highlight_button = False
+
+
+		self.poverty_rate_image_pos_x = 340 * self.factor_x
+		self.poverty_rate_image_pos_y = 692 * self.factor_y + 158 * self.factor_y	
+		
+
+		self.credit_rating_image_pos_x = 293 * self.factor_x
+		self.credit_rating_image_pos_y = 587 * self.factor_y + 158 * self.factor_y
+
+		self.credit_rating_image_size_x = 125 * self.factor_x
+		self.credit_rating_image_size_y = 64 * self.factor_y
+
+
+		self.economic_warnings_image_pos_x = 17 * self.factor_x
+		self.economic_warnings_image_pos_y = 559 * self.factor_y + 158 * self.factor_y
+
+		self.economic_warnings_image_size_x = 124 * self.factor_x
+		self.economic_warnings_image_size_y = 58 * self.factor_y		
+
 
 		height = 112 * self.factor_y
 		button_size = (57 * self.factor_x, 41 * self.factor_y)
@@ -4256,7 +4295,7 @@ class Finances_Menu:
 
 		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
 		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
-		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(18 * self.factor_y))
 		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
 		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))		
 
@@ -4268,8 +4307,93 @@ class Finances_Menu:
 
 	def draw(self, screen):
 		if self.is_menu_open == True:
-			self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y))
-			self.pygame.draw.rect(screen, (43,219,211), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), 2)			
+			screen.blit(self.economic_overview_background, (0, 158 * self.factor_y))
+
+			country_poverty_rate = 0
+
+			if country_poverty_rate < 5:
+				screen.blit(self.poverty_rate_0, (self.poverty_rate_image_pos_x, self.poverty_rate_image_pos_y))	
+			elif country_poverty_rate < 10:
+				screen.blit(self.poverty_rate_5, (self.poverty_rate_image_pos_x, self.poverty_rate_image_pos_y))		
+			elif country_poverty_rate < 15:
+				screen.blit(self.poverty_rate_10, (self.poverty_rate_image_pos_x, self.poverty_rate_image_pos_y))	
+			elif country_poverty_rate < 25:
+				screen.blit(self.poverty_rate_15, (self.poverty_rate_image_pos_x, self.poverty_rate_image_pos_y))	
+			elif country_poverty_rate < 50:
+				screen.blit(self.poverty_rate_25, (self.poverty_rate_image_pos_x, self.poverty_rate_image_pos_y))	
+			elif country_poverty_rate < 80:
+				screen.blit(self.poverty_rate_50, (self.poverty_rate_image_pos_x, self.poverty_rate_image_pos_y))	
+			elif country_poverty_rate <= 100:
+				screen.blit(self.poverty_rate_80, (self.poverty_rate_image_pos_x, self.poverty_rate_image_pos_y))	
+
+
+			country_credit_rating = self.PlayerCountry.credit_rating
+
+			if country_credit_rating < 10:																							
+				screen.blit(self.credit_ratings.subsurface(0, 0, self.credit_rating_image_size_x, self.credit_rating_image_size_y), (self.credit_rating_image_pos_x, self.credit_rating_image_pos_y))
+			elif country_credit_rating < 20:																							
+				screen.blit(self.credit_ratings.subsurface(125 * self.factor_x, 0, self.credit_rating_image_size_x, self.credit_rating_image_size_y), (self.credit_rating_image_pos_x, self.credit_rating_image_pos_y))	
+			elif country_credit_rating < 30:																							
+				screen.blit(self.credit_ratings.subsurface(250 * self.factor_x, 0, self.credit_rating_image_size_x, self.credit_rating_image_size_y), (self.credit_rating_image_pos_x, self.credit_rating_image_pos_y))	
+			elif country_credit_rating < 40:																							
+				screen.blit(self.credit_ratings.subsurface(375 * self.factor_x, 0, self.credit_rating_image_size_x, self.credit_rating_image_size_y), (self.credit_rating_image_pos_x, self.credit_rating_image_pos_y))	
+			elif country_credit_rating < 50:																							
+				screen.blit(self.credit_ratings.subsurface(500 * self.factor_x, 0, self.credit_rating_image_size_x, self.credit_rating_image_size_y), (self.credit_rating_image_pos_x, self.credit_rating_image_pos_y))	
+			elif country_credit_rating < 60:																							
+				screen.blit(self.credit_ratings.subsurface(625 * self.factor_x, 0, self.credit_rating_image_size_x, self.credit_rating_image_size_y), (self.credit_rating_image_pos_x, self.credit_rating_image_pos_y))	
+			elif country_credit_rating < 70:																							
+				screen.blit(self.credit_ratings.subsurface(750 * self.factor_x, 0, self.credit_rating_image_size_x, self.credit_rating_image_size_y), (self.credit_rating_image_pos_x, self.credit_rating_image_pos_y))	
+			elif country_credit_rating < 80:																							
+				screen.blit(self.credit_ratings.subsurface(875 * self.factor_x, 0, self.credit_rating_image_size_x, self.credit_rating_image_size_y), (self.credit_rating_image_pos_x, self.credit_rating_image_pos_y))	
+			elif country_credit_rating < 90:																							
+				screen.blit(self.credit_ratings.subsurface(1000 * self.factor_x, 0, self.credit_rating_image_size_x, self.credit_rating_image_size_y), (self.credit_rating_image_pos_x, self.credit_rating_image_pos_y))	
+			elif country_credit_rating <= 100:																							
+				screen.blit(self.credit_ratings.subsurface(1125 * self.factor_x, 0, self.credit_rating_image_size_x, self.credit_rating_image_size_y), (self.credit_rating_image_pos_x, self.credit_rating_image_pos_y))	
+
+
+			country_economic_warnings = [1, 4, 6]
+
+			if len(country_economic_warnings) > 0:
+				for economic_warning in country_economic_warnings:
+					if economic_warning == 1:
+						screen.blit(self.economic_warning.subsurface(7 * self.factor_x, 27 * self.factor_y, self.economic_warnings_image_size_x, self.economic_warnings_image_size_y), (self.economic_warnings_image_pos_x + 7 * self.factor_x, self.economic_warnings_image_pos_y + 27 * self.factor_y))
+					elif economic_warning == 2:
+						screen.blit(self.economic_warning.subsurface(141 * self.factor_x, 27 * self.factor_y, self.economic_warnings_image_size_x, self.economic_warnings_image_size_y), (self.economic_warnings_image_pos_x + 141 * self.factor_x, self.economic_warnings_image_pos_y + 27 * self.factor_y))
+					elif economic_warning == 3:
+						screen.blit(self.economic_warning.subsurface(7 * self.factor_x, 93 * self.factor_y, self.economic_warnings_image_size_x, self.economic_warnings_image_size_y), (self.economic_warnings_image_pos_x + 7 * self.factor_x, self.economic_warnings_image_pos_y + 93 * self.factor_y))
+					elif economic_warning == 4:
+						screen.blit(self.economic_warning.subsurface(141 * self.factor_x, 93 * self.factor_y, self.economic_warnings_image_size_x, self.economic_warnings_image_size_y), (self.economic_warnings_image_pos_x + 141 * self.factor_x, self.economic_warnings_image_pos_y + 93 * self.factor_y))
+					elif economic_warning == 5:
+						screen.blit(self.economic_warning.subsurface(7 * self.factor_x, 159 * self.factor_y, self.economic_warnings_image_size_x, self.economic_warnings_image_size_y), (self.economic_warnings_image_pos_x + 7 * self.factor_x, self.economic_warnings_image_pos_y + 159 * self.factor_y))
+					elif economic_warning == 6:
+						screen.blit(self.economic_warning.subsurface(141 * self.factor_x, 159 * self.factor_y, self.economic_warnings_image_size_x, self.economic_warnings_image_size_y), (self.economic_warnings_image_pos_x + 141 * self.factor_x, self.economic_warnings_image_pos_y + 159 * self.factor_y))
+
+
+			# INFLATION
+			country_inflation_text_render = self.medium_scalable_font.render(str(round(self.PlayerCountry.inflation, 3))+' %', False, (255,255,255))	
+			screen.blit(country_inflation_text_render, (294 * self.factor_x, 39 * self.factor_y + 158 * self.factor_y))
+
+			# GDP
+			GDP = self.PlayerCountry.country_GDP
+			if abs(GDP) < 1e6:
+				formatted_GDP = f"${GDP:,.3f}"
+			elif abs(GDP) < 1e9:
+				formatted_GDP = f"${GDP / 1e6:.3f} M"
+			elif abs(GDP) < 1e12:
+				formatted_GDP = f"${GDP / 1e9:.3f} B"
+			elif abs(GDP) < 1e15:
+				formatted_GDP = f"${GDP / 1e12:.3f} T"
+			else:
+				formatted_GDP = f"${GDP:.3f}"
+						
+			country_inflation_text_render = self.medium_scalable_font.render(formatted_GDP, False, (255,255,255))	
+			screen.blit(country_inflation_text_render, (228 * self.factor_x, 203 * self.factor_y + 158 * self.factor_y))
+
+			# DEBT-TO-GDP
+			country_inflation_text_render = self.medium_scalable_font.render(str(round((self.PlayerCountry.debt/self.PlayerCountry.country_GDP)*100, 2))+' %', False, (255,255,255))	
+			screen.blit(country_inflation_text_render, (329 * self.factor_x, 367 * self.factor_y + 158 * self.factor_y))
+
+
 
 		if self.highlight_button == True or self.is_menu_open == True:
 			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_finances_button.rect, 2)		

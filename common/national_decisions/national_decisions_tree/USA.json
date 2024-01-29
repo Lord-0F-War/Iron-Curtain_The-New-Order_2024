@@ -10,7 +10,7 @@
     "decision_image_name": "generic_main_image",
     "decision_description": "Decision Description",
     "x_pos": 50,
-    "y_pos": 150,
+    "y_pos": 200,
     "decision_on_tree_menu_icon": "generic_on_tree_icon"
     },
     {
