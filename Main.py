@@ -275,6 +275,12 @@ class Main:
 		self.credit_ratings				= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'credit_ratings.png')).convert_alpha()
 		self.economic_warning			= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'economic_warning.png')).convert_alpha()
 
+		self.economic_freedom_index_green			= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'economic_freedom_index_green.png')).convert_alpha()
+		self.economic_freedom_index_red				= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'economic_freedom_index_red.png')).convert_alpha()
+		self.economic_freedom_score_green			= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'economic_freedom_score_green.png')).convert_alpha()
+		self.economic_freedom_score_red				= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'economic_freedom_score_red.png')).convert_alpha()
+		self.small_rating_green						= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'small_rating_green.png')).convert_alpha()		
+		self.small_rating_red						= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'small_rating_red.png')).convert_alpha()
 
 		
 		self.sounds_folder = os.path.join(self.exe_folder, 'Sounds')
@@ -430,6 +436,7 @@ your shoulders.
 		self.USA.treasury = 85_952_542_000_000
 		self.USA.debt = 5_365_215_000_000
 		self.USA.credit_rating = 52.5
+		self.USA.credit_stability = 0.89
 		self.USA.inflation = 2.1
 		self.USA.unemployment = 5.2
 		self.USA.country_GDP = 10_550_000_000_000
@@ -444,6 +451,8 @@ your shoulders.
 		self.USA.country_births = 10400
 		self.USA.country_deaths = 25000
 		self.USA.country_literacy_rate = 94
+		self.USA.country_poverty_rate = [0.50, 0.30, 0.20] # Poverty / Poor + Middle Class / Upper Class
+
 		self.USA.population_political_leaning = 'Moderate'
 
 		# 		Country Internal Approval Stats
@@ -707,7 +716,8 @@ your shoulders.
 			self.top_bar_flag_overlay_hovering_over, self.country_overview, self.popularity_circle_overlay, self.earth_daymap, self.earth_nightmap, self.earth_political_map, self.earth_political_map_filled,
 			self.progressbar_huge, self.progressbar, self.progressbar_vertical, self.progressbar_small, self.bottom_HUD, self.country_laws_background, self.laws_description_image, self.game_logo,
 			self.economic_overview_background, self.poverty_rate_0, self.poverty_rate_5, self.poverty_rate_10, self.poverty_rate_15, self.poverty_rate_25, self.poverty_rate_50,
-			self.poverty_rate_80, self.credit_ratings, self.economic_warning)
+			self.poverty_rate_80, self.credit_ratings, self.economic_warning, self.economic_freedom_index_green, self.economic_freedom_index_red, self.economic_freedom_score_green, self.economic_freedom_score_red,
+			self.small_rating_green, self.small_rating_red)
 
 
 		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.Main_Menu, self.Country_Selection_Screen,

@@ -1951,7 +1951,7 @@ class Game_Screen:
 			top_bar_defcon_level, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over, country_overview, popularity_circle_overlay, earth_daymap, earth_nightmap, 
 			earth_political_map, earth_political_map_filled, progressbar_huge, progressbar, progressbar_vertical, progressbar_small, bottom_HUD, country_laws_background, laws_description_image,
 			game_logo, economic_overview_background, poverty_rate_0, poverty_rate_5, poverty_rate_10, poverty_rate_15, poverty_rate_25, poverty_rate_50, poverty_rate_80, credit_ratings,
-			economic_warning):
+			economic_warning, economic_freedom_index_green, economic_freedom_index_red, economic_freedom_score_green, economic_freedom_score_red, small_rating_green, small_rating_red):
 
 		reference_screen_size_x = 1920
 		reference_screen_size_y = 1080
@@ -1982,7 +1982,8 @@ class Game_Screen:
 		self.Laws_Menu = Laws_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, progressbar_huge, country_laws_background, laws_description_image)
 
 		self.Finances_Menu = Finances_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, economic_overview_background, poverty_rate_0, poverty_rate_5, poverty_rate_10,
-			poverty_rate_15, poverty_rate_25, poverty_rate_50, poverty_rate_80, credit_ratings, economic_warning)
+			poverty_rate_15, poverty_rate_25, poverty_rate_50, poverty_rate_80, credit_ratings, economic_warning, economic_freedom_index_green, economic_freedom_index_red, economic_freedom_score_green,
+			economic_freedom_score_red, small_rating_green, small_rating_red)
 
 		self.Inteligence_Menu = Inteligence_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
 
@@ -4242,7 +4243,8 @@ class Laws_Menu:
 
 class Finances_Menu:
 	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, economic_overview_background, poverty_rate_0, poverty_rate_5, poverty_rate_10,
-			poverty_rate_15, poverty_rate_25, poverty_rate_50, poverty_rate_80, credit_ratings, economic_warning):
+			poverty_rate_15, poverty_rate_25, poverty_rate_50, poverty_rate_80, credit_ratings, economic_warning, economic_freedom_index_green, economic_freedom_index_red,
+			economic_freedom_score_green, economic_freedom_score_red, small_rating_green, small_rating_red):
 		
 		self.factor_x, self.factor_y = factor_x, factor_y	
 		self.screen_width = screen_width 
@@ -4264,6 +4266,13 @@ class Finances_Menu:
 
 		self.credit_ratings		= pygame.transform.smoothscale_by(credit_ratings, (self.factor_x, self.factor_y))
 		self.economic_warning	= pygame.transform.smoothscale_by(economic_warning, (self.factor_x, self.factor_y))
+
+		self.economic_freedom_index_green		= pygame.transform.smoothscale_by(economic_freedom_index_green, (self.factor_x, self.factor_y))
+		self.economic_freedom_index_red			= pygame.transform.smoothscale_by(economic_freedom_index_red, (self.factor_x, self.factor_y))
+		self.economic_freedom_score_green		= pygame.transform.smoothscale_by(economic_freedom_score_green, (self.factor_x, self.factor_y))
+		self.economic_freedom_score_red			= pygame.transform.smoothscale_by(economic_freedom_score_red, (self.factor_x, self.factor_y))
+		self.small_rating_green					= pygame.transform.smoothscale_by(small_rating_green, (self.factor_x, self.factor_y))
+		self.small_rating_red					= pygame.transform.smoothscale_by(small_rating_red, (self.factor_x, self.factor_y))
 
 
 		self.is_menu_open = False
@@ -4309,7 +4318,7 @@ class Finances_Menu:
 		if self.is_menu_open == True:
 			screen.blit(self.economic_overview_background, (0, 158 * self.factor_y))
 
-			country_poverty_rate = 0
+			country_poverty_rate = (self.PlayerCountry.country_poverty_rate[0] * 100)
 
 			if country_poverty_rate < 5:
 				screen.blit(self.poverty_rate_0, (self.poverty_rate_image_pos_x, self.poverty_rate_image_pos_y))	
@@ -4351,7 +4360,7 @@ class Finances_Menu:
 				screen.blit(self.credit_ratings.subsurface(1125 * self.factor_x, 0, self.credit_rating_image_size_x, self.credit_rating_image_size_y), (self.credit_rating_image_pos_x, self.credit_rating_image_pos_y))	
 
 
-			country_economic_warnings = [1, 4, 6]
+			country_economic_warnings = [1, 2, 3, 4, 5, 6]
 
 			if len(country_economic_warnings) > 0:
 				for economic_warning in country_economic_warnings:
@@ -4392,6 +4401,41 @@ class Finances_Menu:
 			# DEBT-TO-GDP
 			country_inflation_text_render = self.medium_scalable_font.render(str(round((self.PlayerCountry.debt/self.PlayerCountry.country_GDP)*100, 2))+' %', False, (255,255,255))	
 			screen.blit(country_inflation_text_render, (329 * self.factor_x, 367 * self.factor_y + 158 * self.factor_y))
+
+
+			# FREEDOM INDEX
+			x_offset = 439 * self.factor_x
+			for freedom_index in range(12):
+				green_ammount = self.economic_freedom_index_green.get_width() * 0.4
+				screen.blit(self.economic_freedom_index_green.subsurface(0, 0, green_ammount, self.economic_freedom_index_green.get_height()), (x_offset, (150 + (34 * freedom_index)) * self.factor_y + 158 * self.factor_y))
+				
+				red_ammount = self.economic_freedom_index_red.get_width() * 0.4
+				screen.blit(self.economic_freedom_index_red.subsurface(0, 0, red_ammount, self.economic_freedom_index_red.get_height()), (x_offset + (self.economic_freedom_index_red.get_width() - red_ammount), (150 + (34 * freedom_index)) * self.factor_y + 158 * self.factor_y))
+			
+			#	SCORE
+			green_ammount = self.economic_freedom_score_green.get_width() * 0.4
+			screen.blit(self.economic_freedom_score_green.subsurface(0, 0, green_ammount, self.economic_freedom_score_green.get_height()), (x_offset, (98 * self.factor_y + 158 * self.factor_y)))
+			
+			red_ammount = self.economic_freedom_score_red.get_width() * 0.4
+			screen.blit(self.economic_freedom_score_red.subsurface(0, 0, red_ammount, self.economic_freedom_score_red.get_height()), (x_offset + (self.economic_freedom_score_red.get_width() - red_ammount), (98 * self.factor_y + 158 * self.factor_y)))
+
+			# CREDIT RATING
+			x_offset = 297 * self.factor_x
+
+			credit_stability = self.PlayerCountry.credit_stability
+
+			green_ammount = self.small_rating_green.get_width() * ((self.PlayerCountry.credit_rating/100) * credit_stability)
+			screen.blit(self.small_rating_green.subsurface(0, 0, green_ammount, self.small_rating_green.get_height()), (x_offset, (653 * self.factor_y + 158 * self.factor_y)))
+			
+			red_ammount = self.small_rating_red.get_width() * (1  * credit_stability - (self.PlayerCountry.credit_rating/100))
+			screen.blit(self.small_rating_red.subsurface(0, 0, red_ammount, self.small_rating_red.get_height()), (x_offset + (self.small_rating_red.get_width() - red_ammount), (653 * self.factor_y + 158 * self.factor_y)))
+
+			# POVERTY
+			green_ammount = self.small_rating_green.get_width() * self.PlayerCountry.country_poverty_rate[2]
+			screen.blit(self.small_rating_green.subsurface(0, 0, green_ammount, self.small_rating_green.get_height()), (x_offset, (758 * self.factor_y + 158 * self.factor_y)))
+			
+			red_ammount = self.small_rating_red.get_width() * self.PlayerCountry.country_poverty_rate[0]
+			screen.blit(self.small_rating_red.subsurface(0, 0, red_ammount, self.small_rating_red.get_height()), (x_offset + (self.small_rating_red.get_width() - red_ammount), (758 * self.factor_y + 158 * self.factor_y)))
 
 
 

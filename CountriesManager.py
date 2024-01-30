@@ -156,6 +156,8 @@ class Country:
         self.debt = 0
 
         self.credit_rating = 0
+        self.credit_stability = 0
+
         self.inflation = 0
         self.unemployment = 0
 
@@ -174,6 +176,7 @@ class Country:
         self.country_births = 0
         self.country_deaths = 0
         self.country_literacy_rate = 0
+        self.country_poverty_rate = [0, 0, 0]
 
         self.population_political_leaning = "None"
 
