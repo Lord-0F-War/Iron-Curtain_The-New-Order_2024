@@ -3,6 +3,7 @@ import GenericUtilitys
 from PygameManager import pygame
 from pyvidplayer import Video
 import CountriesManager
+import random
 
 import locale
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
@@ -2580,6 +2581,10 @@ class Clock_UI:
 
 		self.pygame = pygame
 
+		self.PlayerCountry = None
+
+		self.week = 0
+
 		self.clock = clock
 
 		self.top_bar_right_background = pygame.transform.smoothscale_by(top_bar_right_background, (self.factor_x, self.factor_y))
@@ -2637,6 +2642,18 @@ class Clock_UI:
 			if self.current_hour >= 24:
 				self.current_hour = self.current_hour - 24
 				self.current_day += 1
+				self.week += 1
+				if self.week >= 7:
+					self.PlayerCountry.inflation = random.random()
+					self.PlayerCountry.weekly_inflation_data.append(self.PlayerCountry.inflation)
+
+					self.PlayerCountry.country_GDP = random.randrange(8_550_000_000_000, 10_550_000_000_000, 100_550_000)
+					self.PlayerCountry.weekly_country_GDP_data.append(self.PlayerCountry.country_GDP)
+
+					debt_to_gdp = round((self.PlayerCountry.debt/self.PlayerCountry.country_GDP)*100, 2)
+					self.PlayerCountry.weekly_debt_to_gdp_data.append(debt_to_gdp)
+					
+					self.week -= 7
 				if self.current_day == self.days_in_each_mounth[str(self.current_month)] + 1:
 					self.current_day = 1
 					self.current_month += 1
@@ -2887,6 +2904,7 @@ class Country_Overview:
 		
 		self.factor_x, self.factor_y = factor_x, factor_y	
 		self.pygame = pygame
+
 		self.PlayerCountry = None
 
 		self.top_bar_left_background = pygame.transform.smoothscale_by(top_bar_left_background, (self.factor_x, self.factor_y))
@@ -3727,7 +3745,7 @@ class Country_Focus_Tree:
 
 		self.focus_tree_surface.fill((0, 0, 0, 0), (0, 0, self.screen_width, self.screen_height - (158 + 110) * self.factor_y))
 		
-		screen.blit(next(iter(self.PlayerCountry.country_focus_tree.values())).national_focus_icon, (5 * self.factor_x, 84 * self.factor_y))	
+		#screen.blit(next(iter(self.PlayerCountry.country_focus_tree.values())).national_focus_icon, (5 * self.factor_x, 84 * self.factor_y))	
 
 		if self.highlight_button == False and self.is_menu_open == False:
 			screen.blit(self.top_bar_flag_overlay, (2 * self.factor_x, 81 * self.factor_y))
@@ -4284,7 +4302,7 @@ class Finances_Menu:
 		
 
 		self.credit_rating_image_pos_x = 293 * self.factor_x
-		self.credit_rating_image_pos_y = 587 * self.factor_y + 158 * self.factor_y
+		self.credit_rating_image_pos_y = 584 * self.factor_y + 158 * self.factor_y
 
 		self.credit_rating_image_size_x = 125 * self.factor_x
 		self.credit_rating_image_size_y = 64 * self.factor_y
@@ -4395,12 +4413,12 @@ class Finances_Menu:
 			else:
 				formatted_GDP = f"${GDP:.3f}"
 						
-			country_inflation_text_render = self.medium_scalable_font.render(formatted_GDP, False, (255,255,255))	
-			screen.blit(country_inflation_text_render, (228 * self.factor_x, 203 * self.factor_y + 158 * self.factor_y))
+			country_gdp_text_render = self.medium_scalable_font.render(formatted_GDP, False, (255,255,255))	
+			screen.blit(country_gdp_text_render, (228 * self.factor_x, 203 * self.factor_y + 158 * self.factor_y))
 
 			# DEBT-TO-GDP
-			country_inflation_text_render = self.medium_scalable_font.render(str(round((self.PlayerCountry.debt/self.PlayerCountry.country_GDP)*100, 2))+' %', False, (255,255,255))	
-			screen.blit(country_inflation_text_render, (329 * self.factor_x, 367 * self.factor_y + 158 * self.factor_y))
+			country_debt_to_gdp_text_render = self.medium_scalable_font.render(str(round((self.PlayerCountry.debt/self.PlayerCountry.country_GDP)*100, 2))+' %', False, (255,255,255))	
+			screen.blit(country_debt_to_gdp_text_render, (329 * self.factor_x, 367 * self.factor_y + 158 * self.factor_y))
 
 
 			# FREEDOM INDEX
@@ -4438,6 +4456,100 @@ class Finances_Menu:
 			screen.blit(self.small_rating_red.subsurface(0, 0, red_ammount, self.small_rating_red.get_height()), (x_offset + (self.small_rating_red.get_width() - red_ammount), (758 * self.factor_y + 158 * self.factor_y)))
 
 
+			# GRAPHS
+
+			#	INFLATION
+			country_inflation_high_end_text_render = self.small_scalable_font.render(str(round(self.PlayerCountry.inflation + self.PlayerCountry.inflation*0.15, 3))+' %', False, (255,255,255))	
+			screen.blit(country_inflation_high_end_text_render, (140 * self.factor_x - country_inflation_high_end_text_render.get_width(), 63 * self.factor_y + 158 * self.factor_y - country_inflation_high_end_text_render.get_height()/2))
+			
+			country_inflation_low_end_text_render = self.small_scalable_font.render(str(round(self.PlayerCountry.inflation - self.PlayerCountry.inflation*0.15, 3))+' %', False, (255,255,255))	
+			screen.blit(country_inflation_low_end_text_render, (140 * self.factor_x - country_inflation_low_end_text_render.get_width(), 163 * self.factor_y + 158 * self.factor_y - country_inflation_low_end_text_render.get_height()/2))
+
+			graph_dots = []
+			for index, weekly_data in enumerate(self.PlayerCountry.weekly_inflation_data):
+				if weekly_data > self.PlayerCountry.inflation:
+					height = 113 - (50 * (min(1, (weekly_data/(self.PlayerCountry.inflation + 0.01)) - 1)))
+				else:
+					height = 113 + (50 * (min(1, (self.PlayerCountry.inflation/(weekly_data + 0.01)) - 1)))
+				
+				graph_dots.append(((3.855 * index + 173) * self.factor_x, (height + 158) * self.factor_y))
+
+			if len(graph_dots) > 1:
+				self.pygame.draw.lines(screen, (255,0,0), False, graph_dots, 3)
+			else:
+				self.pygame.draw.line(screen, (255,0,0), graph_dots[0], (graph_dots[0][0], (113 + 158) * self.factor_y), 3)				
+
+			#	GDP
+			GDP = self.PlayerCountry.country_GDP + self.PlayerCountry.country_GDP*0.15
+
+			if abs(GDP) < 1e6:
+				high_end_formatted_GDP = f"${GDP:,.3f}"
+			elif abs(GDP) < 1e9:
+				high_end_formatted_GDP = f"${GDP / 1e6:.3f} M"
+			elif abs(GDP) < 1e12:
+				high_end_formatted_GDP = f"${GDP / 1e9:.3f} B"
+			elif abs(GDP) < 1e15:
+				high_end_formatted_GDP = f"${GDP / 1e12:.3f} T"
+			else:
+				high_end_formatted_GDP = f"${GDP:.3f}"
+
+			country_gdp_high_end_text_render = self.small_scalable_font.render(high_end_formatted_GDP, False, (255,255,255))	
+			screen.blit(country_gdp_high_end_text_render, (140 * self.factor_x - country_gdp_high_end_text_render.get_width(), 227 * self.factor_y + 158 * self.factor_y - country_gdp_high_end_text_render.get_height()/2))
+			
+			GDP = self.PlayerCountry.country_GDP - self.PlayerCountry.country_GDP*0.15
+
+			if abs(GDP) < 1e6:
+				low_end_formatted_GDP = f"${GDP:,.3f}"
+			elif abs(GDP) < 1e9:
+				low_end_formatted_GDP = f"${GDP / 1e6:.3f} M"
+			elif abs(GDP) < 1e12:
+				low_end_formatted_GDP = f"${GDP / 1e9:.3f} B"
+			elif abs(GDP) < 1e15:
+				low_end_formatted_GDP = f"${GDP / 1e12:.3f} T"
+			else:
+				low_end_formatted_GDP = f"${GDP:.3f}"
+
+			country_gdp_low_end_text_render = self.small_scalable_font.render(low_end_formatted_GDP, False, (255,255,255))	
+			screen.blit(country_gdp_low_end_text_render, (140 * self.factor_x - country_gdp_low_end_text_render.get_width(), 327 * self.factor_y + 158 * self.factor_y - country_gdp_low_end_text_render.get_height()/2))
+
+			graph_dots = []
+			for index, weekly_data in enumerate(self.PlayerCountry.weekly_country_GDP_data):
+				if weekly_data > self.PlayerCountry.country_GDP:
+					height = 277 - (50 * (min(1, (weekly_data/(self.PlayerCountry.country_GDP + 0.01)) - 1)))
+				else:
+					height = 277 + (50 * (min(1, (self.PlayerCountry.country_GDP/(weekly_data + 0.01)) - 1)))
+				
+				graph_dots.append(((3.855 * index + 173) * self.factor_x, (height + 158) * self.factor_y))
+
+			if len(graph_dots) > 1:
+				self.pygame.draw.lines(screen, (0,255,0), False, graph_dots, 3)
+			else:
+				self.pygame.draw.line(screen, (0,255,0), graph_dots[0], (graph_dots[0][0], (277 + 158) * self.factor_y), 3)				
+
+			#	DEBT-TO-GDP
+			debt_to_gdp = round((self.PlayerCountry.debt/self.PlayerCountry.country_GDP)*100, 2)
+
+			debt_to_gdp_high_end_text_render = self.small_scalable_font.render(str(round(debt_to_gdp + debt_to_gdp*0.15, 2))+' %', False, (255,255,255))	
+			screen.blit(debt_to_gdp_high_end_text_render, (140 * self.factor_x - debt_to_gdp_high_end_text_render.get_width(), 391 * self.factor_y + 158 * self.factor_y - debt_to_gdp_high_end_text_render.get_height()/2))
+			
+			debt_to_gdp_low_end_text_render = self.small_scalable_font.render(str(round(debt_to_gdp - debt_to_gdp*0.15, 2))+' %', False, (255,255,255))	
+			screen.blit(debt_to_gdp_low_end_text_render, (140 * self.factor_x - debt_to_gdp_low_end_text_render.get_width(), 491 * self.factor_y + 158 * self.factor_y - debt_to_gdp_low_end_text_render.get_height()/2))
+
+			graph_dots = []
+			for index, weekly_data in enumerate(self.PlayerCountry.weekly_debt_to_gdp_data):
+				if weekly_data > debt_to_gdp:
+					height = 441 - (50 * (min(1, (weekly_data/(debt_to_gdp + 0.01)) - 1)))
+				else:
+					height = 441 + (50 * (min(1, (debt_to_gdp/(weekly_data + 0.01)) - 1)))
+				
+				graph_dots.append(((3.855 * index + 173) * self.factor_x, (height + 158) * self.factor_y))
+
+			if len(graph_dots) > 1:
+				self.pygame.draw.lines(screen, (255,0,0), False, graph_dots, 3)
+			else:
+				self.pygame.draw.line(screen, (255,0,0), graph_dots[0], (graph_dots[0][0], (441 + 158) * self.factor_y), 3)
+
+			#---------------------------------------------------------------------------------------------------------------------------------#	
 
 		if self.highlight_button == True or self.is_menu_open == True:
 			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_finances_button.rect, 2)		

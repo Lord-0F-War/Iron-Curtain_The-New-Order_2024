@@ -154,14 +154,19 @@ class Country:
         
         self.treasury = 0
         self.debt = 0
+        
+        self.weekly_debt_to_gdp_data = [0]
 
         self.credit_rating = 0
         self.credit_stability = 0
 
         self.inflation = 0
+        self.weekly_inflation_data = [0]
+
         self.unemployment = 0
 
         self.country_GDP = 1
+        self.weekly_country_GDP_data = [0]
 
         self.income = 0
         self.expenses = 0         

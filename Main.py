@@ -989,6 +989,8 @@ your shoulders.
 									self.Game_Screen.Decisions_Menu.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
 
 									self.Game_Screen.Finances_Menu.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
+
+									self.Game_Screen.Clock_UI.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
 						else:
 							self.clicked_button = self.ESC_Menu.get_clicked_button(self.mouse_rect, self.is_options_menu_open)
 							if self.clicked_button != 'none' and self.clicked_button != None:
