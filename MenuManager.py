@@ -2644,10 +2644,8 @@ class Clock_UI:
 				self.current_day += 1
 				self.week += 1
 				if self.week >= 7:
-					self.PlayerCountry.inflation = random.random()
 					self.PlayerCountry.weekly_inflation_data.append(self.PlayerCountry.inflation)
 
-					self.PlayerCountry.country_GDP = random.randrange(8_550_000_000_000, 10_550_000_000_000, 100_550_000)
 					self.PlayerCountry.weekly_country_GDP_data.append(self.PlayerCountry.country_GDP)
 
 					debt_to_gdp = round((self.PlayerCountry.debt/self.PlayerCountry.country_GDP)*100, 2)
@@ -2660,6 +2658,13 @@ class Clock_UI:
 					if self.current_month == 13:
 						self.current_month = 1
 						self.current_year += 1
+
+						self.PlayerCountry.weekly_inflation_data = [self.PlayerCountry.inflation]
+
+						self.PlayerCountry.weekly_country_GDP_data = [self.PlayerCountry.country_GDP]
+
+						debt_to_gdp = round((self.PlayerCountry.debt/self.PlayerCountry.country_GDP)*100, 2)
+						self.PlayerCountry.weekly_debt_to_gdp_data = [debt_to_gdp]					
 
 	def draw(self, screen):
 		screen.blit(self.top_bar_right_background, (self.screen_width - self.top_bar_right_background.get_width(), 0))
@@ -3139,7 +3144,7 @@ class Country_Overview:
 
 		if self.is_menu_open == True:
 			self.is_touching_cicle_rects = False
-			if mouse_rect[1] - self.country_overview_position[1] > 308 * self.factor_y and mouse_rect[1] - self.country_overview_position[1] < 475 * self.factor_y:
+			if mouse_rect[1] - self.country_overview_position[1] > 370 * self.factor_y and mouse_rect[1] - self.country_overview_position[1] < 537 * self.factor_y:
 				if  mouse_rect[0] > 60 * self.factor_x and  mouse_rect[0] < 227 * self.factor_x:
 					for index, rect in enumerate(self.politics_cicle_rects):
 						if GenericUtilitys.polygon_intersects_rectangle(rect, mouse_rect):
@@ -3507,33 +3512,33 @@ class Country_Overview:
 
 			# GOVERNMENT
 			government_name_text = self.huge_scalable_font.render(self.PlayerCountry.country_government, True, (255, 255, 255))
-			text_position = (12 * self.factor_x, 512 * self.factor_y + self.country_overview_position[1])	
+			text_position = (12 * self.factor_x, 574 * self.factor_y + self.country_overview_position[1])	
 			
 			if government_name_text.get_width() > 250:
 				government_name_text = self.big_scalable_font.render(self.PlayerCountry.country_government, True, (255, 255, 255))	
-				text_position = (12 * self.factor_x, 512 * self.factor_y + self.country_overview_position[1])
+				text_position = (12 * self.factor_x, 574 * self.factor_y + self.country_overview_position[1])
 				if government_name_text.get_width() > 250:	
 					government_name_text = self.medium_scalable_font.render(self.PlayerCountry.country_government, True, (255, 255, 255))	
-					text_position = (12 * self.factor_x, 512 * self.factor_y + self.country_overview_position[1])					
+					text_position = (12 * self.factor_x, 574 * self.factor_y + self.country_overview_position[1])					
 
 			screen.blit(government_name_text, text_position)	
 
 			# RULING PARTY
 			ruling_party_name_text = self.huge_scalable_font.render(self.PlayerCountry.country_ruling_party, True, (255, 255, 255))
-			text_position = (299 * self.factor_x, 512 * self.factor_y + self.country_overview_position[1])	
+			text_position = (299 * self.factor_x, 574 * self.factor_y + self.country_overview_position[1])	
 
 			if ruling_party_name_text.get_width() > 250:
 				ruling_party_name_text = self.big_scalable_font.render(self.PlayerCountry.country_ruling_party, True, (255, 255, 255))	
-				text_position = (299 * self.factor_x, 512 * self.factor_y + self.country_overview_position[1])
+				text_position = (299 * self.factor_x, 574 * self.factor_y + self.country_overview_position[1])
 				if ruling_party_name_text.get_width() > 250:
 					ruling_party_name_text = self.medium_scalable_font.render(self.PlayerCountry.country_ruling_party, True, (255, 255, 255))	
-					text_position = (299 * self.factor_x, 512 * self.factor_y + self.country_overview_position[1])										
+					text_position = (299 * self.factor_x, 574 * self.factor_y + self.country_overview_position[1])										
 
 			screen.blit(ruling_party_name_text, text_position)
 
 			# ELECTIONS
 			elections_text = self.huge_scalable_font.render(self.PlayerCountry.country_elections, True, (255, 255, 255))
-			text_position = (586 * self.factor_x, 512 * self.factor_y + self.country_overview_position[1])	
+			text_position = (586 * self.factor_x, 574 * self.factor_y + self.country_overview_position[1])	
 			screen.blit(elections_text, text_position)	
 
 
@@ -3541,7 +3546,7 @@ class Country_Overview:
 			# POPULARITY CIRCLES
 
 			# POLITICS
-			chart_position = (143 * self.factor_x, 391 * self.factor_y + self.country_overview_position[1]) 
+			chart_position = (143 * self.factor_x, 453 * self.factor_y + self.country_overview_position[1]) 
 			chart_radius = 80 * self.factor_y
 
 			self.politics_cicle_rects = GenericUtilitys.draw_pie_chart(screen, chart_position, chart_radius, self.politics_popularity, self.politics_segment_colors)	
@@ -3549,7 +3554,7 @@ class Country_Overview:
 			screen.blit(self.popularity_circle_overlay, (chart_position[0]-85 * self.factor_x, chart_position[1]-85 * self.factor_y))
 
 			# CULTURE
-			chart_position = (433 * self.factor_x, 391 * self.factor_y + self.country_overview_position[1]) 
+			chart_position = (433 * self.factor_x, 453 * self.factor_y + self.country_overview_position[1]) 
 			chart_radius = 80 * self.factor_y
 
 			rects_info = GenericUtilitys.draw_pie_chart(screen, chart_position, chart_radius, self.culture_popularity, self.culture_segment_colors)		
@@ -3558,7 +3563,7 @@ class Country_Overview:
 			screen.blit(self.popularity_circle_overlay, (chart_position[0]-85 * self.factor_x, chart_position[1]-85 * self.factor_y))			
 
 			# RELIGION
-			chart_position = (720 * self.factor_x, 391 * self.factor_y + self.country_overview_position[1]) 
+			chart_position = (720 * self.factor_x, 453 * self.factor_y + self.country_overview_position[1]) 
 			chart_radius = 80 * self.factor_y  
 
 			rects_info = GenericUtilitys.draw_pie_chart(screen, chart_position, chart_radius, self.religion_popularity, self.religion_segment_colors)
@@ -4035,7 +4040,7 @@ class Laws_Menu:
 		law_button_height = 27 * self.factor_y		
 
 		x_offset = 15
-		y_offset = 15 + 158
+		y_offset = 60 + 158
 
 		### FIRST ROW
 		self.first_row_law_button_y_offset_1 = (50 + y_offset) * self.factor_y
@@ -4549,6 +4554,64 @@ class Finances_Menu:
 			else:
 				self.pygame.draw.line(screen, (255,0,0), graph_dots[0], (graph_dots[0][0], (441 + 158) * self.factor_y), 3)
 
+			# BUDGET
+				
+			# EXPENDITURES
+			expenses = self.PlayerCountry.expenses
+
+			if abs(expenses) < 1e6:
+				formatted_expenses = f"${expenses:,.3f}"
+			elif abs(expenses) < 1e9:
+				formatted_expenses = f"${expenses / 1e6:.3f} M"
+			elif abs(expenses) < 1e12:
+				formatted_expenses = f"${expenses / 1e9:.3f} B"
+			elif abs(expenses) < 1e15:
+				formatted_expenses = f"${expenses / 1e12:.3f} T"
+			else:
+				formatted_expenses = f"${expenses:.3f}"
+
+			expenses_text_render = self.small_scalable_font.render(formatted_expenses, False, (255,255,255))	
+			screen.blit(expenses_text_render, (519 * self.factor_x, 738 * self.factor_y + 158 * self.factor_y))
+
+			# REVENUE
+			income = self.PlayerCountry.income
+
+			if abs(income) < 1e6:
+				formatted_income = f"${income:,.3f}"
+			elif abs(income) < 1e9:
+				formatted_income = f"${income / 1e6:.3f} M"
+			elif abs(income) < 1e12:
+				formatted_income = f"${income / 1e9:.3f} B"
+			elif abs(income) < 1e15:
+				formatted_income = f"${income / 1e12:.3f} T"
+			else:
+				formatted_income = f"${income:.3f}"
+
+			income_text_render = self.small_scalable_font.render(formatted_income, False, (255,255,255))	
+			screen.blit(income_text_render, (720 * self.factor_x, 738 * self.factor_y + 158 * self.factor_y))			
+
+
+			# DIFFERENCE
+
+			difference = income - expenses
+
+			if abs(difference) < 1e6:
+				formatted_difference = f"${difference:,.3f}"
+			elif abs(difference) < 1e9:
+				formatted_difference = f"${difference / 1e6:.3f} M"
+			elif abs(difference) < 1e12:
+				formatted_difference = f"${difference / 1e9:.3f} B"
+			elif abs(difference) < 1e15:
+				formatted_difference = f"${difference / 1e12:.3f} T"
+			else:
+				formatted_difference = f"${difference:.3f}"
+
+			if income > expenses:
+				difference_text_render = self.medium_scalable_font.render(formatted_difference, False, (0,255,0))
+			else:	
+				difference_text_render = self.medium_scalable_font.render(formatted_difference, False, (255,0,0))
+
+			screen.blit(difference_text_render, (641 * self.factor_x - difference_text_render.get_width()/2, 597 * self.factor_y + 158 * self.factor_y - difference_text_render.get_height()/2))
 			#---------------------------------------------------------------------------------------------------------------------------------#	
 
 		if self.highlight_button == True or self.is_menu_open == True:
