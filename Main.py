@@ -389,10 +389,11 @@ usurped by a sinister force, an unseen hand that tugs at
 the threads of democracy, trust, and truth.
 
 The American dream, once a beacon of hope, now flickers
-in the encroaching darkness, the stars and stripes that
-once fluttered with pride now seem like mere illusions.
+in the encroaching darkness.
+The stars and stripes thatonce fluttered with pride now
+seem like mere illusions.
 
-The fate of a nation hangs in the balance, as the clock
+The fate the nation hangs in the balance, as the clock
 ticks relentlessly toward an uncertain future.
 
 The relentless countdown of the cataclysm adds urgency

@@ -2938,6 +2938,9 @@ class Country_Overview:
 
 		self.generic_hover_over_button_sound = generic_hover_over_button_sound
 
+		self.update_parties_pie_chart = False
+		self.parties_pie_chart_surface = pygame.Surface((603 * self.factor_x, 301 * self.factor_y), pygame.SRCALPHA)
+
 		# COLORS ------------#	
 
 		# POLITICS
@@ -3491,11 +3494,28 @@ class Country_Overview:
 		# COUNTRY VIEWER
 
 		if self.is_menu_open == True:
+			if self.update_parties_pie_chart == True:
+				self.parties_pie_chart_surface.fill((0, 0, 0, 0))
+				last_angle = 180
+				for official_party in self.PlayerCountry.country_official_parties:
+					end_angle = 180 * (official_party.seats / self.PlayerCountry.total_political_seats)
+					GenericUtilitys.draw_pie(self.parties_pie_chart_surface, official_party.party_color, (302, 300), 300, last_angle, end_angle + last_angle)
+					last_angle = end_angle + last_angle
+				self.update_parties_pie_chart = False
+
 			screen.blit(self.PlayerCountry.country_leader_image, (12 * self.factor_x, 27 * self.factor_y + self.country_overview_position[1]))
 			screen.blit(self.country_overview, self.country_overview_position)
 
 			screen.blit(self.PlayerCountry.country_capital_image, (160 * self.factor_x, 90 * self.factor_y + self.country_overview_position[1]))
 			screen.blit(self.country_overview, self.country_overview_position)			
+
+			# PARTIES
+			screen.blit(self.parties_pie_chart_surface, (933, 71 + self.country_overview_position[1]))
+
+			for index, official_party in enumerate(self.PlayerCountry.country_official_parties):
+				party_name_text = self.small_scalable_font.render(official_party.party_name, True, (255, 255, 255))
+				text_position = (940 * self.factor_x, (410 + (party_name_text.get_height()*1.2) * index) * self.factor_y + self.country_overview_position[1])	
+				screen.blit(party_name_text, text_position)
 
 			# COUNTRY NAME
 			country_name_text = self.big_scalable_font.render(self.PlayerCountry.country_name, True, (255, 255, 255))
@@ -3663,8 +3683,10 @@ class Country_Overview:
 			religion_national_spirit.rect = self.pygame.Rect(792 * self.factor_x, 103 * self.factor_y + religion_national_spirit.national_spirit_icon.get_height() + self.country_overview_position[1],
 					religion_national_spirit.national_spirit_icon.get_width(), religion_national_spirit.national_spirit_icon.get_height())					
 			
-			self.national_spirits_display_rects.append([religion_national_spirit.rect, religion_national_spirit])						
+			self.national_spirits_display_rects.append([religion_national_spirit.rect, religion_national_spirit])	
 
+		else:
+			self.update_parties_pie_chart = True
 		# country_viewer_open	
 
 class Country_Focus_Tree:

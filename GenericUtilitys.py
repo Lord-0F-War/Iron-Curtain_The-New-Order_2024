@@ -5,6 +5,7 @@ from PygameManager import pygame
 from pygame.locals import *
 from shapely.geometry import Polygon
 import math
+from math import sin,cos,radians
 
 
 
@@ -51,6 +52,15 @@ def draw_pie_chart(surface, position, radius, values, colors):
 		
 		start_angle += angle
 	return rects
+
+
+def draw_pie(scr,color,center,radius,start_angle,stop_angle):
+    theta=start_angle
+    while theta <= stop_angle:
+        pygame.draw.line(scr,color,center, 
+        (center[0]+radius*cos(radians(theta)),center[1]+radius*sin(radians(theta))),2)
+        theta+=0.01
+
 
 def polygon_intersects_rectangle(polygon_vertices, rect):
     polygon = Polygon(polygon_vertices)

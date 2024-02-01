@@ -1,6 +1,17 @@
-import GenericUtilitys
 
+class Political_Party:
+    def __init__(self, party_name:str, popularity:float, ideology:list, seats:int, officialdom:bool, party_color:set):
+        self.party_name = party_name
 
+        self.popularity = popularity
+
+        self.ideology = ideology
+
+        self.seats = seats
+
+        self.officialdom = officialdom
+
+        self.party_color = party_color
 
 
 class Decision:
@@ -18,7 +29,6 @@ class Decision:
         self.y_pos = y_pos
 
         self.decision_on_tree_menu_icon = None
-
 
 class National_Focus:
     def __init__(self, national_focus_name, national_focus_icon, national_focus_description, x_offset, completion_time, next_focus, decision_time = None, national_focus_path_selection_description = ''):
@@ -193,7 +203,17 @@ class Country:
         self.politics_approval_rating = 0 
 
         self.internal_economy_rating = 0
-        self.external_economy_rating = 0    
+        self.external_economy_rating = 0   
+
+        
+        partie_1 = Political_Party('test 1 party', 50, [], 50, True, (255,0,0))
+        partie_2 = Political_Party('test 2 party', 25, [], 25, True, (0,255,0))
+        partie_3 = Political_Party('test 3 party', 25, [], 25, True, (0,0,255))
+
+        self.country_official_parties = [partie_1, partie_2, partie_3] 
+        self.country_clandestine_parties = [] 
+
+        self.total_political_seats = 100
 
 
         # LAWS
