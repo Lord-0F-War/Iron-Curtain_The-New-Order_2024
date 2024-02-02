@@ -282,6 +282,18 @@ class Main:
 		self.small_rating_green						= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'small_rating_green.png')).convert_alpha()		
 		self.small_rating_red						= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'small_rating_red.png')).convert_alpha()
 
+		self.intelligence_overview_folder = os.path.join(self.interface_folder, 'intelligence_overview')
+		self.intelligence_overview_background			= self.pygame.image.load(os.path.join(self.intelligence_overview_folder, 'intelligence_overview_background.png')).convert_alpha()	
+
+		self.research_overview_folder = os.path.join(self.interface_folder, 'research_overview')
+		self.research_overview_background			= self.pygame.image.load(os.path.join(self.research_overview_folder, 'research_overview_background.png')).convert_alpha()		
+
+		self.construction_overview_folder = os.path.join(self.interface_folder, 'construction_overview')
+		self.construction_overview_background			= self.pygame.image.load(os.path.join(self.construction_overview_folder, 'construction_overview_background.png')).convert_alpha()
+
+		self.production_overview_folder = os.path.join(self.interface_folder, 'production_overview')
+		self.production_overview_background			= self.pygame.image.load(os.path.join(self.production_overview_folder, 'production_overview_background.png')).convert_alpha()				
+
 		
 		self.sounds_folder = os.path.join(self.exe_folder, 'Sounds')
 		self.sounds_menu_folder = os.path.join(self.sounds_folder, 'menu')
@@ -718,7 +730,7 @@ your shoulders.
 			self.progressbar_huge, self.progressbar, self.progressbar_vertical, self.progressbar_small, self.bottom_HUD, self.country_laws_background, self.laws_description_image, self.game_logo,
 			self.economic_overview_background, self.poverty_rate_0, self.poverty_rate_5, self.poverty_rate_10, self.poverty_rate_15, self.poverty_rate_25, self.poverty_rate_50,
 			self.poverty_rate_80, self.credit_ratings, self.economic_warning, self.economic_freedom_index_green, self.economic_freedom_index_red, self.economic_freedom_score_green, self.economic_freedom_score_red,
-			self.small_rating_green, self.small_rating_red)
+			self.small_rating_green, self.small_rating_red, self.intelligence_overview_background, self.research_overview_background, self.construction_overview_background, self.production_overview_background)
 
 
 		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.Main_Menu, self.Country_Selection_Screen,

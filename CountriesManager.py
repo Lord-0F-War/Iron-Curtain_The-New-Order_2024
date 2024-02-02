@@ -206,9 +206,9 @@ class Country:
         self.external_economy_rating = 0   
 
         
-        partie_1 = Political_Party('test 1 party', 50, [], 50, True, (255,0,0))
-        partie_2 = Political_Party('test 2 party', 25, [], 25, True, (0,255,0))
-        partie_3 = Political_Party('test 3 party', 25, [], 25, True, (0,0,255))
+        partie_1 = Political_Party('Test 1 party', 50, [], 50, True, (255,0,0))
+        partie_2 = Political_Party('Test 2 party', 25, [], 25, True, (0,255,0))
+        partie_3 = Political_Party('Test 3 party', 25, [], 25, True, (0,0,255))
 
         self.country_official_parties = [partie_1, partie_2, partie_3] 
         self.country_clandestine_parties = [] 

@@ -1952,7 +1952,8 @@ class Game_Screen:
 			top_bar_defcon_level, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over, country_overview, popularity_circle_overlay, earth_daymap, earth_nightmap, 
 			earth_political_map, earth_political_map_filled, progressbar_huge, progressbar, progressbar_vertical, progressbar_small, bottom_HUD, country_laws_background, laws_description_image,
 			game_logo, economic_overview_background, poverty_rate_0, poverty_rate_5, poverty_rate_10, poverty_rate_15, poverty_rate_25, poverty_rate_50, poverty_rate_80, credit_ratings,
-			economic_warning, economic_freedom_index_green, economic_freedom_index_red, economic_freedom_score_green, economic_freedom_score_red, small_rating_green, small_rating_red):
+			economic_warning, economic_freedom_index_green, economic_freedom_index_red, economic_freedom_score_green, economic_freedom_score_red, small_rating_green, small_rating_red,
+			intelligence_overview_background, research_overview_background, construction_overview_background, production_overview_background):
 
 		reference_screen_size_x = 1920
 		reference_screen_size_y = 1080
@@ -1986,21 +1987,21 @@ class Game_Screen:
 			poverty_rate_15, poverty_rate_25, poverty_rate_50, poverty_rate_80, credit_ratings, economic_warning, economic_freedom_index_green, economic_freedom_index_red, economic_freedom_score_green,
 			economic_freedom_score_red, small_rating_green, small_rating_red)
 
-		self.Inteligence_Menu = Inteligence_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
+		self.intelligence_Menu = intelligence_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, intelligence_overview_background)
 
-		self.Research_Menu = Research_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
+		self.Research_Menu = Research_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, research_overview_background)
 		
 		self.Global_Market_Menu = Global_Market_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
 
-		self.Construction_Menu = Construction_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
+		self.Construction_Menu = Construction_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, construction_overview_background)
 
-		self.Production_Menu = Production_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
+		self.Production_Menu = Production_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, production_overview_background)
 
 		self.Army_Menu = Army_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
 
 		self.Stockpile_Menu = Stockpile_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
 
-		self.menu_list = [self.Country_Overview, self.Country_Focus_Tree, self.Decisions_Menu, self.Laws_Menu, self.Finances_Menu, self.Inteligence_Menu, self.Research_Menu, self.Global_Market_Menu, self.Construction_Menu, self.Production_Menu, self.Army_Menu, self.Stockpile_Menu]					
+		self.menu_list = [self.Country_Overview, self.Country_Focus_Tree, self.Decisions_Menu, self.Laws_Menu, self.Finances_Menu, self.intelligence_Menu, self.Research_Menu, self.Global_Market_Menu, self.Construction_Menu, self.Production_Menu, self.Army_Menu, self.Stockpile_Menu]					
 
 		
 		self.Game_Introduction_Menu = Game_Introduction_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, game_logo)
@@ -2024,8 +2025,8 @@ class Game_Screen:
 		elif index == 'Finances_Menu':
 			button = self.Finances_Menu.get_button_by_interaction(mouse_rect)
 			return button	
-		elif index == 'Inteligence_Menu':
-			button = self.Inteligence_Menu.get_button_by_interaction(mouse_rect)
+		elif index == 'intelligence_Menu':
+			button = self.intelligence_Menu.get_button_by_interaction(mouse_rect)
 			return button	
 		elif index == 'Research_Menu':
 			button = self.Research_Menu.get_button_by_interaction(mouse_rect)
@@ -2153,17 +2154,17 @@ class Game_Screen:
 			return clicked_button
 		#---------------------------------------------------------------------------------------------------------------------------------------#
 		#---------------------------------------------------------------------------------------------------------------------------------------#
-		clicked_button = self.get_button_by_interaction(mouse_rect, 'Inteligence_Menu')
+		clicked_button = self.get_button_by_interaction(mouse_rect, 'intelligence_Menu')
 		if clicked_button != None:
-			if clicked_button == "inteligence_button":
-				if self.Inteligence_Menu.is_menu_open == False:
+			if clicked_button == "intelligence_button":
+				if self.intelligence_Menu.is_menu_open == False:
 					for menu in self.menu_list:
 						menu.is_menu_open = False
 
-					self.Inteligence_Menu.is_menu_open = True
+					self.intelligence_Menu.is_menu_open = True
 
-				elif self.Inteligence_Menu.is_menu_open == True:
-					self.Inteligence_Menu.is_menu_open = False
+				elif self.intelligence_Menu.is_menu_open == True:
+					self.intelligence_Menu.is_menu_open = False
 
 			self.generic_hover_over_button_sound.fadeout(100)
 			self.generic_click_button_sound.play()
@@ -2398,7 +2399,7 @@ class Game_Screen:
 			self.Finances_Menu.highlight_button = False				
 		#---------------------------------------------------------------------------------------------------------------------------------------#
 		#---------------------------------------------------------------------------------------------------------------------------------------#	
-		hovered_button = self.get_button_by_interaction(mouse_rect, 'Inteligence_Menu')
+		hovered_button = self.get_button_by_interaction(mouse_rect, 'intelligence_Menu')
 		if hovered_button != None:
 			if self.last_hovered_button != hovered_button:
 				self.generic_hover_over_button_sound.play()
@@ -2409,10 +2410,10 @@ class Game_Screen:
 			for menu in self.menu_list:
 				menu.highlight_button = False
 
-			self.Inteligence_Menu.highlight_button = True
+			self.intelligence_Menu.highlight_button = True
 
 		else:
-			self.Inteligence_Menu.highlight_button = False				
+			self.intelligence_Menu.highlight_button = False				
 		#---------------------------------------------------------------------------------------------------------------------------------------#
 		#---------------------------------------------------------------------------------------------------------------------------------------#	
 		hovered_button = self.get_button_by_interaction(mouse_rect, 'Research_Menu')
@@ -2561,7 +2562,7 @@ class Game_Screen:
 		self.Decisions_Menu.draw(screen)
 		self.Laws_Menu.draw(screen)
 		self.Finances_Menu.draw(screen)
-		self.Inteligence_Menu.draw(screen)
+		self.intelligence_Menu.draw(screen)
 		self.Research_Menu.draw(screen)
 		self.Global_Market_Menu.draw(screen)
 		self.Construction_Menu.draw(screen)
@@ -2941,6 +2942,8 @@ class Country_Overview:
 		self.update_parties_pie_chart = False
 		self.parties_pie_chart_surface = pygame.Surface((603 * self.factor_x, 301 * self.factor_y), pygame.SRCALPHA)
 
+		self.official_parties_names_surface = pygame.Surface((295 * self.factor_x, 187 * self.factor_y), pygame.SRCALPHA)
+
 		# COLORS ------------#	
 
 		# POLITICS
@@ -3147,7 +3150,7 @@ class Country_Overview:
 
 		if self.is_menu_open == True:
 			self.is_touching_cicle_rects = False
-			if mouse_rect[1] - self.country_overview_position[1] > 370 * self.factor_y and mouse_rect[1] - self.country_overview_position[1] < 537 * self.factor_y:
+			if mouse_rect[1] - self.country_overview_position[1] > 441 * self.factor_y and mouse_rect[1] - self.country_overview_position[1] < 608 * self.factor_y:
 				if  mouse_rect[0] > 60 * self.factor_x and  mouse_rect[0] < 227 * self.factor_x:
 					for index, rect in enumerate(self.politics_cicle_rects):
 						if GenericUtilitys.polygon_intersects_rectangle(rect, mouse_rect):
@@ -3496,13 +3499,23 @@ class Country_Overview:
 		if self.is_menu_open == True:
 			if self.update_parties_pie_chart == True:
 				self.parties_pie_chart_surface.fill((0, 0, 0, 0))
+				self.official_parties_names_surface.fill((0, 0, 0, 0))
 				last_angle = 180
-				for official_party in self.PlayerCountry.country_official_parties:
+				for index, official_party in enumerate(self.PlayerCountry.country_official_parties):
 					end_angle = 180 * (official_party.seats / self.PlayerCountry.total_political_seats)
 					GenericUtilitys.draw_pie(self.parties_pie_chart_surface, official_party.party_color, (302, 300), 300, last_angle, end_angle + last_angle)
 					last_angle = end_angle + last_angle
-				self.update_parties_pie_chart = False
 
+					party_name_text = self.small_scalable_font.render(official_party.party_name, True, (255, 255, 255))
+
+					self.pygame.draw.rect(self.official_parties_names_surface, official_party.party_color, (5 * self.factor_x, (party_name_text.get_height()*1.2) * index + 5 * self.factor_y, party_name_text.get_height(), party_name_text.get_height()))
+
+					text_position = (5 * self.factor_x + party_name_text.get_height()*1.1, (party_name_text.get_height()*1.2) * index + 5 * self.factor_y)
+					self.official_parties_names_surface.blit(party_name_text, text_position)			
+
+				self.update_parties_pie_chart = False						
+
+			
 			screen.blit(self.PlayerCountry.country_leader_image, (12 * self.factor_x, 27 * self.factor_y + self.country_overview_position[1]))
 			screen.blit(self.country_overview, self.country_overview_position)
 
@@ -3510,12 +3523,9 @@ class Country_Overview:
 			screen.blit(self.country_overview, self.country_overview_position)			
 
 			# PARTIES
-			screen.blit(self.parties_pie_chart_surface, (933, 71 + self.country_overview_position[1]))
+			screen.blit(self.parties_pie_chart_surface, (876, 82 + self.country_overview_position[1]))
 
-			for index, official_party in enumerate(self.PlayerCountry.country_official_parties):
-				party_name_text = self.small_scalable_font.render(official_party.party_name, True, (255, 255, 255))
-				text_position = (940 * self.factor_x, (410 + (party_name_text.get_height()*1.2) * index) * self.factor_y + self.country_overview_position[1])	
-				screen.blit(party_name_text, text_position)
+			screen.blit(self.official_parties_names_surface, (879, 418 + self.country_overview_position[1]))
 
 			# COUNTRY NAME
 			country_name_text = self.big_scalable_font.render(self.PlayerCountry.country_name, True, (255, 255, 255))
@@ -3532,33 +3542,33 @@ class Country_Overview:
 
 			# GOVERNMENT
 			government_name_text = self.huge_scalable_font.render(self.PlayerCountry.country_government, True, (255, 255, 255))
-			text_position = (12 * self.factor_x, 574 * self.factor_y + self.country_overview_position[1])	
+			text_position = (25 * self.factor_x, 293 * self.factor_y + self.country_overview_position[1])	
 			
 			if government_name_text.get_width() > 250:
 				government_name_text = self.big_scalable_font.render(self.PlayerCountry.country_government, True, (255, 255, 255))	
-				text_position = (12 * self.factor_x, 574 * self.factor_y + self.country_overview_position[1])
+				text_position = (25 * self.factor_x, 293 * self.factor_y + self.country_overview_position[1])
 				if government_name_text.get_width() > 250:	
 					government_name_text = self.medium_scalable_font.render(self.PlayerCountry.country_government, True, (255, 255, 255))	
-					text_position = (12 * self.factor_x, 574 * self.factor_y + self.country_overview_position[1])					
+					text_position = (25 * self.factor_x, 293 * self.factor_y + self.country_overview_position[1])					
 
 			screen.blit(government_name_text, text_position)	
 
 			# RULING PARTY
 			ruling_party_name_text = self.huge_scalable_font.render(self.PlayerCountry.country_ruling_party, True, (255, 255, 255))
-			text_position = (299 * self.factor_x, 574 * self.factor_y + self.country_overview_position[1])	
+			text_position = (299 * self.factor_x, 293 * self.factor_y + self.country_overview_position[1])	
 
 			if ruling_party_name_text.get_width() > 250:
 				ruling_party_name_text = self.big_scalable_font.render(self.PlayerCountry.country_ruling_party, True, (255, 255, 255))	
-				text_position = (299 * self.factor_x, 574 * self.factor_y + self.country_overview_position[1])
+				text_position = (299 * self.factor_x, 293 * self.factor_y + self.country_overview_position[1])
 				if ruling_party_name_text.get_width() > 250:
 					ruling_party_name_text = self.medium_scalable_font.render(self.PlayerCountry.country_ruling_party, True, (255, 255, 255))	
-					text_position = (299 * self.factor_x, 574 * self.factor_y + self.country_overview_position[1])										
+					text_position = (299 * self.factor_x, 293 * self.factor_y + self.country_overview_position[1])										
 
 			screen.blit(ruling_party_name_text, text_position)
 
 			# ELECTIONS
 			elections_text = self.huge_scalable_font.render(self.PlayerCountry.country_elections, True, (255, 255, 255))
-			text_position = (586 * self.factor_x, 574 * self.factor_y + self.country_overview_position[1])	
+			text_position = (586 * self.factor_x, 293 * self.factor_y + self.country_overview_position[1])	
 			screen.blit(elections_text, text_position)	
 
 
@@ -3566,7 +3576,7 @@ class Country_Overview:
 			# POPULARITY CIRCLES
 
 			# POLITICS
-			chart_position = (143 * self.factor_x, 453 * self.factor_y + self.country_overview_position[1]) 
+			chart_position = (143 * self.factor_x, 525 * self.factor_y + self.country_overview_position[1]) 
 			chart_radius = 80 * self.factor_y
 
 			self.politics_cicle_rects = GenericUtilitys.draw_pie_chart(screen, chart_position, chart_radius, self.politics_popularity, self.politics_segment_colors)	
@@ -3574,7 +3584,7 @@ class Country_Overview:
 			screen.blit(self.popularity_circle_overlay, (chart_position[0]-85 * self.factor_x, chart_position[1]-85 * self.factor_y))
 
 			# CULTURE
-			chart_position = (433 * self.factor_x, 453 * self.factor_y + self.country_overview_position[1]) 
+			chart_position = (433 * self.factor_x, 525 * self.factor_y + self.country_overview_position[1]) 
 			chart_radius = 80 * self.factor_y
 
 			rects_info = GenericUtilitys.draw_pie_chart(screen, chart_position, chart_radius, self.culture_popularity, self.culture_segment_colors)		
@@ -3583,7 +3593,7 @@ class Country_Overview:
 			screen.blit(self.popularity_circle_overlay, (chart_position[0]-85 * self.factor_x, chart_position[1]-85 * self.factor_y))			
 
 			# RELIGION
-			chart_position = (720 * self.factor_x, 453 * self.factor_y + self.country_overview_position[1]) 
+			chart_position = (720 * self.factor_x, 525 * self.factor_y + self.country_overview_position[1]) 
 			chart_radius = 80 * self.factor_y  
 
 			rects_info = GenericUtilitys.draw_pie_chart(screen, chart_position, chart_radius, self.religion_popularity, self.religion_segment_colors)
@@ -4639,8 +4649,8 @@ class Finances_Menu:
 		if self.highlight_button == True or self.is_menu_open == True:
 			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_finances_button.rect, 2)		
 
-class Inteligence_Menu:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame):
+class intelligence_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, intelligence_overview_background):
 		self.factor_x, self.factor_y = factor_x, factor_y	
 		self.screen_width = screen_width 
 		self.screen_height = screen_height
@@ -4653,7 +4663,9 @@ class Inteligence_Menu:
 		height = 112 * self.factor_y
 		button_size = (57 * self.factor_x, 41 * self.factor_y)
 
-		self.top_bar_inteligence_button = GenericUtilitys.Button(306 * self.factor_x, height, button_size[0], button_size[1])
+		self.top_bar_intelligence_button = GenericUtilitys.Button(306 * self.factor_x, height, button_size[0], button_size[1])
+
+		self.intelligence_overview_background = pygame.transform.smoothscale_by(intelligence_overview_background, (self.factor_x, self.factor_y))
 
 		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
 		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
@@ -4662,21 +4674,20 @@ class Inteligence_Menu:
 		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))		
 
 	def get_button_by_interaction(self, mouse_rect):	
-		if self.top_bar_inteligence_button.rect.colliderect(mouse_rect):
-			return "inteligence_button"
+		if self.top_bar_intelligence_button.rect.colliderect(mouse_rect):
+			return "intelligence_button"
 		
 		return None
 
 	def draw(self, screen):
 		if self.is_menu_open == True:
-			self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y))
-			self.pygame.draw.rect(screen, (43,219,211), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), 2)			
+			screen.blit(self.intelligence_overview_background, (0, 158 * self.factor_y))		
 
 		if self.highlight_button == True or self.is_menu_open == True:
-			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_inteligence_button.rect, 2)
+			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_intelligence_button.rect, 2)
 
 class Research_Menu:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame):
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, research_overview_background):
 		self.factor_x, self.factor_y = factor_x, factor_y	
 		self.screen_width = screen_width 
 		self.screen_height = screen_height
@@ -4690,6 +4701,8 @@ class Research_Menu:
 		button_size = (57 * self.factor_x, 41 * self.factor_y)
 
 		self.top_bar_research_button = GenericUtilitys.Button(365 * self.factor_x, height, button_size[0], button_size[1])
+
+		self.research_overview_background = pygame.transform.smoothscale_by(research_overview_background, (self.factor_x, self.factor_y))
 
 		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
 		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
@@ -4705,8 +4718,7 @@ class Research_Menu:
 
 	def draw(self, screen):
 		if self.is_menu_open == True:
-			self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y))
-			self.pygame.draw.rect(screen, (43,219,211), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), 2)			
+			screen.blit(self.research_overview_background, (0, 158 * self.factor_y))
 
 		if self.highlight_button == True or self.is_menu_open == True:
 			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_research_button.rect, 2)
@@ -4748,7 +4760,7 @@ class Global_Market_Menu:
 			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_global_market_button.rect, 2)
 
 class Construction_Menu:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame):
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, construction_overview_background):
 		self.factor_x, self.factor_y = factor_x, factor_y	
 		self.screen_width = screen_width 
 		self.screen_height = screen_height
@@ -4762,6 +4774,8 @@ class Construction_Menu:
 		button_size = (57 * self.factor_x, 41 * self.factor_y)
 
 		self.top_bar_construction_button = GenericUtilitys.Button(483 * self.factor_x, height, button_size[0], button_size[1])
+
+		self.construction_overview_background = pygame.transform.smoothscale_by(construction_overview_background, (self.factor_x, self.factor_y))
 
 		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
 		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
@@ -4777,14 +4791,13 @@ class Construction_Menu:
 
 	def draw(self, screen):
 		if self.is_menu_open == True:
-			self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y))
-			self.pygame.draw.rect(screen, (43,219,211), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), 2)			
+			screen.blit(self.construction_overview_background, (0, 158 * self.factor_y))			
 
 		if self.highlight_button == True or self.is_menu_open == True:
 			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_construction_button.rect, 2)
 
 class Production_Menu:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame):
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, production_overview_background):
 		self.factor_x, self.factor_y = factor_x, factor_y	
 		self.screen_width = screen_width 
 		self.screen_height = screen_height
@@ -4798,6 +4811,8 @@ class Production_Menu:
 		button_size = (57 * self.factor_x, 41 * self.factor_y)
 
 		self.top_bar_production_button = GenericUtilitys.Button(542 * self.factor_x, height, button_size[0], button_size[1])
+
+		self.production_overview_background = pygame.transform.smoothscale_by(production_overview_background, (self.factor_x, self.factor_y))
 
 		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
 		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
@@ -4813,8 +4828,7 @@ class Production_Menu:
 
 	def draw(self, screen):
 		if self.is_menu_open == True:
-			self.pygame.draw.rect(screen, (6,15,20), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y))
-			self.pygame.draw.rect(screen, (43,219,211), (0, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), 2)			
+			screen.blit(self.production_overview_background, (0, 158 * self.factor_y))		
 
 		if self.highlight_button == True or self.is_menu_open == True:
 			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_production_button.rect, 2)
