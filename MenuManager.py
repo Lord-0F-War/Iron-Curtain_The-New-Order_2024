@@ -2726,7 +2726,7 @@ class Earth_Map:
 
 		self.Clock_UI = Clock_UI
 
-		self.map_overlay_index = 1
+		self.map_overlay_index = 2
 
 		self.source_earth_daymap = earth_daymap
 		self.source_earth_nightmap = earth_nightmap
@@ -5097,7 +5097,7 @@ The second act of the Cold War was defined not by the roar of tanks and the clas
 Western world.
 
 
-	The silent war of ideologies had begun, and its effects would reverberate for decades to come.
+	The silent war of ideologies had begun, and its effects would reverberate for decades to come...
 """
 
 		self.introduction_text_surface = pygame.Surface((self.screen_width, 2250 * self.factor_y + self.game_logo.get_height()*1.1), pygame.SRCALPHA)

@@ -149,7 +149,7 @@ class Main:
 		self.earth_daymap 						= self.pygame.image.load(os.path.join(self.map_folder, 'earth_daymap.png')).convert_alpha()
 		self.earth_nightmap 					= self.pygame.image.load(os.path.join(self.map_folder, 'earth_nightmap.png')).convert_alpha()	
 		self.earth_political_map 				= self.pygame.image.load(os.path.join(self.map_folder, 'earth_political_map.png')).convert_alpha()
-		self.earth_political_map_filled 		= self.pygame.image.load(os.path.join(self.map_folder, 'earth_political_map_filled.png')).convert_alpha()
+		self.earth_political_map_filled 		= self.pygame.image.load(os.path.join(self.map_folder, 'earth_political_map_filled1.png')).convert_alpha()
 
 
 		self.gfx_folder = os.path.join(self.exe_folder, 'gfx')
