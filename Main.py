@@ -13,7 +13,7 @@ with open(f'{exe_folder}\settings.txt', 'r') as file:
 import PygameManager
 Pygame_Manager = PygameManager.Pygame(screen_width, screen_height)
 pygame = Pygame_Manager.start_pygame()
-clock, QUIT, date_tick, FPS_update, key_delay, screen_update, display, screen, surface_alfa = Pygame_Manager.config_pygame()
+clock, QUIT, date_tick, FPS_update, key_delay, display, screen, surface_alfa = Pygame_Manager.config_pygame()
 
 import ScreenManager
 import SoundsManager
@@ -23,12 +23,12 @@ import CountriesManager
 
 
 class Main:
-	def __init__(self, screen_width, screen_height, Pygame_Manager, pygame, clock, QUIT, date_tick, FPS_update, key_delay, screen_update, display, screen, surface_alfa) -> None:
+	def __init__(self, screen_width, screen_height, Pygame_Manager, pygame, clock, QUIT, date_tick, FPS_update, key_delay, display, screen, surface_alfa) -> None:
 		
 		self.screen_width, self.screen_height = screen_width, screen_height
 		self.Pygame_Manager = Pygame_Manager
 		self.pygame = pygame
-		self.clock, self.QUIT, self.date_tick, self.FPS_update, self.key_delay, self.screen_update, self.display, self.screen, self.surface_alfa = clock, QUIT, date_tick, FPS_update, key_delay, screen_update, display, screen, surface_alfa
+		self.clock, self.QUIT, self.date_tick, self.FPS_update, self.key_delay, self.display, self.screen, self.surface_alfa = clock, QUIT, date_tick, FPS_update, key_delay, display, screen, surface_alfa
 
 		self.countries = []
 
@@ -146,8 +146,7 @@ class Main:
 
 		self.map_folder = os.path.join(self.exe_folder, 'map')
 
-		self.earth_daymap 						= self.pygame.image.load(os.path.join(self.map_folder, 'earth_daymap.png')).convert_alpha()
-		self.earth_nightmap 					= self.pygame.image.load(os.path.join(self.map_folder, 'earth_nightmap.png')).convert_alpha()	
+		self.earth_daymap 						= self.pygame.image.load(os.path.join(self.map_folder, 'earth_daymap.png')).convert_alpha()	
 		self.earth_political_map 				= self.pygame.image.load(os.path.join(self.map_folder, 'earth_political_map.png')).convert_alpha()
 		self.earth_political_map_filled 		= self.pygame.image.load(os.path.join(self.map_folder, 'earth_political_map_filled1.png')).convert_alpha()
 
@@ -726,7 +725,7 @@ your shoulders.
 
 		self.Game_Screen = MenuManager.Game_Screen(self.screen_width, self.screen_height, self.pygame, self.clock, self.Sounds_Manager.generic_hover_over_button_sound, self.Sounds_Manager.generic_click_button_sound, 
 			self.top_bar_right_background, self.top_bar_game_speed_indicator, self.top_bar_defcon_levels, self.top_bar_left_background, self.top_bar_flag_overlay,
-			self.top_bar_flag_overlay_hovering_over, self.country_overview, self.popularity_circle_overlay, self.earth_daymap, self.earth_nightmap, self.earth_political_map, self.earth_political_map_filled,
+			self.top_bar_flag_overlay_hovering_over, self.country_overview, self.popularity_circle_overlay, self.earth_daymap, self.earth_political_map, self.earth_political_map_filled,
 			self.progressbar_huge, self.progressbar, self.progressbar_vertical, self.progressbar_small, self.bottom_HUD, self.country_laws_background, self.laws_description_image, self.game_logo,
 			self.economic_overview_background, self.poverty_rate_0, self.poverty_rate_5, self.poverty_rate_10, self.poverty_rate_15, self.poverty_rate_25, self.poverty_rate_50,
 			self.poverty_rate_80, self.credit_ratings, self.economic_warning, self.economic_freedom_index_green, self.economic_freedom_index_red, self.economic_freedom_score_green, self.economic_freedom_score_red,
@@ -764,6 +763,7 @@ your shoulders.
 
 
 	def main_loop(self):
+		to_draw = True
 		while self.starting_the_game:
 			if self.is_in_main_menu_screen == True:
 				if self.main_menu_music_started == False or self.pygame.mixer.music.get_busy() == False:
@@ -771,14 +771,14 @@ your shoulders.
 					self.pygame.mixer.music.load(self.music_files_dic['clock-ticking'])
 					self.pygame.mixer.music.play()
 
+				self.Screen_Manager.render_main_menu(self.Options_Menu.brightness_slider.value, self.is_options_menu_open)					
+
 				for event in self.pygame.event.get():
 					keys = self.pygame.key.get_pressed()	
 					if event.type == QUIT:
 						self.starting_the_game = False		
 					if event.type == FPS_update:
 						self.pygame.display.set_caption(str(round(clock.get_fps(), 2)))							
-					if event.type == screen_update:
-						self.Screen_Manager.render_main_menu(self.Options_Menu.brightness_slider.value, self.is_options_menu_open)
 
 					if self.is_options_menu_open == True:
 						self.Options_Menu.interacting_with_UI_slides(event)							
@@ -866,14 +866,14 @@ your shoulders.
 					self.pygame.mixer.music.load(self.music_files_dic['clock-ticking'])
 					self.pygame.mixer.music.play()
 
+				self.Screen_Manager.render_select_scenario_menu(self.Options_Menu.brightness_slider.value, self.is_in_esc_menu, self.is_options_menu_open)						
+
 				for event in self.pygame.event.get():
 					keys = self.pygame.key.get_pressed()	
 					if event.type == QUIT:
 						self.starting_the_game = False		
 					if event.type == FPS_update:
 						self.pygame.display.set_caption(str(round(clock.get_fps(), 2)))							
-					if event.type == screen_update:
-						self.Screen_Manager.render_select_scenario_menu(self.Options_Menu.brightness_slider.value, self.is_in_esc_menu, self.is_options_menu_open)	
 
 					if self.is_options_menu_open == True:
 						self.Options_Menu.interacting_with_UI_slides(event)	
@@ -956,6 +956,8 @@ your shoulders.
 
 
 			if self.is_in_country_selection_screen == True:
+				self.Screen_Manager.render_country_selection_menu(self.Options_Menu.brightness_slider.value, self.is_in_esc_menu, self.is_options_menu_open, self.mouse_pos, self.mouse_rect)	
+
 				for event in self.pygame.event.get():
 					keys = self.pygame.key.get_pressed()	
 					if event.type == QUIT:
@@ -963,8 +965,6 @@ your shoulders.
 						self.is_in_country_selection_screen = False		
 					if event.type == FPS_update:
 						self.pygame.display.set_caption(str(round(clock.get_fps(), 2)))							
-					if event.type == screen_update:
-						self.Screen_Manager.render_country_selection_menu(self.Options_Menu.brightness_slider.value, self.is_in_esc_menu, self.is_options_menu_open, self.mouse_pos, self.mouse_rect)	
 
 					if self.is_options_menu_open == True:
 						self.Options_Menu.interacting_with_UI_slides(event)
@@ -1003,7 +1003,13 @@ your shoulders.
 
 									self.Game_Screen.Finances_Menu.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
 
+									self.Game_Screen.Research_Menu.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
+
 									self.Game_Screen.Clock_UI.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
+
+									self.Game_Screen.Earth_Map.scale_map(zoom_factor_change = -0.75, fps_freezing_avoidance = round(clock.get_fps(), 2), zoom_type = 'zoom_out')
+
+									self.Game_Screen.Earth_Map.map_position[0] -= 900
 						else:
 							self.clicked_button = self.ESC_Menu.get_clicked_button(self.mouse_rect, self.is_options_menu_open)
 							if self.clicked_button != 'none' and self.clicked_button != None:
@@ -1065,7 +1071,10 @@ your shoulders.
 
 
 			if self.is_in_game_screen == True:
-				self.Screen_Manager.render_game_screen(self.Options_Menu.brightness_slider.value, self.is_in_esc_menu, self.is_options_menu_open, self.mouse_rect)
+				if to_draw == True:
+					self.Screen_Manager.render_game_screen(self.Options_Menu.brightness_slider.value, self.is_in_esc_menu, self.is_options_menu_open, self.mouse_rect)
+				
+				to_draw = not to_draw
 
 				if self.Game_Screen.Country_Focus_Tree.keep_game_paused == True:
 					self.Game_Screen.Clock_UI.game_speed = 0
@@ -1076,12 +1085,14 @@ your shoulders.
 						self.starting_the_game = False
 						self.is_in_game_screen = False		
 					if event.type == FPS_update:
-						self.pygame.display.set_caption(str(round(clock.get_fps(), 2)))							
+						self.pygame.display.set_caption(str(round(clock.get_fps(), 2)))	
+						continue						
 					if event.type == date_tick:
 						self.Game_Screen.Clock_UI.date_tick()
 						self.Game_Screen.Country_Focus_Tree.current_day = self.Game_Screen.Clock_UI.current_day
 						self.Game_Screen.Country_Focus_Tree.current_month = self.Game_Screen.Clock_UI.current_month
 						self.Game_Screen.Country_Focus_Tree.current_year = self.Game_Screen.Clock_UI.current_year
+						continue
 
 					if self.is_options_menu_open == True:
 						self.Options_Menu.interacting_with_UI_slides(event)
@@ -1245,11 +1256,11 @@ your shoulders.
 				self.Country_Selection_Screen.music_player()
 
 
-			clock.tick(30)
+			clock.tick()
 
 		self.pygame.quit()
 
 
 
-Main(screen_width, screen_height, Pygame_Manager, pygame, clock, QUIT, date_tick, FPS_update, key_delay, screen_update, display, screen, surface_alfa)
+Main(screen_width, screen_height, Pygame_Manager, pygame, clock, QUIT, date_tick, FPS_update, key_delay, display, screen, surface_alfa)
 

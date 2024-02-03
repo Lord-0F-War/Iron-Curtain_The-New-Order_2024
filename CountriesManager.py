@@ -116,6 +116,14 @@ class Country:
         self.country_culture = None
         self.country_religion = None
 
+        # RESEARCH
+        self.known_warfare_researches = []
+        self.known_transport_researches = []
+        self.known_science_researches = []
+        self.known_technology_researches = []
+        self.known_medical_researches = []
+        self.known_society_researches = []
+
         # FOCUS TREE
         self.country_focus_tree = {}
 

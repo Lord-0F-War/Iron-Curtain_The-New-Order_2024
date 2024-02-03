@@ -27,14 +27,12 @@ class Pygame:
 		self.date_tick = pygame.USEREVENT + 1
 		self.FPS_update = pygame.USEREVENT + 2
 		self.key_delay = pygame.USEREVENT + 3
-		self.screen_update = pygame.USEREVENT + 4
 		
 		pygame.time.set_timer(self.date_tick, 10) # 100 ticks per second
-		pygame.time.set_timer(self.FPS_update, 100)
+		pygame.time.set_timer(self.FPS_update, 150)
 		pygame.time.set_timer(self.key_delay, 42)
-		pygame.time.set_timer(self.screen_update, 25) # 40 fps
 
 		pygame.mixer.init(buffer=8192) 
 
-		return (self.clock, QUIT, self.date_tick, self.FPS_update, self.key_delay, self.screen_update, self.display, self.screen, self.surface_alfa)
+		return (self.clock, QUIT, self.date_tick, self.FPS_update, self.key_delay, self.display, self.screen, self.surface_alfa)
 

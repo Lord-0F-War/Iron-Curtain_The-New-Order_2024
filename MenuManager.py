@@ -1949,7 +1949,7 @@ class Laws_Group_Menu:
 
 class Game_Screen:
 	def __init__(self, screen_width, screen_height, pygame, clock, generic_hover_over_button_sound, generic_click_button_sound, top_bar_right_background, top_bar_game_speed_indicator,
-			top_bar_defcon_level, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over, country_overview, popularity_circle_overlay, earth_daymap, earth_nightmap, 
+			top_bar_defcon_level, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over, country_overview, popularity_circle_overlay, earth_daymap, 
 			earth_political_map, earth_political_map_filled, progressbar_huge, progressbar, progressbar_vertical, progressbar_small, bottom_HUD, country_laws_background, laws_description_image,
 			game_logo, economic_overview_background, poverty_rate_0, poverty_rate_5, poverty_rate_10, poverty_rate_15, poverty_rate_25, poverty_rate_50, poverty_rate_80, credit_ratings,
 			economic_warning, economic_freedom_index_green, economic_freedom_index_red, economic_freedom_score_green, economic_freedom_score_red, small_rating_green, small_rating_red,
@@ -1976,7 +1976,7 @@ class Game_Screen:
 
 		self.Bottom_HUD = Bottom_HUD(self.factor_x, self.factor_y, screen_width, screen_height, pygame, bottom_HUD)
 
-		self.Earth_Map = Earth_Map(self.factor_x, self.factor_y, screen_width, screen_height, earth_daymap, earth_nightmap, earth_political_map, earth_political_map_filled, self.Clock_UI)
+		self.Earth_Map = Earth_Map(self.factor_x, self.factor_y, screen_width, screen_height, earth_daymap, earth_political_map, earth_political_map_filled, self.Clock_UI)
 
 
 		self.Decisions_Menu = Decisions_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
@@ -2714,7 +2714,7 @@ class Clock_UI:
 
 # MAP
 class Earth_Map:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, earth_daymap, earth_nightmap, earth_political_map, earth_political_map_filled, Clock_UI):
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, earth_daymap, earth_political_map, earth_political_map_filled, Clock_UI):
 		self.factor_x = factor_x
 		self.factor_y = factor_y
 
@@ -2726,22 +2726,18 @@ class Earth_Map:
 
 		self.Clock_UI = Clock_UI
 
-		self.map_overlay_index = 2
+		self.map_overlay_index = 1
 
 		self.source_earth_daymap = earth_daymap
-		self.source_earth_nightmap = earth_nightmap
 		self.source_earth_political_map = earth_political_map
 		self.source_earth_political_map_filled = earth_political_map_filled
 
 		self.earth_daymap = earth_daymap.copy()
-		self.earth_nightmap = earth_nightmap.copy()
 		self.earth_political_map = earth_political_map.copy()
 		self.earth_political_map_filled = earth_political_map_filled.copy()
 
-		self.night_strips = self.calculate_night_strips(interval_minutes = 1)
-
 		self.screen_sized_map_surface = pygame.Surface((self.screen_width, self.screen_height), pygame.SRCALPHA)
-		self._8k_sized_map_surface = pygame.Surface((self.source_earth_daymap.get_width(), self.source_earth_nightmap.get_height()), pygame.SRCALPHA)	
+		self._8k_sized_map_surface = pygame.Surface((self.source_earth_daymap.get_width(), self.source_earth_daymap.get_height()), pygame.SRCALPHA)	
 
 		self.time_zone = 6.1 # 6.1 == Greenwich
 
@@ -2749,25 +2745,6 @@ class Earth_Map:
 		self.offset_y = 0
 
 		self.update_map()
-
-	def calculate_night_strips(self, interval_minutes):
-		night_strips = {}
-
-		for minute in range(0, 1440, interval_minutes):
-			longitude_start, longitude_end = self.calculate_night_longitude_range(minute)
-			night_strips[minute] = [(longitude_start, longitude_end)]
-
-			# Check if the night strip crosses the right edge
-			if longitude_end > 360:
-				night_strips[minute].append((0, longitude_end - 360))
-
-		return night_strips
-
-	def calculate_night_longitude_range(self, minute):
-		# Calculate longitude range based on the minute of the day
-		longitude_start = (minute / 1440) * 360
-		longitude_end = ((minute + 720) / 1440) * 360
-		return longitude_start, longitude_end
 
 	def scale_map(self, zoom_factor_change, fps_freezing_avoidance, zoom_type):
 		if fps_freezing_avoidance > 10:
@@ -2792,17 +2769,22 @@ class Earth_Map:
 
 	def update_map(self):
 		if self.map_overlay_index != None:
-			self.earth_nightmap = pygame.transform.scale_by(self.source_earth_nightmap, (self.zoom_factor))
-			
-			result_surface = pygame.Surface((self.earth_nightmap.get_width(), self.earth_nightmap.get_height()), pygame.SRCALPHA)
-
-			result_surface.blit(pygame.transform.scale_by(self.source_earth_daymap, (self.zoom_factor)), (0, 0))
 
 			if self.map_overlay_index == 1:
-				self.earth_political_map = pygame.transform.scale_by(self.source_earth_political_map, (self.zoom_factor))	
+				self.earth_political_map = pygame.transform.smoothscale_by(self.source_earth_political_map, (self.zoom_factor))
+
+				result_surface = pygame.Surface((self.earth_political_map.get_width(), self.earth_political_map.get_height()), pygame.SRCALPHA)
+
+				result_surface.blit(pygame.transform.smoothscale_by(self.source_earth_daymap, (self.zoom_factor)), (0, 0))
+				
 				result_surface.blit(self.earth_political_map, (0, 0))
 			elif self.map_overlay_index == 2:
-				self.earth_political_map_filled = pygame.transform.scale_by(self.source_earth_political_map_filled, (self.zoom_factor))	
+				self.earth_political_map_filled = pygame.transform.smoothscale_by(self.source_earth_political_map_filled, (self.zoom_factor))	
+				
+				result_surface = pygame.Surface((self.earth_political_map_filled.get_width(), self.earth_political_map_filled.get_height()), pygame.SRCALPHA)
+
+				result_surface.blit(pygame.transform.smoothscale_by(self.source_earth_daymap, (self.zoom_factor)), (0, 0))
+				
 				result_surface.blit(self.earth_political_map_filled, (0, 0))
 
 			self.earth_daymap = result_surface.convert_alpha().copy()
@@ -2874,33 +2856,6 @@ class Earth_Map:
 		
 		self._8k_sized_map_surface.blit(self.screen_sized_map_surface, (0, 0))
 
-
-		current_minute = (1440 - (self.Clock_UI.current_hour * 60 + self.Clock_UI.current_minute)) + self.time_zone * 60
-		if current_minute >= 1440:
-			current_minute -= 1440
-
-		closest_key = min(self.night_strips.keys(), key=lambda x: abs(x - current_minute))
-		current_night_strips = self.night_strips[closest_key]
-
-		for start, end in current_night_strips:
-			x_start = int((start / 360) * self.earth_nightmap.get_width())
-			x_end = int((end / 360) * self.earth_nightmap.get_width())
-
-			# Blit night map for the current night strips
-			columns_to_copy = min(x_end - x_start, self.earth_nightmap.get_width() - x_start)
-			if self.map_position[0] > 0:
-				height = self.screen_height if self.screen_height + self.offset_y <= self.earth_nightmap.get_height() else self.earth_nightmap.get_height() - self.offset_y
-
-				self._8k_sized_map_surface.blit(self.earth_nightmap.subsurface((x_start, self.offset_y, columns_to_copy, height)), (x_start + abs(self.map_position[0]), 0))
-				if x_start + columns_to_copy + abs(self.map_position[0]) > self.earth_nightmap.get_width():
-					difference = (x_start + columns_to_copy + abs(self.map_position[0])) - self.earth_nightmap.get_width()
-					self._8k_sized_map_surface.blit(self.earth_nightmap.subsurface((x_start, self.offset_y, columns_to_copy, height)), (-columns_to_copy + difference, 0))
-			else:
-				height = self.screen_height if self.screen_height + self.offset_y <= self.earth_nightmap.get_height() else self.earth_nightmap.get_height() - self.offset_y
-
-				self._8k_sized_map_surface.blit(self.earth_nightmap.subsurface((x_start, self.offset_y, columns_to_copy, height)), (x_start - abs(self.map_position[0]), 0))
-				self._8k_sized_map_surface.blit(self.earth_nightmap.subsurface((x_start, self.offset_y, columns_to_copy, height)), (self.earth_nightmap.get_width() - abs(self.map_position[0]) + x_start, 0))
-		
 		screen.blit(self._8k_sized_map_surface, (0, 0))
 
 # TOP BAR MENUS:
@@ -4694,6 +4649,8 @@ class Research_Menu:
 
 		self.pygame = pygame
 
+		self.PlayerCountry = None
+
 		self.is_menu_open = False
 		self.highlight_button = False
 
@@ -4701,6 +4658,18 @@ class Research_Menu:
 		button_size = (57 * self.factor_x, 41 * self.factor_y)
 
 		self.top_bar_research_button = GenericUtilitys.Button(365 * self.factor_x, height, button_size[0], button_size[1])
+
+		# TECH TREES
+		x_pos = 92 * self.factor_x
+		button_size = (248 * self.factor_x, 69 * self.factor_y)
+		self.warfare_tech_tree_button 		= GenericUtilitys.Button(x_pos, 67 * self.factor_y + 158 * self.factor_y, button_size[0], button_size[1])
+		self.transport_tech_tree_button 	= GenericUtilitys.Button(x_pos, 146 * self.factor_y + 158 * self.factor_y, button_size[0], button_size[1])
+		self.science_tech_tree_button 		= GenericUtilitys.Button(x_pos, 225 * self.factor_y + 158 * self.factor_y, button_size[0], button_size[1])
+		self.technology_tech_tree_button 	= GenericUtilitys.Button(x_pos, 304 * self.factor_y + 158 * self.factor_y, button_size[0], button_size[1])
+		self.medical_tech_tree_button 		= GenericUtilitys.Button(x_pos, 383 * self.factor_y + 158 * self.factor_y, button_size[0], button_size[1])
+		self.society_tech_tree_button 		= GenericUtilitys.Button(x_pos, 462 * self.factor_y + 158 * self.factor_y, button_size[0], button_size[1])
+
+		self.hovered_tech_tree_button = None
 
 		self.research_overview_background = pygame.transform.smoothscale_by(research_overview_background, (self.factor_x, self.factor_y))
 
@@ -4714,11 +4683,60 @@ class Research_Menu:
 		if self.top_bar_research_button.rect.colliderect(mouse_rect):
 			return "research_button"
 		
+		if self.is_menu_open == True:
+			self.hovered_tech_tree_button = None
+			if self.warfare_tech_tree_button.rect.colliderect(mouse_rect):
+				self.hovered_tech_tree_button = self.warfare_tech_tree_button
+				return "warfare_tech_tree_button"
+			elif self.transport_tech_tree_button.rect.colliderect(mouse_rect):
+				self.hovered_tech_tree_button = self.transport_tech_tree_button
+				return "transport_tech_tree_button"
+			elif self.science_tech_tree_button.rect.colliderect(mouse_rect):
+				self.hovered_tech_tree_button = self.science_tech_tree_button
+				return "science_tech_tree_button"
+			elif self.technology_tech_tree_button.rect.colliderect(mouse_rect):
+				self.hovered_tech_tree_button = self.technology_tech_tree_button
+				return "technology_tech_tree_button"
+			elif self.medical_tech_tree_button.rect.colliderect(mouse_rect):
+				self.hovered_tech_tree_button = self.medical_tech_tree_button
+				return "medical_tech_tree_button"
+			elif self.society_tech_tree_button.rect.colliderect(mouse_rect):
+				self.hovered_tech_tree_button = self.society_tech_tree_button
+				return "society_tech_tree_button"
+		
 		return None
 
 	def draw(self, screen):
 		if self.is_menu_open == True:
 			screen.blit(self.research_overview_background, (0, 158 * self.factor_y))
+
+			# KNOWN TECHNOLOGIES
+			x_pos = 630 * self.factor_x
+
+			known_warfare_researches_text_render = self.big_scalable_font.render(str(len(self.PlayerCountry.known_warfare_researches)), False, (255,255,255))	
+			screen.blit(known_warfare_researches_text_render, (x_pos, 93 * self.factor_y + 158 * self.factor_y))
+
+			known_transport_researches_text_render = self.big_scalable_font.render(str(len(self.PlayerCountry.known_transport_researches)), False, (255,255,255))	
+			screen.blit(known_transport_researches_text_render, (x_pos, 172 * self.factor_y + 158 * self.factor_y))
+
+			known_science_researches_text_render = self.big_scalable_font.render(str(len(self.PlayerCountry.known_science_researches)), False, (255,255,255))	
+			screen.blit(known_science_researches_text_render, (x_pos, 251 * self.factor_y + 158 * self.factor_y))
+
+			known_technology_researches_text_render = self.big_scalable_font.render(str(len(self.PlayerCountry.known_technology_researches)), False, (255,255,255))	
+			screen.blit(known_technology_researches_text_render, (x_pos, 330 * self.factor_y + 158 * self.factor_y))
+
+			known_medical_researches_text_render = self.big_scalable_font.render(str(len(self.PlayerCountry.known_medical_researches)), False, (255,255,255))	
+			screen.blit(known_medical_researches_text_render, (x_pos, 409 * self.factor_y + 158 * self.factor_y))
+
+			known_society_researches_text_render = self.big_scalable_font.render(str(len(self.PlayerCountry.known_society_researches)), False, (255,255,255))	
+			screen.blit(known_society_researches_text_render, (x_pos, 488 * self.factor_y + 158 * self.factor_y))															
+			
+			# TECH TREE BUTTONS
+			if self.hovered_tech_tree_button:
+				self.pygame.draw.rect(screen, (0,255,0), self.hovered_tech_tree_button.rect, 2)
+			
+			
+			
 
 		if self.highlight_button == True or self.is_menu_open == True:
 			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_research_button.rect, 2)
