@@ -4815,15 +4815,15 @@ class Warfare_Tech_Tree:
 			},
 			'tech 2': {
 				'name': 'TECH NAME 2',
-				'position': (450, 250),
+				'position': (150, 450),
 				'icon': researche_icons_image_dic['tech_M-190_Cipher_Machine'],
-				'requirements': 'tech 1'
+				'requirements': None
 			},
 			'tech 3': {
 				'name': 'TECH NAME 3',
-				'position': (750, 250),
+				'position': (500, 250),
 				'icon': researche_icons_image_dic['industry_tech_social_construction_3'],
-				'requirements': 'tech 2'
+				'requirements': ['tech 1', 'tech 2']
 			}						
 		}
 
@@ -4832,22 +4832,29 @@ class Warfare_Tech_Tree:
 
 		for researche in self.researches.values():
 			if researche['requirements']:
-				self.pygame.draw.line(self.researches_lines_connection_surface, (255,255,255), (researche['position']), (self.researches[researche['requirements']]['position']), 2)
+				is_research_available = True
+				for requirement in researche['requirements']:
+					self.pygame.draw.line(self.researches_lines_connection_surface, (255,255,255), (researche['position']), (self.researches[requirement]['position']), 2)
+					if self.researches[requirement]['name'] not in PlayerCountry.known_warfare_researches:
+						is_research_available = False
+				
+				if researche['name'] in PlayerCountry.known_warfare_researches:
+					image = self.researche_icons_image_dic['technology_researched']	
+				else:					
+					if is_research_available:
+						image = self.researche_icons_image_dic['technology_available']
+					else:
+						image = self.researche_icons_image_dic['technology_unavailable']
+			else:
+				if researche['name'] in PlayerCountry.known_warfare_researches:
+					image = self.researche_icons_image_dic['technology_researched']		
+				else:
+					image = self.researche_icons_image_dic['technology_available']							
 
 			researche_rect = pygame.Rect(0,0, 239 * self.factor_x, 117 * self.factor_y)
 			researche_rect.center = (researche['position'][0] * self.factor_x, researche['position'][1] * self.factor_y)
 
 			self.researches_rects.append((pygame.Rect(researche_rect[0] + 701 * self.factor_x, researche_rect[1] + 160 * self.factor_y, researche_rect[2], researche_rect[3]), researche))
-
-			splited_name = researche['name'].split()
-			previous_research = ' '.join(splited_name[:-1]) + ' ' +str(int(splited_name[-1]) - 1)
-			
-			if researche['name'] in PlayerCountry.known_warfare_researches:
-				image = self.researche_icons_image_dic['technology_researched']
-			elif previous_research in PlayerCountry.known_warfare_researches:
-				image = self.researche_icons_image_dic['technology_available']
-			else:
-				image = self.researche_icons_image_dic['technology_unavailable']
 	
 			self.researches_surface.blit(image, (researche_rect.center[0] - image.get_width()/2, researche_rect.center[1] - image.get_height()/2))
 
