@@ -1223,7 +1223,7 @@ your shoulders.
 
 				#--------------------------------------------------------------------------------------------------------#
 				#--------------------------------------------------------------------------------------------------------#
-				if self.Game_Screen.Game_Introduction_Menu.is_menu_open == False and self.Game_Screen.Decisions_Menu.is_menu_open == False:
+				if self.Game_Screen.Game_Introduction_Menu.is_menu_open == False:
 					mouse_buttons = pygame.mouse.get_pressed()
 					# Check if the left mouse button is being held down
 					if mouse_buttons[0]:	
@@ -1244,7 +1244,11 @@ your shoulders.
 						if self.Game_Screen.Country_Focus_Tree.is_menu_open == True:						
 							self.Game_Screen.Country_Focus_Tree.focus_movement_x -= difference_x
 							self.Game_Screen.Country_Focus_Tree.focus_movement_y -= difference_y
-
+						elif self.Game_Screen.Decisions_Menu.is_menu_open == True:
+							pass
+						elif self.Game_Screen.Research_Menu.is_menu_open == True:
+							self.Game_Screen.Research_Menu.icons_offset_x = min(self.Game_Screen.Research_Menu.surface_size_x - 1217*self.factor_x, max(0, self.Game_Screen.Research_Menu.icons_offset_x + difference_x))
+							self.Game_Screen.Research_Menu.icons_offset_y = min(self.Game_Screen.Research_Menu.surface_size_y - 796*self.factor_y, max(0, self.Game_Screen.Research_Menu.icons_offset_y + difference_y))							
 						else:
 							self.Game_Screen.Earth_Map.map_position[0] -= difference_x 
 							self.Game_Screen.Earth_Map.map_position[1] -= difference_y 

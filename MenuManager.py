@@ -2196,6 +2196,12 @@ class Game_Screen:
 			elif clicked_button == "society_tech_tree_button":
 				self.Research_Menu.open_tech_tree = "society_tech_tree_button" if self.Research_Menu.open_tech_tree != "society_tech_tree_button" else None
 
+			else: # CLICKED ON A RESEARCHE PROJECT
+				if clicked_button['available'] == True:
+					new_research_projects = Research_Project(clicked_button['name'])
+					self.Research_Menu.active_research_projects.append(new_research_projects)
+					self.Research_Menu.open_tech_tree = None
+
 			self.generic_hover_over_button_sound.fadeout(100)
 			self.generic_click_button_sound.play()
 			return clicked_button
@@ -4685,7 +4691,14 @@ class Research_Menu:
 		self.hovered_tech_tree_button = None
 		self.open_tech_tree = None
 
-		self.Warfare_Tech_Tree = Warfare_Tech_Tree(factor_x, factor_y, screen_width, screen_height, pygame, researche_icons_image_dic)
+		self.active_research_projects = []
+
+		self.icons_offset_x = 0
+		self.icons_offset_y = 0
+
+		self.surface_size_x = 2000
+		self.surface_size_y = 2000
+		self.Warfare_Tech_Tree = Warfare_Tech_Tree(factor_x, factor_y, screen_width, screen_height, pygame, researche_icons_image_dic, self.surface_size_x, self.surface_size_x)
 
 		self.research_overview_background = pygame.transform.smoothscale_by(research_overview_background, (self.factor_x, self.factor_y))
 
@@ -4720,11 +4733,13 @@ class Research_Menu:
 				self.hovered_tech_tree_button = self.society_tech_tree_button
 				return "society_tech_tree_button"
 			
-			if self.open_tech_tree == "warfare_tech_tree_button":
-				for rect, researche in self.Warfare_Tech_Tree.researches_rects:
-					if rect.colliderect(mouse_rect):
-						self.Warfare_Tech_Tree.hovered_researche = (rect, researche)
-						return rect
+			if mouse_rect[0] >= 701 * self.factor_x and mouse_rect[1] >= 160 * self.factor_y and mouse_rect[1] <= 800 * self.factor_y:
+				if self.open_tech_tree == "warfare_tech_tree_button":
+					for rect, researche in self.Warfare_Tech_Tree.researches_rects:
+						rect = self.pygame.Rect(rect[0]-self.icons_offset_x, rect[1]-self.icons_offset_y, rect[2], rect[3])
+						if rect.colliderect(mouse_rect):
+							self.Warfare_Tech_Tree.hovered_researche = (rect, researche)
+							return researche
 		
 		return None
 
@@ -4763,7 +4778,7 @@ class Research_Menu:
 
 				if self.open_tech_tree == "warfare_tech_tree_button":
 					self.pygame.draw.rect(screen, (255,255,255), self.warfare_tech_tree_button.rect, 4)
-					self.Warfare_Tech_Tree.draw(screen)
+					self.Warfare_Tech_Tree.draw(screen, self.icons_offset_x, self.icons_offset_y)
 				elif self.open_tech_tree == "transport_tech_tree_button":
 					self.pygame.draw.rect(screen, (255,255,255), self.transport_tech_tree_button.rect, 4)
 				elif self.open_tech_tree == "science_tech_tree_button":
@@ -4775,12 +4790,31 @@ class Research_Menu:
 				elif self.open_tech_tree == "society_tech_tree_button":
 					self.pygame.draw.rect(screen, (255,255,255), self.society_tech_tree_button.rect, 4)
 			
-			
+			else:
+				for index, active_research_project in enumerate(self.active_research_projects):
+					self.pygame.draw.rect(screen, (255,255,255), (711 * self.factor_x, 309 * self.factor_y + (index * (100 * self.factor_y)), 1199 * self.factor_x, 75 * self.factor_y), 2)
+
+					self.pygame.draw.rect(screen, (255,255,255), (751 * self.factor_x, 359 * self.factor_y + (index * (100 * self.factor_y)), 1001 * self.factor_x, 15 * self.factor_y), 2)
+					self.pygame.draw.rect(screen, (255,0,0), (753 * self.factor_x, 361 * self.factor_y + (index * (100 * self.factor_y)), (999 * self.factor_x) * (active_research_project.completion_progress / active_research_project.total_duration), 11 * self.factor_y))
+					active_research_project.completion_progress += 1
+
+					if active_research_project.completion_progress >= active_research_project.total_duration:
+						self.PlayerCountry.known_warfare_researches.append(active_research_project.name)
+						self.Warfare_Tech_Tree.generate_researche_images(self.PlayerCountry)
+						self.active_research_projects.remove(active_research_project)
+					
+					active_research_project_name_text_render = self.big_scalable_font.render(active_research_project.name, False, (255,255,255))	
+					screen.blit(active_research_project_name_text_render, (721 * self.factor_x, 309 * self.factor_y + (index * (100 * self.factor_y)) + active_research_project_name_text_render.get_height()))					
 
 		if self.highlight_button == True or self.is_menu_open == True:
 			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_research_button.rect, 2)
+class Research_Project:
+	def __init__(self, name):
+		self.name = name
+		self.total_duration = 250
+		self.completion_progress = 0
 class Warfare_Tech_Tree:
-	def __init__(self,factor_x, factor_y, screen_width, screen_height, pygame, researche_icons_image_dic):
+	def __init__(self,factor_x, factor_y, screen_width, screen_height, pygame, researche_icons_image_dic, surface_size_x, surface_size_y):
 		self.factor_x, self.factor_y = factor_x, factor_y	
 		self.screen_width = screen_width 
 		self.screen_height = screen_height
@@ -4792,7 +4826,7 @@ class Warfare_Tech_Tree:
 		self.background = pygame.Surface((1217 * self.factor_x, 796 * self.factor_y), pygame.SRCALPHA)
 		self.background.blit(researche_icons_image_dic['warfare_tree_background'], (0,0))
 
-		self.researches_surface = pygame.Surface((2000 * self.factor_x, 2000 * self.factor_y), pygame.SRCALPHA)
+		self.researches_surface = pygame.Surface((surface_size_x * self.factor_x, surface_size_y * self.factor_y), pygame.SRCALPHA)
 
 		self.researches_lines_connection_surface = pygame.Surface((2000 * self.factor_x, 2000 * self.factor_y), pygame.SRCALPHA)
 
@@ -4811,24 +4845,30 @@ class Warfare_Tech_Tree:
 				'name': 'TECH NAME 1',
 				'position': (150, 250),
 				'icon': researche_icons_image_dic['industry_tech_social_construction_3'],
-				'requirements': None
+				'requirements': None,
+				'available': None
 			},
 			'tech 2': {
 				'name': 'TECH NAME 2',
 				'position': (150, 450),
 				'icon': researche_icons_image_dic['tech_M-190_Cipher_Machine'],
-				'requirements': None
+				'requirements': None,
+				'available': None
 			},
 			'tech 3': {
 				'name': 'TECH NAME 3',
 				'position': (500, 250),
 				'icon': researche_icons_image_dic['industry_tech_social_construction_3'],
-				'requirements': ['tech 1', 'tech 2']
+				'requirements': ['tech 1', 'tech 2'],
+				'available': None
 			}						
 		}
 
 	def generate_researche_images(self, PlayerCountry):
 		self.researches_rects = []
+
+		self.researches_surface.fill((0, 0, 0, 0))
+		self.researches_lines_connection_surface.fill((0, 0, 0, 0))
 
 		for researche in self.researches.values():
 			if researche['requirements']:
@@ -4840,16 +4880,21 @@ class Warfare_Tech_Tree:
 				
 				if researche['name'] in PlayerCountry.known_warfare_researches:
 					image = self.researche_icons_image_dic['technology_researched']	
+					researche['available'] = False
 				else:					
 					if is_research_available:
 						image = self.researche_icons_image_dic['technology_available']
+						researche['available'] = True
 					else:
 						image = self.researche_icons_image_dic['technology_unavailable']
+						researche['available'] = False
 			else:
 				if researche['name'] in PlayerCountry.known_warfare_researches:
-					image = self.researche_icons_image_dic['technology_researched']		
+					image = self.researche_icons_image_dic['technology_researched']
+					researche['available'] = False	
 				else:
-					image = self.researche_icons_image_dic['technology_available']							
+					image = self.researche_icons_image_dic['technology_available']	
+					researche['available'] = True						
 
 			researche_rect = pygame.Rect(0,0, 239 * self.factor_x, 117 * self.factor_y)
 			researche_rect.center = (researche['position'][0] * self.factor_x, researche['position'][1] * self.factor_y)
@@ -4863,15 +4908,17 @@ class Warfare_Tech_Tree:
 			researche_name_text_render = self.medium_scalable_font.render(researche['name'], False, (255,255,255))	
 			self.researches_surface.blit(researche_name_text_render, (researche_rect.center[0] - researche_name_text_render.get_width()/2, researche_rect.center[1] + 56 * self.factor_y - researche_name_text_render.get_height()))
 
-	def draw(self, screen):
+	def draw(self, screen, offset_x, offset_y):
 		screen.blit(self.background, (701 * self.factor_x, 160 * self.factor_y))
 
-		screen.blit(self.researches_lines_connection_surface.subsurface(0, 0, 1217 * self.factor_x, 796 * self.factor_y), (701 * self.factor_x, 160 * self.factor_y))
+		screen.blit(self.researches_lines_connection_surface.subsurface(offset_x, offset_y, 1217 * self.factor_x, 796 * self.factor_y), (701 * self.factor_x, 160 * self.factor_y))
 
-		screen.blit(self.researches_surface.subsurface(0, 0, 1217 * self.factor_x, 796 * self.factor_y), (701 * self.factor_x, 160 * self.factor_y))
+		screen.blit(self.researches_surface.subsurface(offset_x, offset_y, 1217 * self.factor_x, 796 * self.factor_y), (701 * self.factor_x, 160 * self.factor_y))
 
 		if self.hovered_researche:
-			self.pygame.draw.rect(screen, (255,255,255), self.hovered_researche[0], 3)
+			rect = self.hovered_researche[0].copy()
+			rect = (max(701 * self.factor_x, rect[0]), max(160 * self.factor_y, rect[1]), min(rect[0]-(701 * self.factor_x)+rect[2],rect[2]), min(rect[1]-(160 * self.factor_y)+rect[3],rect[3]))
+			self.pygame.draw.rect(screen, (255,255,255), rect, 3)
 			self.hovered_researche = None
 
 class Global_Market_Menu:
