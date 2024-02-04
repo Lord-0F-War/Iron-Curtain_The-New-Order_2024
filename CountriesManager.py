@@ -117,7 +117,7 @@ class Country:
         self.country_religion = None
 
         # RESEARCH
-        self.known_warfare_researches = []
+        self.known_warfare_researches = ['TECH NAME 1', 'TECH NAME 2']
         self.known_transport_researches = []
         self.known_science_researches = []
         self.known_technology_researches = []
