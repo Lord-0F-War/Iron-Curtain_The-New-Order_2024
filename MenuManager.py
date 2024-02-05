@@ -4997,7 +4997,7 @@ class Transport_Tech_Tree:
 		self.researche_icons_image_dic = researche_icons_image_dic
 
 		self.background = pygame.Surface((1217 * self.factor_x, 796 * self.factor_y), pygame.SRCALPHA)
-		self.background.blit(researche_icons_image_dic['warfare_tree_background'], (0,0))
+		self.background.blit(researche_icons_image_dic['transport_tree_background'], (0,0))
 
 		self.researches_surface = pygame.Surface((surface_size_x * self.factor_x, surface_size_y * self.factor_y), pygame.SRCALPHA)
 
@@ -5107,7 +5107,7 @@ class Science_Tech_Tree:
 		self.researche_icons_image_dic = researche_icons_image_dic
 
 		self.background = pygame.Surface((1217 * self.factor_x, 796 * self.factor_y), pygame.SRCALPHA)
-		self.background.blit(researche_icons_image_dic['warfare_tree_background'], (0,0))
+		self.background.blit(researche_icons_image_dic['science_tree_background'], (0,0))
 
 		self.researches_surface = pygame.Surface((surface_size_x * self.factor_x, surface_size_y * self.factor_y), pygame.SRCALPHA)
 
@@ -5217,7 +5217,7 @@ class Technology_Tech_Tree:
 		self.researche_icons_image_dic = researche_icons_image_dic
 
 		self.background = pygame.Surface((1217 * self.factor_x, 796 * self.factor_y), pygame.SRCALPHA)
-		self.background.blit(researche_icons_image_dic['warfare_tree_background'], (0,0))
+		self.background.blit(researche_icons_image_dic['technology_tree_background'], (0,0))
 
 		self.researches_surface = pygame.Surface((surface_size_x * self.factor_x, surface_size_y * self.factor_y), pygame.SRCALPHA)
 
@@ -5327,7 +5327,7 @@ class Medical_Tech_Tree:
 		self.researche_icons_image_dic = researche_icons_image_dic
 
 		self.background = pygame.Surface((1217 * self.factor_x, 796 * self.factor_y), pygame.SRCALPHA)
-		self.background.blit(researche_icons_image_dic['warfare_tree_background'], (0,0))
+		self.background.blit(researche_icons_image_dic['medical_tree_background'], (0,0))
 
 		self.researches_surface = pygame.Surface((surface_size_x * self.factor_x, surface_size_y * self.factor_y), pygame.SRCALPHA)
 
@@ -5437,7 +5437,7 @@ class Society_Tech_Tree:
 		self.researche_icons_image_dic = researche_icons_image_dic
 
 		self.background = pygame.Surface((1217 * self.factor_x, 796 * self.factor_y), pygame.SRCALPHA)
-		self.background.blit(researche_icons_image_dic['warfare_tree_background'], (0,0))
+		self.background.blit(researche_icons_image_dic['society_tree_background'], (0,0))
 
 		self.researches_surface = pygame.Surface((surface_size_x * self.factor_x, surface_size_y * self.factor_y), pygame.SRCALPHA)
 
