@@ -299,6 +299,7 @@ class Main:
 
 		self.research_overview_folder = os.path.join(self.interface_folder, 'research_overview')
 		self.research_overview_background			= self.pygame.image.load(os.path.join(self.research_overview_folder, 'research_overview_background.png')).convert_alpha()
+		self.active_research_background				= self.pygame.image.load(os.path.join(self.research_overview_folder, 'active_research_background.png')).convert_alpha()
 		self.load_researche_icons(os.path.join(self.research_overview_folder, 'tech_tree_icon'))
 
 		self.construction_overview_folder = os.path.join(self.interface_folder, 'construction_overview')
@@ -743,8 +744,8 @@ your shoulders.
 			self.progressbar_huge, self.progressbar, self.progressbar_vertical, self.progressbar_small, self.bottom_HUD, self.country_laws_background, self.laws_description_image, self.game_logo,
 			self.economic_overview_background, self.poverty_rate_0, self.poverty_rate_5, self.poverty_rate_10, self.poverty_rate_15, self.poverty_rate_25, self.poverty_rate_50,
 			self.poverty_rate_80, self.credit_ratings, self.economic_warning, self.economic_freedom_index_green, self.economic_freedom_index_red, self.economic_freedom_score_green, self.economic_freedom_score_red,
-			self.small_rating_green, self.small_rating_red, self.intelligence_overview_background, self.research_overview_background, self.construction_overview_background, self.production_overview_background,
-			self.researche_icons_image_dic)
+			self.small_rating_green, self.small_rating_red, self.intelligence_overview_background, self.research_overview_background, self.active_research_background, self.researche_icons_image_dic,
+			self.construction_overview_background, self.production_overview_background)
 
 
 		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.Main_Menu, self.Country_Selection_Screen,

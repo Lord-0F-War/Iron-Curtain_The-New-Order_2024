@@ -3,7 +3,7 @@ import GenericUtilitys
 from PygameManager import pygame
 from pyvidplayer import Video
 import CountriesManager
-import random
+import math
 
 import locale
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
@@ -1953,7 +1953,7 @@ class Game_Screen:
 			earth_political_map, earth_political_map_filled, progressbar_huge, progressbar, progressbar_vertical, progressbar_small, bottom_HUD, country_laws_background, laws_description_image,
 			game_logo, economic_overview_background, poverty_rate_0, poverty_rate_5, poverty_rate_10, poverty_rate_15, poverty_rate_25, poverty_rate_50, poverty_rate_80, credit_ratings,
 			economic_warning, economic_freedom_index_green, economic_freedom_index_red, economic_freedom_score_green, economic_freedom_score_red, small_rating_green, small_rating_red,
-			intelligence_overview_background, research_overview_background, construction_overview_background, production_overview_background, researche_icons_image_dic):
+			intelligence_overview_background, research_overview_background, active_research_background, researche_icons_image_dic, construction_overview_background, production_overview_background):
 
 		reference_screen_size_x = 1920
 		reference_screen_size_y = 1080
@@ -1989,7 +1989,7 @@ class Game_Screen:
 
 		self.intelligence_Menu = intelligence_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, intelligence_overview_background)
 
-		self.Research_Menu = Research_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, research_overview_background, researche_icons_image_dic)
+		self.Research_Menu = Research_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, research_overview_background, researche_icons_image_dic, active_research_background)
 		
 		self.Global_Market_Menu = Global_Market_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
 
@@ -2005,6 +2005,10 @@ class Game_Screen:
 
 		
 		self.Game_Introduction_Menu = Game_Introduction_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, game_logo)
+
+		#-----------#
+
+		self.Clock_UI.Player_Country_Research_Menu = self.Research_Menu
 
 	def get_button_by_interaction(self, mouse_rect, index):
 		if index == 'Country_Overview':
@@ -2198,7 +2202,7 @@ class Game_Screen:
 
 			else: # CLICKED ON A RESEARCHE PROJECT
 				if clicked_button['available'] == True:
-					new_research_projects = Research_Project(clicked_button['name'], clicked_button['type'])
+					new_research_projects = Research_Project(clicked_button['name'], clicked_button['type'], clicked_button['icon'])
 					self.Research_Menu.active_research_projects.append(new_research_projects)
 					self.Research_Menu.open_tech_tree = None
 					clicked_button['available'] = False
@@ -2604,6 +2608,8 @@ class Clock_UI:
 
 		self.PlayerCountry = None
 
+		self.Player_Country_Research_Menu = None
+
 		self.week = 0
 
 		self.clock = clock
@@ -2659,7 +2665,9 @@ class Clock_UI:
 
 		if self.current_minute >= 60:
 			self.current_hour += int(self.current_minute/60)
-			self.current_minute = 0
+			self.Player_Country_Research_Menu.continue_research_progress += int(self.current_minute/60)
+
+			self.current_minute = 0			
 			if self.current_hour >= 24:
 				self.current_hour = self.current_hour - 24
 				self.current_day += 1
@@ -4662,7 +4670,7 @@ class intelligence_Menu:
 			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_intelligence_button.rect, 2)
 
 class Research_Menu:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, research_overview_background, researche_icons_image_dic):
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, research_overview_background, researche_icons_image_dic, active_research_background):
 		self.factor_x, self.factor_y = factor_x, factor_y	
 		self.screen_width = screen_width 
 		self.screen_height = screen_height
@@ -4680,6 +4688,8 @@ class Research_Menu:
 		self.top_bar_research_button = GenericUtilitys.Button(365 * self.factor_x, height, button_size[0], button_size[1])
 
 		# TECH TREES
+		self.continue_research_progress = 0
+
 		x_pos = 92 * self.factor_x
 		button_size = (248 * self.factor_x, 69 * self.factor_y)
 		self.warfare_tech_tree_button 		= GenericUtilitys.Button(x_pos, 67 * self.factor_y + 158 * self.factor_y, button_size[0], button_size[1])
@@ -4707,12 +4717,13 @@ class Research_Menu:
 		self.Society_Tech_Tree 		= Society_Tech_Tree(factor_x, factor_y, screen_width, screen_height, pygame, researche_icons_image_dic, self.surface_size_x, self.surface_size_x)
 
 		self.research_overview_background = pygame.transform.smoothscale_by(research_overview_background, (self.factor_x, self.factor_y))
+		self.active_research_background = pygame.transform.smoothscale_by(active_research_background, (self.factor_x, self.factor_y))
 
 		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
 		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
 		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
 		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
-		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))		
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(13 * self.factor_y))		
 
 	def get_button_by_interaction(self, mouse_rect):	
 		if self.top_bar_research_button.rect.colliderect(mouse_rect):
@@ -4778,6 +4789,23 @@ class Research_Menu:
 							return researche																														
 		return None
 
+	def calculate_research_progress_increase(self, current_project_monthly_budget, necessary_budget, current_project_workers_amount, workers_quality):
+		base_progress_rate = 0.01
+
+		# Budget Efficiency Factor
+		budget_efficiency_factor = 1 + ((current_project_monthly_budget/necessary_budget) * math.sqrt(current_project_monthly_budget))
+
+		# Workers Efficiency Factor
+		if current_project_workers_amount > 0:
+			workers_efficiency_factor = 1 + (workers_quality * math.sqrt(current_project_workers_amount))
+		else:
+			workers_efficiency_factor = 0
+
+		# Calculate Progress Increase Hourly
+		progress_increase_hourly = (base_progress_rate * budget_efficiency_factor) * (base_progress_rate * workers_efficiency_factor)
+
+		return progress_increase_hourly
+
 	def draw(self, screen):
 		if self.is_menu_open == True:
 			screen.blit(self.research_overview_background, (0, 158 * self.factor_y))
@@ -4832,11 +4860,19 @@ class Research_Menu:
 			
 			else:
 				for index, active_research_project in enumerate(self.active_research_projects):
-					self.pygame.draw.rect(screen, (255,255,255), (711 * self.factor_x, 309 * self.factor_y + (index * (100 * self.factor_y)), 1199 * self.factor_x, 75 * self.factor_y), 2)
+					screen.blit(self.active_research_background, (709 * self.factor_x, 149 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y))
 
-					self.pygame.draw.rect(screen, (255,255,255), (751 * self.factor_x, 359 * self.factor_y + (index * (100 * self.factor_y)), 1001 * self.factor_x, 15 * self.factor_y), 2)
-					self.pygame.draw.rect(screen, (255,0,0), (753 * self.factor_x, 361 * self.factor_y + (index * (100 * self.factor_y)), (999 * self.factor_x) * (active_research_project.completion_progress / active_research_project.total_duration), 11 * self.factor_y))
-					active_research_project.completion_progress += 1
+					self.pygame.draw.rect(screen, (255,0,0), (961 * self.factor_x, 263 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y, (942 * self.factor_x) * (active_research_project.completion_progress / active_research_project.total_duration), 10 * self.factor_y))
+					
+					screen.blit(active_research_project.icon, (709 * self.factor_x + 119 * self.factor_x - active_research_project.icon.get_width()/2, 149 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y + 58 * self.factor_y - active_research_project.icon.get_height()/2))
+					
+					if self.continue_research_progress != 0:
+						for progress in range(self.continue_research_progress):
+							workers_quality = 0.9
+							progress_increase_hourly = self.calculate_research_progress_increase(active_research_project.current_project_monthly_budget, active_research_project.necessary_budget, active_research_project.current_project_workers_amount, workers_quality)
+							active_research_project.completion_progress += progress_increase_hourly
+						
+						active_research_project.days_until_completion = round(((active_research_project.total_duration - active_research_project.completion_progress) / progress_increase_hourly) / 24, 1)
 
 					if active_research_project.completion_progress >= active_research_project.total_duration:
 						if active_research_project.type == 'warfare_researche':
@@ -4865,17 +4901,35 @@ class Research_Menu:
 						
 						self.active_research_projects.remove(active_research_project)
 					
-					active_research_project_name_text_render = self.big_scalable_font.render(active_research_project.name, False, (255,255,255))	
-					screen.blit(active_research_project_name_text_render, (721 * self.factor_x, 309 * self.factor_y + (index * (100 * self.factor_y)) + active_research_project_name_text_render.get_height()))					
+					active_research_project_name_text_render = self.medium_scalable_font.render(active_research_project.name, False, (255,255,255))	
+					screen.blit(active_research_project_name_text_render, (709 * self.factor_x + 119 * self.factor_x - active_research_project_name_text_render.get_width()/2, 149 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y + 58 * self.factor_y - active_research_project_name_text_render.get_height()/2 + 52 * self.factor_y))					
+				
+					active_research_days_until_completion_text_render = self.tiny_scalable_font.render(str(active_research_project.days_until_completion), True, (255,255,255))	
+					screen.blit(active_research_days_until_completion_text_render, (709 * self.factor_x + 1029 * self.factor_x, 149 * self.factor_y + 101 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y))					
+				
+				self.continue_research_progress = 0
 
+				active_research_amount_text_render = self.medium_scalable_font.render('RESEARCHES: ' + str(len(self.active_research_projects)), True, (255,255,255))	
+				screen.blit(active_research_amount_text_render, (1715 * self.factor_x, 21 * self.factor_y + 158 * self.factor_y))									
+		
 		if self.highlight_button == True or self.is_menu_open == True:
 			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_research_button.rect, 2)
 class Research_Project:
-	def __init__(self, name, type):
+	def __init__(self, name, type, icon):
 		self.name = name
 		self.type = type
-		self.total_duration = 250
+		self.icon = icon
+
+		self.total_duration = 100
 		self.completion_progress = 0
+
+		self.current_project_monthly_budget = 20_000_000
+		self.current_project_workers_amount = 50
+
+		self.necessary_budget = 1_000_000_000
+
+		self.days_until_completion = 0
+		
 class Warfare_Tech_Tree:
 	def __init__(self,factor_x, factor_y, screen_width, screen_height, pygame, researche_icons_image_dic, surface_size_x, surface_size_y):
 		self.factor_x, self.factor_y = factor_x, factor_y	
