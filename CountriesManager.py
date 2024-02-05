@@ -119,9 +119,9 @@ class Country:
         # RESEARCH
         self.known_warfare_researches = ['TECH NAME 1']
         self.known_transport_researches = []
-        self.known_science_researches = []
+        self.known_science_researches = ['TECH NAME 1']
         self.known_technology_researches = []
-        self.known_medical_researches = []
+        self.known_medical_researches = ['TECH NAME 1']
         self.known_society_researches = []
 
         # FOCUS TREE

@@ -1020,6 +1020,11 @@ your shoulders.
 
 									self.Game_Screen.Research_Menu.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
 									self.Game_Screen.Research_Menu.Warfare_Tech_Tree.generate_researche_images(self.Game_Screen.Research_Menu.PlayerCountry)
+									self.Game_Screen.Research_Menu.Transport_Tech_Tree.generate_researche_images(self.Game_Screen.Research_Menu.PlayerCountry)
+									self.Game_Screen.Research_Menu.Science_Tech_Tree.generate_researche_images(self.Game_Screen.Research_Menu.PlayerCountry)
+									self.Game_Screen.Research_Menu.Technology_Tech_Tree.generate_researche_images(self.Game_Screen.Research_Menu.PlayerCountry)
+									self.Game_Screen.Research_Menu.Medical_Tech_Tree.generate_researche_images(self.Game_Screen.Research_Menu.PlayerCountry)
+									self.Game_Screen.Research_Menu.Society_Tech_Tree.generate_researche_images(self.Game_Screen.Research_Menu.PlayerCountry)
 
 									self.Game_Screen.Clock_UI.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
 
