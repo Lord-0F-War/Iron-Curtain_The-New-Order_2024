@@ -2683,10 +2683,17 @@ class Clock_UI:
 
 		if self.current_minute >= 60:
 			self.current_hour += int(self.current_minute/60)
+
 			self.Player_Country_Research_Menu.continue_research_progress += int(self.current_minute/60)
+			if self.Player_Country_Research_Menu.is_menu_open == True:
+				self.Player_Country_Research_Menu.increase_research_progress()
 
 			self.current_minute = 0			
 			if self.current_hour >= 24:
+
+				if self.Player_Country_Research_Menu.is_menu_open == False:
+					self.Player_Country_Research_Menu.increase_research_progress()
+
 				self.current_hour = self.current_hour - 24
 				self.current_day += 1
 				self.week += 1
@@ -4842,6 +4849,49 @@ class Research_Menu:
 
 		return progress_increase_hourly
 
+	def increase_research_progress(self):
+		if self.continue_research_progress != 0:
+			for active_research_project in self.active_research_projects:
+				for progress in range(self.continue_research_progress):
+					workers_quality = 0.9
+					progress_increase_hourly = self.calculate_research_progress_increase(active_research_project.current_project_monthly_budget, active_research_project.necessary_budget, active_research_project.current_project_workers_amount, workers_quality)
+					active_research_project.completion_progress += progress_increase_hourly	
+
+					active_research_project.days_until_completion = round(((active_research_project.total_duration - active_research_project.completion_progress) / (progress_increase_hourly+0.000001)) / 24, 1)
+
+					if active_research_project.completion_progress >= active_research_project.total_duration:
+						if active_research_project.type == 'warfare_researche':
+							self.PlayerCountry.known_warfare_researches.append(active_research_project.name)
+							self.Warfare_Tech_Tree.generate_researche_images(self.PlayerCountry)
+						
+						elif active_research_project.type == 'transport_researche':
+							self.PlayerCountry.known_transport_researches.append(active_research_project.name)
+							self.Transport_Tech_Tree.generate_researche_images(self.PlayerCountry)
+						
+						elif active_research_project.type == 'science_researche':
+							self.PlayerCountry.known_science_researches.append(active_research_project.name)
+							self.Science_Tech_Tree.generate_researche_images(self.PlayerCountry)
+						
+						elif active_research_project.type == 'technology_researche':
+							self.PlayerCountry.known_technology_researches.append(active_research_project.name)
+							self.Technology_Tech_Tree.generate_researche_images(self.PlayerCountry)
+						
+						elif active_research_project.type == 'medical_researche':
+							self.PlayerCountry.known_medical_researches.append(active_research_project.name)
+							self.Medical_Tech_Tree.generate_researche_images(self.PlayerCountry)
+						
+						elif active_research_project.type == 'society_researche':
+							self.PlayerCountry.known_society_researches.append(active_research_project.name)
+							self.Society_Tech_Tree.generate_researche_images(self.PlayerCountry)																																			
+						
+						try:
+							self.active_research_projects.remove(active_research_project)
+							break
+						except:
+							pass # SOMEHOW ALREADY REMOVED
+
+		self.continue_research_progress = 0						
+
 	def draw(self, screen):
 		if self.is_menu_open == True:
 			screen.blit(self.research_overview_background, (0, 158 * self.factor_y))
@@ -4895,47 +4945,13 @@ class Research_Menu:
 					self.Society_Tech_Tree.draw(screen, self.icons_offset_x, self.icons_offset_y)
 			
 			else:
+				is_player_typing_on_any_research_project = False
 				for index, active_research_project in enumerate(self.active_research_projects):
 					screen.blit(self.active_research_background, (709 * self.factor_x, 149 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y))
 
 					self.pygame.draw.rect(screen, (255,0,0), (961 * self.factor_x, 263 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y, (942 * self.factor_x) * (active_research_project.completion_progress / active_research_project.total_duration), 10 * self.factor_y))
 					
 					screen.blit(active_research_project.icon, (709 * self.factor_x + 119 * self.factor_x - active_research_project.icon.get_width()/2, 149 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y + 58 * self.factor_y - active_research_project.icon.get_height()/2))
-					
-					if self.continue_research_progress != 0:
-						for progress in range(self.continue_research_progress):
-							workers_quality = 0.9
-							progress_increase_hourly = self.calculate_research_progress_increase(active_research_project.current_project_monthly_budget, active_research_project.necessary_budget, active_research_project.current_project_workers_amount, workers_quality)
-							active_research_project.completion_progress += progress_increase_hourly
-						
-						active_research_project.days_until_completion = round(((active_research_project.total_duration - active_research_project.completion_progress) / (progress_increase_hourly+0.000001)) / 24, 1)
-
-					if active_research_project.completion_progress >= active_research_project.total_duration:
-						if active_research_project.type == 'warfare_researche':
-							self.PlayerCountry.known_warfare_researches.append(active_research_project.name)
-							self.Warfare_Tech_Tree.generate_researche_images(self.PlayerCountry)
-						
-						elif active_research_project.type == 'transport_researche':
-							self.PlayerCountry.known_transport_researches.append(active_research_project.name)
-							self.Transport_Tech_Tree.generate_researche_images(self.PlayerCountry)
-						
-						elif active_research_project.type == 'science_researche':
-							self.PlayerCountry.known_science_researches.append(active_research_project.name)
-							self.Science_Tech_Tree.generate_researche_images(self.PlayerCountry)
-						
-						elif active_research_project.type == 'technology_researche':
-							self.PlayerCountry.known_technology_researches.append(active_research_project.name)
-							self.Technology_Tech_Tree.generate_researche_images(self.PlayerCountry)
-						
-						elif active_research_project.type == 'medical_researche':
-							self.PlayerCountry.known_medical_researches.append(active_research_project.name)
-							self.Medical_Tech_Tree.generate_researche_images(self.PlayerCountry)
-						
-						elif active_research_project.type == 'society_researche':
-							self.PlayerCountry.known_society_researches.append(active_research_project.name)
-							self.Society_Tech_Tree.generate_researche_images(self.PlayerCountry)																																			
-						
-						self.active_research_projects.remove(active_research_project)
 					
 					active_research_project_name_text_render = self.medium_scalable_font.render(active_research_project.name, False, (255,255,255))	
 					screen.blit(active_research_project_name_text_render, (709 * self.factor_x + 119 * self.factor_x - active_research_project_name_text_render.get_width()/2, 149 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y + 58 * self.factor_y - active_research_project_name_text_render.get_height()/2 + 52 * self.factor_y))					
@@ -4955,6 +4971,7 @@ class Research_Menu:
 						active_research_project.hovered_budget_text_box = False						
 
 					if active_research_project.selected_workers_text_box == True or active_research_project.selected_budget_text_box == True:
+						is_player_typing_on_any_research_project = True
 						if self.apply_received_player_keybord_input == True:
 							self.apply_received_player_keybord_input = False
 							self.receive_player_keybord_input = False
@@ -4991,11 +5008,6 @@ class Research_Menu:
 							screen.blit(received_player_keybord_input_text_render, text_pos)
 						else:
 							screen.blit(wating_player_keybord_input_text_render, text_pos)							
-					
-					elif self.receive_player_keybord_input == True and (active_research_project.selected_workers_text_box == False and active_research_project.selected_budget_text_box == False):
-						self.apply_received_player_keybord_input = False
-						self.receive_player_keybord_input = False		
-						self.received_player_keybord_input = ''	
 
 					active_research_current_budget_text_render = self.small_scalable_font.render(f' ${active_research_project.current_project_monthly_budget:,.2f}', True, (255,255,255))	
 					screen.blit(active_research_current_budget_text_render, (709 * self.factor_x + 954 * self.factor_x, 149 * self.factor_y + 74 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y))
@@ -5003,7 +5015,10 @@ class Research_Menu:
 					active_research_days_until_completion_text_render = self.tiny_scalable_font.render(str(active_research_project.days_until_completion), True, (255,255,255))	
 					screen.blit(active_research_days_until_completion_text_render, (709 * self.factor_x + 1029 * self.factor_x, 149 * self.factor_y + 101 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y))					
 				
-				self.continue_research_progress = 0
+				if is_player_typing_on_any_research_project == False:
+					self.apply_received_player_keybord_input = False
+					self.receive_player_keybord_input = False		
+					self.received_player_keybord_input = ''		
 
 				active_research_amount_text_render = self.medium_scalable_font.render('RESEARCHES: ' + str(len(self.active_research_projects)), True, (255,255,255))	
 				screen.blit(active_research_amount_text_render, (1715 * self.factor_x, 22 * self.factor_y + 158 * self.factor_y))									
@@ -5032,7 +5047,6 @@ class Research_Project:
 
 		self.hovered_budget_text_box = False
 		self.selected_budget_text_box = False
-		
 class Warfare_Tech_Tree:
 	def __init__(self,factor_x, factor_y, screen_width, screen_height, pygame, researche_icons_image_dic, surface_size_x, surface_size_y):
 		self.factor_x, self.factor_y = factor_x, factor_y	
