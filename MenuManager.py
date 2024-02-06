@@ -4903,14 +4903,23 @@ class Research_Menu:
 					
 					active_research_project_name_text_render = self.medium_scalable_font.render(active_research_project.name, False, (255,255,255))	
 					screen.blit(active_research_project_name_text_render, (709 * self.factor_x + 119 * self.factor_x - active_research_project_name_text_render.get_width()/2, 149 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y + 58 * self.factor_y - active_research_project_name_text_render.get_height()/2 + 52 * self.factor_y))					
-				
+
+					active_research_workers_amount_text_render = self.tiny_scalable_font.render(str(active_research_project.current_project_workers_amount), True, (255,255,255))	
+					screen.blit(active_research_workers_amount_text_render, (709 * self.factor_x + 506 * self.factor_x, 149 * self.factor_y + 58 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y))	
+					
+					active_research_workers_amount_text_render = self.tiny_scalable_font.render(str(active_research_project.current_project_workers_amount), True, (255,255,255))	
+					screen.blit(active_research_workers_amount_text_render, (709 * self.factor_x + 506 * self.factor_x, 149 * self.factor_y + 76 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y))	
+
+					active_research_current_budget_text_render = self.small_scalable_font.render(f' ${active_research_project.current_project_monthly_budget:,.2f}', True, (255,255,255))	
+					screen.blit(active_research_current_budget_text_render, (709 * self.factor_x + 954 * self.factor_x, 149 * self.factor_y + 74 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y))
+
 					active_research_days_until_completion_text_render = self.tiny_scalable_font.render(str(active_research_project.days_until_completion), True, (255,255,255))	
 					screen.blit(active_research_days_until_completion_text_render, (709 * self.factor_x + 1029 * self.factor_x, 149 * self.factor_y + 101 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y))					
 				
 				self.continue_research_progress = 0
 
 				active_research_amount_text_render = self.medium_scalable_font.render('RESEARCHES: ' + str(len(self.active_research_projects)), True, (255,255,255))	
-				screen.blit(active_research_amount_text_render, (1715 * self.factor_x, 21 * self.factor_y + 158 * self.factor_y))									
+				screen.blit(active_research_amount_text_render, (1715 * self.factor_x, 22 * self.factor_y + 158 * self.factor_y))									
 		
 		if self.highlight_button == True or self.is_menu_open == True:
 			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_research_button.rect, 2)
