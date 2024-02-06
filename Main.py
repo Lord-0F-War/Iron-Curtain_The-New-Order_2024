@@ -1127,31 +1127,40 @@ your shoulders.
 					if event.type == self.pygame.KEYDOWN:
 						if keys[self.pygame.K_ESCAPE]:
 							self.is_in_esc_menu = not self.is_in_esc_menu
-							self.is_options_menu_open = False
+							self.is_options_menu_open = False		
+										
+						elif self.Game_Screen.Research_Menu.receive_player_keybord_input == False:
+							if keys[self.pygame.K_KP_PLUS]:
+								if self.Game_Screen.Clock_UI.game_speed + 1 <= 5:
+									self.Game_Screen.Clock_UI.game_speed += 1
+							elif keys[self.pygame.K_KP_MINUS]:
+								if self.Game_Screen.Clock_UI.game_speed - 1 >= 0:
+									self.Game_Screen.Clock_UI.game_speed -= 1
+							elif keys[self.pygame.K_1]:
+								self.Game_Screen.Clock_UI.game_speed = 1
+							elif keys[self.pygame.K_2]:
+								self.Game_Screen.Clock_UI.game_speed = 2	
+							elif keys[self.pygame.K_3]:
+								self.Game_Screen.Clock_UI.game_speed = 3	
+							elif keys[self.pygame.K_4]:
+								self.Game_Screen.Clock_UI.game_speed = 4	
+							elif keys[self.pygame.K_5]:
+								self.Game_Screen.Clock_UI.game_speed = 5
+							elif keys[self.pygame.K_SPACE]:
+								self.Game_Screen.Clock_UI.game_speed = 0 if self.Game_Screen.Clock_UI.game_speed != 0 else 1
 
-						if keys[self.pygame.K_KP_PLUS]:
-							if self.Game_Screen.Clock_UI.game_speed + 1 <= 5:
-								self.Game_Screen.Clock_UI.game_speed += 1
-						elif keys[self.pygame.K_KP_MINUS]:
-							if self.Game_Screen.Clock_UI.game_speed - 1 >= 0:
-								self.Game_Screen.Clock_UI.game_speed -= 1
-						elif keys[self.pygame.K_1]:
-							self.Game_Screen.Clock_UI.game_speed = 1
-						elif keys[self.pygame.K_2]:
-							self.Game_Screen.Clock_UI.game_speed = 2	
-						elif keys[self.pygame.K_3]:
-							self.Game_Screen.Clock_UI.game_speed = 3	
-						elif keys[self.pygame.K_4]:
-							self.Game_Screen.Clock_UI.game_speed = 4	
-						elif keys[self.pygame.K_5]:
-							self.Game_Screen.Clock_UI.game_speed = 5
-						elif keys[self.pygame.K_SPACE]:
-							self.Game_Screen.Clock_UI.game_speed = 0 if self.Game_Screen.Clock_UI.game_speed != 0 else 1
-
-						if keys[self.pygame.K_9]:
-							self.Game_Screen.Clock_UI.defcon_level += 1
-						elif keys[self.pygame.K_0]:																													
-							self.Game_Screen.Clock_UI.defcon_level -= 1
+							if keys[self.pygame.K_9]:
+								self.Game_Screen.Clock_UI.defcon_level += 1
+							elif keys[self.pygame.K_0]:																													
+								self.Game_Screen.Clock_UI.defcon_level -= 1
+						
+						else:
+							if event.key == self.pygame.K_RETURN or event.key == self.pygame.K_KP_ENTER:
+								self.Game_Screen.Research_Menu.apply_received_player_keybord_input = True
+							elif event.key == self.pygame.K_BACKSPACE and len(self.Game_Screen.Research_Menu.received_player_keybord_input) > 0:
+								self.Game_Screen.Research_Menu.received_player_keybord_input = self.Game_Screen.Research_Menu.received_player_keybord_input[:-1]
+							elif str(event.unicode).isdecimal():
+								self.Game_Screen.Research_Menu.received_player_keybord_input += event.unicode
 					
 					if event.type == self.pygame.MOUSEWHEEL:
 						if event.y > 0:	
