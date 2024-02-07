@@ -3950,7 +3950,10 @@ class Decisions_Menu:
 		self.interected_decision_button = None
 
 		self.active_decisions_surface = pygame.Surface((self.screen_width/2, 3000 * self.factor_y), pygame.SRCALPHA)
-		self.decisions_tree_surface = pygame.Surface((3000 * self.factor_x, 3000 * self.factor_y), pygame.SRCALPHA)
+
+		self.tree_icons_offset_x = 0
+		self.tree_icons_offset_y = 0
+		self.decisions_tree_surface = pygame.Surface((3000 * self.factor_x, 3000 * self.factor_y), pygame.SRCALPHA)		
 
 		height = 112 * self.factor_y
 		button_size = (57 * self.factor_x, 41 * self.factor_y)
@@ -3972,6 +3975,37 @@ class Decisions_Menu:
 		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))	
 
 		self.open_active_decisions_text_render = self.huge_scalable_font.render('OPEN DECISIONS TREE', False, (255,255,255))	
+
+	def generate_decisions_tree(self):
+		# REQUIREMENTS LINES
+		for decision in self.PlayerCountry.country_decisions_tree.values():
+			size_x = 50
+			size_y = 50
+
+			icon_image = getattr(decision, 'decision_on_tree_menu_icon', None)
+			if icon_image:
+				size_x = icon_image.get_width()
+				size_y = icon_image.get_height()
+
+			if decision.requirements:
+				for requirement_decision in decision.requirements:
+					requirement_decision = self.PlayerCountry.country_decisions_tree[requirement_decision]
+					pygame.draw.line(self.decisions_tree_surface, (255,255,255), ((decision.x_pos + size_x/2) * self.factor_x, (decision.y_pos + size_y/2) * self.factor_y), ((requirement_decision.x_pos + size_x/2) * self.factor_x, (requirement_decision.y_pos + size_y/2) * self.factor_y), 2)	
+
+		# ICONS
+		for decision in self.PlayerCountry.country_decisions_tree.values():
+			size_x = 50
+			size_y = 50
+
+			icon_image = getattr(decision, 'decision_on_tree_menu_icon', None)
+			if icon_image:
+				size_x = icon_image.get_width()
+				size_y = icon_image.get_height()
+
+				self.pygame.draw.rect(self.decisions_tree_surface, (0,0,0), (decision.x_pos * self.factor_x, decision.y_pos * self.factor_y, size_x, size_y))
+				self.pygame.draw.rect(self.decisions_tree_surface, (43,219,211), (decision.x_pos * self.factor_x, decision.y_pos * self.factor_y, size_x, size_y), 2)
+
+				self.decisions_tree_surface.blit(icon_image, (decision.x_pos, decision.y_pos))			
 
 	def get_button_by_interaction(self, mouse_rect):	
 		if self.top_bar_decisions_button.rect.colliderect(mouse_rect):
@@ -4013,20 +4047,9 @@ class Decisions_Menu:
 				self.pygame.draw.rect(screen, (6,15,20), (self.screen_width/2, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y))
 				self.pygame.draw.rect(screen, (43,219,211), (self.screen_width/2, 158 * self.factor_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), 2)	
 
-				for decision in self.PlayerCountry.country_decisions_tree.values():
-					size_x = 50
-					size_y = 50
 
-					icon_image = getattr(decision, 'decision_on_tree_menu_icon', None)
-					if icon_image:
-						self.decisions_tree_surface.blit(icon_image, (decision.x_pos, decision.y_pos))
+				screen.blit(self.decisions_tree_surface.subsurface(self.tree_icons_offset_x, self.tree_icons_offset_y, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), (self.screen_width/2, 158 * self.factor_y))				
 
-						size_x = icon_image.get_width()
-						size_y = icon_image.get_height()
-
-					self.pygame.draw.rect(self.decisions_tree_surface, (43,219,211), (decision.x_pos * self.factor_x, decision.y_pos * self.factor_y, size_x, size_y), 2)
-
-				screen.blit(self.decisions_tree_surface.subsurface(0, 0, self.screen_width/2, self.screen_height - (158 + 110) * self.factor_y), (self.screen_width/2, 158 * self.factor_y))
 
 			offset_y = self.text_scroll_bar.get_scroll_position()
 			for index, decision in enumerate(self.PlayerCountry.country_active_decisions.values()):

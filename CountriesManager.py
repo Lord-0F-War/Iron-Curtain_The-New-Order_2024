@@ -28,7 +28,7 @@ class Political_Party:
 
 
 class Decision:
-    def __init__(self, buttons, buttons_descriptions, buttons_icons, main_image, decision_description, x_pos, y_pos):
+    def __init__(self, buttons, buttons_descriptions, buttons_icons, main_image, decision_description, x_pos, y_pos, requirements):
         self.buttons = buttons
         self.buttons_descriptions = buttons_descriptions
         self.buttons_icons = buttons_icons
@@ -40,6 +40,8 @@ class Decision:
 
         self.x_pos = x_pos
         self.y_pos = y_pos
+
+        self.requirements = requirements
 
         self.decision_on_tree_menu_icon = None
 

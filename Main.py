@@ -386,7 +386,8 @@ class Main:
 					self.decision_icons_image_dic[decision_data_entry['decision_image_name']],
 					decision_data_entry['decision_description'],
 					decision_data_entry['x_pos'],
-					decision_data_entry['y_pos']
+					decision_data_entry['y_pos'],
+					decision_data_entry.get('requirements', None)
 				)
 				decision_on_tree_menu_icon = decision_data_entry.get('decision_on_tree_menu_icon', None)
 				if decision_on_tree_menu_icon:
@@ -1028,6 +1029,7 @@ your shoulders.
 									self.Game_Screen.Laws_Menu.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
 
 									self.Game_Screen.Decisions_Menu.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
+									self.Game_Screen.Decisions_Menu.generate_decisions_tree()
 
 									self.Game_Screen.Finances_Menu.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
 
@@ -1272,7 +1274,9 @@ your shoulders.
 							self.Game_Screen.Country_Focus_Tree.focus_movement_x -= difference_x
 							self.Game_Screen.Country_Focus_Tree.focus_movement_y -= difference_y
 						elif self.Game_Screen.Decisions_Menu.is_menu_open == True:
-							pass
+							if self.mouse_pos[0] >= self.screen_width/2 and self.mouse_pos[1] >= 158 * self.factor_y and self.mouse_pos[1] <= self.screen_height - 110 * self.factor_y:
+								self.Game_Screen.Decisions_Menu.tree_icons_offset_x = min(self.Game_Screen.Decisions_Menu.decisions_tree_surface.get_width() - self.screen_width/2, max(0, self.Game_Screen.Decisions_Menu.tree_icons_offset_x + difference_x))
+								self.Game_Screen.Decisions_Menu.tree_icons_offset_y = min(self.Game_Screen.Decisions_Menu.decisions_tree_surface.get_height() - self.screen_height - (158 + 110) * self.factor_y, max(0, self.Game_Screen.Decisions_Menu.tree_icons_offset_y + difference_y))	
 						elif self.Game_Screen.Research_Menu.is_menu_open == True:
 							self.Game_Screen.Research_Menu.icons_offset_x = min(self.Game_Screen.Research_Menu.surface_size_x - 1217*self.factor_x, max(0, self.Game_Screen.Research_Menu.icons_offset_x + difference_x))
 							self.Game_Screen.Research_Menu.icons_offset_y = min(self.Game_Screen.Research_Menu.surface_size_y - 796*self.factor_y, max(0, self.Game_Screen.Research_Menu.icons_offset_y + difference_y))							

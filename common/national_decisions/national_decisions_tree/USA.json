@@ -1,6 +1,21 @@
 [
     {
-    "decision_name": "name 2",
+        "decision_name": "TREE1",
+        "buttons": [
+            [0, 0, 64, 64],
+            [0, 0, 64, 64]
+        ],
+        "button_descriptions": ["Button Description 3", "Button Description 4"],
+        "button_icon_image_names": ["decision_generic", "decision_generic"],
+        "decision_image_name": "generic_main_image",
+        "decision_description": "Decision Description",
+        "x_pos": 200,
+        "y_pos": 200,
+        "decision_on_tree_menu_icon": "generic_on_tree_icon",
+        "requirements": []
+    },    
+    {
+    "decision_name": "TREE2",
     "buttons": [
         [0, 0, 64, 64],
         [0, 0, 64, 64]
@@ -9,12 +24,13 @@
     "button_icon_image_names": ["decision_generic", "decision_generic"],
     "decision_image_name": "generic_main_image",
     "decision_description": "Decision Description",
-    "x_pos": 50,
+    "x_pos": 400,
     "y_pos": 200,
-    "decision_on_tree_menu_icon": "generic_on_tree_icon"
+    "decision_on_tree_menu_icon": "generic_on_tree_icon",
+    "requirements": []
     },
     {
-    "decision_name": "name 3",
+    "decision_name": "TREE3",
     "buttons": [
         [0, 0, 64, 64],
         [0, 0, 64, 64]
@@ -23,8 +39,9 @@
     "button_icon_image_names": ["decision_generic", "decision_generic"],
     "decision_image_name": "generic_main_image",
     "decision_description": "Decision Description A",
-    "x_pos": 250,
-    "y_pos": 200,
-    "decision_on_tree_menu_icon": "generic_on_tree_icon"
+    "x_pos": 400,
+    "y_pos": 500,
+    "decision_on_tree_menu_icon": "generic_on_tree_icon",
+    "requirements": ["TREE1", "TREE2"]
     }
 ]
