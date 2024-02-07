@@ -47,6 +47,7 @@ class Main:
 		self.national_focus_image_dic = {}
 
 		self.researche_icons_image_dic = {}
+		self.researche_institute_icons_image_dic = {}
 		
 		self.decision_icons_image_dic = {}
 		self.decision_on_tree_menu_icons_dic = {}
@@ -139,6 +140,16 @@ class Main:
 						image_name = os.path.splitext(filename)[0]
 						self.researche_icons_image_dic[image_name] = self.pygame.image.load(image_path).convert_alpha()
 						self.researche_icons_image_dic[image_name] = self.pygame.transform.smoothscale_by(self.researche_icons_image_dic[image_name], (self.factor_x, self.factor_y))
+	def load_researche_institute_icons(self, researche_institute_icons_folder):
+		for folder_name in os.listdir(researche_institute_icons_folder):
+			folder_path = os.path.join(researche_institute_icons_folder, folder_name)		
+			if os.path.isdir(folder_path):
+				for filename in os.listdir(folder_path):
+					if filename.endswith(".png") or filename.endswith(".jpg"):
+						image_path = os.path.join(folder_path, filename)
+						image_name = os.path.splitext(filename)[0]
+						self.researche_institute_icons_image_dic[image_name] = self.pygame.image.load(image_path).convert_alpha()
+						self.researche_institute_icons_image_dic[image_name] = self.pygame.transform.smoothscale_by(self.researche_institute_icons_image_dic[image_name], (self.factor_x, self.factor_y))						
 
 	def load_music_files(self, musics_folder):	
 		for folder_name in os.listdir(musics_folder):
@@ -301,6 +312,7 @@ class Main:
 		self.research_overview_background			= self.pygame.image.load(os.path.join(self.research_overview_folder, 'research_overview_background.png')).convert_alpha()
 		self.active_research_background				= self.pygame.image.load(os.path.join(self.research_overview_folder, 'active_research_background.png')).convert_alpha()
 		self.load_researche_icons(os.path.join(self.research_overview_folder, 'tech_tree_icon'))
+		self.load_researche_institute_icons(os.path.join(self.research_overview_folder, 'research_institutes_icon'))
 
 		self.construction_overview_folder = os.path.join(self.interface_folder, 'construction_overview')
 		self.construction_overview_background			= self.pygame.image.load(os.path.join(self.construction_overview_folder, 'construction_overview_background.png')).convert_alpha()
@@ -745,7 +757,7 @@ your shoulders.
 			self.economic_overview_background, self.poverty_rate_0, self.poverty_rate_5, self.poverty_rate_10, self.poverty_rate_15, self.poverty_rate_25, self.poverty_rate_50,
 			self.poverty_rate_80, self.credit_ratings, self.economic_warning, self.economic_freedom_index_green, self.economic_freedom_index_red, self.economic_freedom_score_green, self.economic_freedom_score_red,
 			self.small_rating_green, self.small_rating_red, self.intelligence_overview_background, self.research_overview_background, self.active_research_background, self.researche_icons_image_dic,
-			self.construction_overview_background, self.production_overview_background)
+			self.researche_institute_icons_image_dic, self.construction_overview_background, self.production_overview_background)
 
 
 		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.Main_Menu, self.Country_Selection_Screen,

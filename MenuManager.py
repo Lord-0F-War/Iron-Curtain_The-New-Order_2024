@@ -1953,7 +1953,8 @@ class Game_Screen:
 			earth_political_map, earth_political_map_filled, progressbar_huge, progressbar, progressbar_vertical, progressbar_small, bottom_HUD, country_laws_background, laws_description_image,
 			game_logo, economic_overview_background, poverty_rate_0, poverty_rate_5, poverty_rate_10, poverty_rate_15, poverty_rate_25, poverty_rate_50, poverty_rate_80, credit_ratings,
 			economic_warning, economic_freedom_index_green, economic_freedom_index_red, economic_freedom_score_green, economic_freedom_score_red, small_rating_green, small_rating_red,
-			intelligence_overview_background, research_overview_background, active_research_background, researche_icons_image_dic, construction_overview_background, production_overview_background):
+			intelligence_overview_background, research_overview_background, active_research_background, researche_icons_image_dic, researche_institute_icons_image_dic,
+			construction_overview_background, production_overview_background):
 
 		reference_screen_size_x = 1920
 		reference_screen_size_y = 1080
@@ -1989,7 +1990,8 @@ class Game_Screen:
 
 		self.intelligence_Menu = intelligence_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, intelligence_overview_background)
 
-		self.Research_Menu = Research_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, research_overview_background, researche_icons_image_dic, active_research_background)
+		self.Research_Menu = Research_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, research_overview_background, researche_icons_image_dic,
+			researche_institute_icons_image_dic, active_research_background)
 		
 		self.Global_Market_Menu = Global_Market_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
 
@@ -4724,7 +4726,9 @@ class intelligence_Menu:
 			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_intelligence_button.rect, 2)
 
 class Research_Menu:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, research_overview_background, researche_icons_image_dic, active_research_background):
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, research_overview_background, researche_icons_image_dic, researche_institute_icons_image_dic,
+		active_research_background):
+
 		self.factor_x, self.factor_y = factor_x, factor_y	
 		self.screen_width = screen_width 
 		self.screen_height = screen_height
@@ -4747,6 +4751,8 @@ class Research_Menu:
 		button_size = (57 * self.factor_x, 41 * self.factor_y)
 
 		self.top_bar_research_button = GenericUtilitys.Button(365 * self.factor_x, height, button_size[0], button_size[1])
+
+		self.researche_institute_icons_image_dic = researche_institute_icons_image_dic
 
 		# TECH TREES
 		self.continue_research_progress = 0
@@ -5005,6 +5011,8 @@ class Research_Menu:
 					screen.blit(active_research_project_name_text_render, (709 * self.factor_x + 119 * self.factor_x - active_research_project_name_text_render.get_width()/2, 149 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y + 58 * self.factor_y - active_research_project_name_text_render.get_height()/2 + 52 * self.factor_y))					
 
 					if active_research_project.assigned_research_institute:
+						screen.blit(self.researche_institute_icons_image_dic[active_research_project.assigned_research_institute.icon_image_name], (709 * self.factor_x + 255 * self.factor_x, 149 * self.factor_y + 31 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y))
+
 						total_workers_already_being_used = 0
 						for key, workers_already_being_used in active_research_project.assigned_research_institute.workers_assigned.items():
 							if key == active_research_project:
@@ -5095,8 +5103,10 @@ class Research_Menu:
 						else:
 							self.pygame.draw.rect(screen, (255,255,255), research_institute_box_rect, 2)
 
+						screen.blit(self.researche_institute_icons_image_dic[research_institute.icon_image_name], (17 * self.factor_x, 158 * self.factor_y + 17 * self.factor_y + (index * (110 * self.factor_y))))
+
 						research_institute_name_text_render = self.tiny_scalable_font.render(research_institute.name, True, (255,255,255))	
-						screen.blit(research_institute_name_text_render, (14 * self.factor_x, 158 * self.factor_y + 107 * self.factor_y + (index * (110 * self.factor_y)) - research_institute_name_text_render.get_height()*1.35))						
+						screen.blit(research_institute_name_text_render, (17 * self.factor_x, 158 * self.factor_y + 107 * self.factor_y + (index * (110 * self.factor_y)) - research_institute_name_text_render.get_height()*1.35))						
 		
 		if self.highlight_button == True or self.is_menu_open == True:
 			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_research_button.rect, 2)
