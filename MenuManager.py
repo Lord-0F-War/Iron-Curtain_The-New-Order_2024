@@ -2203,12 +2203,30 @@ class Game_Screen:
 			elif type(clicked_button) == tuple:
 				if clicked_button[0] == "selected_workers_text_box":
 					clicked_button[1].selected_budget_text_box = False
+					clicked_button[1].selected_assign_institute_box = False
 					clicked_button[1].selected_workers_text_box = True
 					self.Research_Menu.receive_player_keybord_input = True
 				elif clicked_button[0] == "assign_budget_box_rect":
 					clicked_button[1].selected_workers_text_box = False
+					clicked_button[1].selected_assign_institute_box = False
 					clicked_button[1].selected_budget_text_box = True
-					self.Research_Menu.receive_player_keybord_input = True					
+					self.Research_Menu.receive_player_keybord_input = True	
+				elif clicked_button[0] == "assign_institute_box_rect":
+					clicked_button[1].selected_workers_text_box = False
+					clicked_button[1].selected_budget_text_box = False
+					clicked_button[1].selected_assign_institute_box = not clicked_button[1].selected_assign_institute_box
+					self.Research_Menu.research_project_to_assing_institute = clicked_button[1]
+					self.Research_Menu.receive_player_keybord_input = False	
+					self.Research_Menu.is_assign_institutes_menu_open = not self.Research_Menu.is_assign_institutes_menu_open 		
+				elif clicked_button[0] == "selected_research_institute_box":
+					clicked_button[1].selected_workers_text_box = False
+					clicked_button[1].selected_budget_text_box = False
+					clicked_button[1].selected_assign_institute_box = False						
+					clicked_button[1].assigned_research_institute = clicked_button[2]	
+					clicked_button[1].current_project_workers_amount = 0
+					self.Research_Menu.receive_player_keybord_input = False
+					self.Research_Menu.is_assign_institutes_menu_open = False		
+					self.Research_Menu.research_project_to_assing_institute = None		
 
 			else: # CLICKED ON A RESEARCHE PROJECT
 				if clicked_button['available'] == True:
@@ -2466,10 +2484,21 @@ class Game_Screen:
 			if type(hovered_button) == tuple:
 				if hovered_button[0] == "selected_workers_text_box":
 					hovered_button[1].hovered_budget_text_box = False
+					hovered_button[1].hovered_assign_institute_box = False
 					hovered_button[1].hovered_workers_text_box = True
 				elif hovered_button[0] == "assign_budget_box_rect":
 					hovered_button[1].hovered_workers_text_box = False
-					hovered_button[1].hovered_budget_text_box = True					
+					hovered_button[1].hovered_assign_institute_box = False
+					hovered_button[1].hovered_budget_text_box = True	
+				elif hovered_button[0] == "assign_institute_box_rect":
+					hovered_button[1].hovered_workers_text_box = False
+					hovered_button[1].hovered_budget_text_box = False	
+					hovered_button[1].hovered_assign_institute_box = True
+				elif hovered_button[0] == "selected_research_institute_box":
+					hovered_button[1].hovered_workers_text_box = False
+					hovered_button[1].hovered_budget_text_box = False	
+					hovered_button[1].hovered_assign_institute_box = False		
+					hovered_button[2].hovered = True											
 
 		else:
 			self.Research_Menu.highlight_button = False				
@@ -4711,6 +4740,9 @@ class Research_Menu:
 		self.received_player_keybord_input = ''
 		self.apply_received_player_keybord_input = False
 
+		self.is_assign_institutes_menu_open = False
+		self.research_project_to_assing_institute = None
+
 		height = 112 * self.factor_y
 		button_size = (57 * self.factor_x, 41 * self.factor_y)
 
@@ -4760,25 +4792,33 @@ class Research_Menu:
 		
 		if self.is_menu_open == True:
 			self.hovered_tech_tree_button = None
-			if self.warfare_tech_tree_button.rect.colliderect(mouse_rect):
-				self.hovered_tech_tree_button = self.warfare_tech_tree_button
-				return "warfare_tech_tree_button"
-			elif self.transport_tech_tree_button.rect.colliderect(mouse_rect):
-				self.hovered_tech_tree_button = self.transport_tech_tree_button
-				return "transport_tech_tree_button"
-			elif self.science_tech_tree_button.rect.colliderect(mouse_rect):
-				self.hovered_tech_tree_button = self.science_tech_tree_button
-				return "science_tech_tree_button"
-			elif self.technology_tech_tree_button.rect.colliderect(mouse_rect):
-				self.hovered_tech_tree_button = self.technology_tech_tree_button
-				return "technology_tech_tree_button"
-			elif self.medical_tech_tree_button.rect.colliderect(mouse_rect):
-				self.hovered_tech_tree_button = self.medical_tech_tree_button
-				return "medical_tech_tree_button"
-			elif self.society_tech_tree_button.rect.colliderect(mouse_rect):
-				self.hovered_tech_tree_button = self.society_tech_tree_button
-				return "society_tech_tree_button"
-			
+			if self.is_assign_institutes_menu_open == False:
+				if self.warfare_tech_tree_button.rect.colliderect(mouse_rect):
+					self.hovered_tech_tree_button = self.warfare_tech_tree_button
+					return "warfare_tech_tree_button"
+				elif self.transport_tech_tree_button.rect.colliderect(mouse_rect):
+					self.hovered_tech_tree_button = self.transport_tech_tree_button
+					return "transport_tech_tree_button"
+				elif self.science_tech_tree_button.rect.colliderect(mouse_rect):
+					self.hovered_tech_tree_button = self.science_tech_tree_button
+					return "science_tech_tree_button"
+				elif self.technology_tech_tree_button.rect.colliderect(mouse_rect):
+					self.hovered_tech_tree_button = self.technology_tech_tree_button
+					return "technology_tech_tree_button"
+				elif self.medical_tech_tree_button.rect.colliderect(mouse_rect):
+					self.hovered_tech_tree_button = self.medical_tech_tree_button
+					return "medical_tech_tree_button"
+				elif self.society_tech_tree_button.rect.colliderect(mouse_rect):
+					self.hovered_tech_tree_button = self.society_tech_tree_button
+					return "society_tech_tree_button"
+			else:
+				for index, research_institute in enumerate(self.PlayerCountry.research_institutes):
+					research_institute_box_rect = self.pygame.Rect(7 * self.factor_x, 158 * self.factor_y + 7 * self.factor_y + (index * (110 * self.factor_y)), 687 * self.factor_x, 100 * self.factor_y)
+					if research_institute_box_rect.colliderect(mouse_rect):
+						return ('selected_research_institute_box', self.research_project_to_assing_institute, research_institute)
+					else:
+						research_institute.hovered = False
+
 			if mouse_rect[0] >= 701 * self.factor_x and mouse_rect[1] >= 160 * self.factor_y and mouse_rect[1] <= 800 * self.factor_y:
 				if self.open_tech_tree == "warfare_tech_tree_button":
 					for rect, researche in self.Warfare_Tech_Tree.researches_rects:
@@ -4830,6 +4870,12 @@ class Research_Menu:
 				else:
 					active_research_project.selected_budget_text_box = False					
 
+				assign_institute_box_rect = self.pygame.Rect(709 * self.factor_x + 255 * self.factor_x, 149 * self.factor_y + 31 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y, 128 * self.factor_x, 64 * self.factor_y)
+				if assign_institute_box_rect.colliderect(mouse_rect):
+					return ('assign_institute_box_rect', active_research_project)
+				elif self.is_assign_institutes_menu_open == False:
+					active_research_project.selected_assign_institute_box = False
+
 		return None
 
 	def calculate_research_progress_increase(self, current_project_monthly_budget, necessary_budget, current_project_workers_amount, workers_quality):
@@ -4860,6 +4906,8 @@ class Research_Menu:
 					active_research_project.days_until_completion = round(((active_research_project.total_duration - active_research_project.completion_progress) / (progress_increase_hourly+0.000001)) / 24, 1)
 
 					if active_research_project.completion_progress >= active_research_project.total_duration:
+						active_research_project.assigned_research_institute.workers_assigned[active_research_project] = 0
+
 						if active_research_project.type == 'warfare_researche':
 							self.PlayerCountry.known_warfare_researches.append(active_research_project.name)
 							self.Warfare_Tech_Tree.generate_researche_images(self.PlayerCountry)
@@ -4956,7 +5004,17 @@ class Research_Menu:
 					active_research_project_name_text_render = self.medium_scalable_font.render(active_research_project.name, False, (255,255,255))	
 					screen.blit(active_research_project_name_text_render, (709 * self.factor_x + 119 * self.factor_x - active_research_project_name_text_render.get_width()/2, 149 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y + 58 * self.factor_y - active_research_project_name_text_render.get_height()/2 + 52 * self.factor_y))					
 
-					total_available_workers = 150
+					if active_research_project.assigned_research_institute:
+						total_workers_already_being_used = 0
+						for key, workers_already_being_used in active_research_project.assigned_research_institute.workers_assigned.items():
+							if key == active_research_project:
+								continue
+							total_workers_already_being_used += workers_already_being_used
+
+						total_available_workers = active_research_project.assigned_research_institute.total_workers_amount - total_workers_already_being_used
+					else:
+						total_available_workers = 0
+					
 					active_research_workers_amount_text_render = self.tiny_scalable_font.render(str(total_available_workers), True, (255,255,255))	
 					screen.blit(active_research_workers_amount_text_render, (709 * self.factor_x + 506 * self.factor_x, 149 * self.factor_y + 58 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y))	
 					
@@ -4968,7 +5026,10 @@ class Research_Menu:
 						active_research_project.hovered_workers_text_box = False
 					elif active_research_project.hovered_budget_text_box == True:
 						self.pygame.draw.rect(screen, (255,255,255), (709 * self.factor_x + 972 * self.factor_x, 149 * self.factor_y + 41 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y, 206 * self.factor_x, 24 * self.factor_y), 1)
-						active_research_project.hovered_budget_text_box = False						
+						active_research_project.hovered_budget_text_box = False		
+					elif active_research_project.hovered_assign_institute_box == True or active_research_project.selected_assign_institute_box == True:
+						self.pygame.draw.rect(screen, (105,233,127), (709 * self.factor_x + 255 * self.factor_x, 149 * self.factor_y + 31 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y, 128 * self.factor_x, 64 * self.factor_y), 3)
+						active_research_project.hovered_assign_institute_box = False													
 
 					if active_research_project.selected_workers_text_box == True or active_research_project.selected_budget_text_box == True:
 						is_player_typing_on_any_research_project = True
@@ -4980,6 +5041,7 @@ class Research_Menu:
 								active_research_project.selected_workers_text_box = False
 								try:
 									active_research_project.current_project_workers_amount = min(total_available_workers, int(self.received_player_keybord_input))
+									active_research_project.assigned_research_institute.workers_assigned[active_research_project] = active_research_project.current_project_workers_amount
 								except:
 									pass
 								self.received_player_keybord_input = ''
@@ -5021,7 +5083,20 @@ class Research_Menu:
 					self.received_player_keybord_input = ''		
 
 				active_research_amount_text_render = self.medium_scalable_font.render('RESEARCHES: ' + str(len(self.active_research_projects)), True, (255,255,255))	
-				screen.blit(active_research_amount_text_render, (1715 * self.factor_x, 22 * self.factor_y + 158 * self.factor_y))									
+				screen.blit(active_research_amount_text_render, (1715 * self.factor_x, 22 * self.factor_y + 158 * self.factor_y))		
+
+				if self.is_assign_institutes_menu_open == True:
+					self.pygame.draw.rect(screen, (6,15,20), (2 * self.factor_x, 160 * self.factor_y, 697 * self.factor_x, 796 * self.factor_y))
+					for index, research_institute in enumerate(self.PlayerCountry.research_institutes):
+						research_institute_box_rect = self.pygame.Rect(7 * self.factor_x, 158 * self.factor_y + 7 * self.factor_y + (index * (110 * self.factor_y)), 687 * self.factor_x, 100 * self.factor_y)		
+						if research_institute.hovered:
+							self.pygame.draw.rect(screen, (105,233,127), research_institute_box_rect, 3)	
+							research_institute.hovered = False	
+						else:
+							self.pygame.draw.rect(screen, (255,255,255), research_institute_box_rect, 2)
+
+						research_institute_name_text_render = self.tiny_scalable_font.render(research_institute.name, True, (255,255,255))	
+						screen.blit(research_institute_name_text_render, (14 * self.factor_x, 158 * self.factor_y + 107 * self.factor_y + (index * (110 * self.factor_y)) - research_institute_name_text_render.get_height()*1.35))						
 		
 		if self.highlight_button == True or self.is_menu_open == True:
 			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_research_button.rect, 2)
@@ -5041,12 +5116,18 @@ class Research_Project:
 
 		self.days_until_completion = 0
 
+		self.assigned_research_institute = None
+
 		# TEXT BOX
 		self.hovered_workers_text_box = False
 		self.selected_workers_text_box = False
 
 		self.hovered_budget_text_box = False
 		self.selected_budget_text_box = False
+
+		# ASSIGNED INSTITUTE
+		self.hovered_assign_institute_box = False
+		self.selected_assign_institute_box = False
 class Warfare_Tech_Tree:
 	def __init__(self,factor_x, factor_y, screen_width, screen_height, pygame, researche_icons_image_dic, surface_size_x, surface_size_y):
 		self.factor_x, self.factor_y = factor_x, factor_y	

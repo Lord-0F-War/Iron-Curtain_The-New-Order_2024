@@ -1,3 +1,12 @@
+class Research_Institute:
+    def __init__(self, name, total_workers_amount):
+        self.name = name
+        self.total_workers_amount = total_workers_amount
+        self.workers_assigned = {}
+
+
+        self.hovered = False
+
 
 class Political_Party:
     def __init__(self, party_name:str, popularity:float, ideology:list, seats:int, officialdom:bool, party_color:set):
@@ -123,6 +132,10 @@ class Country:
         self.known_technology_researches = []
         self.known_medical_researches = ['TECH NAME 1']
         self.known_society_researches = []
+
+        self.Massachusetts_Institute_of_Technology_MIT = Research_Institute('Massachusetts Institute of Technology (MIT)', 250)
+        self.Internet = Research_Institute('Internet', 1250)
+        self.research_institutes = [self.Massachusetts_Institute_of_Technology_MIT, self.Internet]
 
         # FOCUS TREE
         self.country_focus_tree = {}
