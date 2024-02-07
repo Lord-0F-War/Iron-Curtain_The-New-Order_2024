@@ -4819,7 +4819,7 @@ class Research_Menu:
 					return "society_tech_tree_button"
 			else:
 				for index, research_institute in enumerate(self.PlayerCountry.research_institutes):
-					research_institute_box_rect = self.pygame.Rect(7 * self.factor_x, 158 * self.factor_y + 7 * self.factor_y + (index * (110 * self.factor_y)), 687 * self.factor_x, 100 * self.factor_y)
+					research_institute_box_rect = self.pygame.Rect(7 * self.factor_x, 158 * self.factor_y + 7 * self.factor_y + (index * (110 * self.factor_y)), 657 * self.factor_x, 100 * self.factor_y)
 					if research_institute_box_rect.colliderect(mouse_rect):
 						return ('selected_research_institute_box', self.research_project_to_assing_institute, research_institute)
 					else:
@@ -4905,7 +4905,7 @@ class Research_Menu:
 		if self.continue_research_progress != 0:
 			for active_research_project in self.active_research_projects:
 				for progress in range(self.continue_research_progress):
-					workers_quality = 0.9
+					workers_quality = active_research_project.assigned_research_institute.workforce_quality if active_research_project.assigned_research_institute else 0
 					progress_increase_hourly = self.calculate_research_progress_increase(active_research_project.current_project_monthly_budget, active_research_project.necessary_budget, active_research_project.current_project_workers_amount, workers_quality)
 					active_research_project.completion_progress += progress_increase_hourly	
 
@@ -5096,7 +5096,7 @@ class Research_Menu:
 				if self.is_assign_institutes_menu_open == True:
 					self.pygame.draw.rect(screen, (6,15,20), (2 * self.factor_x, 160 * self.factor_y, 697 * self.factor_x, 796 * self.factor_y))
 					for index, research_institute in enumerate(self.PlayerCountry.research_institutes):
-						research_institute_box_rect = self.pygame.Rect(7 * self.factor_x, 158 * self.factor_y + 7 * self.factor_y + (index * (110 * self.factor_y)), 687 * self.factor_x, 100 * self.factor_y)		
+						research_institute_box_rect = self.pygame.Rect(7 * self.factor_x, 158 * self.factor_y + 7 * self.factor_y + (index * (110 * self.factor_y)), 657 * self.factor_x, 100 * self.factor_y)		
 						if research_institute.hovered:
 							self.pygame.draw.rect(screen, (105,233,127), research_institute_box_rect, 3)	
 							research_institute.hovered = False	
@@ -5105,8 +5105,14 @@ class Research_Menu:
 
 						screen.blit(self.researche_institute_icons_image_dic[research_institute.icon_image_name], (17 * self.factor_x, 158 * self.factor_y + 17 * self.factor_y + (index * (110 * self.factor_y))))
 
-						research_institute_name_text_render = self.tiny_scalable_font.render(research_institute.name, True, (255,255,255))	
-						screen.blit(research_institute_name_text_render, (17 * self.factor_x, 158 * self.factor_y + 107 * self.factor_y + (index * (110 * self.factor_y)) - research_institute_name_text_render.get_height()*1.35))						
+						research_institute_name_text_render = self.small_scalable_font.render(research_institute.name, True, (255,255,255))	
+						screen.blit(research_institute_name_text_render, (17 * self.factor_x, 158 * self.factor_y + 107 * self.factor_y + (index * (110 * self.factor_y)) - research_institute_name_text_render.get_height()*1.4))			
+
+						research_institute_workforce_amount_text_render = self.small_scalable_font.render('WORKERS AMOUNT:             ' + str(research_institute.total_workers_amount), True, (255,255,255))	
+						screen.blit(research_institute_workforce_amount_text_render, (155 * self.factor_x, 158 * self.factor_y + 20 * self.factor_y + (index * (110 * self.factor_y))))		
+
+						research_institute_workforce_quality_text_render = self.small_scalable_font.render('WORKFORCE QUALITY:        ' + str(research_institute.workforce_quality*100) + '%', True, (255,255,255))	
+						screen.blit(research_institute_workforce_quality_text_render, (155 * self.factor_x, 158 * self.factor_y + 45 * self.factor_y + (index * (110 * self.factor_y))))															
 		
 		if self.highlight_button == True or self.is_menu_open == True:
 			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_research_button.rect, 2)

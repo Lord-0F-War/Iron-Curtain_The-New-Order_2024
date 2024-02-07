@@ -1,8 +1,11 @@
 class Research_Institute:
-    def __init__(self, name, icon_image_name, total_workers_amount):
+    def __init__(self, name, icon_image_name, total_workers_amount, workforce_quality):
         self.name = name
         self.icon_image_name = icon_image_name
         self.total_workers_amount = total_workers_amount
+
+        self.workforce_quality = workforce_quality
+
         self.workers_assigned = {}
 
 
@@ -134,8 +137,8 @@ class Country:
         self.known_medical_researches = ['TECH NAME 1']
         self.known_society_researches = []
 
-        self.Massachusetts_Institute_of_Technology_MIT = Research_Institute('Massachusetts Institute of Technology (MIT)', 'MIT', 250)
-        self.Internet = Research_Institute('Internet', 'TEST', 1250)
+        self.Massachusetts_Institute_of_Technology_MIT = Research_Institute('Massachusetts Institute of Technology (MIT)', 'MIT', 250, 0.9)
+        self.Internet = Research_Institute('Internet', 'TEST', 1250, 0.1)
         self.research_institutes = [self.Massachusetts_Institute_of_Technology_MIT, self.Internet]
 
         # FOCUS TREE
