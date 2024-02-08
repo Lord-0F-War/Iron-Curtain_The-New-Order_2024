@@ -296,8 +296,10 @@ class Main:
 		self.load_national_focus(self.national_focus_folder)
 
 
+		self.top_bar_interface_folder = os.path.join(self.game_HUD_folder, 'top_bar_interface')
 
-		self.economic_overview_folder = os.path.join(self.interface_folder, 'economic_overview')
+
+		self.economic_overview_folder = os.path.join(self.top_bar_interface_folder, 'economic_overview')
 		self.economic_overview_background			= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'economic_overview_background.png')).convert_alpha()
 		
 		self.poverty_rate_0				= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'poverty_rate_0.png')).convert_alpha()
@@ -318,20 +320,20 @@ class Main:
 		self.small_rating_green						= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'small_rating_green.png')).convert_alpha()		
 		self.small_rating_red						= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'small_rating_red.png')).convert_alpha()
 
-		self.intelligence_overview_folder = os.path.join(self.interface_folder, 'intelligence_overview')
+		self.intelligence_overview_folder = os.path.join(self.top_bar_interface_folder, 'intelligence_overview')
 		self.intelligence_overview_background			= self.pygame.image.load(os.path.join(self.intelligence_overview_folder, 'intelligence_overview_background.png')).convert_alpha()
 		self.load_intelligency_agencies_icons(os.path.join(self.intelligence_overview_folder, 'intelligence_agencies'))	
 
-		self.research_overview_folder = os.path.join(self.interface_folder, 'research_overview')
+		self.research_overview_folder = os.path.join(self.top_bar_interface_folder, 'research_overview')
 		self.research_overview_background			= self.pygame.image.load(os.path.join(self.research_overview_folder, 'research_overview_background.png')).convert_alpha()
 		self.active_research_background				= self.pygame.image.load(os.path.join(self.research_overview_folder, 'active_research_background.png')).convert_alpha()
 		self.load_researche_icons(os.path.join(self.research_overview_folder, 'tech_tree_icon'))
 		self.load_researche_institute_icons(os.path.join(self.research_overview_folder, 'research_institutes_icon'))
 
-		self.construction_overview_folder = os.path.join(self.interface_folder, 'construction_overview')
+		self.construction_overview_folder = os.path.join(self.top_bar_interface_folder, 'construction_overview')
 		self.construction_overview_background			= self.pygame.image.load(os.path.join(self.construction_overview_folder, 'construction_overview_background.png')).convert_alpha()
 
-		self.production_overview_folder = os.path.join(self.interface_folder, 'production_overview')
+		self.production_overview_folder = os.path.join(self.top_bar_interface_folder, 'production_overview')
 		self.production_overview_background			= self.pygame.image.load(os.path.join(self.production_overview_folder, 'production_overview_background.png')).convert_alpha()				
 
 		
