@@ -1953,8 +1953,8 @@ class Game_Screen:
 			earth_political_map, earth_political_map_filled, progressbar_huge, progressbar, progressbar_vertical, progressbar_small, bottom_HUD, country_laws_background, laws_description_image,
 			game_logo, economic_overview_background, poverty_rate_0, poverty_rate_5, poverty_rate_10, poverty_rate_15, poverty_rate_25, poverty_rate_50, poverty_rate_80, credit_ratings,
 			economic_warning, economic_freedom_index_green, economic_freedom_index_red, economic_freedom_score_green, economic_freedom_score_red, small_rating_green, small_rating_red,
-			intelligence_overview_background, research_overview_background, active_research_background, researche_icons_image_dic, researche_institute_icons_image_dic,
-			construction_overview_background, production_overview_background):
+			intelligence_overview_background, intelligency_agencies_icons_image_dic, research_overview_background, active_research_background, researche_icons_image_dic,
+			researche_institute_icons_image_dic, construction_overview_background, production_overview_background):
 
 		reference_screen_size_x = 1920
 		reference_screen_size_y = 1080
@@ -1988,7 +1988,7 @@ class Game_Screen:
 			poverty_rate_15, poverty_rate_25, poverty_rate_50, poverty_rate_80, credit_ratings, economic_warning, economic_freedom_index_green, economic_freedom_index_red, economic_freedom_score_green,
 			economic_freedom_score_red, small_rating_green, small_rating_red)
 
-		self.intelligence_Menu = intelligence_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, intelligence_overview_background)
+		self.intelligence_Menu = intelligence_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, intelligence_overview_background, intelligency_agencies_icons_image_dic)
 
 		self.Research_Menu = Research_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, research_overview_background, researche_icons_image_dic,
 			researche_institute_icons_image_dic, active_research_background)
@@ -4712,12 +4712,14 @@ class Finances_Menu:
 			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_finances_button.rect, 2)		
 
 class intelligence_Menu:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, intelligence_overview_background):
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, intelligence_overview_background, intelligency_agencies_icons_image_dic):
 		self.factor_x, self.factor_y = factor_x, factor_y	
 		self.screen_width = screen_width 
 		self.screen_height = screen_height
 
 		self.pygame = pygame
+
+		self.PlayerCountry = None
 
 		self.is_menu_open = False
 		self.highlight_button = False
@@ -4728,6 +4730,8 @@ class intelligence_Menu:
 		self.top_bar_intelligence_button = GenericUtilitys.Button(306 * self.factor_x, height, button_size[0], button_size[1])
 
 		self.intelligence_overview_background = pygame.transform.smoothscale_by(intelligence_overview_background, (self.factor_x, self.factor_y))
+
+		self.intelligency_agencies_icons_image_dic = intelligency_agencies_icons_image_dic
 
 		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
 		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
@@ -4743,7 +4747,12 @@ class intelligence_Menu:
 
 	def draw(self, screen):
 		if self.is_menu_open == True:
-			screen.blit(self.intelligence_overview_background, (0, 158 * self.factor_y))		
+			screen.blit(self.intelligence_overview_background, (0, 158 * self.factor_y))
+
+			screen.blit(self.intelligency_agencies_icons_image_dic[self.PlayerCountry.country_intelligency_agency.icon_image_name], (18 * self.factor_x, 174 * self.factor_y))	
+
+			intelligency_agency_name_text_render = self.huge_scalable_font.render(self.PlayerCountry.country_intelligency_agency.name, False, (255,255,255))	
+			screen.blit(intelligency_agency_name_text_render, (106 * self.factor_x, 208 * self.factor_y))				
 
 		if self.highlight_button == True or self.is_menu_open == True:
 			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_intelligence_button.rect, 2)

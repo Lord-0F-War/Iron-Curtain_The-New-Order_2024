@@ -27,6 +27,12 @@ class Political_Party:
         self.party_color = party_color
 
 
+class Intelligency_Agency:
+    def __init__(self, name, icon_image_name):
+        self.name = name
+        self.icon_image_name = icon_image_name
+
+
 class Decision:
     def __init__(self, buttons, buttons_descriptions, buttons_icons, main_image, decision_description, x_pos, y_pos, requirements):
         self.buttons = buttons
@@ -241,6 +247,9 @@ class Country:
         self.country_clandestine_parties = [] 
 
         self.total_political_seats = 100
+
+
+        self.country_intelligency_agency = Intelligency_Agency('Central Intelligence Agency', 'CIA')
 
 
         # LAWS

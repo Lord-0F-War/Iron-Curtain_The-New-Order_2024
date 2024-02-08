@@ -32,7 +32,7 @@ class Pygame:
 		pygame.time.set_timer(self.FPS_update, 150)
 		pygame.time.set_timer(self.key_delay, 42)
 
-		pygame.mixer.init(buffer=8192) 
+		pygame.mixer.init(buffer=65536) 
 
 		return (self.clock, QUIT, self.date_tick, self.FPS_update, self.key_delay, self.display, self.screen, self.surface_alfa)
 

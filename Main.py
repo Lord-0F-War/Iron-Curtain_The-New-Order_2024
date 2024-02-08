@@ -48,6 +48,8 @@ class Main:
 
 		self.researche_icons_image_dic = {}
 		self.researche_institute_icons_image_dic = {}
+
+		self.intelligency_agencies_icons_image_dic = {}
 		
 		self.decision_icons_image_dic = {}
 		self.decision_on_tree_menu_icons_dic = {}
@@ -150,6 +152,17 @@ class Main:
 						image_name = os.path.splitext(filename)[0]
 						self.researche_institute_icons_image_dic[image_name] = self.pygame.image.load(image_path).convert_alpha()
 						self.researche_institute_icons_image_dic[image_name] = self.pygame.transform.smoothscale_by(self.researche_institute_icons_image_dic[image_name], (self.factor_x, self.factor_y))						
+
+	def load_intelligency_agencies_icons(self, intelligency_agencies_icons_folder):
+		for folder_name in os.listdir(intelligency_agencies_icons_folder):
+			folder_path = os.path.join(intelligency_agencies_icons_folder, folder_name)		
+			if os.path.isdir(folder_path):
+				for filename in os.listdir(folder_path):
+					if filename.endswith(".png") or filename.endswith(".jpg"):
+						image_path = os.path.join(folder_path, filename)
+						image_name = os.path.splitext(filename)[0]
+						self.intelligency_agencies_icons_image_dic[image_name] = self.pygame.image.load(image_path).convert_alpha()
+						self.intelligency_agencies_icons_image_dic[image_name] = self.pygame.transform.smoothscale_by(self.intelligency_agencies_icons_image_dic[image_name], (self.factor_x, self.factor_y))
 
 	def load_music_files(self, musics_folder):	
 		for folder_name in os.listdir(musics_folder):
@@ -306,7 +319,8 @@ class Main:
 		self.small_rating_red						= self.pygame.image.load(os.path.join(self.economic_overview_folder, 'small_rating_red.png')).convert_alpha()
 
 		self.intelligence_overview_folder = os.path.join(self.interface_folder, 'intelligence_overview')
-		self.intelligence_overview_background			= self.pygame.image.load(os.path.join(self.intelligence_overview_folder, 'intelligence_overview_background.png')).convert_alpha()	
+		self.intelligence_overview_background			= self.pygame.image.load(os.path.join(self.intelligence_overview_folder, 'intelligence_overview_background.png')).convert_alpha()
+		self.load_intelligency_agencies_icons(os.path.join(self.intelligence_overview_folder, 'intelligence_agencies'))	
 
 		self.research_overview_folder = os.path.join(self.interface_folder, 'research_overview')
 		self.research_overview_background			= self.pygame.image.load(os.path.join(self.research_overview_folder, 'research_overview_background.png')).convert_alpha()
@@ -757,7 +771,7 @@ your shoulders.
 			self.progressbar_huge, self.progressbar, self.progressbar_vertical, self.progressbar_small, self.bottom_HUD, self.country_laws_background, self.laws_description_image, self.game_logo,
 			self.economic_overview_background, self.poverty_rate_0, self.poverty_rate_5, self.poverty_rate_10, self.poverty_rate_15, self.poverty_rate_25, self.poverty_rate_50,
 			self.poverty_rate_80, self.credit_ratings, self.economic_warning, self.economic_freedom_index_green, self.economic_freedom_index_red, self.economic_freedom_score_green, self.economic_freedom_score_red,
-			self.small_rating_green, self.small_rating_red, self.intelligence_overview_background, self.research_overview_background, self.active_research_background, self.researche_icons_image_dic,
+			self.small_rating_green, self.small_rating_red, self.intelligence_overview_background, self.intelligency_agencies_icons_image_dic, self.research_overview_background, self.active_research_background, self.researche_icons_image_dic,
 			self.researche_institute_icons_image_dic, self.construction_overview_background, self.production_overview_background)
 
 
@@ -1032,6 +1046,8 @@ your shoulders.
 									self.Game_Screen.Decisions_Menu.generate_decisions_tree()
 
 									self.Game_Screen.Finances_Menu.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
+
+									self.Game_Screen.intelligence_Menu.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
 
 									self.Game_Screen.Research_Menu.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
 									self.Game_Screen.Research_Menu.Warfare_Tech_Tree.generate_researche_images(self.Game_Screen.Research_Menu.PlayerCountry)
