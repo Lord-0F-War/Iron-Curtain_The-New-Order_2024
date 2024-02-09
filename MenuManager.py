@@ -1950,11 +1950,11 @@ class Laws_Group_Menu:
 class Game_Screen:
 	def __init__(self, screen_width, screen_height, pygame, clock, generic_hover_over_button_sound, generic_click_button_sound, top_bar_right_background, top_bar_game_speed_indicator,
 			top_bar_defcon_level, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over, country_overview, popularity_circle_overlay, earth_daymap, 
-			earth_political_map, earth_political_map_filled, progressbar_huge, progressbar, progressbar_vertical, progressbar_small, bottom_HUD, country_laws_background, laws_description_image,
+			earth_political_map, earth_political_map_filled, progressbar_huge, progressbar, progressbar_vertical, progressbar_small, country_laws_background, laws_description_image,
 			game_logo, economic_overview_background, poverty_rate_0, poverty_rate_5, poverty_rate_10, poverty_rate_15, poverty_rate_25, poverty_rate_50, poverty_rate_80, credit_ratings,
 			economic_warning, economic_freedom_index_green, economic_freedom_index_red, economic_freedom_score_green, economic_freedom_score_red, small_rating_green, small_rating_red,
 			intelligence_overview_background, intelligency_agencies_icons_image_dic, research_overview_background, active_research_background, researche_icons_image_dic,
-			researche_institute_icons_image_dic, construction_overview_background, production_overview_background):
+			researche_institute_icons_image_dic, construction_overview_background, production_overview_background, bottom_HUD, finances_menu_background, budget_menu, debt_menu, taxation_menu):
 
 		reference_screen_size_x = 1920
 		reference_screen_size_y = 1080
@@ -1964,8 +1964,7 @@ class Game_Screen:
 		
 		self.generic_hover_over_button_sound, self.generic_click_button_sound = generic_hover_over_button_sound, generic_click_button_sound
 
-		self.last_hovered_button = None
-		self.is_any_top_bar_menu_open = False	
+		self.last_hovered_button = None	
 
 
 		self.Country_Overview = Country_Overview(self.factor_x, self.factor_y, pygame, top_bar_left_background, top_bar_flag_overlay, top_bar_flag_overlay_hovering_over,
@@ -1975,7 +1974,7 @@ class Game_Screen:
 
 		self.Clock_UI = Clock_UI(self.factor_x, self.factor_y, screen_width, screen_height, pygame, clock, top_bar_right_background, top_bar_game_speed_indicator, top_bar_defcon_level)
 
-		self.Bottom_HUD = Bottom_HUD(self.factor_x, self.factor_y, screen_width, screen_height, pygame, bottom_HUD)
+		self.Bottom_HUD = Bottom_HUD(self.factor_x, self.factor_y, screen_width, screen_height, pygame, bottom_HUD, finances_menu_background, budget_menu, debt_menu, taxation_menu)
 
 		self.Earth_Map = Earth_Map(self.factor_x, self.factor_y, screen_width, screen_height, earth_daymap, earth_political_map, earth_political_map_filled, self.Clock_UI)
 
@@ -2338,14 +2337,22 @@ class Game_Screen:
 			return clicked_button			
 		#---------------------------------------------------------------------------------------------------------------------------------------#
 		#---------------------------------------------------------------------------------------------------------------------------------------#																					
-		if self.is_any_top_bar_menu_open == False:
-			clicked_button = self.get_button_by_interaction(mouse_rect, 'Bottom_HUD')
-
+		clicked_button = self.get_button_by_interaction(mouse_rect, 'Bottom_HUD')
+		if clicked_button != None:
 			if type(clicked_button) is int:
 				self.Earth_Map.map_overlay_index = clicked_button
 				self.Bottom_HUD.active_map_overlay = clicked_button
 				self.Earth_Map.update_map()
-				return clicked_button
+
+			elif clicked_button[0:26] == 'country_legislation_button':
+				if clicked_button != self.Bottom_HUD.open_country_legislation:
+					self.Bottom_HUD.open_country_legislation = clicked_button
+				else:
+					self.Bottom_HUD.open_country_legislation = None
+
+			self.generic_hover_over_button_sound.fadeout(100)
+			self.generic_click_button_sound.play()
+			return clicked_button	
 
 	def get_hovered_button(self, mouse_rect):
 		any_button_was_hovered = False
@@ -6021,14 +6028,16 @@ class Stockpile_Menu:
 
 # BOTTOM BAR MENUS:
 class Bottom_HUD:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, bottom_HUD):
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, bottom_HUD, finances_menu_background, budget_menu, debt_menu, taxation_menu):
 		self.factor_x, self.factor_y = factor_x, factor_y	
 		self.screen_width = screen_width 
 		self.screen_height = screen_height
 
 		self.pygame = pygame
 
-		self.bottom_HUD = pygame.transform.smoothscale(bottom_HUD, (self.screen_width, bottom_HUD.get_height() * self.factor_y))
+		self.bottom_HUD 						= pygame.transform.smoothscale(bottom_HUD, (self.screen_width, bottom_HUD.get_height() * self.factor_y))
+
+		self.Legislative_Finances_Menu = Legislative_Finances_Menu(factor_x, factor_y, screen_width, screen_height, pygame, finances_menu_background, budget_menu, debt_menu, taxation_menu)
 
 		self.selected_map_overlay = 0
 		self.active_map_overlay = 1
@@ -6052,6 +6061,7 @@ class Bottom_HUD:
 		self.country_legislation_7 = GenericUtilitys.Button(1380 * self.factor_x, country_legislation_height, country_legislation_size_x, country_legislation_size_y)
 
 		self.collided_country_legislation_button = None
+		self.open_country_legislation = None
 
 	def get_button_by_interaction(self, mouse_rect):
 		if self.bottom_HUD_rect.colliderect(mouse_rect):
@@ -6083,7 +6093,27 @@ class Bottom_HUD:
 
 		if self.collided_country_legislation_button != None:
 			self.pygame.draw.rect(screen, (255, 255, 255), getattr(self, 'country_legislation_'+str(self.collided_country_legislation_button)).rect, 2)
+		
+		if self.open_country_legislation != None:
+			self.pygame.draw.rect(screen, (255, 255, 255), getattr(self, 'country_legislation_'+str(self.open_country_legislation[-1])).rect, 2)
+			if self.open_country_legislation == 'country_legislation_button_1': # FINANCES
+				self.Legislative_Finances_Menu.draw(screen)
+class Legislative_Finances_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, finances_menu_background, budget_menu, debt_menu, taxation_menu):
 
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame		
+		
+		self.finances_menu_background 			= pygame.transform.smoothscale_by(finances_menu_background, (self.factor_x, self.factor_y))	
+		self.budget_menu 						= pygame.transform.smoothscale_by(budget_menu, (self.factor_x, self.factor_y))	
+		self.debt_menu 							= pygame.transform.smoothscale_by(debt_menu, (self.factor_x, self.factor_y))	
+		self.taxation_menu 						= pygame.transform.smoothscale_by(taxation_menu, (self.factor_x, self.factor_y))
+
+	def draw(self, screen):
+		screen.blit(self.finances_menu_background, (0, 158 * self.factor_y))
 
 
 # POP UP

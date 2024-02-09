@@ -334,7 +334,18 @@ class Main:
 		self.construction_overview_background			= self.pygame.image.load(os.path.join(self.construction_overview_folder, 'construction_overview_background.png')).convert_alpha()
 
 		self.production_overview_folder = os.path.join(self.top_bar_interface_folder, 'production_overview')
-		self.production_overview_background			= self.pygame.image.load(os.path.join(self.production_overview_folder, 'production_overview_background.png')).convert_alpha()				
+		self.production_overview_background			= self.pygame.image.load(os.path.join(self.production_overview_folder, 'production_overview_background.png')).convert_alpha()	
+
+
+		self.bottom_bar_interface_folder = os.path.join(self.game_HUD_folder, 'bottom_bar_interface')	
+
+		self.finances_menu_folder = os.path.join(self.bottom_bar_interface_folder, 'finances_menu')	
+
+		self.finances_menu_background			= self.pygame.image.load(os.path.join(self.finances_menu_folder, 'finances_menu_background.png')).convert_alpha()
+		self.budget_menu						= self.pygame.image.load(os.path.join(self.finances_menu_folder, 'budget_menu.png')).convert_alpha()
+		self.debt_menu							= self.pygame.image.load(os.path.join(self.finances_menu_folder, 'debt_menu.png')).convert_alpha()		
+		self.taxation_menu						= self.pygame.image.load(os.path.join(self.finances_menu_folder, 'taxation_menu.png')).convert_alpha()	
+
 
 		
 		self.sounds_folder = os.path.join(self.exe_folder, 'Sounds')
@@ -770,11 +781,11 @@ your shoulders.
 		self.Game_Screen = MenuManager.Game_Screen(self.screen_width, self.screen_height, self.pygame, self.clock, self.Sounds_Manager.generic_hover_over_button_sound, self.Sounds_Manager.generic_click_button_sound, 
 			self.top_bar_right_background, self.top_bar_game_speed_indicator, self.top_bar_defcon_levels, self.top_bar_left_background, self.top_bar_flag_overlay,
 			self.top_bar_flag_overlay_hovering_over, self.country_overview, self.popularity_circle_overlay, self.earth_daymap, self.earth_political_map, self.earth_political_map_filled,
-			self.progressbar_huge, self.progressbar, self.progressbar_vertical, self.progressbar_small, self.bottom_HUD, self.country_laws_background, self.laws_description_image, self.game_logo,
+			self.progressbar_huge, self.progressbar, self.progressbar_vertical, self.progressbar_small, self.country_laws_background, self.laws_description_image, self.game_logo,
 			self.economic_overview_background, self.poverty_rate_0, self.poverty_rate_5, self.poverty_rate_10, self.poverty_rate_15, self.poverty_rate_25, self.poverty_rate_50,
 			self.poverty_rate_80, self.credit_ratings, self.economic_warning, self.economic_freedom_index_green, self.economic_freedom_index_red, self.economic_freedom_score_green, self.economic_freedom_score_red,
 			self.small_rating_green, self.small_rating_red, self.intelligence_overview_background, self.intelligency_agencies_icons_image_dic, self.research_overview_background, self.active_research_background, self.researche_icons_image_dic,
-			self.researche_institute_icons_image_dic, self.construction_overview_background, self.production_overview_background)
+			self.researche_institute_icons_image_dic, self.construction_overview_background, self.production_overview_background, self.bottom_HUD, self.finances_menu_background, self.budget_menu, self.debt_menu, self.taxation_menu)
 
 
 		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.Main_Menu, self.Country_Selection_Screen,
@@ -1314,9 +1325,10 @@ your shoulders.
 				self.mouse_rect = self.pygame.Rect(self.mouse_pos, (1, 1))
 
 				if self.is_in_esc_menu == False:
-					self.hovered_rect = self.Game_Screen.Country_Overview.get_hovered_rect(self.mouse_rect)
-					if self.Game_Screen.is_any_top_bar_menu_open == False:
-						self.hovered_top_bar_button = self.Game_Screen.get_hovered_button(self.mouse_rect)
+					if self.Game_Screen.Country_Overview.is_menu_open == True:
+						self.hovered_rect = self.Game_Screen.Country_Overview.get_hovered_rect(self.mouse_rect)
+
+					self.hovered_top_bar_button = self.Game_Screen.get_hovered_button(self.mouse_rect)
 				else:
 					self.hovered_button = self.ESC_Menu.get_hovered_button(self.mouse_rect, self.is_options_menu_open)
 					self.ESC_Menu.hovered_button = self.hovered_button
