@@ -2350,6 +2350,13 @@ class Game_Screen:
 				else:
 					self.Bottom_HUD.open_country_legislation = None
 
+			elif clicked_button == 'budget_menu_button': 
+				if clicked_button != self.Bottom_HUD.Legislative_Finances_Menu.open_menu:
+					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = clicked_button
+				else:
+					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None
+
+
 			self.generic_hover_over_button_sound.fadeout(100)
 			self.generic_click_button_sound.play()
 			return clicked_button	
@@ -2731,6 +2738,36 @@ class Clock_UI:
 
 				if self.Player_Country_Research_Menu.is_menu_open == False:
 					self.Player_Country_Research_Menu.increase_research_progress()
+
+				self.PlayerCountry.expenses = sum([
+				self.PlayerCountry.agriculture_expense,
+				self.PlayerCountry.culture_expense,
+				self.PlayerCountry.debt_interest_expense,
+				self.PlayerCountry.defense_expense,
+				self.PlayerCountry.economy_expense,
+				self.PlayerCountry.education_expense,
+				self.PlayerCountry.employment_social_expense,
+				self.PlayerCountry.energy_expense,
+				self.PlayerCountry.environment_expense,
+				self.PlayerCountry.family_expense,
+				self.PlayerCountry.foreign_affairs_expense,
+				self.PlayerCountry.health_expense,
+				self.PlayerCountry.homeland_security_expense,
+				self.PlayerCountry.housing_expense,
+				self.PlayerCountry.industry_expense,
+				self.PlayerCountry.information_expense,
+				self.PlayerCountry.justice_expense,
+				self.PlayerCountry.miscellaneous_expense,
+				self.PlayerCountry.religion_expense,
+				self.PlayerCountry.research_expense,
+				self.PlayerCountry.secret_services_expense,
+				self.PlayerCountry.social_security_expense,
+				self.PlayerCountry.sport_expense,
+				self.PlayerCountry.tourism_expense,
+				self.PlayerCountry.transport_expense,
+				self.PlayerCountry.treasury_expense,
+				self.PlayerCountry.unemployment_insurance_expense
+				])
 
 				self.current_hour = self.current_hour - 24
 				self.current_day += 1
@@ -3202,19 +3239,19 @@ class Country_Overview:
 						if GenericUtilitys.polygon_intersects_rectangle(rect, mouse_rect):
 							self.hitted_rect = [index, 'politics']
 							self.is_touching_cicle_rects = True
-							break
+							return
 				elif  mouse_rect[0] > 350 * self.factor_x and  mouse_rect[0] < 517 * self.factor_x:
 					for index, rect in enumerate(self.culture_cicle_rects):
 						if GenericUtilitys.polygon_intersects_rectangle(rect, mouse_rect):
 							self.hitted_rect = [index, 'culture']
 							self.is_touching_cicle_rects = True
-							break	
+							return	
 				elif  mouse_rect[0] > 637 * self.factor_x and  mouse_rect[0] < 804 * self.factor_x:			
 					for index, rect in enumerate(self.religion_cicle_rects):
 						if GenericUtilitys.polygon_intersects_rectangle(rect, mouse_rect):
 							self.hitted_rect = [index, 'religion']
 							self.is_touching_cicle_rects = True
-							break	
+							return	
 
 			for rect, national_spirit in self.national_spirits_display_rects:
 				if rect.colliderect(mouse_rect):
@@ -3324,7 +3361,7 @@ class Country_Overview:
 		## COUNTRY GDP
 		GDP = self.PlayerCountry.country_GDP
 		if abs(GDP) < 1e6:
-			formatted_GDP = f"GDP:  ${GDP:,.3f}"
+			formatted_GDP = f"GDP:  ${GDP:,.2f}"
 		elif abs(GDP) < 1e9:
 			formatted_GDP = f"GDP:  ${GDP / 1e6:.3f} M"
 		elif abs(GDP) < 1e12:
@@ -3332,7 +3369,7 @@ class Country_Overview:
 		elif abs(GDP) < 1e15:
 			formatted_GDP = f"GDP:  ${GDP / 1e12:.3f} T"
 		else:
-			formatted_GDP = f"GDP:  ${GDP:.3f}"
+			formatted_GDP = f"GDP:  ${GDP:.2f}"
 			
 		text_country_GDP = self.small_scalable_font.render(formatted_GDP, True, (255, 255, 255))
 		text_country_GDP_position = (718 * self.factor_x, self.info_height)	
@@ -3342,7 +3379,7 @@ class Country_Overview:
 		## INCOME
 		income = self.PlayerCountry.income
 		if abs(income) < 1e6:
-			formatted_money = f"INCO:  ${income:,.3f}"
+			formatted_money = f"INCO:  ${income:,.2f}"
 		elif abs(income) < 1e9:
 			formatted_money = f"INCO:  ${income / 1e6:.3f} M"
 		elif abs(income) < 1e12:
@@ -3350,7 +3387,7 @@ class Country_Overview:
 		elif abs(income) < 1e15:
 			formatted_money = f"INCO:  ${income / 1e12:.3f} T"
 		else:
-			formatted_money = f"INCO:  ${income:.3f}"
+			formatted_money = f"INCO:  ${income:.2f}"
 		
 		text_income = self.small_scalable_font.render(formatted_money, True, (255, 255, 255))
 		text_income_position = (748 * self.factor_x, 40 * self.factor_y)	
@@ -3359,7 +3396,7 @@ class Country_Overview:
 		## EXPENSES
 		expenses = self.PlayerCountry.expenses
 		if abs(expenses) < 1e6:
-			formatted_money = f"EXPE:  ${expenses:,.3f}"
+			formatted_money = f"EXPE:  ${expenses:,.2f}"
 		elif abs(expenses) < 1e9:
 			formatted_money = f"EXPE:  ${expenses / 1e6:.3f} M"
 		elif abs(expenses) < 1e12:
@@ -3367,7 +3404,7 @@ class Country_Overview:
 		elif abs(expenses) < 1e15:
 			formatted_money = f"EXPE:  ${expenses / 1e12:.3f} T"
 		else:
-			formatted_money = f"EXPE:  ${expenses:.3f}"
+			formatted_money = f"EXPE:  ${expenses:.2f}"
 		
 		text_expenses = self.small_scalable_font.render(formatted_money, True, (255, 255, 255))
 		text_expenses_position = (748 * self.factor_x, 59 * self.factor_y)	
@@ -4509,7 +4546,7 @@ class Finances_Menu:
 			# GDP
 			GDP = self.PlayerCountry.country_GDP
 			if abs(GDP) < 1e6:
-				formatted_GDP = f"${GDP:,.3f}"
+				formatted_GDP = f"${GDP:,.2f}"
 			elif abs(GDP) < 1e9:
 				formatted_GDP = f"${GDP / 1e6:.3f} M"
 			elif abs(GDP) < 1e12:
@@ -4517,7 +4554,7 @@ class Finances_Menu:
 			elif abs(GDP) < 1e15:
 				formatted_GDP = f"${GDP / 1e12:.3f} T"
 			else:
-				formatted_GDP = f"${GDP:.3f}"
+				formatted_GDP = f"${GDP:.2f}"
 						
 			country_gdp_text_render = self.medium_scalable_font.render(formatted_GDP, False, (255,255,255))	
 			screen.blit(country_gdp_text_render, (228 * self.factor_x, 203 * self.factor_y + 158 * self.factor_y))
@@ -4589,7 +4626,7 @@ class Finances_Menu:
 			GDP = self.PlayerCountry.country_GDP + self.PlayerCountry.country_GDP*0.15
 
 			if abs(GDP) < 1e6:
-				high_end_formatted_GDP = f"${GDP:,.3f}"
+				high_end_formatted_GDP = f"${GDP:,.2f}"
 			elif abs(GDP) < 1e9:
 				high_end_formatted_GDP = f"${GDP / 1e6:.3f} M"
 			elif abs(GDP) < 1e12:
@@ -4597,7 +4634,7 @@ class Finances_Menu:
 			elif abs(GDP) < 1e15:
 				high_end_formatted_GDP = f"${GDP / 1e12:.3f} T"
 			else:
-				high_end_formatted_GDP = f"${GDP:.3f}"
+				high_end_formatted_GDP = f"${GDP:.2f}"
 
 			country_gdp_high_end_text_render = self.small_scalable_font.render(high_end_formatted_GDP, False, (255,255,255))	
 			screen.blit(country_gdp_high_end_text_render, (140 * self.factor_x - country_gdp_high_end_text_render.get_width(), 227 * self.factor_y + 158 * self.factor_y - country_gdp_high_end_text_render.get_height()/2))
@@ -4605,7 +4642,7 @@ class Finances_Menu:
 			GDP = self.PlayerCountry.country_GDP - self.PlayerCountry.country_GDP*0.15
 
 			if abs(GDP) < 1e6:
-				low_end_formatted_GDP = f"${GDP:,.3f}"
+				low_end_formatted_GDP = f"${GDP:,.2f}"
 			elif abs(GDP) < 1e9:
 				low_end_formatted_GDP = f"${GDP / 1e6:.3f} M"
 			elif abs(GDP) < 1e12:
@@ -4613,7 +4650,7 @@ class Finances_Menu:
 			elif abs(GDP) < 1e15:
 				low_end_formatted_GDP = f"${GDP / 1e12:.3f} T"
 			else:
-				low_end_formatted_GDP = f"${GDP:.3f}"
+				low_end_formatted_GDP = f"${GDP:.2f}"
 
 			country_gdp_low_end_text_render = self.small_scalable_font.render(low_end_formatted_GDP, False, (255,255,255))	
 			screen.blit(country_gdp_low_end_text_render, (140 * self.factor_x - country_gdp_low_end_text_render.get_width(), 327 * self.factor_y + 158 * self.factor_y - country_gdp_low_end_text_render.get_height()/2))
@@ -4661,7 +4698,7 @@ class Finances_Menu:
 			expenses = self.PlayerCountry.expenses
 
 			if abs(expenses) < 1e6:
-				formatted_expenses = f"${expenses:,.3f}"
+				formatted_expenses = f"${expenses:,.2f}"
 			elif abs(expenses) < 1e9:
 				formatted_expenses = f"${expenses / 1e6:.3f} M"
 			elif abs(expenses) < 1e12:
@@ -4669,7 +4706,7 @@ class Finances_Menu:
 			elif abs(expenses) < 1e15:
 				formatted_expenses = f"${expenses / 1e12:.3f} T"
 			else:
-				formatted_expenses = f"${expenses:.3f}"
+				formatted_expenses = f"${expenses:.2f}"
 
 			expenses_text_render = self.small_scalable_font.render(formatted_expenses, False, (255,255,255))	
 			screen.blit(expenses_text_render, (519 * self.factor_x, 738 * self.factor_y + 158 * self.factor_y))
@@ -4678,7 +4715,7 @@ class Finances_Menu:
 			income = self.PlayerCountry.income
 
 			if abs(income) < 1e6:
-				formatted_income = f"${income:,.3f}"
+				formatted_income = f"${income:,.2f}"
 			elif abs(income) < 1e9:
 				formatted_income = f"${income / 1e6:.3f} M"
 			elif abs(income) < 1e12:
@@ -4686,7 +4723,7 @@ class Finances_Menu:
 			elif abs(income) < 1e15:
 				formatted_income = f"${income / 1e12:.3f} T"
 			else:
-				formatted_income = f"${income:.3f}"
+				formatted_income = f"${income:.2f}"
 
 			income_text_render = self.small_scalable_font.render(formatted_income, False, (255,255,255))	
 			screen.blit(income_text_render, (720 * self.factor_x, 738 * self.factor_y + 158 * self.factor_y))			
@@ -4697,7 +4734,7 @@ class Finances_Menu:
 			difference = income - expenses
 
 			if abs(difference) < 1e6:
-				formatted_difference = f"${difference:,.3f}"
+				formatted_difference = f"${difference:,.2f}"
 			elif abs(difference) < 1e9:
 				formatted_difference = f"${difference / 1e6:.3f} M"
 			elif abs(difference) < 1e12:
@@ -4705,7 +4742,7 @@ class Finances_Menu:
 			elif abs(difference) < 1e15:
 				formatted_difference = f"${difference / 1e12:.3f} T"
 			else:
-				formatted_difference = f"${difference:.3f}"
+				formatted_difference = f"${difference:.2f}"
 
 			if income > expenses:
 				difference_text_render = self.medium_scalable_font.render(formatted_difference, False, (0,255,0))
@@ -6037,7 +6074,7 @@ class Bottom_HUD:
 
 		self.bottom_HUD 						= pygame.transform.smoothscale(bottom_HUD, (self.screen_width, bottom_HUD.get_height() * self.factor_y))
 
-		self.Legislative_Finances_Menu = Legislative_Finances_Menu(factor_x, factor_y, screen_width, screen_height, pygame, finances_menu_background, budget_menu, debt_menu, taxation_menu)
+		self.finances_menu_background, self.budget_menu, self.debt_menu, self.taxation_menu = finances_menu_background, budget_menu, debt_menu, taxation_menu
 
 		self.selected_map_overlay = 0
 		self.active_map_overlay = 1
@@ -6062,9 +6099,14 @@ class Bottom_HUD:
 
 		self.collided_country_legislation_button = None
 		self.open_country_legislation = None
+	
+	def start_menus(self, PlayerCountry):
+		self.Legislative_Finances_Menu = Legislative_Finances_Menu(self.factor_x, self.factor_y, self.screen_width, self.screen_height, self.pygame, PlayerCountry, self.finances_menu_background, self.budget_menu, self.debt_menu, self.taxation_menu)		
 
 	def get_button_by_interaction(self, mouse_rect):
 		if self.bottom_HUD_rect.colliderect(mouse_rect):
+			self.Legislative_Finances_Menu.hovered_button = None
+
 			if self.map_overlay_1.rect.colliderect(mouse_rect):
 				self.selected_map_overlay = 1
 				return 1
@@ -6078,6 +6120,9 @@ class Bottom_HUD:
 				if button_rect.colliderect(mouse_rect):
 					self.collided_country_legislation_button = button+1
 					return 'country_legislation_button_'+str(button+1)
+		else:
+			if self.open_country_legislation == 'country_legislation_button_1': # FINANCES
+				return self.Legislative_Finances_Menu.get_button_by_interaction(mouse_rect)
 		
 		self.selected_map_overlay = 0
 		self.collided_country_legislation_button = None
@@ -6099,7 +6144,7 @@ class Bottom_HUD:
 			if self.open_country_legislation == 'country_legislation_button_1': # FINANCES
 				self.Legislative_Finances_Menu.draw(screen)
 class Legislative_Finances_Menu:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, finances_menu_background, budget_menu, debt_menu, taxation_menu):
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, finances_menu_background, budget_menu, debt_menu, taxation_menu):
 
 		self.factor_x, self.factor_y = factor_x, factor_y	
 		self.screen_width = screen_width 
@@ -6107,14 +6152,275 @@ class Legislative_Finances_Menu:
 
 		self.pygame = pygame		
 		
-		self.finances_menu_background 			= pygame.transform.smoothscale_by(finances_menu_background, (self.factor_x, self.factor_y))	
-		self.budget_menu 						= pygame.transform.smoothscale_by(budget_menu, (self.factor_x, self.factor_y))	
+		self.finances_menu_background 			= pygame.transform.smoothscale_by(finances_menu_background, (self.factor_x, self.factor_y))		
 		self.debt_menu 							= pygame.transform.smoothscale_by(debt_menu, (self.factor_x, self.factor_y))	
 		self.taxation_menu 						= pygame.transform.smoothscale_by(taxation_menu, (self.factor_x, self.factor_y))
+
+		self.Legislative_Finances_Budget_Menu = Legislative_Finances_Budget_Menu(factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, budget_menu)
+		self.budget_menu_button = GenericUtilitys.Button(5 * self.factor_x, 741 * self.factor_y + 158 * self.factor_y, 380 * self.factor_x, 64 * self.factor_y)
+
+		self.hovered_button = None
+
+		self.open_menu = None
+
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(13 * self.factor_y))			
+
+	def get_button_by_interaction(self, mouse_rect):
+		if self.budget_menu_button.rect.colliderect(mouse_rect):
+			self.hovered_button = 'budget_menu_button'
+			return 'budget_menu_button'
+		else:
+			return self.Legislative_Finances_Budget_Menu.get_button_by_interaction(mouse_rect)
+
+		self.hovered_button = None
+		return None		
 
 	def draw(self, screen):
 		screen.blit(self.finances_menu_background, (0, 158 * self.factor_y))
 
+		if self.hovered_button == 'budget_menu_button':
+			self.pygame.draw.rect(screen, (255,255,255), self.budget_menu_button.rect, 2)
+
+		if self.open_menu == 'budget_menu_button':
+			self.pygame.draw.rect(screen, (255,255,255), self.budget_menu_button.rect, 2)
+			self.Legislative_Finances_Budget_Menu.draw(screen)
+class Legislative_Finances_Budget_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, budget_menu):
+
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.PlayerCountry = PlayerCountry
+
+		self.budget_menu = pygame.transform.smoothscale_by(budget_menu, (self.factor_x, self.factor_y))
+
+		self.PlayerCountry_expenses_dict = {
+		'0': self.PlayerCountry.agriculture_expense,
+		'1': self.PlayerCountry.culture_expense,
+		'2': self.PlayerCountry.debt_interest_expense,
+		'3': self.PlayerCountry.defense_expense,
+		'4': self.PlayerCountry.economy_expense,
+		'5': self.PlayerCountry.education_expense,
+		'6': self.PlayerCountry.employment_social_expense,
+		'7': self.PlayerCountry.energy_expense,
+		'8': self.PlayerCountry.environment_expense,
+		'9': self.PlayerCountry.family_expense,
+		'10': self.PlayerCountry.foreign_affairs_expense,
+		'11': self.PlayerCountry.health_expense,
+		'12': self.PlayerCountry.homeland_security_expense,
+		'13': self.PlayerCountry.housing_expense,
+		'14': self.PlayerCountry.industry_expense,
+		'15': self.PlayerCountry.information_expense,
+		'16': self.PlayerCountry.justice_expense,
+		'17': self.PlayerCountry.miscellaneous_expense,
+		'18': self.PlayerCountry.religion_expense,
+		'19': self.PlayerCountry.research_expense,
+		'20': self.PlayerCountry.secret_services_expense,
+		'21': self.PlayerCountry.social_security_expense,
+		'22': self.PlayerCountry.sport_expense,
+		'23': self.PlayerCountry.tourism_expense,
+		'24': self.PlayerCountry.transport_expense,
+		'25': self.PlayerCountry.treasury_expense,
+		'26': self.PlayerCountry.unemployment_insurance_expense			
+		}
+
+		self.PlayerCountry_expenses_name_dict = {
+		0: 'Agriculture Expense',
+		1: 'Culture Expense',
+		2: 'Debt Interest Expense',
+		3: 'Defense Expense',
+		4: 'Economy Expense',
+		5: 'Education Expense',
+		6: 'Employment Social Expense',
+		7: 'Energy Expense',
+		8: 'Environment Expense',
+		9: 'Family Expense',
+		10: 'Foreign Affairs Expense',
+		11: 'Health Expense',
+		12: 'Homeland Security Expense',
+		13: 'Housing Expense',
+		14: 'Industry Expense',
+		15: 'Information Expense',
+		16: 'Justice Expense',
+		17: 'Miscellaneous Expense',
+		18: 'Religion Expense',
+		19: 'Research Expense',
+		20: 'Secret Services Expense',
+		21: 'Social Security Expense',
+		22: 'Sport Expense',
+		23: 'Tourism Expense',
+		24: 'Transport Expense',
+		25: 'Treasury Expense',
+		26: 'Unemployment Insurance Expense'			
+		}		
+
+		self.expenses_cicle_rects = []
+		self.hitted_rect = None
+
+		self.mouse_rect = (0,0,0,0)
+
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))
+
+	def get_button_by_interaction(self, mouse_rect):
+		self.mouse_rect = mouse_rect
+		try:
+			for index, rect in enumerate(self.expenses_cicle_rects):
+				if GenericUtilitys.polygon_intersects_rectangle(rect, mouse_rect):
+					self.hitted_rect = [index, rect]
+					return rect	
+		except:
+			pass
+		
+		self.hitted_rect = None
+		return None
+
+	def draw(self, screen):
+		
+		# CHART
+		chart_position = (450 * self.factor_x, 529 * self.factor_y) 
+		chart_radius = 360 * self.factor_y
+
+		expenses_porcentages = []
+		for expense in self.PlayerCountry_expenses_dict.values():
+			expenses_porcentages.append((expense / self.PlayerCountry.expenses) * 100)
+
+		self.expenses_cicle_rects = GenericUtilitys.draw_pie_chart(screen, chart_position, chart_radius, expenses_porcentages, [
+		(0, 0, 0),
+		(255, 255, 255),
+		(255, 0, 0),
+		(0, 255, 0),
+		(0, 0, 255),
+		(255, 255, 0),
+		(0, 255, 255),
+		(255, 0, 255),
+		(128, 128, 128),
+		(128, 0, 0),
+		(128, 128, 0),
+		(0, 128, 0),
+		(0, 0, 128),
+		(128, 0, 128),
+		(0, 128, 128),
+		(192, 192, 192),
+		(169, 169, 169),
+		(139, 0, 0),
+		(165, 42, 42),
+		(0, 0, 139),
+		(255, 165, 0),
+		(255, 192, 203),
+		(255, 215, 0),
+		(230, 230, 250),
+		(107, 142, 35),
+		(135, 206, 235),
+		(112, 128, 144)
+		])		
+
+		screen.blit(self.budget_menu, (0, 158 * self.factor_y))
+
+		if self.hitted_rect:
+			pygame.draw.polygon(screen, (0,0,0), self.hitted_rect[1], 14)
+			pygame.draw.polygon(screen, (255,255,255), self.hitted_rect[1], 5)
+
+			expense_description_text = self.huge_scalable_font.render(self.PlayerCountry_expenses_name_dict[self.hitted_rect[0]] + ': ' + str((self.PlayerCountry_expenses_dict[str(self.hitted_rect[0])]/ self.PlayerCountry.expenses )*100) + '%', True, (255,255,255))
+			pygame.draw.rect(screen, (6,17,21), (self.mouse_rect[0], self.mouse_rect[1], expense_description_text.get_width() * 1.5, expense_description_text.get_height() * 1.5))
+			pygame.draw.rect(screen, (23,255,255), (self.mouse_rect[0], self.mouse_rect[1], expense_description_text.get_width() * 1.5, expense_description_text.get_height() * 1.5), 2)
+			
+			screen.blit(expense_description_text, (self.mouse_rect[0] + expense_description_text.get_width() * 0.25, self.mouse_rect[1] +  expense_description_text.get_height() * 0.25))			
+
+
+		# EXPENDITURES
+		pygame.draw.line(screen, (0,0,0), (1248 * self.factor_x, 300 * self.factor_y), (1248 * self.factor_x, 321 * self.factor_y), 5)
+		pygame.draw.line(screen, (255,255,255), (1248 * self.factor_x, 301 * self.factor_y), (1248 * self.factor_x, 320 * self.factor_y), 3)
+		
+		expenses = self.PlayerCountry.expenses
+		if abs(expenses) < 1e6:
+			formatted_expenses = f"${expenses:,.2f}"
+		elif abs(expenses) < 1e9:
+			formatted_expenses = f"${expenses / 1e6:.3f} M"
+		elif abs(expenses) < 1e12:
+			formatted_expenses = f"${expenses / 1e9:.3f} B"
+		elif abs(expenses) < 1e15:
+			formatted_expenses = f"${expenses / 1e12:.3f} T"
+		else:
+			formatted_expenses = f"${expenses:.2f}"			
+		expense_text = self.small_scalable_font.render(formatted_expenses, True, (255,255,255))
+		screen.blit(expense_text, (1248 * self.factor_x - expense_text.get_width()/2, 327 * self.factor_y))		
+
+		# REVENUES
+		pygame.draw.line(screen, (0,0,0), (1687 * self.factor_x, 300 * self.factor_y), (1687 * self.factor_x, 321 * self.factor_y), 5)
+		pygame.draw.line(screen, (255,255,255), (1687 * self.factor_x, 301 * self.factor_y), (1687 * self.factor_x, 320 * self.factor_y), 3)
+		
+		income = self.PlayerCountry.income
+		if abs(income) < 1e6:
+			formatted_income = f"${income:,.2f}"
+		elif abs(income) < 1e9:
+			formatted_income = f"${income / 1e6:.3f} M"
+		elif abs(income) < 1e12:
+			formatted_income = f"${income / 1e9:.3f} B"
+		elif abs(income) < 1e15:
+			formatted_income = f"${income / 1e12:.3f} T"
+		else:
+			formatted_income = f"${income:.2f}"			
+		expense_text = self.small_scalable_font.render(formatted_income, True, (255,255,255))
+		screen.blit(expense_text, (1687 * self.factor_x - expense_text.get_width()/2, 327 * self.factor_y))				
+
+
+		x_expense_index = 0
+		y_expense_index = 0
+		for expense_index in range(24):
+			pygame.draw.line(screen, (0,0,0), ((1176 + (x_expense_index*195)) * self.factor_x, (397 + (y_expense_index*69)) * self.factor_y), ((1176 + (x_expense_index*195)) * self.factor_x, (420 + (y_expense_index*69)) * self.factor_y), 5)
+			pygame.draw.line(screen, (255,255,255), ((1176 + (x_expense_index*195)) * self.factor_x, (398 + (y_expense_index*69)) * self.factor_y), ((1176 + (x_expense_index*195)) * self.factor_x, (419 + (y_expense_index*69)) * self.factor_y), 3)
+			
+			expense = self.PlayerCountry_expenses_dict[str(expense_index)]
+			if abs(expense) < 1e6:
+				formatted_expense = f"${expense:,.2f}"
+			elif abs(expense) < 1e9:
+				formatted_expense = f"${expense / 1e6:.3f} M"
+			elif abs(expense) < 1e12:
+				formatted_expense = f"${expense / 1e9:.3f} B"
+			elif abs(expense) < 1e15:
+				formatted_expense = f"${expense / 1e12:.3f} T"
+			else:
+				formatted_expense = f"${expense:.2f}"			
+			expense_text = self.small_scalable_font.render(formatted_expense, True, (255,255,255))
+			screen.blit(expense_text, ((1176 + (x_expense_index*195)) * self.factor_x - expense_text.get_width()/2, (425 + (y_expense_index*69)) * self.factor_y))
+
+			x_expense_index += 1
+			if x_expense_index > 3:
+				x_expense_index = 0
+				y_expense_index += 1			
+
+		x_expense_index = 0
+		for expense_index in range(3):
+			pygame.draw.line(screen, (0,0,0), ((1273 + (x_expense_index*195)) * self.factor_x, 812 * self.factor_y), ((1273 + (x_expense_index*195)) * self.factor_x, 833 * self.factor_y), 5)
+			pygame.draw.line(screen, (255,255,255), ((1273 + (x_expense_index*195)) * self.factor_x, 813 * self.factor_y), ((1273 + (x_expense_index*195)) * self.factor_x, 832 * self.factor_y), 3)
+			
+			expense = self.PlayerCountry_expenses_dict[str(expense_index + 24)]
+			if abs(expense) < 1e6:
+				formatted_expense = f"${expense:,.2f}"
+			elif abs(expense) < 1e9:
+				formatted_expense = f"${expense / 1e6:.3f} M"
+			elif abs(expense) < 1e12:
+				formatted_expense = f"${expense / 1e9:.3f} B"
+			elif abs(expense) < 1e15:
+				formatted_expense = f"${expense / 1e12:.3f} T"
+			else:
+				formatted_expense = f"${expense:.2f}"			
+			expense_text = self.small_scalable_font.render(formatted_expense, True, (255,255,255))
+			screen.blit(expense_text, ((1273 + (x_expense_index*195)) * self.factor_x - expense_text.get_width()/2, 838 * self.factor_y))			
+
+			x_expense_index += 1
+		
 
 # POP UP
 class Game_Introduction_Menu:

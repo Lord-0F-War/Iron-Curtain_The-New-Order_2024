@@ -212,7 +212,35 @@ class Country:
         self.weekly_country_GDP_data = [0]
 
         self.income = 0
-        self.expenses = 0         
+        self.expenses = 0  
+        #   EXPENSES
+        self.agriculture_expense = 0
+        self.culture_expense = 0
+        self.debt_interest_expense = 0
+        self.defense_expense = 0
+        self.economy_expense = 0
+        self.education_expense = 0
+        self.employment_social_expense = 0
+        self.energy_expense = 0
+        self.environment_expense = 0
+        self.family_expense = 0
+        self.foreign_affairs_expense = 0
+        self.health_expense = 0
+        self.homeland_security_expense = 0
+        self.housing_expense = 0
+        self.industry_expense = 0
+        self.information_expense = 0
+        self.justice_expense = 0
+        self.miscellaneous_expense = 0
+        self.religion_expense = 0
+        self.research_expense = 0
+        self.secret_services_expense = 0
+        self.social_security_expense = 0
+        self.sport_expense = 0
+        self.tourism_expense = 0
+        self.transport_expense = 0
+        self.treasury_expense = 0
+        self.unemployment_insurance_expense = 0
 
         # DOMESTIC
         self.domestic_rating = 0

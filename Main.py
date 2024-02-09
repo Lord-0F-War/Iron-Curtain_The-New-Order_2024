@@ -508,7 +508,36 @@ your shoulders.
 		self.USA.unemployment = 5.2
 		self.USA.country_GDP = 10_550_000_000_000
 		self.USA.income = 10_550_000_000_000
-		self.USA.expenses = 550_600_000   
+		
+		self.USA.expenses = 5000  
+
+		self.USA.agriculture_expense = 1000
+		self.USA.culture_expense = 1000
+		self.USA.debt_interest_expense = 500
+		self.USA.defense_expense = 500
+		self.USA.economy_expense = 500
+		self.USA.education_expense = 500
+		self.USA.employment_social_expense = 1000
+		self.USA.energy_expense = 0
+		self.USA.environment_expense = 0
+		self.USA.family_expense = 0
+		self.USA.foreign_affairs_expense = 0
+		self.USA.health_expense = 0
+		self.USA.homeland_security_expense = 0
+		self.USA.housing_expense = 0
+		self.USA.industry_expense = 0
+		self.USA.information_expense = 0
+		self.USA.justice_expense = 0
+		self.USA.miscellaneous_expense = 0
+		self.USA.religion_expense = 0
+		self.USA.research_expense = 0
+		self.USA.secret_services_expense = 0
+		self.USA.social_security_expense = 0
+		self.USA.sport_expense = 0
+		self.USA.tourism_expense = 0
+		self.USA.transport_expense = 0
+		self.USA.treasury_expense = 0
+		self.USA.unemployment_insurance_expense = 0		 
 		
 		# 		Country Domestic Stats
 		self.USA.domestic_rating = 100
@@ -1075,6 +1104,8 @@ your shoulders.
 									self.Game_Screen.Earth_Map.scale_map(zoom_factor_change = -0.75, fps_freezing_avoidance = round(clock.get_fps(), 2), zoom_type = 'zoom_out')
 
 									self.Game_Screen.Earth_Map.map_position[0] -= 900
+
+									self.Game_Screen.Bottom_HUD.start_menus(self.Country_Selection_Screen.Flag_Selection_Menu.selected_country)
 						else:
 							self.clicked_button = self.ESC_Menu.get_clicked_button(self.mouse_rect, self.is_options_menu_open)
 							if self.clicked_button != 'none' and self.clicked_button != None:
