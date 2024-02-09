@@ -479,6 +479,7 @@ your shoulders.
 
 		# Country Stats
 		self.USA.country_national_spirits_total_points = 100
+		self.USA.country_national_spirits_points_left = self.USA.country_national_spirits_total_points
 		
 		self.USA.country_stability = 100
 		self.USA.country_war_support = 100

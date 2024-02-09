@@ -1744,8 +1744,8 @@ class National_Spirits_Selection_Menu:
 					self.click_sound.play()	
 
 				return national_spirit
-		else:
-			return None
+		
+		return None
 
 	def draw(self, screen):
 		screen.blit(self.national_spirits_background, self.background_position)
@@ -2356,6 +2356,12 @@ class Game_Screen:
 				else:
 					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None
 
+			elif clicked_button == 'debt_menu_button': 
+				if clicked_button != self.Bottom_HUD.Legislative_Finances_Menu.open_menu:
+					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = clicked_button
+				else:
+					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None					
+
 
 			self.generic_hover_over_button_sound.fadeout(100)
 			self.generic_click_button_sound.play()
@@ -2927,60 +2933,65 @@ class Earth_Map:
 		#--------------#
 				
 
-		# DAYMAP		
-		if self.map_position[0] == 0:
-			start = 0
-			width = self.screen_width
-			height = self.screen_height if self.screen_height + self.offset_y <= self.earth_daymap.get_height() else self.earth_daymap.get_height()
+		# DAYMAP	
 			
-			if start + width > self.earth_daymap.get_width():
-				width = self.earth_daymap.get_width() - start			
-			if self.offset_y + height > self.earth_daymap.get_height():
-				height = self.earth_daymap.get_height() - self.offset_y
+		try:
+			if self.map_position[0] == 0:
+				start = 0
+				width = self.screen_width
+				height = self.screen_height if self.screen_height + self.offset_y <= self.earth_daymap.get_height() else self.earth_daymap.get_height()
+				
+				if start + width > self.earth_daymap.get_width():
+					width = self.earth_daymap.get_width() - start			
+				if self.offset_y + height > self.earth_daymap.get_height():
+					height = self.earth_daymap.get_height() - self.offset_y
 
-			if height > 0 and width > 0:
-				self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((start, self.offset_y, width, height)), (0, 0))
+				if height > 0 and width > 0:
+					self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((start, self.offset_y, width, height)), (0, 0))
 
-				if self.earth_daymap.get_width() < self.screen_width:
-					difference = self.screen_width - self.earth_daymap.get_width()
-					width = difference
-					self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((0, self.offset_y, width, height)), (self.screen_width - difference, 0))
+					if self.earth_daymap.get_width() < self.screen_width:
+						difference = self.screen_width - self.earth_daymap.get_width()
+						width = difference
+						self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((0, self.offset_y, width, height)), (self.screen_width - difference, 0))
+			
+			if self.map_position[0] > 0:
+				start = self.earth_daymap.get_width() - self.map_position[0]
+				width = min(self.screen_width, self.map_position[0])
+				height = self.screen_height if self.screen_height + self.offset_y <= self.earth_daymap.get_height() else self.earth_daymap.get_height()
+				
+				if start + width > self.earth_daymap.get_width():
+					width = self.earth_daymap.get_width() - start
+				if self.offset_y + height > self.earth_daymap.get_height():
+					height = self.earth_daymap.get_height() - self.offset_y	
+
+				if height > 0 and width > 0:			
+					self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((start, self.offset_y, width, height)), (0, 0))			
+					
+					if self.screen_width - self.map_position[0] > 0:
+						self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((0, self.offset_y, self.screen_width - self.map_position[0], height)), (abs(self.map_position[0]), 0))
+			
+			if self.map_position[0] < 0:
+				start = max(self.screen_width, abs(self.map_position[0]))
+				width = min(abs(self.map_position[0]), min(self.screen_width, self.earth_daymap.get_width() - abs(self.map_position[0])))
+				height = self.screen_height if self.screen_height + self.offset_y <= self.earth_daymap.get_height() else self.earth_daymap.get_height()
+				
+				if start + width > self.earth_daymap.get_width():
+					width = self.earth_daymap.get_width() - start
+				if self.offset_y + height > self.earth_daymap.get_height():
+					height = self.earth_daymap.get_height() - self.offset_y
+
+				if height > 0 and width > 0:		
+					self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((start, self.offset_y, width, height)), (max(0, self.screen_width - abs(self.map_position[0])), 0))
+					
+					if self.screen_width - abs(self.map_position[0]) > 0:
+						self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((abs(self.map_position[0]), self.offset_y, self.screen_width - abs(self.map_position[0]), height)), (0, 0))
+					
+					if self.earth_daymap.get_width() - abs(self.map_position[0]) < self.screen_width:
+						self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((0, self.offset_y, self.screen_width - (self.earth_daymap.get_width() - abs(self.map_position[0])), height)), (self.earth_daymap.get_width() - abs(self.map_position[0]), 0))
 		
-		if self.map_position[0] > 0:
-			start = self.earth_daymap.get_width() - self.map_position[0]
-			width = min(self.screen_width, self.map_position[0])
-			height = self.screen_height if self.screen_height + self.offset_y <= self.earth_daymap.get_height() else self.earth_daymap.get_height()
-			
-			if start + width > self.earth_daymap.get_width():
-				width = self.earth_daymap.get_width() - start
-			if self.offset_y + height > self.earth_daymap.get_height():
-				height = self.earth_daymap.get_height() - self.offset_y	
-
-			if height > 0 and width > 0:			
-				self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((start, self.offset_y, width, height)), (0, 0))			
-				
-				if self.screen_width - self.map_position[0] > 0:
-					self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((0, self.offset_y, self.screen_width - self.map_position[0], height)), (abs(self.map_position[0]), 0))
-		
-		if self.map_position[0] < 0:
-			start = max(self.screen_width, abs(self.map_position[0]))
-			width = min(abs(self.map_position[0]), min(self.screen_width, self.earth_daymap.get_width() - abs(self.map_position[0])))
-			height = self.screen_height if self.screen_height + self.offset_y <= self.earth_daymap.get_height() else self.earth_daymap.get_height()
-			
-			if start + width > self.earth_daymap.get_width():
-				width = self.earth_daymap.get_width() - start
-			if self.offset_y + height > self.earth_daymap.get_height():
-				height = self.earth_daymap.get_height() - self.offset_y
-
-			if height > 0 and width > 0:		
-				self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((start, self.offset_y, width, height)), (max(0, self.screen_width - abs(self.map_position[0])), 0))
-				
-				if self.screen_width - abs(self.map_position[0]) > 0:
-					self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((abs(self.map_position[0]), self.offset_y, self.screen_width - abs(self.map_position[0]), height)), (0, 0))
-				
-				if self.earth_daymap.get_width() - abs(self.map_position[0]) < self.screen_width:
-					self.screen_sized_map_surface.blit(self.earth_daymap.subsurface((0, self.offset_y, self.screen_width - (self.earth_daymap.get_width() - abs(self.map_position[0])), height)), (self.earth_daymap.get_width() - abs(self.map_position[0]), 0))
-		#--------------#
+		except:
+			pass
+		#--------------------------------------------------------------------------------------------------------#
 		
 		self._8k_sized_map_surface.blit(self.screen_sized_map_surface, (0, 0))
 
@@ -6153,11 +6164,13 @@ class Legislative_Finances_Menu:
 		self.pygame = pygame		
 		
 		self.finances_menu_background 			= pygame.transform.smoothscale_by(finances_menu_background, (self.factor_x, self.factor_y))		
-		self.debt_menu 							= pygame.transform.smoothscale_by(debt_menu, (self.factor_x, self.factor_y))	
 		self.taxation_menu 						= pygame.transform.smoothscale_by(taxation_menu, (self.factor_x, self.factor_y))
 
 		self.Legislative_Finances_Budget_Menu = Legislative_Finances_Budget_Menu(factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, budget_menu)
 		self.budget_menu_button = GenericUtilitys.Button(5 * self.factor_x, 741 * self.factor_y + 158 * self.factor_y, 380 * self.factor_x, 64 * self.factor_y)
+
+		self.Legislative_Finances_Debt_Menu = Legislative_Finances_Debt_Menu(factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, debt_menu)
+		self.debt_menu_button = GenericUtilitys.Button(387 * self.factor_x, 741 * self.factor_y + 158 * self.factor_y, 380 * self.factor_x, 64 * self.factor_y)
 
 		self.hovered_button = None
 
@@ -6173,8 +6186,14 @@ class Legislative_Finances_Menu:
 		if self.budget_menu_button.rect.colliderect(mouse_rect):
 			self.hovered_button = 'budget_menu_button'
 			return 'budget_menu_button'
+		elif self.debt_menu_button.rect.colliderect(mouse_rect):
+			self.hovered_button = 'debt_menu_button'
+			return 'debt_menu_button'
 		else:
-			return self.Legislative_Finances_Budget_Menu.get_button_by_interaction(mouse_rect)
+			if self.open_menu == 'budget_menu_button':
+				Legislative_Finances_Budget_Menu_button = self.Legislative_Finances_Budget_Menu.get_button_by_interaction(mouse_rect)
+				if Legislative_Finances_Budget_Menu_button:
+					return Legislative_Finances_Budget_Menu_button
 
 		self.hovered_button = None
 		return None		
@@ -6184,10 +6203,15 @@ class Legislative_Finances_Menu:
 
 		if self.hovered_button == 'budget_menu_button':
 			self.pygame.draw.rect(screen, (255,255,255), self.budget_menu_button.rect, 2)
+		elif self.hovered_button == 'debt_menu_button':
+			self.pygame.draw.rect(screen, (255,255,255), self.debt_menu_button.rect, 2)
 
 		if self.open_menu == 'budget_menu_button':
-			self.pygame.draw.rect(screen, (255,255,255), self.budget_menu_button.rect, 2)
+			self.pygame.draw.rect(screen, (255,255,255), self.budget_menu_button.rect, 3)
 			self.Legislative_Finances_Budget_Menu.draw(screen)
+		elif self.open_menu == 'debt_menu_button':
+			self.pygame.draw.rect(screen, (255,255,255), self.debt_menu_button.rect, 3)
+			self.Legislative_Finances_Debt_Menu.draw(screen)
 class Legislative_Finances_Budget_Menu:
 	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, budget_menu):
 
@@ -6420,7 +6444,21 @@ class Legislative_Finances_Budget_Menu:
 			screen.blit(expense_text, ((1273 + (x_expense_index*195)) * self.factor_x - expense_text.get_width()/2, 838 * self.factor_y))			
 
 			x_expense_index += 1
+class Legislative_Finances_Debt_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, debt_menu):
 		
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.PlayerCountry = PlayerCountry
+
+		self.debt_menu = pygame.transform.smoothscale_by(debt_menu, (self.factor_x, self.factor_y))
+
+	def draw(self, screen):		
+		screen.blit(self.debt_menu, (0, 158 * self.factor_y))
 
 # POP UP
 class Game_Introduction_Menu:

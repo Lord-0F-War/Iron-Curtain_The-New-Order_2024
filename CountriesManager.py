@@ -169,7 +169,7 @@ class Country:
         self.country_brief_history = 'None'
 
         self.country_national_spirits_total_points = 0
-        self.country_national_spirits_points_left = self.country_national_spirits_total_points
+        self.country_national_spirits_points_left = 0
 
         self.country_stability = 0
         self.country_war_support = 0
