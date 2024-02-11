@@ -213,6 +213,37 @@ class Country:
 
         self.income = 0
         self.expenses = 0  
+
+        self.country_taxation_laws_values = {
+            'Inheritance Tax':                          {'value': [15],            'value_type': 'porcentage',      'monthly_revenue': 100_000_000_000,        'description': 'none'},
+            'Income Tax':                               {'value': [0, 0, 0],       'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'},
+            'Real Estate Tax':                          {'value': [2.15],          'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'},
+            'Value Added Tax':                          {'value': [1],             'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'},
+            'Audiovisual Tax':                          {'value': [0],             'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'},
+            'Gun Tax':                                  {'value': [0],             'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'},
+            'Employee Social Security Payments':        {'value': [99.99],         'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'},
+            'Employer Social Security Payments':        {'value': [0],             'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'},
+            'Company Tax':                              {'value': [0],             'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'},
+            'Tax On Company Turnover':                  {'value': [0],             'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'},
+            'Tax On Redudancies':                       {'value': [0],             'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'},
+            'Tax On Large Fortunes':                    {'value': [0],             'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'},
+            'Vehicle Registration Tax':                 {'value': [0],             'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'},
+            'Airline Ticket Tax':                       {'value': [0],             'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'},
+            'Tax On Internet Access':                   {'value': [0],             'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'},
+            'Pet Tax':                                  {'value': [0],             'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'},
+            'Tax On Financial Transactions':            {'value': [0],             'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'},
+            'Tobacco Tax':                              {'value': [0],             'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'},
+            'Liquor Tax':                               {'value': [0],             'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'},
+            'Wine Tax':                                 {'value': [0],             'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'},
+            'Pornography Industry Tax':                 {'value': [0],             'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'},
+            'Deforestation Tax':                        {'value': [0],             'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'},
+            'Industrial Pollution Tax':                 {'value': [0],             'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'},
+            'Tax On Petroleum Products':                {'value': [0],             'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'},
+            'Tax On Gambling':                          {'value': [0],             'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'},
+            'Tourist Tax':                              {'value': [0],             'value_type': 'porcentage',      'monthly_revenue': 0,        'description': 'none'}                                               
+        }
+
+
         #   EXPENSES
         self.agriculture_expense = 0
         self.culture_expense = 0

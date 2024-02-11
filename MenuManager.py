@@ -1954,7 +1954,8 @@ class Game_Screen:
 			game_logo, economic_overview_background, poverty_rate_0, poverty_rate_5, poverty_rate_10, poverty_rate_15, poverty_rate_25, poverty_rate_50, poverty_rate_80, credit_ratings,
 			economic_warning, economic_freedom_index_green, economic_freedom_index_red, economic_freedom_score_green, economic_freedom_score_red, small_rating_green, small_rating_red,
 			intelligence_overview_background, intelligency_agencies_icons_image_dic, research_overview_background, active_research_background, researche_icons_image_dic,
-			researche_institute_icons_image_dic, construction_overview_background, production_overview_background, bottom_HUD, finances_menu_background, budget_menu, debt_menu, taxation_menu):
+			researche_institute_icons_image_dic, construction_overview_background, production_overview_background, bottom_HUD, finances_menu_background, budget_menu, debt_menu, taxation_menu,
+			currency_menu):
 
 		reference_screen_size_x = 1920
 		reference_screen_size_y = 1080
@@ -1974,7 +1975,7 @@ class Game_Screen:
 
 		self.Clock_UI = Clock_UI(self.factor_x, self.factor_y, screen_width, screen_height, pygame, clock, top_bar_right_background, top_bar_game_speed_indicator, top_bar_defcon_level)
 
-		self.Bottom_HUD = Bottom_HUD(self.factor_x, self.factor_y, screen_width, screen_height, pygame, bottom_HUD, finances_menu_background, budget_menu, debt_menu, taxation_menu)
+		self.Bottom_HUD = Bottom_HUD(self.factor_x, self.factor_y, screen_width, screen_height, pygame, bottom_HUD, finances_menu_background, budget_menu, debt_menu, taxation_menu, currency_menu)
 
 		self.Earth_Map = Earth_Map(self.factor_x, self.factor_y, screen_width, screen_height, earth_daymap, earth_political_map, earth_political_map_filled, self.Clock_UI)
 
@@ -2360,7 +2361,13 @@ class Game_Screen:
 				if clicked_button != self.Bottom_HUD.Legislative_Finances_Menu.open_menu:
 					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = clicked_button
 				else:
-					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None					
+					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None			
+
+			elif clicked_button == 'taxation_menu_button': 
+				if clicked_button != self.Bottom_HUD.Legislative_Finances_Menu.open_menu:
+					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = clicked_button
+				else:
+					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None								
 
 
 			self.generic_hover_over_button_sound.fadeout(100)
@@ -2403,6 +2410,7 @@ class Game_Screen:
 				self.Country_Focus_Tree.highlight_focus_path_selection_button_index = self.Country_Focus_Tree.focus_wating_player_path_selection.selected_path
 			elif hovered_button == "accept_button":
 				self.Country_Focus_Tree.highlight_focus_completion_wating_player_visualization_button = True
+		
 		else:
 			self.Country_Focus_Tree.highlight_button = False
 			self.Country_Focus_Tree.highlight_focus_completion_wating_player_visualization_button = False
@@ -5110,10 +5118,10 @@ class Research_Menu:
 					else:
 						total_available_workers = 0
 					
-					active_research_workers_amount_text_render = self.tiny_scalable_font.render(str(total_available_workers), True, (255,255,255))	
+					active_research_workers_amount_text_render = self.tiny_scalable_font.render(str(total_available_workers), True, (255,127,127))	
 					screen.blit(active_research_workers_amount_text_render, (709 * self.factor_x + 506 * self.factor_x, 149 * self.factor_y + 58 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y))	
 					
-					active_research_workers_amount_text_render = self.tiny_scalable_font.render(str(active_research_project.current_project_workers_amount), True, (255,255,255))	
+					active_research_workers_amount_text_render = self.tiny_scalable_font.render(str(active_research_project.current_project_workers_amount), True, (127,201,255))	
 					screen.blit(active_research_workers_amount_text_render, (709 * self.factor_x + 506 * self.factor_x, 149 * self.factor_y + 76 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y))	
 
 					if active_research_project.hovered_workers_text_box == True:
@@ -5166,7 +5174,7 @@ class Research_Menu:
 						else:
 							screen.blit(wating_player_keybord_input_text_render, text_pos)							
 
-					active_research_current_budget_text_render = self.small_scalable_font.render(f' ${active_research_project.current_project_monthly_budget:,.2f}', True, (255,255,255))	
+					active_research_current_budget_text_render = self.small_scalable_font.render(f' ${active_research_project.current_project_monthly_budget:,.2f}', True, (165,255,127))	
 					screen.blit(active_research_current_budget_text_render, (709 * self.factor_x + 954 * self.factor_x, 149 * self.factor_y + 74 * self.factor_y + (index * (142 * self.factor_y)) + 158 * self.factor_y))
 
 					active_research_days_until_completion_text_render = self.tiny_scalable_font.render(str(active_research_project.days_until_completion), True, (255,255,255))	
@@ -6076,7 +6084,7 @@ class Stockpile_Menu:
 
 # BOTTOM BAR MENUS:
 class Bottom_HUD:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, bottom_HUD, finances_menu_background, budget_menu, debt_menu, taxation_menu):
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, bottom_HUD, finances_menu_background, budget_menu, debt_menu, taxation_menu, currency_menu):
 		self.factor_x, self.factor_y = factor_x, factor_y	
 		self.screen_width = screen_width 
 		self.screen_height = screen_height
@@ -6085,7 +6093,7 @@ class Bottom_HUD:
 
 		self.bottom_HUD 						= pygame.transform.smoothscale(bottom_HUD, (self.screen_width, bottom_HUD.get_height() * self.factor_y))
 
-		self.finances_menu_background, self.budget_menu, self.debt_menu, self.taxation_menu = finances_menu_background, budget_menu, debt_menu, taxation_menu
+		self.finances_menu_background, self.budget_menu, self.debt_menu, self.taxation_menu, self.currency_menu = finances_menu_background, budget_menu, debt_menu, taxation_menu, currency_menu
 
 		self.selected_map_overlay = 0
 		self.active_map_overlay = 1
@@ -6112,7 +6120,7 @@ class Bottom_HUD:
 		self.open_country_legislation = None
 	
 	def start_menus(self, PlayerCountry):
-		self.Legislative_Finances_Menu = Legislative_Finances_Menu(self.factor_x, self.factor_y, self.screen_width, self.screen_height, self.pygame, PlayerCountry, self.finances_menu_background, self.budget_menu, self.debt_menu, self.taxation_menu)		
+		self.Legislative_Finances_Menu = Legislative_Finances_Menu(self.factor_x, self.factor_y, self.screen_width, self.screen_height, self.pygame, PlayerCountry, self.finances_menu_background, self.budget_menu, self.debt_menu, self.taxation_menu, self.currency_menu)		
 
 	def get_button_by_interaction(self, mouse_rect):
 		if self.bottom_HUD_rect.colliderect(mouse_rect):
@@ -6155,7 +6163,7 @@ class Bottom_HUD:
 			if self.open_country_legislation == 'country_legislation_button_1': # FINANCES
 				self.Legislative_Finances_Menu.draw(screen)
 class Legislative_Finances_Menu:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, finances_menu_background, budget_menu, debt_menu, taxation_menu):
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, finances_menu_background, budget_menu, debt_menu, taxation_menu, currency_menu):
 
 		self.factor_x, self.factor_y = factor_x, factor_y	
 		self.screen_width = screen_width 
@@ -6164,13 +6172,18 @@ class Legislative_Finances_Menu:
 		self.pygame = pygame		
 		
 		self.finances_menu_background 			= pygame.transform.smoothscale_by(finances_menu_background, (self.factor_x, self.factor_y))		
-		self.taxation_menu 						= pygame.transform.smoothscale_by(taxation_menu, (self.factor_x, self.factor_y))
 
 		self.Legislative_Finances_Budget_Menu = Legislative_Finances_Budget_Menu(factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, budget_menu)
 		self.budget_menu_button = GenericUtilitys.Button(5 * self.factor_x, 741 * self.factor_y + 158 * self.factor_y, 380 * self.factor_x, 64 * self.factor_y)
 
 		self.Legislative_Finances_Debt_Menu = Legislative_Finances_Debt_Menu(factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, debt_menu)
 		self.debt_menu_button = GenericUtilitys.Button(387 * self.factor_x, 741 * self.factor_y + 158 * self.factor_y, 380 * self.factor_x, 64 * self.factor_y)
+
+		self.Legislative_Finances_Taxation_Menu = Legislative_Finances_Taxation_Menu(factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, taxation_menu)
+		self.taxation_menu_button = GenericUtilitys.Button(769 * self.factor_x, 741 * self.factor_y + 158 * self.factor_y, 380 * self.factor_x, 64 * self.factor_y)
+
+		self.Legislative_Finances_Currency_Menu = Legislative_Finances_Currency_Menu(factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, currency_menu)
+		self.currency_menu_button = GenericUtilitys.Button(1151 * self.factor_x, 741 * self.factor_y + 158 * self.factor_y, 380 * self.factor_x, 64 * self.factor_y)		
 
 		self.hovered_button = None
 
@@ -6189,6 +6202,9 @@ class Legislative_Finances_Menu:
 		elif self.debt_menu_button.rect.colliderect(mouse_rect):
 			self.hovered_button = 'debt_menu_button'
 			return 'debt_menu_button'
+		elif self.taxation_menu_button.rect.colliderect(mouse_rect):
+			self.hovered_button = 'taxation_menu_button'
+			return 'taxation_menu_button'		
 		else:
 			if self.open_menu == 'budget_menu_button':
 				Legislative_Finances_Budget_Menu_button = self.Legislative_Finances_Budget_Menu.get_button_by_interaction(mouse_rect)
@@ -6205,6 +6221,8 @@ class Legislative_Finances_Menu:
 			self.pygame.draw.rect(screen, (255,255,255), self.budget_menu_button.rect, 2)
 		elif self.hovered_button == 'debt_menu_button':
 			self.pygame.draw.rect(screen, (255,255,255), self.debt_menu_button.rect, 2)
+		elif self.hovered_button == 'taxation_menu_button':
+			self.pygame.draw.rect(screen, (255,255,255), self.taxation_menu_button.rect, 2)			
 
 		if self.open_menu == 'budget_menu_button':
 			self.pygame.draw.rect(screen, (255,255,255), self.budget_menu_button.rect, 3)
@@ -6212,6 +6230,9 @@ class Legislative_Finances_Menu:
 		elif self.open_menu == 'debt_menu_button':
 			self.pygame.draw.rect(screen, (255,255,255), self.debt_menu_button.rect, 3)
 			self.Legislative_Finances_Debt_Menu.draw(screen)
+		elif self.open_menu == 'taxation_menu_button':
+			self.pygame.draw.rect(screen, (255,255,255), self.taxation_menu_button.rect, 3)
+			self.Legislative_Finances_Taxation_Menu.draw(screen)			
 class Legislative_Finances_Budget_Menu:
 	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, budget_menu):
 
@@ -6351,17 +6372,6 @@ class Legislative_Finances_Budget_Menu:
 
 		screen.blit(self.budget_menu, (0, 158 * self.factor_y))
 
-		if self.hitted_rect:
-			pygame.draw.polygon(screen, (0,0,0), self.hitted_rect[1], 14)
-			pygame.draw.polygon(screen, (255,255,255), self.hitted_rect[1], 5)
-
-			expense_description_text = self.huge_scalable_font.render(self.PlayerCountry_expenses_name_dict[self.hitted_rect[0]] + ': ' + str((self.PlayerCountry_expenses_dict[str(self.hitted_rect[0])]/ self.PlayerCountry.expenses )*100) + '%', True, (255,255,255))
-			pygame.draw.rect(screen, (6,17,21), (self.mouse_rect[0], self.mouse_rect[1], expense_description_text.get_width() * 1.5, expense_description_text.get_height() * 1.5))
-			pygame.draw.rect(screen, (23,255,255), (self.mouse_rect[0], self.mouse_rect[1], expense_description_text.get_width() * 1.5, expense_description_text.get_height() * 1.5), 2)
-			
-			screen.blit(expense_description_text, (self.mouse_rect[0] + expense_description_text.get_width() * 0.25, self.mouse_rect[1] +  expense_description_text.get_height() * 0.25))			
-
-
 		# EXPENDITURES
 		pygame.draw.line(screen, (0,0,0), (1248 * self.factor_x, 300 * self.factor_y), (1248 * self.factor_x, 321 * self.factor_y), 5)
 		pygame.draw.line(screen, (255,255,255), (1248 * self.factor_x, 301 * self.factor_y), (1248 * self.factor_x, 320 * self.factor_y), 3)
@@ -6443,7 +6453,17 @@ class Legislative_Finances_Budget_Menu:
 			expense_text = self.small_scalable_font.render(formatted_expense, True, (255,255,255))
 			screen.blit(expense_text, ((1273 + (x_expense_index*195)) * self.factor_x - expense_text.get_width()/2, 838 * self.factor_y))			
 
-			x_expense_index += 1
+			x_expense_index += 1		
+
+		if self.hitted_rect:
+			pygame.draw.polygon(screen, (0,0,0), self.hitted_rect[1], 14)
+			pygame.draw.polygon(screen, (255,255,255), self.hitted_rect[1], 5)
+
+			expense_description_text = self.huge_scalable_font.render(self.PlayerCountry_expenses_name_dict[self.hitted_rect[0]] + ': ' + str((self.PlayerCountry_expenses_dict[str(self.hitted_rect[0])]/ self.PlayerCountry.expenses )*100) + '%', True, (255,255,255))
+			pygame.draw.rect(screen, (6,17,21), (self.mouse_rect[0], self.mouse_rect[1], expense_description_text.get_width() * 1.5, expense_description_text.get_height() * 1.5))
+			pygame.draw.rect(screen, (23,255,255), (self.mouse_rect[0], self.mouse_rect[1], expense_description_text.get_width() * 1.5, expense_description_text.get_height() * 1.5), 2)
+			
+			screen.blit(expense_description_text, (self.mouse_rect[0] + expense_description_text.get_width() * 0.25, self.mouse_rect[1] +  expense_description_text.get_height() * 0.25))			
 class Legislative_Finances_Debt_Menu:
 	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, debt_menu):
 		
@@ -6457,8 +6477,351 @@ class Legislative_Finances_Debt_Menu:
 
 		self.debt_menu = pygame.transform.smoothscale_by(debt_menu, (self.factor_x, self.factor_y))
 
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))		
+
 	def draw(self, screen):		
 		screen.blit(self.debt_menu, (0, 158 * self.factor_y))
+
+		#	DEBT-TO-GDP
+		graph_pos_x = 1029
+		graph_pos_y = 155
+
+		country_debt_to_gdp_text_render = self.medium_scalable_font.render(str(round((self.PlayerCountry.debt/self.PlayerCountry.country_GDP)*100, 2))+' %', False, (255,255,255))	
+		screen.blit(country_debt_to_gdp_text_render, (1216 * self.factor_x, 81 * self.factor_y + 158 * self.factor_y))
+
+		debt_to_gdp = round((self.PlayerCountry.debt/self.PlayerCountry.country_GDP)*100, 2)
+
+		debt_to_gdp_high_end_text_render = self.small_scalable_font.render(str(round(debt_to_gdp + debt_to_gdp*0.15, 2))+' %', False, (255,255,255))	
+		screen.blit(debt_to_gdp_high_end_text_render, ((graph_pos_x - 39) * self.factor_x - debt_to_gdp_high_end_text_render.get_width(), (graph_pos_y - 50) * self.factor_y + 158 * self.factor_y - debt_to_gdp_high_end_text_render.get_height()/2))
+		
+		debt_to_gdp_low_end_text_render = self.small_scalable_font.render(str(round(debt_to_gdp - debt_to_gdp*0.15, 2))+' %', False, (255,255,255))	
+		screen.blit(debt_to_gdp_low_end_text_render, ((graph_pos_x - 39) * self.factor_x - debt_to_gdp_low_end_text_render.get_width(), (graph_pos_y + 50) * self.factor_y + 158 * self.factor_y - debt_to_gdp_low_end_text_render.get_height()/2))
+
+		graph_dots = []
+		for index, weekly_data in enumerate(self.PlayerCountry.weekly_debt_to_gdp_data):
+			if weekly_data > debt_to_gdp:
+				height = graph_pos_y - (50 * (min(1, (weekly_data/(debt_to_gdp + 0.01)) - 1)))
+			else:
+				height = graph_pos_y + (50 * (min(1, (debt_to_gdp/(weekly_data + 0.01)) - 1)))
+			
+			graph_dots.append(((3.855 * index + graph_pos_x) * self.factor_x, (height + 158) * self.factor_y))
+
+		if len(graph_dots) > 1:
+			self.pygame.draw.lines(screen, (255,0,0), False, graph_dots, 3)
+		else:
+			self.pygame.draw.line(screen, (255,0,0), graph_dots[0], (graph_dots[0][0], (graph_pos_y + 158) * self.factor_y), 3)	
+
+
+		#	BUDGET DEFICIT
+		graph_pos_x = 1534
+		graph_pos_y = 155
+
+		budget_deficit = round(self.PlayerCountry.debt - self.PlayerCountry.income, 2)
+
+		if abs(budget_deficit) < 1e6:
+			budget_deficit_formatted = f"${budget_deficit:,.2f}"
+		elif abs(budget_deficit) < 1e9:
+			budget_deficit_formatted = f"${budget_deficit / 1e6:.3f} M"
+		elif abs(budget_deficit) < 1e12:
+			budget_deficit_formatted = f"${budget_deficit / 1e9:.3f} B"
+		elif abs(budget_deficit) < 1e15:
+			budget_deficit_formatted = f"${budget_deficit / 1e12:.3f} T"
+		else:
+			budget_deficit_formatted = f"${budget_deficit:.2f}"		
+
+		if budget_deficit <= 0:
+			color = (165,255,127)
+		else:
+			color = (255,127,127)
+		
+		country_budget_deficit_text_render = self.medium_scalable_font.render(budget_deficit_formatted, False, color)	
+		screen.blit(country_budget_deficit_text_render, (1724 * self.factor_x, 81 * self.factor_y + 158 * self.factor_y))
+
+
+		high_end_budget_deficit = budget_deficit * 1.15
+
+		if abs(high_end_budget_deficit) < 1e6:
+			high_end_formatted_budget_deficit = f"${high_end_budget_deficit:,.2f}"
+		elif abs(high_end_budget_deficit) < 1e9:
+			high_end_formatted_budget_deficit = f"${high_end_budget_deficit / 1e6:.3f} M"
+		elif abs(high_end_budget_deficit) < 1e12:
+			high_end_formatted_budget_deficit = f"${high_end_budget_deficit / 1e9:.3f} B"
+		elif abs(high_end_budget_deficit) < 1e15:
+			high_end_formatted_budget_deficit = f"${high_end_budget_deficit / 1e12:.3f} T"
+		else:
+			high_end_formatted_budget_deficit = f"${high_end_budget_deficit:.2f}"
+
+		budget_deficit_high_end_text_render = self.small_scalable_font.render(high_end_formatted_budget_deficit, False, (255,255,255))	
+		screen.blit(budget_deficit_high_end_text_render, ((graph_pos_x - 39) * self.factor_x - budget_deficit_high_end_text_render.get_width(), (graph_pos_y - 50) * self.factor_y + 158 * self.factor_y - budget_deficit_high_end_text_render.get_height()/2))
+		
+
+		low_end_budget_deficit = budget_deficit * 0.85
+
+		if abs(low_end_budget_deficit) < 1e6:
+			low_end_formatted_budget_deficit = f"${low_end_budget_deficit:,.2f}"
+		elif abs(low_end_budget_deficit) < 1e9:
+			low_end_formatted_budget_deficit = f"${low_end_budget_deficit / 1e6:.3f} M"
+		elif abs(low_end_budget_deficit) < 1e12:
+			low_end_formatted_budget_deficit = f"${low_end_budget_deficit / 1e9:.3f} B"
+		elif abs(low_end_budget_deficit) < 1e15:
+			low_end_formatted_budget_deficit = f"${low_end_budget_deficit / 1e12:.3f} T"
+		else:
+			low_end_formatted_budget_deficit = f"${low_end_budget_deficit:.2f}"
+
+		budget_deficit_low_end_text_render = self.small_scalable_font.render(low_end_formatted_budget_deficit, False, (255,255,255))	
+		screen.blit(budget_deficit_low_end_text_render, ((graph_pos_x - 39) * self.factor_x - budget_deficit_low_end_text_render.get_width(), (graph_pos_y + 50) * self.factor_y + 158 * self.factor_y - budget_deficit_low_end_text_render.get_height()/2))
+
+		graph_dots = []
+		for index, weekly_data in enumerate(self.PlayerCountry.weekly_debt_to_gdp_data):
+			if weekly_data > debt_to_gdp:
+				height = graph_pos_y - (50 * (min(1, (weekly_data/(debt_to_gdp + 0.01)) - 1)))
+			else:
+				height = graph_pos_y + (50 * (min(1, (debt_to_gdp/(weekly_data + 0.01)) - 1)))
+			
+			graph_dots.append(((3.855 * index + graph_pos_x) * self.factor_x, (height + 158) * self.factor_y))
+
+		if budget_deficit <= 0:
+			graph_color = (0,255,0)
+		else:
+			graph_color = (255,0,0)
+
+		if len(graph_dots) > 1:
+			self.pygame.draw.lines(screen, graph_color, False, graph_dots, 3)
+		else:
+			self.pygame.draw.line(screen, graph_color, graph_dots[0], (graph_dots[0][0], (graph_pos_y + 158) * self.factor_y), 3)	
+
+
+		#	STRUCTURAL DEFICIT-TO-GDP
+		graph_pos_x = 1029
+		graph_pos_y = 394
+
+		country_debt_to_gdp_text_render = self.medium_scalable_font.render(str(round((self.PlayerCountry.debt/self.PlayerCountry.country_GDP)*100, 2))+' %', False, (255,255,255))	
+		screen.blit(country_debt_to_gdp_text_render, (1216 * self.factor_x, 320 * self.factor_y + 158 * self.factor_y))
+
+		debt_to_gdp = round((self.PlayerCountry.debt/self.PlayerCountry.country_GDP)*100, 2)
+
+		debt_to_gdp_high_end_text_render = self.small_scalable_font.render(str(round(debt_to_gdp + debt_to_gdp*0.15, 2))+' %', False, (255,255,255))	
+		screen.blit(debt_to_gdp_high_end_text_render, ((graph_pos_x - 39) * self.factor_x - debt_to_gdp_high_end_text_render.get_width(), (graph_pos_y - 50) * self.factor_y + 158 * self.factor_y - debt_to_gdp_high_end_text_render.get_height()/2))
+		
+		debt_to_gdp_low_end_text_render = self.small_scalable_font.render(str(round(debt_to_gdp - debt_to_gdp*0.15, 2))+' %', False, (255,255,255))	
+		screen.blit(debt_to_gdp_low_end_text_render, ((graph_pos_x - 39) * self.factor_x - debt_to_gdp_low_end_text_render.get_width(), (graph_pos_y + 50) * self.factor_y + 158 * self.factor_y - debt_to_gdp_low_end_text_render.get_height()/2))
+
+		graph_dots = []
+		for index, weekly_data in enumerate(self.PlayerCountry.weekly_debt_to_gdp_data):
+			if weekly_data > debt_to_gdp:
+				height = graph_pos_y - (50 * (min(1, (weekly_data/(debt_to_gdp + 0.01)) - 1)))
+			else:
+				height = graph_pos_y + (50 * (min(1, (debt_to_gdp/(weekly_data + 0.01)) - 1)))
+			
+			graph_dots.append(((3.855 * index + graph_pos_x) * self.factor_x, (height + 158) * self.factor_y))
+
+		if len(graph_dots) > 1:
+			self.pygame.draw.lines(screen, (255,0,0), False, graph_dots, 3)
+		else:
+			self.pygame.draw.line(screen, (255,0,0), graph_dots[0], (graph_dots[0][0], (graph_pos_y + 158) * self.factor_y), 3)	
+
+
+		#	NATIONALIZED SECTOR DEBT
+		graph_pos_x = 1534
+		graph_pos_y = 394
+
+		country_debt_to_gdp_text_render = self.medium_scalable_font.render(str(round((self.PlayerCountry.debt/self.PlayerCountry.country_GDP)*100, 2))+' %', False, (255,255,255))	
+		screen.blit(country_debt_to_gdp_text_render, (1711 * self.factor_x, 320 * self.factor_y + 158 * self.factor_y))
+
+		debt_to_gdp = round((self.PlayerCountry.debt/self.PlayerCountry.country_GDP)*100, 2)
+
+		debt_to_gdp_high_end_text_render = self.small_scalable_font.render(str(round(debt_to_gdp + debt_to_gdp*0.15, 2))+' %', False, (255,255,255))	
+		screen.blit(debt_to_gdp_high_end_text_render, ((graph_pos_x - 39) * self.factor_x - debt_to_gdp_high_end_text_render.get_width(), (graph_pos_y - 50) * self.factor_y + 158 * self.factor_y - debt_to_gdp_high_end_text_render.get_height()/2))
+		
+		debt_to_gdp_low_end_text_render = self.small_scalable_font.render(str(round(debt_to_gdp - debt_to_gdp*0.15, 2))+' %', False, (255,255,255))	
+		screen.blit(debt_to_gdp_low_end_text_render, ((graph_pos_x - 39) * self.factor_x - debt_to_gdp_low_end_text_render.get_width(), (graph_pos_y + 50) * self.factor_y + 158 * self.factor_y - debt_to_gdp_low_end_text_render.get_height()/2))
+
+		graph_dots = []
+		for index, weekly_data in enumerate(self.PlayerCountry.weekly_debt_to_gdp_data):
+			if weekly_data > debt_to_gdp:
+				height = graph_pos_y - (50 * (min(1, (weekly_data/(debt_to_gdp + 0.01)) - 1)))
+			else:
+				height = graph_pos_y + (50 * (min(1, (debt_to_gdp/(weekly_data + 0.01)) - 1)))
+			
+			graph_dots.append(((3.855 * index + graph_pos_x) * self.factor_x, (height + 158) * self.factor_y))
+
+		if len(graph_dots) > 1:
+			self.pygame.draw.lines(screen, (255,0,0), False, graph_dots, 3)
+		else:
+			self.pygame.draw.line(screen, (255,0,0), graph_dots[0], (graph_dots[0][0], (graph_pos_y + 158) * self.factor_y), 3)		
+
+
+		#	PUBLIC DEBT-TO-GDP
+		graph_pos_x = 1029
+		graph_pos_y = 633
+
+		country_debt_to_gdp_text_render = self.medium_scalable_font.render(str(round((self.PlayerCountry.debt/self.PlayerCountry.country_GDP)*100, 2))+' %', False, (255,255,255))	
+		screen.blit(country_debt_to_gdp_text_render, (1273 * self.factor_x, 559 * self.factor_y + 158 * self.factor_y))
+
+		debt_to_gdp = round((self.PlayerCountry.debt/self.PlayerCountry.country_GDP)*100, 2)
+
+		debt_to_gdp_high_end_text_render = self.small_scalable_font.render(str(round(debt_to_gdp + debt_to_gdp*0.15, 2))+' %', False, (255,255,255))	
+		screen.blit(debt_to_gdp_high_end_text_render, ((graph_pos_x - 39) * self.factor_x - debt_to_gdp_high_end_text_render.get_width(), (graph_pos_y - 50) * self.factor_y + 158 * self.factor_y - debt_to_gdp_high_end_text_render.get_height()/2))
+		
+		debt_to_gdp_low_end_text_render = self.small_scalable_font.render(str(round(debt_to_gdp - debt_to_gdp*0.15, 2))+' %', False, (255,255,255))	
+		screen.blit(debt_to_gdp_low_end_text_render, ((graph_pos_x - 39) * self.factor_x - debt_to_gdp_low_end_text_render.get_width(), (graph_pos_y + 50) * self.factor_y + 158 * self.factor_y - debt_to_gdp_low_end_text_render.get_height()/2))
+
+		graph_dots = []
+		for index, weekly_data in enumerate(self.PlayerCountry.weekly_debt_to_gdp_data):
+			if weekly_data > debt_to_gdp:
+				height = graph_pos_y - (50 * (min(1, (weekly_data/(debt_to_gdp + 0.01)) - 1)))
+			else:
+				height = graph_pos_y + (50 * (min(1, (debt_to_gdp/(weekly_data + 0.01)) - 1)))
+			
+			graph_dots.append(((3.855 * index + graph_pos_x) * self.factor_x, (height + 158) * self.factor_y))
+
+		if len(graph_dots) > 1:
+			self.pygame.draw.lines(screen, (255,0,0), False, graph_dots, 3)
+		else:
+			self.pygame.draw.line(screen, (255,0,0), graph_dots[0], (graph_dots[0][0], (graph_pos_y + 158) * self.factor_y), 3)	
+
+
+		#	PUBLIC DEBT
+		graph_pos_x = 1534
+		graph_pos_y = 633
+
+		country_debt_to_gdp_text_render = self.medium_scalable_font.render(str(round((self.PlayerCountry.debt/self.PlayerCountry.country_GDP)*100, 2))+' %', False, (255,255,255))	
+		screen.blit(country_debt_to_gdp_text_render, (1686 * self.factor_x, 559 * self.factor_y + 158 * self.factor_y))
+
+		debt_to_gdp = round((self.PlayerCountry.debt/self.PlayerCountry.country_GDP)*100, 2)
+
+		debt_to_gdp_high_end_text_render = self.small_scalable_font.render(str(round(debt_to_gdp + debt_to_gdp*0.15, 2))+' %', False, (255,255,255))	
+		screen.blit(debt_to_gdp_high_end_text_render, ((graph_pos_x - 39) * self.factor_x - debt_to_gdp_high_end_text_render.get_width(), (graph_pos_y - 50) * self.factor_y + 158 * self.factor_y - debt_to_gdp_high_end_text_render.get_height()/2))
+		
+		debt_to_gdp_low_end_text_render = self.small_scalable_font.render(str(round(debt_to_gdp - debt_to_gdp*0.15, 2))+' %', False, (255,255,255))	
+		screen.blit(debt_to_gdp_low_end_text_render, ((graph_pos_x - 39) * self.factor_x - debt_to_gdp_low_end_text_render.get_width(), (graph_pos_y + 50) * self.factor_y + 158 * self.factor_y - debt_to_gdp_low_end_text_render.get_height()/2))
+
+		graph_dots = []
+		for index, weekly_data in enumerate(self.PlayerCountry.weekly_debt_to_gdp_data):
+			if weekly_data > debt_to_gdp:
+				height = graph_pos_y - (50 * (min(1, (weekly_data/(debt_to_gdp + 0.01)) - 1)))
+			else:
+				height = graph_pos_y + (50 * (min(1, (debt_to_gdp/(weekly_data + 0.01)) - 1)))
+			
+			graph_dots.append(((3.855 * index + graph_pos_x) * self.factor_x, (height + 158) * self.factor_y))
+
+		if len(graph_dots) > 1:
+			self.pygame.draw.lines(screen, (255,0,0), False, graph_dots, 3)
+		else:
+			self.pygame.draw.line(screen, (255,0,0), graph_dots[0], (graph_dots[0][0], (graph_pos_y + 158) * self.factor_y), 3)										
+class Legislative_Finances_Taxation_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, taxation_menu):
+		
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.PlayerCountry = PlayerCountry
+
+		self.taxation_menu = pygame.transform.smoothscale_by(taxation_menu, (self.factor_x, self.factor_y))
+
+		self.tax_creation_surface = pygame.Surface((616 * self.factor_x, 2000 * self.factor_y), pygame.SRCALPHA)
+		self.active_tax_surface = pygame.Surface((616 * self.factor_x, 2000 * self.factor_y), pygame.SRCALPHA)
+
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(18 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))	
+
+	def draw(self, screen):
+		screen.blit(self.taxation_menu, (0, 158 * self.factor_y))
+
+		self.tax_creation_surface.fill((0, 0, 0, 0))
+		self.active_tax_surface.fill((0, 0, 0, 0))
+
+		total_revenue = 0
+
+		active_index = 0
+		creation_index = 0
+		for tax_name, info in self.PlayerCountry.country_taxation_laws_values.items():
+			is_law_active = False
+			for value in info['value']:
+				if value == 0:
+					is_law_active = False
+				else:
+					is_law_active = True
+
+			if is_law_active == False: 	# LAWS TO CREATE
+				self.pygame.draw.rect(self.tax_creation_surface, (255,255,255), (3 * self.factor_x, (creation_index * 35) * self.factor_y, 580 * self.factor_x, 30 * self.factor_y), 1)
+
+				law_name_text = self.medium_scalable_font.render(tax_name, True, (255,255,255))
+				self.tax_creation_surface.blit(law_name_text, (13 * self.factor_x, ((creation_index * 35) + 16) * self.factor_y - law_name_text.get_height()/2))
+
+				creation_index += 1
+			else:						# ACTIVE LAWS
+				self.pygame.draw.rect(self.active_tax_surface, (255,255,255), (7 * self.factor_x, (active_index * 35) * self.factor_y, 576 * self.factor_x, 30 * self.factor_y), 1)
+				
+				law_name_text = self.small_scalable_font.render(tax_name, True, (255,255,255))
+				self.active_tax_surface.blit(law_name_text, (17 * self.factor_x, ((active_index * 35) + 16)  * self.factor_y - law_name_text.get_height()/2))		
+
+				if len(info['value']) == 1:
+					if info['value_type'] == 'porcentage':
+						law_value_text = self.small_scalable_font.render(str(info['value'][0]) + '%', True, (255,127,127))
+						self.active_tax_surface.blit(law_value_text, (305 * self.factor_x, ((active_index * 35) + 16) * self.factor_y - law_value_text.get_height()/2))
+
+				tax_revenue = info['monthly_revenue']
+				total_revenue += tax_revenue
+
+				if abs(tax_revenue) < 1e6:
+					formatted_tax_revenue = f"REVENUE:  ${tax_revenue:,.2f}"
+				elif abs(tax_revenue) < 1e9:
+					formatted_tax_revenue = f"REVENUE:  ${tax_revenue / 1e6:.3f} M"
+				elif abs(tax_revenue) < 1e12:
+					formatted_tax_revenue = f"REVENUE:  ${tax_revenue / 1e9:.3f} B"
+				elif abs(tax_revenue) < 1e15:
+					formatted_tax_revenue = f"REVENUE:  ${tax_revenue / 1e12:.3f} T"
+				else:
+					formatted_tax_revenue = f"REVENUE:  ${tax_revenue:.2f}"	
+
+				law_revenue_text = self.small_scalable_font.render(formatted_tax_revenue, True, (165,255,127))
+				self.active_tax_surface.blit(law_revenue_text, (400 * self.factor_x, ((active_index * 35) + 16) * self.factor_y - law_value_text.get_height()/2))							
+
+				active_index += 1
+
+		screen.blit(self.tax_creation_surface.subsurface(0, 0, 616 * self.factor_x, 670 * self.factor_y), (652 * self.factor_x, 218 * self.factor_y))
+		screen.blit(self.active_tax_surface.subsurface(0, 0, 616 * self.factor_x, 622 * self.factor_y), (21 * self.factor_x, 221 * self.factor_y))
+
+
+		if abs(total_revenue) < 1e6:
+			formatted_total_revenue = f"${total_revenue:,.2f}"
+		elif abs(total_revenue) < 1e9:
+			formatted_total_revenue = f"${total_revenue / 1e6:.3f} M"
+		elif abs(total_revenue) < 1e12:
+			formatted_total_revenue = f"${total_revenue / 1e9:.3f} B"
+		elif abs(total_revenue) < 1e15:
+			formatted_total_revenue = f"${total_revenue / 1e12:.3f} T"
+		else:
+			formatted_total_revenue = f"${total_revenue:.2f}"			
+
+		total_revenue_text = self.big_scalable_font.render(formatted_total_revenue, True, (165,255,127))
+		screen.blit(total_revenue_text, (450 * self.factor_x, 870 * self.factor_y - total_revenue_text.get_height()/2))			
+class Legislative_Finances_Currency_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, currency_menu):
+		
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.PlayerCountry = PlayerCountry
+
+		self.currency_menu = pygame.transform.smoothscale_by(currency_menu, (self.factor_x, self.factor_y))
+
+	def draw(self, screen):
+		screen.blit(self.currency_menu, (0, 158 * self.factor_y))		
 
 # POP UP
 class Game_Introduction_Menu:
