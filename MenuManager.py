@@ -1955,7 +1955,7 @@ class Game_Screen:
 			economic_warning, economic_freedom_index_green, economic_freedom_index_red, economic_freedom_score_green, economic_freedom_score_red, small_rating_green, small_rating_red,
 			intelligence_overview_background, intelligency_agencies_icons_image_dic, research_overview_background, active_research_background, researche_icons_image_dic,
 			researche_institute_icons_image_dic, construction_overview_background, production_overview_background, bottom_HUD, finances_menu_background, budget_menu, debt_menu, taxation_menu,
-			currency_menu):
+			currency_menu, finance_menu):
 
 		reference_screen_size_x = 1920
 		reference_screen_size_y = 1080
@@ -1975,7 +1975,8 @@ class Game_Screen:
 
 		self.Clock_UI = Clock_UI(self.factor_x, self.factor_y, screen_width, screen_height, pygame, clock, top_bar_right_background, top_bar_game_speed_indicator, top_bar_defcon_level)
 
-		self.Bottom_HUD = Bottom_HUD(self.factor_x, self.factor_y, screen_width, screen_height, pygame, bottom_HUD, finances_menu_background, budget_menu, debt_menu, taxation_menu, currency_menu)
+		self.Bottom_HUD = Bottom_HUD(self.factor_x, self.factor_y, screen_width, screen_height, pygame, bottom_HUD, finances_menu_background, budget_menu, debt_menu, taxation_menu, currency_menu,
+			finance_menu)
 
 		self.Earth_Map = Earth_Map(self.factor_x, self.factor_y, screen_width, screen_height, earth_daymap, earth_political_map, earth_political_map_filled, self.Clock_UI)
 
@@ -2351,30 +2352,37 @@ class Game_Screen:
 				else:
 					self.Bottom_HUD.open_country_legislation = None
 
-			elif clicked_button == 'budget_menu_button': 
-				if clicked_button != self.Bottom_HUD.Legislative_Finances_Menu.open_menu:
-					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = clicked_button
-				else:
-					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None
+			if self.Bottom_HUD.open_country_legislation != None:
+				if clicked_button == 'budget_menu_button': 
+					if clicked_button != self.Bottom_HUD.Legislative_Finances_Menu.open_menu:
+						self.Bottom_HUD.Legislative_Finances_Menu.open_menu = clicked_button
+					else:
+						self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None
 
-			elif clicked_button == 'debt_menu_button': 
-				if clicked_button != self.Bottom_HUD.Legislative_Finances_Menu.open_menu:
-					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = clicked_button
-				else:
-					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None			
+				elif clicked_button == 'debt_menu_button': 
+					if clicked_button != self.Bottom_HUD.Legislative_Finances_Menu.open_menu:
+						self.Bottom_HUD.Legislative_Finances_Menu.open_menu = clicked_button
+					else:
+						self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None			
 
-			elif clicked_button == 'taxation_menu_button': 
-				if clicked_button != self.Bottom_HUD.Legislative_Finances_Menu.open_menu:
-					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = clicked_button
-				else:
-					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None			
+				elif clicked_button == 'taxation_menu_button': 
+					if clicked_button != self.Bottom_HUD.Legislative_Finances_Menu.open_menu:
+						self.Bottom_HUD.Legislative_Finances_Menu.open_menu = clicked_button
+					else:
+						self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None			
 
-			elif clicked_button == 'currency_menu_button': 
-				if clicked_button != self.Bottom_HUD.Legislative_Finances_Menu.open_menu:
-					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = clicked_button
-				else:
-					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None												
+				elif clicked_button == 'currency_menu_button': 
+					if clicked_button != self.Bottom_HUD.Legislative_Finances_Menu.open_menu:
+						self.Bottom_HUD.Legislative_Finances_Menu.open_menu = clicked_button
+					else:
+						self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None		
 
+				elif clicked_button == 'finance_menu_button': 
+					if clicked_button != self.Bottom_HUD.Legislative_Finances_Menu.open_menu:
+						self.Bottom_HUD.Legislative_Finances_Menu.open_menu = clicked_button
+					else:
+						self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None																
+		
 
 			self.generic_hover_over_button_sound.fadeout(100)
 			self.generic_click_button_sound.play()
@@ -6094,7 +6102,7 @@ class Stockpile_Menu:
 
 # BOTTOM BAR MENUS:
 class Bottom_HUD:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, bottom_HUD, finances_menu_background, budget_menu, debt_menu, taxation_menu, currency_menu):
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, bottom_HUD, finances_menu_background, budget_menu, debt_menu, taxation_menu, currency_menu, finance_menu):
 		self.factor_x, self.factor_y = factor_x, factor_y	
 		self.screen_width = screen_width 
 		self.screen_height = screen_height
@@ -6103,7 +6111,7 @@ class Bottom_HUD:
 
 		self.bottom_HUD 						= pygame.transform.smoothscale(bottom_HUD, (self.screen_width, bottom_HUD.get_height() * self.factor_y))
 
-		self.finances_menu_background, self.budget_menu, self.debt_menu, self.taxation_menu, self.currency_menu = finances_menu_background, budget_menu, debt_menu, taxation_menu, currency_menu
+		self.finances_menu_background, self.budget_menu, self.debt_menu, self.taxation_menu, self.currency_menu, self.finance_menu = finances_menu_background, budget_menu, debt_menu, taxation_menu, currency_menu, finance_menu
 
 		self.selected_map_overlay = 0
 		self.active_map_overlay = 1
@@ -6130,7 +6138,7 @@ class Bottom_HUD:
 		self.open_country_legislation = None
 	
 	def start_menus(self, PlayerCountry):
-		self.Legislative_Finances_Menu = Legislative_Finances_Menu(self.factor_x, self.factor_y, self.screen_width, self.screen_height, self.pygame, PlayerCountry, self.finances_menu_background, self.budget_menu, self.debt_menu, self.taxation_menu, self.currency_menu)		
+		self.Legislative_Finances_Menu = Legislative_Finances_Menu(self.factor_x, self.factor_y, self.screen_width, self.screen_height, self.pygame, PlayerCountry, self.finances_menu_background, self.budget_menu, self.debt_menu, self.taxation_menu, self.currency_menu, self.finance_menu)		
 
 	def get_button_by_interaction(self, mouse_rect):
 		if self.bottom_HUD_rect.colliderect(mouse_rect):
@@ -6172,8 +6180,9 @@ class Bottom_HUD:
 			self.pygame.draw.rect(screen, (255, 255, 255), getattr(self, 'country_legislation_'+str(self.open_country_legislation[-1])).rect, 2)
 			if self.open_country_legislation == 'country_legislation_button_1': # FINANCES
 				self.Legislative_Finances_Menu.draw(screen)
+
 class Legislative_Finances_Menu:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, finances_menu_background, budget_menu, debt_menu, taxation_menu, currency_menu):
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, finances_menu_background, budget_menu, debt_menu, taxation_menu, currency_menu, finance_menu):
 
 		self.factor_x, self.factor_y = factor_x, factor_y	
 		self.screen_width = screen_width 
@@ -6193,7 +6202,10 @@ class Legislative_Finances_Menu:
 		self.taxation_menu_button = GenericUtilitys.Button(769 * self.factor_x, 741 * self.factor_y + 158 * self.factor_y, 380 * self.factor_x, 64 * self.factor_y)
 
 		self.Legislative_Finances_Currency_Menu = Legislative_Finances_Currency_Menu(factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, currency_menu)
-		self.currency_menu_button = GenericUtilitys.Button(1151 * self.factor_x, 741 * self.factor_y + 158 * self.factor_y, 380 * self.factor_x, 64 * self.factor_y)		
+		self.currency_menu_button = GenericUtilitys.Button(1151 * self.factor_x, 741 * self.factor_y + 158 * self.factor_y, 380 * self.factor_x, 64 * self.factor_y)	
+
+		self.Legislative_Finances_Finance_Menu = Legislative_Finances_Finance_Menu(factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, finance_menu)
+		self.finance_menu_button = GenericUtilitys.Button(1533 * self.factor_x, 741 * self.factor_y + 158 * self.factor_y, 380 * self.factor_x, 64 * self.factor_y)				
 
 		self.hovered_button = None
 
@@ -6218,6 +6230,9 @@ class Legislative_Finances_Menu:
 		elif self.currency_menu_button.rect.colliderect(mouse_rect):
 			self.hovered_button = 'currency_menu_button'
 			return 'currency_menu_button'			
+		elif self.finance_menu_button.rect.colliderect(mouse_rect):
+			self.hovered_button = 'finance_menu_button'
+			return 'finance_menu_button'			
 		else:
 			if self.open_menu == 'budget_menu_button':
 				Legislative_Finances_Budget_Menu_button = self.Legislative_Finances_Budget_Menu.get_button_by_interaction(mouse_rect)
@@ -6237,7 +6252,9 @@ class Legislative_Finances_Menu:
 		elif self.hovered_button == 'taxation_menu_button':
 			self.pygame.draw.rect(screen, (255,255,255), self.taxation_menu_button.rect, 2)	
 		elif self.hovered_button == 'currency_menu_button':
-			self.pygame.draw.rect(screen, (255,255,255), self.currency_menu_button.rect, 2)						
+			self.pygame.draw.rect(screen, (255,255,255), self.currency_menu_button.rect, 2)		
+		elif self.hovered_button == 'finance_menu_button':
+			self.pygame.draw.rect(screen, (255,255,255), self.finance_menu_button.rect, 2)								
 
 		if self.open_menu == 'budget_menu_button':
 			self.pygame.draw.rect(screen, (255,255,255), self.budget_menu_button.rect, 3)
@@ -6250,7 +6267,10 @@ class Legislative_Finances_Menu:
 			self.Legislative_Finances_Taxation_Menu.draw(screen)		
 		elif self.open_menu == 'currency_menu_button':
 			self.pygame.draw.rect(screen, (255,255,255), self.currency_menu_button.rect, 3)
-			self.Legislative_Finances_Currency_Menu.draw(screen)					
+			self.Legislative_Finances_Currency_Menu.draw(screen)		
+		elif self.open_menu == 'finance_menu_button':
+			self.pygame.draw.rect(screen, (255,255,255), self.finance_menu_button.rect, 3)
+			self.Legislative_Finances_Finance_Menu.draw(screen)							
 class Legislative_Finances_Budget_Menu:
 	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, budget_menu):
 
@@ -6956,6 +6976,30 @@ class Legislative_Finances_Currency_Menu:
 
 		#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------#	
 		#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------#					
+class Legislative_Finances_Finance_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, finance_menu):
+		
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.PlayerCountry = PlayerCountry
+
+		self.finance_menu = pygame.transform.smoothscale_by(finance_menu, (self.factor_x, self.factor_y))
+
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(18 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))			
+
+	def draw(self, screen):
+		screen.blit(self.finance_menu, (0, 158 * self.factor_y))	
+
+
+
 
 # POP UP
 class Game_Introduction_Menu:
@@ -7001,21 +7045,6 @@ wary of the growing influence of the Soviet Union in Eastern Europe.
 As Soviet troops and their American counterparts stood on the outskirts of Berlin, with remnants of the defeated Axis now as allies, the Allies launched a surprise
 offensive against the Soviet Union. The Eastern Front, weakened by the relentless Soviet advance, presented an opportunity to challenge the Soviet might.
 
-The vast plains of Eastern Europe once again became the theater of war. The Soviets got pushed deep, reaching Warsaw, yet, drawing lessons from the brutal conflict 
-against Nazi Germany, displayed resilience. 
-Safeguarded by industry in the Urals and with a new beast rushed into production, the Red Army, under the leadership of seasoned generals, launched a counteroffensive
-that caught the Allies off guard.
-
-By march 1945, the first T-54 prototype appeared, initially conceived as an experimental design, transitioned swiftly into full-scale production at Nizhny Tagil
-production lines.
-The T-54 stood as a symbol of Soviet innovation, embodying a significant leap in tank design. Its sloped armor, boasting superior defensive capabilities, coupled
-with a formidable 100mm gun, presented a formidable threat on the battlefield but with too little numbers.
-The IS-3, another formidable tank however, characterized by its heavy armor and a potent 122mm gun, by mid-1946, more than 3000 units were ready.
-
-In contrast, many of the Allied tanks, like the American M4 Sherman or the British Churchill, were based on designs from earlier in World War II and with Germany
-never being able to produce more formidable beasts before the collapse of their industrial complexes, tanks like the American M26 Pershing and the British Centurion
-had to be rushedly conceived, representing a desperate response against the advancements seen in Soviet tank designs.
-
 As the conflict raged on, the Soviets managed to push the Western Allies back. The vast expanse of Eastern Europe witnessed the ebb and flow of armies, with cities
 changing hands multiple times. The Allies made a final stand at the Rhine River and the formidable Alps. In a desperate gambit to stop the Soviet onslaught and end
 the escalating conflict, the Allies turned to a weapon initially planned for use against Japan - nuclear weapons:
@@ -7046,10 +7075,6 @@ in more radical statism, potentially inclining towards socialism.
 Despite these reservations, the decision to allow Mussolini to retain power came with certain stipulations. The Allies, keenly aware of the delicate balance required in
 post-war Italy, instituted a system of close monitoring over Italian political developments. Mussolini, granted the latitude to remain in a position of authority, was
 compelled to navigate a nuanced path. 
-
-His leadership was contingent on maintaining order while simultaneously implementing reforms that aligned with liberal principles—an intricate dance between stability and
-progressive change. This perspective contemplated whether, in the complexities of post-war Italy, 'fraternité' could somehow ,once the antagonist, now seek reconciliation
-with his more celebrated brothers of the Enlightenment.
 
 
 ACT II - 1947-1970

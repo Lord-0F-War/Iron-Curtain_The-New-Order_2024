@@ -146,8 +146,7 @@ class Country:
         self.known_society_researches = []
 
         self.Massachusetts_Institute_of_Technology_MIT = Research_Institute('Massachusetts Institute of Technology (MIT)', 'MIT', 250, 0.9)
-        self.Internet = Research_Institute('Internet', 'TEST', 1250, 0.1)
-        self.research_institutes = [self.Massachusetts_Institute_of_Technology_MIT, self.Internet]
+        self.research_institutes = [self.Massachusetts_Institute_of_Technology_MIT]
 
         # FOCUS TREE
         self.country_focus_tree = {}
@@ -198,21 +197,21 @@ class Country:
         self.treasury = 0
         self.debt = 0
         
-        self.weekly_debt_to_gdp_data = [0]
+        self.weekly_debt_to_gdp_data = []
 
         self.credit_rating = 0
         self.credit_stability = 0
 
         self.inflation = 0
-        self.weekly_inflation_data = [0]
+        self.weekly_inflation_data = []
         
         self.currency_interest_rate = 0
-        self.weekly_currency_interest_rate_data = [0]
+        self.weekly_currency_interest_rate_data = []
 
         self.unemployment = 0
 
         self.country_GDP = 1
-        self.weekly_country_GDP_data = [0]
+        self.weekly_country_GDP_data = []
 
         self.income = 0
         self.expenses = 0  
