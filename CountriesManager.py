@@ -205,6 +205,9 @@ class Country:
 
         self.inflation = 0
         self.weekly_inflation_data = [0]
+        
+        self.currency_interest_rate = 0
+        self.weekly_currency_interest_rate_data = [0]
 
         self.unemployment = 0
 

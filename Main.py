@@ -507,6 +507,7 @@ your shoulders.
 		self.USA.credit_rating = 52.5
 		self.USA.credit_stability = 0.89
 		self.USA.inflation = 2.1
+		self.USA.currency_interest_rate = 0
 		self.USA.unemployment = 5.2
 		self.USA.country_GDP = 10_550_000_000_000
 		self.USA.income = 10_550_000_000_000

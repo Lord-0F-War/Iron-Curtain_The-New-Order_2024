@@ -2367,7 +2367,13 @@ class Game_Screen:
 				if clicked_button != self.Bottom_HUD.Legislative_Finances_Menu.open_menu:
 					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = clicked_button
 				else:
-					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None								
+					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None			
+
+			elif clicked_button == 'currency_menu_button': 
+				if clicked_button != self.Bottom_HUD.Legislative_Finances_Menu.open_menu:
+					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = clicked_button
+				else:
+					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None												
 
 
 			self.generic_hover_over_button_sound.fadeout(100)
@@ -2789,6 +2795,8 @@ class Clock_UI:
 				if self.week >= 7:
 					self.PlayerCountry.weekly_inflation_data.append(self.PlayerCountry.inflation)
 
+					self.PlayerCountry.weekly_currency_interest_rate_data.append(self.PlayerCountry.currency_interest_rate)
+
 					self.PlayerCountry.weekly_country_GDP_data.append(self.PlayerCountry.country_GDP)
 
 					debt_to_gdp = round((self.PlayerCountry.debt/self.PlayerCountry.country_GDP)*100, 2)
@@ -2803,6 +2811,8 @@ class Clock_UI:
 						self.current_year += 1
 
 						self.PlayerCountry.weekly_inflation_data = [self.PlayerCountry.inflation]
+
+						self.PlayerCountry.weekly_currency_interest_rate_data = [self.PlayerCountry.currency_interest_rate]
 
 						self.PlayerCountry.weekly_country_GDP_data = [self.PlayerCountry.country_GDP]
 
@@ -6204,7 +6214,10 @@ class Legislative_Finances_Menu:
 			return 'debt_menu_button'
 		elif self.taxation_menu_button.rect.colliderect(mouse_rect):
 			self.hovered_button = 'taxation_menu_button'
-			return 'taxation_menu_button'		
+			return 'taxation_menu_button'	
+		elif self.currency_menu_button.rect.colliderect(mouse_rect):
+			self.hovered_button = 'currency_menu_button'
+			return 'currency_menu_button'			
 		else:
 			if self.open_menu == 'budget_menu_button':
 				Legislative_Finances_Budget_Menu_button = self.Legislative_Finances_Budget_Menu.get_button_by_interaction(mouse_rect)
@@ -6222,7 +6235,9 @@ class Legislative_Finances_Menu:
 		elif self.hovered_button == 'debt_menu_button':
 			self.pygame.draw.rect(screen, (255,255,255), self.debt_menu_button.rect, 2)
 		elif self.hovered_button == 'taxation_menu_button':
-			self.pygame.draw.rect(screen, (255,255,255), self.taxation_menu_button.rect, 2)			
+			self.pygame.draw.rect(screen, (255,255,255), self.taxation_menu_button.rect, 2)	
+		elif self.hovered_button == 'currency_menu_button':
+			self.pygame.draw.rect(screen, (255,255,255), self.currency_menu_button.rect, 2)						
 
 		if self.open_menu == 'budget_menu_button':
 			self.pygame.draw.rect(screen, (255,255,255), self.budget_menu_button.rect, 3)
@@ -6232,7 +6247,10 @@ class Legislative_Finances_Menu:
 			self.Legislative_Finances_Debt_Menu.draw(screen)
 		elif self.open_menu == 'taxation_menu_button':
 			self.pygame.draw.rect(screen, (255,255,255), self.taxation_menu_button.rect, 3)
-			self.Legislative_Finances_Taxation_Menu.draw(screen)			
+			self.Legislative_Finances_Taxation_Menu.draw(screen)		
+		elif self.open_menu == 'currency_menu_button':
+			self.pygame.draw.rect(screen, (255,255,255), self.currency_menu_button.rect, 3)
+			self.Legislative_Finances_Currency_Menu.draw(screen)					
 class Legislative_Finances_Budget_Menu:
 	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, budget_menu):
 
@@ -6820,8 +6838,124 @@ class Legislative_Finances_Currency_Menu:
 
 		self.currency_menu = pygame.transform.smoothscale_by(currency_menu, (self.factor_x, self.factor_y))
 
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(18 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))			
+
 	def draw(self, screen):
-		screen.blit(self.currency_menu, (0, 158 * self.factor_y))		
+		screen.blit(self.currency_menu, (0, 158 * self.factor_y))	
+
+		#	INFLATION
+		graph_pos_x = 302
+		graph_pos_y = 188
+
+		inflation_text_render = self.small_scalable_font.render(str(round(self.PlayerCountry.inflation, 2))+' %', False, (255,255,255))	
+		screen.blit(inflation_text_render, (1818 * self.factor_x, 55 * self.factor_y + 158 * self.factor_y))
+
+
+		inflation = round(self.PlayerCountry.inflation, 3)
+
+
+		inflation_15_high_end_text_render = self.small_scalable_font.render(str(round(inflation + inflation*0.15, 2))+' %', False, (255,255,255))	
+		screen.blit(inflation_15_high_end_text_render, ((graph_pos_x - 45) * self.factor_x - inflation_15_high_end_text_render.get_width(), (graph_pos_y - 158) * self.factor_y + 158 * self.factor_y - inflation_15_high_end_text_render.get_height()/2))
+		
+		inflation_1125_high_end_text_render = self.small_scalable_font.render(str(round(inflation + inflation*0.1125, 2))+' %', False, (255,255,255))	
+		screen.blit(inflation_1125_high_end_text_render, ((graph_pos_x - 45) * self.factor_x - inflation_1125_high_end_text_render.get_width(), (graph_pos_y - 113) * self.factor_y + 158 * self.factor_y - inflation_1125_high_end_text_render.get_height()/2))	
+
+		inflation_75_high_end_text_render = self.small_scalable_font.render(str(round(inflation + inflation*0.075, 2))+' %', False, (255,255,255))	
+		screen.blit(inflation_75_high_end_text_render, ((graph_pos_x - 45) * self.factor_x - inflation_75_high_end_text_render.get_width(), (graph_pos_y - 68) * self.factor_y + 158 * self.factor_y - inflation_75_high_end_text_render.get_height()/2))
+
+		inflation_375_high_end_text_render = self.small_scalable_font.render(str(round(inflation + inflation*0.0375, 2))+' %', False, (255,255,255))	
+		screen.blit(inflation_375_high_end_text_render, ((graph_pos_x - 45) * self.factor_x - inflation_375_high_end_text_render.get_width(), (graph_pos_y - 23) * self.factor_y + 158 * self.factor_y - inflation_375_high_end_text_render.get_height()/2))	
+
+
+		inflation_15_low_end_text_render = self.small_scalable_font.render(str(round(inflation - inflation*0.15, 2))+' %', False, (255,255,255))	
+		screen.blit(inflation_15_low_end_text_render, ((graph_pos_x - 45) * self.factor_x - inflation_15_low_end_text_render.get_width(), (graph_pos_y + 158) * self.factor_y + 158 * self.factor_y - inflation_15_low_end_text_render.get_height()/2))
+		
+		inflation_1125_low_end_text_render = self.small_scalable_font.render(str(round(inflation - inflation*0.1125, 2))+' %', False, (255,255,255))	
+		screen.blit(inflation_1125_low_end_text_render, ((graph_pos_x - 45) * self.factor_x - inflation_1125_low_end_text_render.get_width(), (graph_pos_y + 113) * self.factor_y + 158 * self.factor_y - inflation_1125_low_end_text_render.get_height()/2))	
+
+		inflation_75_low_end_text_render = self.small_scalable_font.render(str(round(inflation - inflation*0.075, 2))+' %', False, (255,255,255))	
+		screen.blit(inflation_75_low_end_text_render, ((graph_pos_x - 45) * self.factor_x - inflation_75_low_end_text_render.get_width(), (graph_pos_y + 68) * self.factor_y + 158 * self.factor_y - inflation_75_low_end_text_render.get_height()/2))
+
+		inflation_375_low_end_text_render = self.small_scalable_font.render(str(round(inflation - inflation*0.0375, 2))+' %', False, (255,255,255))	
+		screen.blit(inflation_375_low_end_text_render, ((graph_pos_x - 45) * self.factor_x - inflation_375_low_end_text_render.get_width(), (graph_pos_y + 23) * self.factor_y + 158 * self.factor_y - inflation_375_low_end_text_render.get_height()/2))			
+
+
+		graph_dots = []
+		for index, weekly_data in enumerate(self.PlayerCountry.weekly_inflation_data):
+			if weekly_data > inflation:
+				height = graph_pos_y - (158 * (min(1, (weekly_data/(inflation + 0.01)) - 1)))
+			else:
+				height = graph_pos_y + (158 * (min(1, (inflation/(weekly_data + 0.01)) - 1)))
+			
+			graph_dots.append(((26.557 * index + graph_pos_x) * self.factor_x, (height + 158) * self.factor_y))
+
+		if len(graph_dots) > 1:
+			self.pygame.draw.lines(screen, (255,0,0), False, graph_dots, 3)
+		else:
+			self.pygame.draw.line(screen, (255,0,0), graph_dots[0], (graph_dots[0][0], (graph_pos_y + 158) * self.factor_y), 3)	
+
+		#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------#	
+		#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------#	
+
+		#	INTEREST RATE
+		graph_pos_x = 302
+		graph_pos_y = 540
+
+		interest_rate_text_render = self.small_scalable_font.render(str(round(self.PlayerCountry.currency_interest_rate, 2))+' %', False, (255,255,255))	
+		screen.blit(interest_rate_text_render, (1818 * self.factor_x, 408 * self.factor_y + 158 * self.factor_y))
+
+
+		interest_rate = round(self.PlayerCountry.currency_interest_rate, 3)
+		if interest_rate == 0:
+			interest_rate = 0.01
+
+
+		interest_rate_15_high_end_text_render = self.small_scalable_font.render(str(round(interest_rate + interest_rate*0.15, 2))+' %', False, (255,255,255))	
+		screen.blit(interest_rate_15_high_end_text_render, ((graph_pos_x - 45) * self.factor_x - interest_rate_15_high_end_text_render.get_width(), (graph_pos_y - 158) * self.factor_y + 158 * self.factor_y - interest_rate_15_high_end_text_render.get_height()/2))
+		
+		interest_rate_1125_high_end_text_render = self.small_scalable_font.render(str(round(interest_rate + interest_rate*0.1125, 2))+' %', False, (255,255,255))	
+		screen.blit(interest_rate_1125_high_end_text_render, ((graph_pos_x - 45) * self.factor_x - interest_rate_1125_high_end_text_render.get_width(), (graph_pos_y - 113) * self.factor_y + 158 * self.factor_y - interest_rate_1125_high_end_text_render.get_height()/2))	
+
+		interest_rate_75_high_end_text_render = self.small_scalable_font.render(str(round(interest_rate + interest_rate*0.075, 2))+' %', False, (255,255,255))	
+		screen.blit(interest_rate_75_high_end_text_render, ((graph_pos_x - 45) * self.factor_x - interest_rate_75_high_end_text_render.get_width(), (graph_pos_y - 68) * self.factor_y + 158 * self.factor_y - interest_rate_75_high_end_text_render.get_height()/2))
+
+		interest_rate_375_high_end_text_render = self.small_scalable_font.render(str(round(interest_rate + interest_rate*0.0375, 2))+' %', False, (255,255,255))	
+		screen.blit(interest_rate_375_high_end_text_render, ((graph_pos_x - 45) * self.factor_x - interest_rate_375_high_end_text_render.get_width(), (graph_pos_y - 23) * self.factor_y + 158 * self.factor_y - interest_rate_375_high_end_text_render.get_height()/2))	
+
+
+		interest_rate_15_low_end_text_render = self.small_scalable_font.render(str(round(interest_rate - interest_rate*0.15, 2))+' %', False, (255,255,255))	
+		screen.blit(interest_rate_15_low_end_text_render, ((graph_pos_x - 45) * self.factor_x - interest_rate_15_low_end_text_render.get_width(), (graph_pos_y + 158) * self.factor_y + 158 * self.factor_y - interest_rate_15_low_end_text_render.get_height()/2))
+		
+		interest_rate_1125_low_end_text_render = self.small_scalable_font.render(str(round(interest_rate - interest_rate*0.1125, 2))+' %', False, (255,255,255))	
+		screen.blit(interest_rate_1125_low_end_text_render, ((graph_pos_x - 45) * self.factor_x - interest_rate_1125_low_end_text_render.get_width(), (graph_pos_y + 113) * self.factor_y + 158 * self.factor_y - interest_rate_1125_low_end_text_render.get_height()/2))	
+
+		interest_rate_75_low_end_text_render = self.small_scalable_font.render(str(round(interest_rate - interest_rate*0.075, 2))+' %', False, (255,255,255))	
+		screen.blit(interest_rate_75_low_end_text_render, ((graph_pos_x - 45) * self.factor_x - interest_rate_75_low_end_text_render.get_width(), (graph_pos_y + 68) * self.factor_y + 158 * self.factor_y - interest_rate_75_low_end_text_render.get_height()/2))
+
+		interest_rate_375_low_end_text_render = self.small_scalable_font.render(str(round(interest_rate - interest_rate*0.0375, 2))+' %', False, (255,255,255))	
+		screen.blit(interest_rate_375_low_end_text_render, ((graph_pos_x - 45) * self.factor_x - interest_rate_375_low_end_text_render.get_width(), (graph_pos_y + 23) * self.factor_y + 158 * self.factor_y - interest_rate_375_low_end_text_render.get_height()/2))			
+
+
+		graph_dots = []
+		for index, weekly_data in enumerate(self.PlayerCountry.weekly_currency_interest_rate_data):
+			if weekly_data > interest_rate:
+				height = graph_pos_y - (158 * (min(1, (weekly_data/(interest_rate + 0.01)) - 1)))
+			else:
+				height = graph_pos_y + (158 * (min(1, (interest_rate/(weekly_data + 0.01)) - 1)))
+			
+			graph_dots.append(((26.557 * index + graph_pos_x) * self.factor_x, (height + 158) * self.factor_y))
+
+		if len(graph_dots) > 1:
+			self.pygame.draw.lines(screen, (255,0,0), False, graph_dots, 3)
+		else:
+			self.pygame.draw.line(screen, (255,0,0), graph_dots[0], (graph_dots[0][0], (graph_pos_y + 158) * self.factor_y), 3)	
+
+		#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------#	
+		#-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------#					
 
 # POP UP
 class Game_Introduction_Menu:
