@@ -1955,7 +1955,7 @@ class Game_Screen:
 			economic_warning, economic_freedom_index_green, economic_freedom_index_red, economic_freedom_score_green, economic_freedom_score_red, small_rating_green, small_rating_red,
 			intelligence_overview_background, intelligency_agencies_icons_image_dic, research_overview_background, active_research_background, researche_icons_image_dic,
 			researche_institute_icons_image_dic, construction_overview_background, production_overview_background, bottom_HUD, finances_menu_background, budget_menu, debt_menu, taxation_menu,
-			currency_menu, finance_menu):
+			currency_menu, finance_menu, government_menu_background, head_of_state_menu, cabinet_menu, parliament_menu, elections_menu, political_parties_menu):
 
 		reference_screen_size_x = 1920
 		reference_screen_size_y = 1080
@@ -1976,7 +1976,7 @@ class Game_Screen:
 		self.Clock_UI = Clock_UI(self.factor_x, self.factor_y, screen_width, screen_height, pygame, clock, top_bar_right_background, top_bar_game_speed_indicator, top_bar_defcon_level)
 
 		self.Bottom_HUD = Bottom_HUD(self.factor_x, self.factor_y, screen_width, screen_height, pygame, bottom_HUD, finances_menu_background, budget_menu, debt_menu, taxation_menu, currency_menu,
-			finance_menu)
+			finance_menu, government_menu_background, head_of_state_menu, cabinet_menu, parliament_menu, elections_menu, political_parties_menu)
 
 		self.Earth_Map = Earth_Map(self.factor_x, self.factor_y, screen_width, screen_height, earth_daymap, earth_political_map, earth_political_map_filled, self.Clock_UI)
 
@@ -2352,37 +2352,27 @@ class Game_Screen:
 				else:
 					self.Bottom_HUD.open_country_legislation = None
 
-			if self.Bottom_HUD.open_country_legislation != None:
-				if clicked_button == 'budget_menu_button': 
-					if clicked_button != self.Bottom_HUD.Legislative_Finances_Menu.open_menu:
-						self.Bottom_HUD.Legislative_Finances_Menu.open_menu = clicked_button
-					else:
-						self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None
 
-				elif clicked_button == 'debt_menu_button': 
-					if clicked_button != self.Bottom_HUD.Legislative_Finances_Menu.open_menu:
-						self.Bottom_HUD.Legislative_Finances_Menu.open_menu = clicked_button
-					else:
-						self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None			
+			if self.Bottom_HUD.open_country_legislation == 'country_legislation_button_1':
 
-				elif clicked_button == 'taxation_menu_button': 
-					if clicked_button != self.Bottom_HUD.Legislative_Finances_Menu.open_menu:
-						self.Bottom_HUD.Legislative_Finances_Menu.open_menu = clicked_button
-					else:
-						self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None			
+				self.Bottom_HUD.Legislative_Government_Menu.open_menu = None # 6
 
-				elif clicked_button == 'currency_menu_button': 
-					if clicked_button != self.Bottom_HUD.Legislative_Finances_Menu.open_menu:
-						self.Bottom_HUD.Legislative_Finances_Menu.open_menu = clicked_button
-					else:
-						self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None		
+				if clicked_button != self.Bottom_HUD.Legislative_Finances_Menu.open_menu:
+					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = clicked_button
+				else:
+					self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None
 
-				elif clicked_button == 'finance_menu_button': 
-					if clicked_button != self.Bottom_HUD.Legislative_Finances_Menu.open_menu:
-						self.Bottom_HUD.Legislative_Finances_Menu.open_menu = clicked_button
-					else:
-						self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None																
-		
+
+			elif self.Bottom_HUD.open_country_legislation == 'country_legislation_button_6':
+
+				self.Bottom_HUD.Legislative_Finances_Menu.open_menu = None # 1
+
+				if clicked_button != self.Bottom_HUD.Legislative_Government_Menu.open_menu:
+					self.Bottom_HUD.Legislative_Government_Menu.open_menu = clicked_button
+				else:
+					self.Bottom_HUD.Legislative_Government_Menu.open_menu = None
+					
+
 
 			self.generic_hover_over_button_sound.fadeout(100)
 			self.generic_click_button_sound.play()
@@ -6102,7 +6092,8 @@ class Stockpile_Menu:
 
 # BOTTOM BAR MENUS:
 class Bottom_HUD:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, bottom_HUD, finances_menu_background, budget_menu, debt_menu, taxation_menu, currency_menu, finance_menu):
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, bottom_HUD, finances_menu_background, budget_menu, debt_menu, taxation_menu, currency_menu, finance_menu,
+		government_menu_background, head_of_state_menu, cabinet_menu, parliament_menu, elections_menu, political_parties_menu):
 		self.factor_x, self.factor_y = factor_x, factor_y	
 		self.screen_width = screen_width 
 		self.screen_height = screen_height
@@ -6111,7 +6102,10 @@ class Bottom_HUD:
 
 		self.bottom_HUD 						= pygame.transform.smoothscale(bottom_HUD, (self.screen_width, bottom_HUD.get_height() * self.factor_y))
 
+		# 1 
 		self.finances_menu_background, self.budget_menu, self.debt_menu, self.taxation_menu, self.currency_menu, self.finance_menu = finances_menu_background, budget_menu, debt_menu, taxation_menu, currency_menu, finance_menu
+		# 6
+		self.government_menu_background, self.head_of_state_menu, self.cabinet_menu, self.parliament_menu, self.elections_menu, self.political_parties_menu = government_menu_background, head_of_state_menu, cabinet_menu, parliament_menu, elections_menu, political_parties_menu
 
 		self.selected_map_overlay = 0
 		self.active_map_overlay = 1
@@ -6139,10 +6133,12 @@ class Bottom_HUD:
 	
 	def start_menus(self, PlayerCountry):
 		self.Legislative_Finances_Menu = Legislative_Finances_Menu(self.factor_x, self.factor_y, self.screen_width, self.screen_height, self.pygame, PlayerCountry, self.finances_menu_background, self.budget_menu, self.debt_menu, self.taxation_menu, self.currency_menu, self.finance_menu)		
+		self.Legislative_Government_Menu = Legislative_Government_Menu(self.factor_x, self.factor_y, self.screen_width, self.screen_height, self.pygame, PlayerCountry, self.government_menu_background, self.head_of_state_menu, self.cabinet_menu, self.parliament_menu, self.elections_menu, self.political_parties_menu)		
 
 	def get_button_by_interaction(self, mouse_rect):
 		if self.bottom_HUD_rect.colliderect(mouse_rect):
 			self.Legislative_Finances_Menu.hovered_button = None
+			self.Legislative_Government_Menu.hovered_button = None
 
 			if self.map_overlay_1.rect.colliderect(mouse_rect):
 				self.selected_map_overlay = 1
@@ -6160,6 +6156,8 @@ class Bottom_HUD:
 		else:
 			if self.open_country_legislation == 'country_legislation_button_1': # FINANCES
 				return self.Legislative_Finances_Menu.get_button_by_interaction(mouse_rect)
+			elif self.open_country_legislation == 'country_legislation_button_6': # GOVERNMENT
+				return self.Legislative_Government_Menu.get_button_by_interaction(mouse_rect)			
 		
 		self.selected_map_overlay = 0
 		self.collided_country_legislation_button = None
@@ -6180,6 +6178,8 @@ class Bottom_HUD:
 			self.pygame.draw.rect(screen, (255, 255, 255), getattr(self, 'country_legislation_'+str(self.open_country_legislation[-1])).rect, 2)
 			if self.open_country_legislation == 'country_legislation_button_1': # FINANCES
 				self.Legislative_Finances_Menu.draw(screen)
+			elif self.open_country_legislation == 'country_legislation_button_6': # GOVERNMENT
+				self.Legislative_Government_Menu.draw(screen)				
 
 class Legislative_Finances_Menu:
 	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, finances_menu_background, budget_menu, debt_menu, taxation_menu, currency_menu, finance_menu):
@@ -6998,8 +6998,201 @@ class Legislative_Finances_Finance_Menu:
 	def draw(self, screen):
 		screen.blit(self.finance_menu, (0, 158 * self.factor_y))	
 
+class Legislative_Government_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, government_menu_background, head_of_state_menu, cabinet_menu, parliament_menu, elections_menu, political_parties_menu):
 
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
 
+		self.pygame = pygame		
+		
+		self.government_menu_background 			= pygame.transform.smoothscale_by(government_menu_background, (self.factor_x, self.factor_y))		
+
+		self.Legislative_Government_Head_Of_State_Menu = Legislative_Government_Head_Of_State_Menu(factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, head_of_state_menu)
+		self.head_of_state_menu_button = GenericUtilitys.Button(5 * self.factor_x, 741 * self.factor_y + 158 * self.factor_y, 380 * self.factor_x, 64 * self.factor_y)
+
+		self.Legislative_Government_Cabinet_Menu = Legislative_Government_Cabinet_Menu(factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, cabinet_menu)
+		self.cabinet_menu_button = GenericUtilitys.Button(387 * self.factor_x, 741 * self.factor_y + 158 * self.factor_y, 380 * self.factor_x, 64 * self.factor_y)
+
+		self.Legislative_Government_Parliament_Menu = Legislative_Government_Parliament_Menu(factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, parliament_menu)
+		self.parliament_menu_button = GenericUtilitys.Button(769 * self.factor_x, 741 * self.factor_y + 158 * self.factor_y, 380 * self.factor_x, 64 * self.factor_y)
+
+		self.Legislative_Government_Elections_Menu = Legislative_Government_Elections_Menu(factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, elections_menu)
+		self.elections_menu_button = GenericUtilitys.Button(1151 * self.factor_x, 741 * self.factor_y + 158 * self.factor_y, 380 * self.factor_x, 64 * self.factor_y)	
+
+		self.Legislative_Government_Political_Parties_Menu = Legislative_Government_Political_Parties_Menu(factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, political_parties_menu)
+		self.political_parties_menu_button = GenericUtilitys.Button(1533 * self.factor_x, 741 * self.factor_y + 158 * self.factor_y, 380 * self.factor_x, 64 * self.factor_y)				
+
+		self.hovered_button = None
+
+		self.open_menu = None
+
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(16 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(13 * self.factor_y))			
+
+	def get_button_by_interaction(self, mouse_rect):
+		if self.head_of_state_menu_button.rect.colliderect(mouse_rect):
+			self.hovered_button = 'head_of_state_menu_button'
+			return 'head_of_state_menu_button'
+		elif self.cabinet_menu_button.rect.colliderect(mouse_rect):
+			self.hovered_button = 'cabinet_menu_button'
+			return 'cabinet_menu_button'
+		elif self.parliament_menu_button.rect.colliderect(mouse_rect):
+			self.hovered_button = 'parliament_menu_button'
+			return 'parliament_menu_button'	
+		elif self.elections_menu_button.rect.colliderect(mouse_rect):
+			self.hovered_button = 'elections_menu_button'
+			return 'elections_menu_button'			
+		elif self.political_parties_menu_button.rect.colliderect(mouse_rect):
+			self.hovered_button = 'political_parties_menu_button'
+			return 'political_parties_menu_button'			
+		else:
+			if self.open_menu == 'budget_menu_button':
+				Legislative_Finances_Budget_Menu_button = self.Legislative_Finances_Budget_Menu.get_button_by_interaction(mouse_rect)
+				if Legislative_Finances_Budget_Menu_button:
+					return Legislative_Finances_Budget_Menu_button
+
+		self.hovered_button = None
+		return None		
+
+	def draw(self, screen):
+		screen.blit(self.government_menu_background, (0, 158 * self.factor_y))
+
+		if self.hovered_button == 'head_of_state_menu_button':
+			self.pygame.draw.rect(screen, (255,255,255), self.head_of_state_menu_button.rect, 2)
+		elif self.hovered_button == 'cabinet_menu_button':
+			self.pygame.draw.rect(screen, (255,255,255), self.cabinet_menu_button.rect, 2)
+		elif self.hovered_button == 'parliament_menu_button':
+			self.pygame.draw.rect(screen, (255,255,255), self.parliament_menu_button.rect, 2)	
+		elif self.hovered_button == 'elections_menu_button':
+			self.pygame.draw.rect(screen, (255,255,255), self.elections_menu_button.rect, 2)		
+		elif self.hovered_button == 'political_parties_menu_button':
+			self.pygame.draw.rect(screen, (255,255,255), self.political_parties_menu_button.rect, 2)								
+
+		if self.open_menu == 'head_of_state_menu_button':
+			self.pygame.draw.rect(screen, (255,255,255), self.head_of_state_menu_button.rect, 3)
+			self.Legislative_Government_Head_Of_State_Menu.draw(screen)
+		elif self.open_menu == 'cabinet_menu_button':
+			self.pygame.draw.rect(screen, (255,255,255), self.cabinet_menu_button.rect, 3)
+			self.Legislative_Government_Cabinet_Menu.draw(screen)
+		elif self.open_menu == 'parliament_menu_button':
+			self.pygame.draw.rect(screen, (255,255,255), self.parliament_menu_button.rect, 3)
+			self.Legislative_Government_Parliament_Menu.draw(screen)		
+		elif self.open_menu == 'elections_menu_button':
+			self.pygame.draw.rect(screen, (255,255,255), self.elections_menu_button.rect, 3)
+			self.Legislative_Government_Elections_Menu.draw(screen)		
+		elif self.open_menu == 'political_parties_menu_button':
+			self.pygame.draw.rect(screen, (255,255,255), self.political_parties_menu_button.rect, 3)
+			self.Legislative_Government_Political_Parties_Menu.draw(screen)
+class Legislative_Government_Head_Of_State_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, head_of_state_menu):
+		
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.PlayerCountry = PlayerCountry
+
+		self.head_of_state_menu = pygame.transform.smoothscale_by(head_of_state_menu, (self.factor_x, self.factor_y))
+
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(18 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))			
+
+	def draw(self, screen):
+		screen.blit(self.head_of_state_menu, (0, 158 * self.factor_y))
+class Legislative_Government_Cabinet_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, cabinet_menu):
+		
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.PlayerCountry = PlayerCountry
+
+		self.cabinet_menu = pygame.transform.smoothscale_by(cabinet_menu, (self.factor_x, self.factor_y))
+
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(18 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))			
+
+	def draw(self, screen):
+		screen.blit(self.cabinet_menu, (0, 158 * self.factor_y))
+class Legislative_Government_Parliament_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, parliament_menu):
+		
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.PlayerCountry = PlayerCountry
+
+		self.parliament_menu = pygame.transform.smoothscale_by(parliament_menu, (self.factor_x, self.factor_y))
+
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(18 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))			
+
+	def draw(self, screen):
+		screen.blit(self.parliament_menu, (0, 158 * self.factor_y))
+class Legislative_Government_Elections_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, elections_menu):
+		
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.PlayerCountry = PlayerCountry
+
+		self.elections_menu = pygame.transform.smoothscale_by(elections_menu, (self.factor_x, self.factor_y))
+
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(18 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))			
+
+	def draw(self, screen):
+		screen.blit(self.elections_menu, (0, 158 * self.factor_y))
+class Legislative_Government_Political_Parties_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, political_parties_menu):
+		
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.PlayerCountry = PlayerCountry
+
+		self.political_parties_menu = pygame.transform.smoothscale_by(political_parties_menu, (self.factor_x, self.factor_y))
+
+		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
+		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
+		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(18 * self.factor_y))
+		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
+		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))			
+
+	def draw(self, screen):
+		screen.blit(self.political_parties_menu, (0, 158 * self.factor_y))								
 
 # POP UP
 class Game_Introduction_Menu:

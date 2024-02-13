@@ -348,6 +348,15 @@ class Main:
 		self.currency_menu						= self.pygame.image.load(os.path.join(self.finances_menu_folder, 'currency_menu.png')).convert_alpha()	
 		self.finance_menu						= self.pygame.image.load(os.path.join(self.finances_menu_folder, 'finance_menu.png')).convert_alpha()	
 
+		self.government_menu_folder = os.path.join(self.bottom_bar_interface_folder, 'government_menu')	
+
+		self.government_menu_background			= self.pygame.image.load(os.path.join(self.government_menu_folder, 'government_menu_background.png')).convert_alpha()
+		self.head_of_state_menu					= self.pygame.image.load(os.path.join(self.government_menu_folder, 'head_of_state_menu.png')).convert_alpha()
+		self.cabinet_menu						= self.pygame.image.load(os.path.join(self.government_menu_folder, 'cabinet_menu.png')).convert_alpha()		
+		self.parliament_menu					= self.pygame.image.load(os.path.join(self.government_menu_folder, 'parliament_menu.png')).convert_alpha()	
+		self.elections_menu						= self.pygame.image.load(os.path.join(self.government_menu_folder, 'elections_menu.png')).convert_alpha()	
+		self.political_parties_menu				= self.pygame.image.load(os.path.join(self.government_menu_folder, 'political_parties_menu.png')).convert_alpha()		
+
 
 		
 		self.sounds_folder = os.path.join(self.exe_folder, 'Sounds')
@@ -826,7 +835,7 @@ your shoulders.
 			self.poverty_rate_80, self.credit_ratings, self.economic_warning, self.economic_freedom_index_green, self.economic_freedom_index_red, self.economic_freedom_score_green, self.economic_freedom_score_red,
 			self.small_rating_green, self.small_rating_red, self.intelligence_overview_background, self.intelligency_agencies_icons_image_dic, self.research_overview_background, self.active_research_background, self.researche_icons_image_dic,
 			self.researche_institute_icons_image_dic, self.construction_overview_background, self.production_overview_background, self.bottom_HUD, self.finances_menu_background, self.budget_menu, self.debt_menu, self.taxation_menu, self.currency_menu,
-			self.finance_menu)
+			self.finance_menu, self.government_menu_background, self.head_of_state_menu, self.cabinet_menu, self.parliament_menu, self.elections_menu, self.political_parties_menu)
 
 
 		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.Main_Menu, self.Country_Selection_Screen,
