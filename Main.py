@@ -457,6 +457,9 @@ class Main:
 		self.USA.country_leader_image = self.leaders_image_dic['Portrait_USA_Richard_Nixon']
 		self.USA.country_leader_title = 'President'
 		self.USA.country_ruler_ideology = 'Keynesianism'
+
+		close_people = CountriesManager.Person('carlos', self.leaders_image_dic['Portrait_TEX_John_Connally'])
+		self.USA.head_of_state_close_people = [close_people,close_people,close_people,close_people,close_people,close_people,close_people,close_people,close_people]
 		
 		self.USA.country_capital_image = self.capitals_images_dic['USA']
 		
@@ -505,6 +508,8 @@ your shoulders.
 		self.USA.country_stability = 100
 		self.USA.country_war_support = 100
 		self.USA.country_party_popularity = 100
+
+		self.USA.weekly_head_of_state_popularity_data = [self.USA.country_party_popularity]
 
 		# 		Country Diplomacy Stats
 		self.USA.diplomacy_rating = 100

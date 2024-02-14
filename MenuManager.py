@@ -2754,51 +2754,14 @@ class Clock_UI:
 			self.current_minute = 0			
 			if self.current_hour >= 24:
 
-				if self.Player_Country_Research_Menu.is_menu_open == False:
-					self.Player_Country_Research_Menu.increase_research_progress()
-
-				self.PlayerCountry.expenses = sum([
-				self.PlayerCountry.agriculture_expense,
-				self.PlayerCountry.culture_expense,
-				self.PlayerCountry.debt_interest_expense,
-				self.PlayerCountry.defense_expense,
-				self.PlayerCountry.economy_expense,
-				self.PlayerCountry.education_expense,
-				self.PlayerCountry.employment_social_expense,
-				self.PlayerCountry.energy_expense,
-				self.PlayerCountry.environment_expense,
-				self.PlayerCountry.family_expense,
-				self.PlayerCountry.foreign_affairs_expense,
-				self.PlayerCountry.health_expense,
-				self.PlayerCountry.homeland_security_expense,
-				self.PlayerCountry.housing_expense,
-				self.PlayerCountry.industry_expense,
-				self.PlayerCountry.information_expense,
-				self.PlayerCountry.justice_expense,
-				self.PlayerCountry.miscellaneous_expense,
-				self.PlayerCountry.religion_expense,
-				self.PlayerCountry.research_expense,
-				self.PlayerCountry.secret_services_expense,
-				self.PlayerCountry.social_security_expense,
-				self.PlayerCountry.sport_expense,
-				self.PlayerCountry.tourism_expense,
-				self.PlayerCountry.transport_expense,
-				self.PlayerCountry.treasury_expense,
-				self.PlayerCountry.unemployment_insurance_expense
-				])
+				self.do_daily_calculations()
 
 				self.current_hour = self.current_hour - 24
 				self.current_day += 1
 				self.week += 1
 				if self.week >= 7:
-					self.PlayerCountry.weekly_inflation_data.append(self.PlayerCountry.inflation)
 
-					self.PlayerCountry.weekly_currency_interest_rate_data.append(self.PlayerCountry.currency_interest_rate)
-
-					self.PlayerCountry.weekly_country_GDP_data.append(self.PlayerCountry.country_GDP)
-
-					debt_to_gdp = round((self.PlayerCountry.debt/self.PlayerCountry.country_GDP)*100, 2)
-					self.PlayerCountry.weekly_debt_to_gdp_data.append(debt_to_gdp)
+					self.do_weekly_calculations()
 					
 					self.week -= 7
 				if self.current_day == self.days_in_each_mounth[str(self.current_month)] + 1:
@@ -2808,14 +2771,65 @@ class Clock_UI:
 						self.current_month = 1
 						self.current_year += 1
 
-						self.PlayerCountry.weekly_inflation_data = [self.PlayerCountry.inflation]
+						self.reset_graphs()
 
-						self.PlayerCountry.weekly_currency_interest_rate_data = [self.PlayerCountry.currency_interest_rate]
+	def do_daily_calculations(self):
+		if self.Player_Country_Research_Menu.is_menu_open == False:
+			self.Player_Country_Research_Menu.increase_research_progress()
 
-						self.PlayerCountry.weekly_country_GDP_data = [self.PlayerCountry.country_GDP]
+		self.PlayerCountry.expenses = sum([
+		self.PlayerCountry.agriculture_expense,
+		self.PlayerCountry.culture_expense,
+		self.PlayerCountry.debt_interest_expense,
+		self.PlayerCountry.defense_expense,
+		self.PlayerCountry.economy_expense,
+		self.PlayerCountry.education_expense,
+		self.PlayerCountry.employment_social_expense,
+		self.PlayerCountry.energy_expense,
+		self.PlayerCountry.environment_expense,
+		self.PlayerCountry.family_expense,
+		self.PlayerCountry.foreign_affairs_expense,
+		self.PlayerCountry.health_expense,
+		self.PlayerCountry.homeland_security_expense,
+		self.PlayerCountry.housing_expense,
+		self.PlayerCountry.industry_expense,
+		self.PlayerCountry.information_expense,
+		self.PlayerCountry.justice_expense,
+		self.PlayerCountry.miscellaneous_expense,
+		self.PlayerCountry.religion_expense,
+		self.PlayerCountry.research_expense,
+		self.PlayerCountry.secret_services_expense,
+		self.PlayerCountry.social_security_expense,
+		self.PlayerCountry.sport_expense,
+		self.PlayerCountry.tourism_expense,
+		self.PlayerCountry.transport_expense,
+		self.PlayerCountry.treasury_expense,
+		self.PlayerCountry.unemployment_insurance_expense
+		])
 
-						debt_to_gdp = round((self.PlayerCountry.debt/self.PlayerCountry.country_GDP)*100, 2)
-						self.PlayerCountry.weekly_debt_to_gdp_data = [debt_to_gdp]					
+	def do_weekly_calculations(self):
+		self.PlayerCountry.weekly_inflation_data.append(self.PlayerCountry.inflation)
+
+		self.PlayerCountry.weekly_currency_interest_rate_data.append(self.PlayerCountry.currency_interest_rate)
+
+		self.PlayerCountry.weekly_country_GDP_data.append(self.PlayerCountry.country_GDP)
+
+		debt_to_gdp = round((self.PlayerCountry.debt/self.PlayerCountry.country_GDP)*100, 2)
+		self.PlayerCountry.weekly_debt_to_gdp_data.append(debt_to_gdp)
+
+		self.PlayerCountry.weekly_head_of_state_popularity_data.append(self.PlayerCountry.country_party_popularity)
+
+	def reset_graphs(self):
+		self.PlayerCountry.weekly_inflation_data = [self.PlayerCountry.inflation]
+
+		self.PlayerCountry.weekly_currency_interest_rate_data = [self.PlayerCountry.currency_interest_rate]
+
+		self.PlayerCountry.weekly_country_GDP_data = [self.PlayerCountry.country_GDP]
+
+		debt_to_gdp = round((self.PlayerCountry.debt/self.PlayerCountry.country_GDP)*100, 2)
+		self.PlayerCountry.weekly_debt_to_gdp_data = [debt_to_gdp]	
+
+		self.PlayerCountry.weekly_head_of_state_popularity_data = [self.PlayerCountry.country_party_popularity]
 
 	def draw(self, screen):
 		screen.blit(self.top_bar_right_background, (self.screen_width - self.top_bar_right_background.get_width(), 0))
@@ -7108,12 +7122,80 @@ class Legislative_Government_Head_Of_State_Menu:
 		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))			
 
 	def draw(self, screen):
-		screen.blit(self.PlayerCountry.country_leader_image, (72, 268 * self.factor_y))
-				
+		screen.blit(self.PlayerCountry.country_leader_image, (72 * self.factor_x, 268 * self.factor_y))
+
+		index_x = 0
+		index_y = 0
+		for person in self.PlayerCountry.head_of_state_close_people:
+			if index_x >= 3:
+				index_x = 0
+				index_y += 1
+
+			screen.blit(person.portrait, ((1330 + (190 * index_x)) * self.factor_x, (239 + (215 * index_y)) * self.factor_y))
+			
+			index_x += 1
+
+
 		screen.blit(self.head_of_state_menu, (0, 158 * self.factor_y))
 
-		expense_text = self.small_scalable_font.render(formatted_income, True, (255,255,255))
-		screen.blit(expense_text, (1687 * self.factor_x - expense_text.get_width()/2, 327 * self.factor_y))		
+		head_of_state_title_text = self.medium_scalable_font.render(self.PlayerCountry.country_leader_title, True, (255,255,255))
+		screen.blit(head_of_state_title_text, (304 * self.factor_x, 271 * self.factor_y))		
+
+		head_of_state_name_text = self.medium_scalable_font.render(self.PlayerCountry.country_leader_name, True, (255,255,255))
+		screen.blit(head_of_state_name_text, (304 * self.factor_x, 296 * self.factor_y))	
+
+		next_election_text = self.medium_scalable_font.render(self.PlayerCountry.country_next_election, True, (255,255,255))
+		screen.blit(next_election_text, (410 * self.factor_x, 346 * self.factor_y))	
+
+		head_of_state_popularity_text = self.medium_scalable_font.render(str(self.PlayerCountry.country_party_popularity) + '%', True, (255,255,255))
+		screen.blit(head_of_state_popularity_text, (375 * self.factor_x, 441 * self.factor_y))	
+
+		#	HEAD OF STATE POPULARITY
+		graph_pos_x = 106
+		graph_pos_y = 518
+
+		head_of_state_popularity = round(self.PlayerCountry.country_party_popularity, 1)
+
+		head_of_state_popularity_15_high_end_text_render = self.small_scalable_font.render(str(round(head_of_state_popularity + head_of_state_popularity*0.15, 1))+' %', False, (255,255,255))	
+		screen.blit(head_of_state_popularity_15_high_end_text_render, ((graph_pos_x - 25) * self.factor_x - head_of_state_popularity_15_high_end_text_render.get_width(), (graph_pos_y - 158) * self.factor_y + 158 * self.factor_y - head_of_state_popularity_15_high_end_text_render.get_height()/2))
+		
+		head_of_state_popularity_1125_high_end_text_render = self.small_scalable_font.render(str(round(head_of_state_popularity + head_of_state_popularity*0.1125, 1))+' %', False, (255,255,255))	
+		screen.blit(head_of_state_popularity_1125_high_end_text_render, ((graph_pos_x - 25) * self.factor_x - head_of_state_popularity_1125_high_end_text_render.get_width(), (graph_pos_y - 113) * self.factor_y + 158 * self.factor_y - head_of_state_popularity_1125_high_end_text_render.get_height()/2))	
+
+		head_of_state_popularity_75_high_end_text_render = self.small_scalable_font.render(str(round(head_of_state_popularity + head_of_state_popularity*0.075, 1))+' %', False, (255,255,255))	
+		screen.blit(head_of_state_popularity_75_high_end_text_render, ((graph_pos_x - 25) * self.factor_x - head_of_state_popularity_75_high_end_text_render.get_width(), (graph_pos_y - 68) * self.factor_y + 158 * self.factor_y - head_of_state_popularity_75_high_end_text_render.get_height()/2))
+
+		head_of_state_popularity_375_high_end_text_render = self.small_scalable_font.render(str(round(head_of_state_popularity + head_of_state_popularity*0.0375, 1))+' %', False, (255,255,255))	
+		screen.blit(head_of_state_popularity_375_high_end_text_render, ((graph_pos_x - 25) * self.factor_x - head_of_state_popularity_375_high_end_text_render.get_width(), (graph_pos_y - 23) * self.factor_y + 158 * self.factor_y - head_of_state_popularity_375_high_end_text_render.get_height()/2))	
+
+
+		head_of_state_popularity_15_low_end_text_render = self.small_scalable_font.render(str(round(head_of_state_popularity - head_of_state_popularity*0.15, 1))+' %', False, (255,255,255))	
+		screen.blit(head_of_state_popularity_15_low_end_text_render, ((graph_pos_x - 25) * self.factor_x - head_of_state_popularity_15_low_end_text_render.get_width(), (graph_pos_y + 158) * self.factor_y + 158 * self.factor_y - head_of_state_popularity_15_low_end_text_render.get_height()/2))
+		
+		head_of_state_popularity_1125_low_end_text_render = self.small_scalable_font.render(str(round(head_of_state_popularity - head_of_state_popularity*0.1125, 1))+' %', False, (255,255,255))	
+		screen.blit(head_of_state_popularity_1125_low_end_text_render, ((graph_pos_x - 25) * self.factor_x - head_of_state_popularity_1125_low_end_text_render.get_width(), (graph_pos_y + 113) * self.factor_y + 158 * self.factor_y - head_of_state_popularity_1125_low_end_text_render.get_height()/2))	
+
+		head_of_state_popularity_75_low_end_text_render = self.small_scalable_font.render(str(round(head_of_state_popularity - head_of_state_popularity*0.075, 1))+' %', False, (255,255,255))	
+		screen.blit(head_of_state_popularity_75_low_end_text_render, ((graph_pos_x - 25) * self.factor_x - head_of_state_popularity_75_low_end_text_render.get_width(), (graph_pos_y + 68) * self.factor_y + 158 * self.factor_y - head_of_state_popularity_75_low_end_text_render.get_height()/2))
+
+		head_of_state_popularity_375_low_end_text_render = self.small_scalable_font.render(str(round(head_of_state_popularity - head_of_state_popularity*0.0375, 1))+' %', False, (255,255,255))	
+		screen.blit(head_of_state_popularity_375_low_end_text_render, ((graph_pos_x - 25) * self.factor_x - head_of_state_popularity_375_low_end_text_render.get_width(), (graph_pos_y + 23) * self.factor_y + 158 * self.factor_y - head_of_state_popularity_375_low_end_text_render.get_height()/2))			
+
+
+		graph_dots = []
+		for index, weekly_data in enumerate(self.PlayerCountry.weekly_head_of_state_popularity_data):
+			if weekly_data > head_of_state_popularity:
+				height = graph_pos_y - (158 * (min(1, (weekly_data/(head_of_state_popularity + 0.01)) - 1)))
+			else:
+				height = graph_pos_y + (158 * (min(1, (head_of_state_popularity/(weekly_data + 0.01)) - 1)))
+			
+			graph_dots.append(((9.79999 * index + graph_pos_x) * self.factor_x, (height + 158) * self.factor_y))
+
+		if len(graph_dots) > 1:
+			self.pygame.draw.lines(screen, (218,255,127), False, graph_dots, 3)
+		else:
+			self.pygame.draw.line(screen, (218,255,127), graph_dots[0], (graph_dots[0][0], (graph_pos_y + 158) * self.factor_y), 3)	
+
 
 class Legislative_Government_Cabinet_Menu:
 	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, cabinet_menu):

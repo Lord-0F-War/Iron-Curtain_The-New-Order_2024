@@ -11,7 +11,6 @@ class Research_Institute:
 
         self.hovered = False
 
-
 class Political_Party:
     def __init__(self, party_name:str, popularity:float, ideology:list, seats:int, officialdom:bool, party_color:set):
         self.party_name = party_name
@@ -26,12 +25,10 @@ class Political_Party:
 
         self.party_color = party_color
 
-
 class Intelligency_Agency:
     def __init__(self, name, icon_image_name):
         self.name = name
         self.icon_image_name = icon_image_name
-
 
 class Decision:
     def __init__(self, buttons, buttons_descriptions, buttons_icons, main_image, decision_description, x_pos, y_pos, requirements):
@@ -118,6 +115,11 @@ class Law:
         self.value = 0
 
 
+class Person:
+    def __init__(self, name, portrait):
+        self.name = name
+        self.portrait = portrait
+
 
 class Country:
     def __init__(self):
@@ -172,8 +174,15 @@ class Country:
         self.country_national_spirits_points_left = 0
 
         self.country_stability = 0
+
         self.country_war_support = 0
+
         self.country_party_popularity = 0
+        self.weekly_head_of_state_popularity_data = []
+
+        self.country_next_election = '12/01/1970'
+
+        self.head_of_state_close_people = []
 
         # DIPLOMACY
         self.diplomacy_rating = 0 
