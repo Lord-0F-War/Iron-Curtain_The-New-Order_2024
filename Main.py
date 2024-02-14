@@ -449,19 +449,26 @@ class Main:
 		##---------------------------------------------------------------------------------------------------------------------##
 		##---------------------------------------------------------------------------------------------------------------------##
 
-		self.USA = CountriesManager.Country(
-					'Richard Nixon',
-					self.capitals_images_dic['USA'],
-					self.leaders_image_dic['Portrait_USA_Richard_Nixon'], 
-					self.flags_image_dic['USA'],
-					'United States of America',
-					'Keynesianism',
-					[self.music_files_dic['house_of_the_black_sun']]
-					)
+		self.USA = CountriesManager.Country()
 		
+		self.USA.country_name = 'United States of America'
+
+		self.USA.country_leader_name = 'Richard Nixon'
+		self.USA.country_leader_image = self.leaders_image_dic['Portrait_USA_Richard_Nixon']
+		self.USA.country_leader_title = 'President'
+		self.USA.country_ruler_ideology = 'Keynesianism'
+		
+		self.USA.country_capital_image = self.capitals_images_dic['USA']
+		
+		self.USA.country_flag_image = self.flags_image_dic['USA']
+		
+		self.USA.country_music_playlist = [self.music_files_dic['house_of_the_black_sun']]
+
 		self.USA.country_ruling_party = 'Republican'
 		self.USA.country_government = 'Federal Republic'
+		
 		self.USA.country_elections = '4 years'
+		
 		self.USA.country_brief_history = """	
 The land of the brave and the home of the free has been
 usurped by a sinister force, an unseen hand that tugs at
@@ -479,6 +486,7 @@ The relentless countdown of the cataclysm adds urgency
 to the fate of the nation, perhaps the world, rests on
 your shoulders.
 """
+		
 		# Country Focus
 		usa_focus_dict = self.read_focus_from_file(location = os.path.join(self.national_focus_folder, 'USA'))
 		self.USA.country_focus_tree = usa_focus_dict	

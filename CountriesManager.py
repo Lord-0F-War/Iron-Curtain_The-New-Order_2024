@@ -120,18 +120,19 @@ class Law:
 
 
 class Country:
-    def __init__(self, country_leader_name, country_capital_image,  country_leader_image, country_flag_image, country_name, country_ruler_ideology, country_music_playlist) -> None:
-        self.country_leader_name = country_leader_name
-        self.country_capital_image = country_capital_image
-        self.country_leader_image = country_leader_image
-        self.country_flag_image = country_flag_image
-        self.country_name = country_name
+    def __init__(self):
+        self.country_name = None
 
-        self.capital_pos = None
-
-        self.country_ruler_ideology = country_ruler_ideology
-
-        self.country_music_playlist = country_music_playlist
+        self.country_leader_name = None
+        self.country_leader_image = None
+        self.country_leader_title = None
+        self.country_ruler_ideology = None
+        
+        self.country_capital_image = None
+        
+        self.country_flag_image = None
+        
+        self.country_music_playlist = None
 
         self.country_national_spirits = []
         self.country_culture = None

@@ -7108,7 +7108,13 @@ class Legislative_Government_Head_Of_State_Menu:
 		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))			
 
 	def draw(self, screen):
+		screen.blit(self.PlayerCountry.country_leader_image, (72, 268 * self.factor_y))
+				
 		screen.blit(self.head_of_state_menu, (0, 158 * self.factor_y))
+
+		expense_text = self.small_scalable_font.render(formatted_income, True, (255,255,255))
+		screen.blit(expense_text, (1687 * self.factor_x - expense_text.get_width()/2, 327 * self.factor_y))		
+
 class Legislative_Government_Cabinet_Menu:
 	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, cabinet_menu):
 		
