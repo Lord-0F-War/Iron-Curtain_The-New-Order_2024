@@ -3626,7 +3626,7 @@ class Country_Overview:
 				self.official_parties_names_surface.fill((0, 0, 0, 0))
 				last_angle = 180
 				for index, official_party in enumerate(self.PlayerCountry.country_official_parties):
-					end_angle = 180 * (official_party.seats / self.PlayerCountry.total_political_seats)
+					end_angle = 180 * (official_party.parliament_seats / self.PlayerCountry.total_parliament_seats)
 					GenericUtilitys.draw_pie(self.parties_pie_chart_surface, official_party.party_color, (302, 300), 300, last_angle, end_angle + last_angle)
 					last_angle = end_angle + last_angle
 
@@ -3647,9 +3647,9 @@ class Country_Overview:
 			screen.blit(self.country_overview, self.country_overview_position)			
 
 			# PARTIES
-			screen.blit(self.parties_pie_chart_surface, (876, 82 + self.country_overview_position[1]))
+			screen.blit(self.parties_pie_chart_surface, (876 * self.factor_x, 82 * self.factor_y + self.country_overview_position[1]))
 
-			screen.blit(self.official_parties_names_surface, (879, 418 + self.country_overview_position[1]))
+			screen.blit(self.official_parties_names_surface, (879 * self.factor_x, 418 * self.factor_y + self.country_overview_position[1]))
 
 			# COUNTRY NAME
 			country_name_text = self.big_scalable_font.render(self.PlayerCountry.country_name, True, (255, 255, 255))
@@ -7195,8 +7195,6 @@ class Legislative_Government_Head_Of_State_Menu:
 			self.pygame.draw.lines(screen, (218,255,127), False, graph_dots, 3)
 		else:
 			self.pygame.draw.line(screen, (218,255,127), graph_dots[0], (graph_dots[0][0], (graph_pos_y + 158) * self.factor_y), 3)	
-
-
 class Legislative_Government_Cabinet_Menu:
 	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, cabinet_menu):
 		
@@ -7217,6 +7215,17 @@ class Legislative_Government_Cabinet_Menu:
 		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))			
 
 	def draw(self, screen):
+		index_x = 0
+		index_y = 0
+		for person in self.PlayerCountry.country_government_gabinet:
+			if index_x >= 10:
+				index_x = 0
+				index_y += 1
+
+			screen.blit(person.portrait, ((34 + (190 * index_x)) * self.factor_x, (228 + (215 * index_y)) * self.factor_y))
+			
+			index_x += 1
+
 		screen.blit(self.cabinet_menu, (0, 158 * self.factor_y))
 class Legislative_Government_Parliament_Menu:
 	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, parliament_menu):
@@ -7231,6 +7240,11 @@ class Legislative_Government_Parliament_Menu:
 
 		self.parliament_menu = pygame.transform.smoothscale_by(parliament_menu, (self.factor_x, self.factor_y))
 
+		self.update_pie_chart = True
+
+		self.parliament_pie_chart_surface = pygame.Surface((603 * self.factor_x, 301 * self.factor_y), pygame.SRCALPHA)		
+		self.senate_pie_chart_surface = pygame.Surface((603 * self.factor_x, 301 * self.factor_y), pygame.SRCALPHA)			
+
 		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
 		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
 		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(18 * self.factor_y))
@@ -7238,7 +7252,38 @@ class Legislative_Government_Parliament_Menu:
 		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))			
 
 	def draw(self, screen):
+
+		height = (519 + 158) * self.factor_y
+		screen.blit(self.PlayerCountry.parliament_head.portrait, (156 * self.factor_x, height))
+		screen.blit(self.PlayerCountry.parliament_parties_head.portrait, (346 * self.factor_x, height))
+
+		screen.blit(self.PlayerCountry.senate_head.portrait, (774 * self.factor_x, height))
+		screen.blit(self.PlayerCountry.senate_parties_head.portrait, (964 * self.factor_x, height))
+
+
 		screen.blit(self.parliament_menu, (0, 158 * self.factor_y))
+
+		if self.update_pie_chart == True:
+			self.parliament_pie_chart_surface.fill((0, 0, 0, 0))
+			self.senate_pie_chart_surface.fill((0, 0, 0, 0))
+			
+			last_parliament_angle = 180
+			last_senate_angle = 180
+			for official_party in self.PlayerCountry.country_official_parties:
+				parliament_end_angle = 180 * (official_party.parliament_seats / self.PlayerCountry.total_parliament_seats)
+				GenericUtilitys.draw_pie(self.parliament_pie_chart_surface, official_party.party_color, (302, 300), 300, last_parliament_angle, parliament_end_angle + last_parliament_angle)
+				last_parliament_angle = parliament_end_angle + last_parliament_angle
+
+				senate_end_angle = 180 * (official_party.senate_seats / self.PlayerCountry.total_senate_seats)
+				GenericUtilitys.draw_pie(self.senate_pie_chart_surface, official_party.party_color, (302, 300), 300, last_senate_angle, senate_end_angle + last_senate_angle)
+				last_senate_angle = senate_end_angle + last_senate_angle				
+
+			self.update_pie_chart = False
+
+		height = (137 + 158) * self.factor_y
+		screen.blit(self.parliament_pie_chart_surface, (21 * self.factor_x, height))
+		screen.blit(self.senate_pie_chart_surface, (639 * self.factor_x, height))
+
 class Legislative_Government_Elections_Menu:
 	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, elections_menu):
 		

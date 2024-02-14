@@ -12,14 +12,15 @@ class Research_Institute:
         self.hovered = False
 
 class Political_Party:
-    def __init__(self, party_name:str, popularity:float, ideology:list, seats:int, officialdom:bool, party_color:set):
+    def __init__(self, party_name:str, popularity:float, ideology:list, parliament_seats:int, senate_seats:int, officialdom:bool, party_color:set):
         self.party_name = party_name
 
         self.popularity = popularity
 
         self.ideology = ideology
 
-        self.seats = seats
+        self.parliament_seats = parliament_seats
+        self.senate_seats = senate_seats
 
         self.officialdom = officialdom
 
@@ -184,6 +185,26 @@ class Country:
 
         self.head_of_state_close_people = []
 
+        self.country_government_gabinet = []
+        
+        partie_1 = Political_Party('Test 1 party', 50, [], 50, 25, True, (255,0,0))
+        partie_2 = Political_Party('Test 2 party', 25, [], 25, 50, True, (0,255,0))
+        partie_3 = Political_Party('Test 3 party', 25, [], 25, 25, True, (0,0,255))
+
+        self.country_official_parties = [partie_1, partie_2, partie_3] 
+        self.country_clandestine_parties = [] 
+
+        self.total_parliament_seats = 0
+        self.total_senate_seats = 0   
+
+        self.parliament_head = None   
+        self.parliament_parties_head = None
+
+        self.senate_head = None
+        self.senate_parties_head = None
+
+        self.population_political_leaning = "None"
+
         # DIPLOMACY
         self.diplomacy_rating = 0 
 
@@ -297,9 +318,6 @@ class Country:
         self.country_literacy_rate = 0
         self.country_poverty_rate = [0, 0, 0]
 
-        self.population_political_leaning = "None"
-
-
         self.military_approval_rating = 0
         self.domestic_approval_rating = 0
         self.midia_approval_rating = 0
@@ -309,19 +327,8 @@ class Country:
         self.internal_economy_rating = 0
         self.external_economy_rating = 0   
 
-        
-        partie_1 = Political_Party('Test 1 party', 50, [], 50, True, (255,0,0))
-        partie_2 = Political_Party('Test 2 party', 25, [], 25, True, (0,255,0))
-        partie_3 = Political_Party('Test 3 party', 25, [], 25, True, (0,0,255))
-
-        self.country_official_parties = [partie_1, partie_2, partie_3] 
-        self.country_clandestine_parties = [] 
-
-        self.total_political_seats = 100
-
 
         self.country_intelligency_agency = Intelligency_Agency('Central Intelligence Agency', 'CIA')
-
 
         # LAWS
 

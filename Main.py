@@ -489,7 +489,19 @@ The relentless countdown of the cataclysm adds urgency
 to the fate of the nation, perhaps the world, rests on
 your shoulders.
 """
+		# Country Government
+		cabinet_member = CountriesManager.Person('bob', self.leaders_image_dic['Portrait_TEX_John_Connally'])
+		self.USA.country_government_gabinet = [cabinet_member,cabinet_member,cabinet_member,cabinet_member,cabinet_member,cabinet_member,cabinet_member,cabinet_member,cabinet_member,cabinet_member,cabinet_member,cabinet_member,cabinet_member,cabinet_member,cabinet_member,cabinet_member,cabinet_member,cabinet_member,cabinet_member]
 		
+		self.USA.total_parliament_seats = 100
+		self.USA.total_senate_seats = 100
+
+		self.USA.parliament_head = CountriesManager.Person('bob', self.leaders_image_dic['Portrait_TEX_John_Connally'])   
+		self.USA.parliament_parties_head = CountriesManager.Person('bob', self.leaders_image_dic['Portrait_TEX_John_Connally']) 
+
+		self.USA.senate_head = CountriesManager.Person('bob', self.leaders_image_dic['Portrait_TEX_John_Connally'])
+		self.USA.senate_parties_head = CountriesManager.Person('bob', self.leaders_image_dic['Portrait_TEX_John_Connally']) 		
+
 		# Country Focus
 		usa_focus_dict = self.read_focus_from_file(location = os.path.join(self.national_focus_folder, 'USA'))
 		self.USA.country_focus_tree = usa_focus_dict	
