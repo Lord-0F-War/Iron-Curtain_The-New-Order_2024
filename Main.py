@@ -612,11 +612,11 @@ your shoulders.
 		self.USA.country_moral_code = 'Not Implemented'
 
 		self.USA.political_parties.set_active_law(			0)
-		self.USA.religious_rights.set_active_law(			1)
-		self.USA.trade_unions.set_active_law(				2)
-		self.USA.public_protest.set_active_law(				3)
-		self.USA.gun_control.set_active_law(				4)
-		self.USA.privacy_rights.set_active_law(				5)
+		self.USA.religious_rights.set_active_law(			0)
+		self.USA.trade_unions.set_active_law(				0)
+		self.USA.public_protest.set_active_law(				0)
+		self.USA.gun_control.set_active_law(				0)
+		self.USA.privacy_rights.set_active_law(				0)
 		self.USA.speach_rights.set_active_law(				0)
 		self.USA.press_rights.set_active_law(				0)
 		self.USA.voting_rights.set_active_law(				0)
@@ -891,7 +891,6 @@ your shoulders.
 		self.is_in_country_selection_screen = False
 
 		self.is_in_game_screen = False
-
 
 	def main_loop(self):
 		to_draw = True

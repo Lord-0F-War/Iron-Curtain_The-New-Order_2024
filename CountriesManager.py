@@ -181,7 +181,8 @@ class Country:
         self.country_party_popularity = 0
         self.weekly_head_of_state_popularity_data = []
 
-        self.country_next_election = '12/01/1970'
+        self.country_next_presidential_election = '12/01/1970'
+        self.country_next_congessional_election = '12/29/1970'
 
         self.head_of_state_close_people = []
 
@@ -204,6 +205,9 @@ class Country:
         self.senate_parties_head = None
 
         self.population_political_leaning = "None"
+
+
+        self.laws_to_be_voted = []
 
         # DIPLOMACY
         self.diplomacy_rating = 0 
@@ -429,6 +433,9 @@ class Country:
 
         self.political_laws_groups = [self.political_parties, self.religious_rights, self.trade_unions, self.public_protest, self.gun_control, self.privacy_rights, self.speach_rights, self.press_rights, self.voting_rights]
 
+        self.head_of_state_apointment_type_1 = Law('Election', description = '') 
+        self.head_of_state_apointment_type_2 = Law('Dictatorship', description = '') 
+        self.head_of_state_apointment      =    Laws_Group('voting_rights', [self.head_of_state_apointment_type_1, self.head_of_state_apointment_type_2], 0)
 
         #   MILITARY LAWS
 
