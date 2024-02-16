@@ -125,6 +125,11 @@ class Law_Project:
         self.voting_month = voting_month
         self.voting_year = voting_year
 
+        self.opinion_surveyed = False
+
+        self.estimated_political_support = 100
+        self.estimated_civilian_support = 100
+
 
 
 class Person:
