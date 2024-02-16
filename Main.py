@@ -1244,6 +1244,11 @@ your shoulders.
 						self.Game_Screen.Game_Introduction_Menu.text_scroll_bar.handle_event(event)
 					elif self.Game_Screen.Decisions_Menu.is_menu_open == True:
 						self.Game_Screen.Decisions_Menu.text_scroll_bar.handle_event(event)
+					
+					elif self.Game_Screen.Bottom_HUD.Legislative_Government_Menu.open_menu == 'head_of_state_menu_button':
+						self.Game_Screen.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Head_Of_State_Menu.text_scroll_bar.handle_event(event)
+					elif self.Game_Screen.Bottom_HUD.Legislative_Government_Menu.open_menu == 'parliament_menu_button':
+						self.Game_Screen.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Parliament_Menu.text_scroll_bar.handle_event(event)
 
 					if event.type == self.pygame.KEYDOWN:
 						if keys[self.pygame.K_ESCAPE]:

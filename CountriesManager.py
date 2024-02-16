@@ -444,9 +444,9 @@ class Country:
 
         self.political_laws_groups = [self.political_parties, self.religious_rights, self.trade_unions, self.public_protest, self.gun_control, self.privacy_rights, self.speach_rights, self.press_rights, self.voting_rights]
 
-        self.head_of_state_apointment_type_1 = Law('Election', description = '') 
-        self.head_of_state_apointment_type_2 = Law('Dictatorship', description = '') 
-        self.head_of_state_apointment      =    Laws_Group('voting_rights', [self.head_of_state_apointment_type_1, self.head_of_state_apointment_type_2], 0)
+        self.head_of_state_apointment_type_1 = Law('Election', description = 'desc 1') 
+        self.head_of_state_apointment_type_2 = Law('Dictatorship', description = 'Citizens are allowed to own firearms,\nbut there are significant restrictions:\n\n-Certain categories of firearms may be\nprohibited.\n\n-Citizens are allowed to carry concealed\nfirearms, but only under specific\ncircumstances and with the issuance of\na concealed carry permit.\n\n-It is mandatory for gun owners to\nregister their firearms with the\ngovernment, the registration system\nincludes detailed records of firearm\ntransactions.\n\n-All firearm transactions, including\nprivate sales, require a comprehensive\nbackground check.\n\n-A mandatory waiting period is imposed\non firearm purchases to provide a\n"cooling-off" period.\n\n-There are restrictions on the maximum\ncapacity of firearm magazines.\n\n-Red flag laws allow for the temporary\nremoval of firearms from individuals.')   
+        self.head_of_state_apointment      =    Laws_Group('head_of_state_apointment', [self.head_of_state_apointment_type_1, self.head_of_state_apointment_type_2], 0)
 
         #   MILITARY LAWS
 
@@ -678,7 +678,6 @@ class Country:
 
         new_law_project = Law_Project(law_group_being_voted, law_being_suggested, max_vote_day, max_vote_month, max_vote_year)
         self.laws_being_voted.append(new_law_project)
-
 
     def vote_a_law(self, law):
         index = self.laws_being_voted.index(law)

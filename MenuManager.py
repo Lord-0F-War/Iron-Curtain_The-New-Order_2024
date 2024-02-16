@@ -2347,7 +2347,7 @@ class Game_Screen:
 				self.Bottom_HUD.active_map_overlay = clicked_button
 				self.Earth_Map.update_map()
 
-			elif clicked_button[0:26] == 'country_legislation_button':
+			elif type(clicked_button) is str and clicked_button[0:26] == 'country_legislation_button':
 				if clicked_button != self.Bottom_HUD.open_country_legislation:
 					self.Bottom_HUD.open_country_legislation = clicked_button
 				else:
@@ -2401,8 +2401,23 @@ class Game_Screen:
 								pass
 							else:
 								self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Head_Of_State_Menu.law_change_menu_open = clicked_button
-						
 
+					elif self.Bottom_HUD.Legislative_Government_Menu.open_menu == 'parliament_menu_button':	
+						if type(clicked_button) == CountriesManager.Law_Project:
+							self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Parliament_Menu.open_law = clicked_button
+
+						elif clicked_button == 'law_change_close_button':
+							try:
+								self.PlayerCountry.laws_being_voted.remove(self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Parliament_Menu.open_law)
+							except:
+								pass
+							self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Parliament_Menu.open_law = None
+
+						elif clicked_button == 'law_change_accept_button':
+							self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Parliament_Menu.open_law = None
+						
+						elif clicked_button == 'law_change_survey_button':
+							pass
 
 			self.generic_hover_over_button_sound.fadeout(100)
 			self.generic_click_button_sound.play()
@@ -7103,7 +7118,11 @@ class Legislative_Government_Menu:
 				Legislative_Government_Head_Of_State_Menu = self.Legislative_Government_Head_Of_State_Menu.get_button_by_interaction(mouse_rect)
 				if Legislative_Government_Head_Of_State_Menu:
 					return Legislative_Government_Head_Of_State_Menu
-
+			elif self.open_menu == 'parliament_menu_button':
+				Legislative_Government_Parliament_Menu = self.Legislative_Government_Parliament_Menu.get_button_by_interaction(mouse_rect)
+				if Legislative_Government_Parliament_Menu:
+					return Legislative_Government_Parliament_Menu
+				
 		self.hovered_button = None
 		return None		
 
@@ -7154,7 +7173,6 @@ class Legislative_Government_Head_Of_State_Menu:
 		self.law_open_menu_rect = (655 * self.factor_x, 478 * self.factor_y, 610 * self.factor_x, 409 * self.factor_y)
 
 		self.law_change_menu_open = None
-		self.law_open_menu_rect = (655 * self.factor_x, 478 * self.factor_y, 610 * self.factor_x, 409 * self.factor_y)
 		self.law_change_close_button = GenericUtilitys.Button(680 * self.factor_x, 827 * self.factor_y, 250 * self.factor_x, 50 * self.factor_y)
 		self.law_change_accept_button = GenericUtilitys.Button(990 * self.factor_x, 827 * self.factor_y, 250 * self.factor_x, 50 * self.factor_y)
 		self.law_change_survey_button = GenericUtilitys.Button(1176 * self.factor_x, 713 * self.factor_y, 64 * self.factor_x, 64 * self.factor_y)		
@@ -7165,6 +7183,8 @@ class Legislative_Government_Head_Of_State_Menu:
 		self.law_change_nomination_of_head_of_state_by_election_button = GenericUtilitys.Button(835 * self.factor_x, 763 * self.factor_y, 250 * self.factor_x, 50 * self.factor_y)
 		self.law_change_nomination_of_head_of_state_dictator_button = GenericUtilitys.Button(835 * self.factor_x, 823 * self.factor_y, 250 * self.factor_x, 50 * self.factor_y)
 
+		self.law_being_voted_description_surface = pygame.Surface((496 * self.factor_x, 850 * self.factor_y), pygame.SRCALPHA)
+		self.text_scroll_bar = GenericUtilitys.Scroll_Bar(660 * self.factor_x, 481 * self.factor_x, 403 * self.factor_y, 850 * self.factor_y - 336 * self.factor_y, (255,255,255), (255,0,0), 10 * self.factor_x)				
 
 		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
 		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
@@ -7307,9 +7327,9 @@ class Legislative_Government_Head_Of_State_Menu:
 					self.hovered_button = None
 
 				if self.PlayerCountry.head_of_state_apointment.active_law_index == 0:
-					pygame.draw.rect(screen, (127,255,0), self.law_change_nomination_of_head_of_state_by_election_button.rect, 3)
+					pygame.draw.rect(screen, (255,0,0), self.law_change_nomination_of_head_of_state_by_election_button.rect, 3)
 				elif self.PlayerCountry.head_of_state_apointment.active_law_index == 1:
-					pygame.draw.rect(screen, (127,255,0), self.law_change_nomination_of_head_of_state_dictator_button.rect, 3)
+					pygame.draw.rect(screen, (255,0,0), self.law_change_nomination_of_head_of_state_dictator_button.rect, 3)
 
 		if self.hovered_button == 'law_change_nomination_of_head_of_state_button':
 			pygame.draw.rect(screen, (0,255,0), self.law_change_nomination_of_head_of_state_button.rect, 3)
@@ -7317,7 +7337,23 @@ class Legislative_Government_Head_Of_State_Menu:
 
 		if self.law_change_menu_open != None:
 			pygame.draw.rect(screen, (6,17,21), self.law_open_menu_rect)
-			pygame.draw.rect(screen, (23,255,255), self.law_open_menu_rect, 1)	
+			pygame.draw.rect(screen, (255,233,127), self.law_open_menu_rect, 2)	
+
+			law_group = getattr(self.PlayerCountry, self.get_law_group())
+
+			law = self.get_law()
+
+			self.text_offset_y = self.text_scroll_bar.get_scroll_position()	
+
+			if type(law_group) == CountriesManager.Laws_Group:
+				text_render = self.medium_scalable_font.render(' '.join(law_group.group_name.split('_')).upper() + ' - ' + ' '.join(law_group.laws[law].name.split('_')).upper() + ':\n\n' + law_group.laws[law].description, False, (255,255,255))
+				self.law_being_voted_description_surface.blit(text_render, (0, 0))
+				screen.blit(self.law_being_voted_description_surface.subsurface(0, self.text_offset_y, self.law_being_voted_description_surface.get_width(), 336 * self.factor_y), (680 * self.factor_x, 486 * self.factor_y))
+
+			elif type(law_group) == dict:
+				law_group[law.law_being_suggested['key']] = law.law_being_suggested['value']
+
+			self.text_scroll_bar.draw(screen)			
 
 			pygame.draw.rect(screen, (255,255,255), self.law_change_close_button.rect, 1)
 			pygame.draw.rect(screen, (255,255,255), self.law_change_accept_button.rect, 1)
@@ -7341,9 +7377,6 @@ class Legislative_Government_Head_Of_State_Menu:
 			elif self.hovered_button == 'law_change_survey_button':
 				pygame.draw.rect(screen, (0,255,0), self.law_change_survey_button.rect, 3)
 				self.hovered_button = None						
-
-
-
 class Legislative_Government_Cabinet_Menu:
 	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, cabinet_menu):
 		
@@ -7392,13 +7425,50 @@ class Legislative_Government_Parliament_Menu:
 		self.update_pie_chart = True
 
 		self.parliament_pie_chart_surface = pygame.Surface((603 * self.factor_x, 301 * self.factor_y), pygame.SRCALPHA)		
-		self.senate_pie_chart_surface = pygame.Surface((603 * self.factor_x, 301 * self.factor_y), pygame.SRCALPHA)			
+		self.senate_pie_chart_surface = pygame.Surface((603 * self.factor_x, 301 * self.factor_y), pygame.SRCALPHA)	
+
+		self.law_being_voted_surface = pygame.Surface((638 * self.factor_x, 469 * self.factor_y), pygame.SRCALPHA)	
+
+		self.laws_being_voted_rects = []	
+		self.open_law = None
+
+		self.hovered_rect = None
+
+		self.law_being_voted_description_surface = pygame.Surface((496 * self.factor_x, 850 * self.factor_y), pygame.SRCALPHA)		
+
+		self.law_open_menu_rect = (1262 * self.factor_x, 375 * self.factor_y, 642 * self.factor_x, 500 * self.factor_y)
+		self.law_change_close_button = GenericUtilitys.Button(1303 * self.factor_x, 794 * self.factor_y, 250 * self.factor_x, 50 * self.factor_y)
+		self.law_change_accept_button = GenericUtilitys.Button(1613 * self.factor_x, 794 * self.factor_y, 250 * self.factor_x, 50 * self.factor_y)
+		self.law_change_survey_button = GenericUtilitys.Button(1799 * self.factor_x, 680 * self.factor_y, 64 * self.factor_x, 64 * self.factor_y)	
+
+		self.text_scroll_bar = GenericUtilitys.Scroll_Bar(1268 * self.factor_x, 378 * self.factor_x, 494 * self.factor_y, 850 * self.factor_y - 494 * self.factor_y, (255,255,255), (255,0,0), 10 * self.factor_x)				
 
 		self.huge_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(24 * self.factor_y))
 		self.big_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(21 * self.factor_y))
 		self.medium_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(18 * self.factor_y))
 		self.small_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(14 * self.factor_y))	
 		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(12 * self.factor_y))			
+
+	def get_button_by_interaction(self, mouse_rect):
+		if self.open_law != None:
+			if self.law_change_close_button.rect.colliderect(mouse_rect):
+				self.hovered_rect = self.law_change_close_button.rect
+				return 'law_change_close_button'	
+			elif self.law_change_accept_button.rect.colliderect(mouse_rect):
+				self.hovered_rect = self.law_change_accept_button.rect
+				return 'law_change_accept_button'		
+			elif self.law_change_survey_button.rect.colliderect(mouse_rect):
+				self.hovered_rect = self.law_change_survey_button.rect
+				return 'law_change_survey_button'
+		else:
+			for rect in self.laws_being_voted_rects:
+				if rect[0].colliderect(mouse_rect):									
+					self.hovered_rect = rect[0]
+					return rect[1]		
+
+			
+		self.hovered_button = None
+		return None			
 
 	def draw(self, screen):
 
@@ -7420,11 +7490,11 @@ class Legislative_Government_Parliament_Menu:
 			last_senate_angle = 180
 			for official_party in self.PlayerCountry.country_official_parties:
 				parliament_end_angle = 180 * (official_party.parliament_seats / self.PlayerCountry.total_parliament_seats)
-				GenericUtilitys.draw_pie(self.parliament_pie_chart_surface, official_party.party_color, (302, 300), 300, last_parliament_angle, parliament_end_angle + last_parliament_angle)
+				GenericUtilitys.draw_pie(self.parliament_pie_chart_surface, official_party.party_color, (302 * self.factor_x, 300 * self.factor_y), 300 * self.factor_x, last_parliament_angle, parliament_end_angle + last_parliament_angle)
 				last_parliament_angle = parliament_end_angle + last_parliament_angle
 
 				senate_end_angle = 180 * (official_party.senate_seats / self.PlayerCountry.total_senate_seats)
-				GenericUtilitys.draw_pie(self.senate_pie_chart_surface, official_party.party_color, (302, 300), 300, last_senate_angle, senate_end_angle + last_senate_angle)
+				GenericUtilitys.draw_pie(self.senate_pie_chart_surface, official_party.party_color, (302 * self.factor_x, 300 * self.factor_y), 300 * self.factor_x, last_senate_angle, senate_end_angle + last_senate_angle)
 				last_senate_angle = senate_end_angle + last_senate_angle				
 
 			self.update_pie_chart = False
@@ -7432,6 +7502,60 @@ class Legislative_Government_Parliament_Menu:
 		height = (137 + 158) * self.factor_y
 		screen.blit(self.parliament_pie_chart_surface, (21 * self.factor_x, height))
 		screen.blit(self.senate_pie_chart_surface, (639 * self.factor_x, height))
+
+		if self.open_law == None:
+			self.law_being_voted_surface.fill((0,0,0,0))
+			self.laws_being_voted_rects = []
+			for index, law in enumerate(self.PlayerCountry.laws_being_voted):
+				Law_name_text = self.small_scalable_font.render(' '.join(law.law_group_being_voted.split('_')).upper(), True, (255,255,255))
+
+				height_offset = (index * 60) * self.factor_y
+
+				self.law_being_voted_surface.blit(Law_name_text, (15 * self.factor_x, 15 * self.factor_y + height_offset))
+				pygame.draw.rect(self.law_being_voted_surface, (255,255,255), (5, 0, 628 * self.factor_x, Law_name_text.get_height() + 30 * self.factor_y + height_offset), 1)
+				self.laws_being_voted_rects.append((pygame.Rect((5 + 1264) * self.factor_x, 404 * self.factor_y, 628 * self.factor_x, Law_name_text.get_height() + 30 * self.factor_y + height_offset), law))
+
+			screen.blit(self.law_being_voted_surface, (1264 * self.factor_x, 404 * self.factor_y))
+		else:
+			self.law_being_voted_description_surface.fill((0,0,0,0))
+
+			pygame.draw.rect(screen, (6,17,21), self.law_open_menu_rect)
+			pygame.draw.rect(screen, (255,233,127), self.law_open_menu_rect, 2)
+
+			law_group = getattr(self.PlayerCountry, self.open_law.law_group_being_voted)
+
+			self.text_offset_y = self.text_scroll_bar.get_scroll_position()	
+
+			if type(law_group) == CountriesManager.Laws_Group:
+				text_render = self.big_scalable_font.render(' '.join(self.open_law.law_group_being_voted.split('_')).upper() + ':\n\n' + law_group.laws[self.open_law.law_being_suggested].description, True, (255,255,255))
+				self.law_being_voted_description_surface.blit(text_render, (0, 0))
+				screen.blit(self.law_being_voted_description_surface.subsurface(0, self.text_offset_y, self.law_being_voted_description_surface.get_width(), 405 * self.factor_y), (1303 * self.factor_x, 385 * self.factor_y))
+
+			elif type(law_group) == dict:
+				law_group[law.law_being_suggested['key']] = law.law_being_suggested['value']
+
+			self.text_scroll_bar.draw(screen)
+
+			pygame.draw.rect(screen, (255,255,255), self.law_change_close_button.rect, 1)
+			pygame.draw.rect(screen, (255,255,255), self.law_change_accept_button.rect, 1)
+			pygame.draw.rect(screen, (255,255,255), self.law_change_survey_button.rect, 1)	
+
+			text_render = self.medium_scalable_font.render('CANCEL VOTING', True, (255,0,0))
+			screen.blit(text_render, (self.law_change_close_button.x + self.law_change_close_button.width/2 - text_render.get_width()/2, self.law_change_close_button.y + self.law_change_close_button.height/2 - text_render.get_height()/2))
+			
+			text_render = self.medium_scalable_font.render('KEEP VOTING', True, (0,255,0))
+			screen.blit(text_render, (self.law_change_accept_button.x + self.law_change_accept_button.width/2 - text_render.get_width()/2, self.law_change_accept_button.y + self.law_change_accept_button.height/2 - text_render.get_height()/2))
+			
+			text_render = self.tiny_scalable_font.render('SURVEY', True, (255,255,255))
+			screen.blit(text_render, (self.law_change_survey_button.x + self.law_change_survey_button.width/2 - text_render.get_width()/2, self.law_change_survey_button.y + self.law_change_survey_button.height - text_render.get_height()*1.1))		
+		
+		if self.hovered_rect != None:
+			if self.hovered_rect != self.law_change_close_button.rect:
+				pygame.draw.rect(screen, (0,255,0), self.hovered_rect, 2)
+			else:
+				pygame.draw.rect(screen, (255,0,0), self.hovered_rect, 2)
+			self.hovered_rect = None
+
 class Legislative_Government_Elections_Menu:
 	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, elections_menu):
 		
