@@ -1120,6 +1120,8 @@ your shoulders.
 									self.is_in_esc_menu = False
 									self.is_in_game_screen = True
 
+									self.Game_Screen.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
+
 									self.Game_Screen.Country_Overview.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
 									self.Game_Screen.Country_Overview.politics_popularity = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country.politics_popularity
 									self.Game_Screen.Country_Overview.culture_popularity = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country.culture_popularity

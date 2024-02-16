@@ -115,6 +115,17 @@ class Law:
 
         self.value = 0
 
+class Law_Project:
+    def __init__(self, law_group_being_voted, law_being_suggested, voting_day, voting_month, voting_year):
+        self.law_group_being_voted = law_group_being_voted
+
+        self.law_being_suggested = law_being_suggested
+
+        self.voting_day = voting_day
+        self.voting_month = voting_month
+        self.voting_year = voting_year
+
+
 
 class Person:
     def __init__(self, name, portrait):
@@ -207,7 +218,7 @@ class Country:
         self.population_political_leaning = "None"
 
 
-        self.laws_to_be_voted = []
+        self.laws_being_voted = []
 
         # DIPLOMACY
         self.diplomacy_rating = 0 
@@ -648,3 +659,38 @@ class Country:
         self.environmental              =    Laws_Group('environmental', [self.environmental_1, self.environmental_2, self.environmental_3, self.environmental_4, self.environmental_5, self.environmental_6], 0)
 
         self.social_laws_groups = [self.emigration_immigration, self.minorities_rights, self.welfare, self.reproduction, self.morality_laws, self.drug_laws, self.work_laws, self.justice_system, self.environmental]
+
+    def add_law_to_be_voted(self, law_group_being_voted, law_being_suggested, current_date):
+        max_vote_day = current_date['day']
+        max_vote_month = current_date['month']
+        max_vote_year = current_date['year']
+
+        for law in self.laws_being_voted:
+            if law_group_being_voted == law.law_group_being_voted and law_being_suggested == law.law_being_suggested:
+                return
+
+            if law.voting_day > max_vote_day and law.voting_month == max_vote_month and law.voting_year == max_vote_year:
+                max_vote_day = law.voting_day + 5
+                if max_vote_day > 28:
+                    max_vote_month += 1
+                    if max_vote_month == 13:
+                        max_vote_year += 1
+
+        new_law_project = Law_Project(law_group_being_voted, law_being_suggested, max_vote_day, max_vote_month, max_vote_year)
+        self.laws_being_voted.append(new_law_project)
+
+
+    def vote_a_law(self, law):
+        index = self.laws_being_voted.index(law)
+
+        law_group = getattr(self, self.laws_being_voted[index].law_group_being_voted)
+
+        if type(law_group) == Laws_Group:
+            law_group.set_active_law(law.law_being_suggested)
+        elif type(law_group) == dict:
+            law_group[law.law_being_suggested['key']] = law.law_being_suggested['value']
+
+        try:
+            self.laws_being_voted.remove(law)
+        except:
+            pass
