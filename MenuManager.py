@@ -1954,8 +1954,9 @@ class Game_Screen:
 			game_logo, economic_overview_background, poverty_rate_0, poverty_rate_5, poverty_rate_10, poverty_rate_15, poverty_rate_25, poverty_rate_50, poverty_rate_80, credit_ratings,
 			economic_warning, economic_freedom_index_green, economic_freedom_index_red, economic_freedom_score_green, economic_freedom_score_red, small_rating_green, small_rating_red,
 			intelligence_overview_background, intelligency_agencies_icons_image_dic, research_overview_background, active_research_background, researche_icons_image_dic,
-			researche_institute_icons_image_dic, construction_overview_background, production_overview_background, bottom_HUD, law_opinion_survey_icon, finances_menu_background, budget_menu, debt_menu, taxation_menu,
-			currency_menu, finance_menu, government_menu_background, head_of_state_menu, cabinet_menu, parliament_menu, elections_menu, political_parties_menu):
+			researche_institute_icons_image_dic, construction_overview_background, production_overview_background, bottom_HUD, law_opinion_survey_icon, law_opinion_survey_menu,
+			finances_menu_background, budget_menu, debt_menu, taxation_menu, currency_menu, finance_menu, government_menu_background, head_of_state_menu, cabinet_menu, parliament_menu,
+			elections_menu, political_parties_menu):
 
 		reference_screen_size_x = 1920
 		reference_screen_size_y = 1080
@@ -1976,7 +1977,7 @@ class Game_Screen:
 
 		self.Clock_UI = Clock_UI(self.factor_x, self.factor_y, screen_width, screen_height, pygame, clock, top_bar_right_background, top_bar_game_speed_indicator, top_bar_defcon_level)
 
-		self.Bottom_HUD = Bottom_HUD(self.factor_x, self.factor_y, screen_width, screen_height, pygame, bottom_HUD, law_opinion_survey_icon, finances_menu_background, budget_menu, debt_menu, taxation_menu, currency_menu,
+		self.Bottom_HUD = Bottom_HUD(self.factor_x, self.factor_y, screen_width, screen_height, pygame, bottom_HUD, law_opinion_survey_icon, law_opinion_survey_menu, finances_menu_background, budget_menu, debt_menu, taxation_menu, currency_menu,
 			finance_menu, government_menu_background, head_of_state_menu, cabinet_menu, parliament_menu, elections_menu, political_parties_menu)
 
 		self.Earth_Map = Earth_Map(self.factor_x, self.factor_y, screen_width, screen_height, earth_daymap, earth_political_map, earth_political_map_filled, self.Clock_UI)
@@ -2375,7 +2376,9 @@ class Game_Screen:
 						self.Bottom_HUD.Legislative_Government_Menu.open_menu = None
 				else:
 					if self.Bottom_HUD.Legislative_Government_Menu.open_menu == 'head_of_state_menu_button':
-						if clicked_button in ['law_change_nomination_of_head_of_state_button']:
+						if clicked_button == 'law_opinion_survey_menu_close_button':
+							self.Bottom_HUD.Legislative_Government_Menu.is_law_opinion_survey_menu_open = False
+						elif clicked_button in ['law_change_nomination_of_head_of_state_button']:
 							if clicked_button != self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Head_Of_State_Menu.law_open:
 								self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Head_Of_State_Menu.law_open = clicked_button
 							else:
@@ -2398,12 +2401,15 @@ class Game_Screen:
 								self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Head_Of_State_Menu.law_open = None								
 
 							elif clicked_button == 'law_change_survey_button':
-								pass
+								self.Bottom_HUD.Legislative_Government_Menu.is_law_opinion_survey_menu_open = True
 							else:
 								self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Head_Of_State_Menu.law_change_menu_open = clicked_button
 
 					elif self.Bottom_HUD.Legislative_Government_Menu.open_menu == 'parliament_menu_button':	
-						if type(clicked_button) == CountriesManager.Law_Project:
+						if clicked_button == 'law_opinion_survey_menu_close_button':
+							self.Bottom_HUD.Legislative_Government_Menu.is_law_opinion_survey_menu_open = False
+						
+						elif type(clicked_button) == CountriesManager.Law_Project:
 							self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Parliament_Menu.open_law = clicked_button
 
 						elif clicked_button == 'law_change_close_button':
@@ -2417,7 +2423,7 @@ class Game_Screen:
 							self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Parliament_Menu.open_law = None
 						
 						elif clicked_button == 'law_change_survey_button':
-							pass
+							self.Bottom_HUD.Legislative_Government_Menu.is_law_opinion_survey_menu_open = True
 
 			self.generic_hover_over_button_sound.fadeout(100)
 			self.generic_click_button_sound.play()
@@ -6154,9 +6160,70 @@ class Stockpile_Menu:
 			self.pygame.draw.rect(screen, (255,255,255), self.top_bar_stockpile_button.rect, 2)
 
 # BOTTOM BAR MENUS:
+class Law_Opinion_survey_Menu:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, law_opinion_survey_menu):
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame	
+
+		self.law_opinion_survey_menu = law_opinion_survey_menu
+
+		self.hovered_button = None
+
+		self.law_opinion_survey_menu_close_button = GenericUtilitys.Button(1703 * self.factor_x, 660 * self.factor_y + 158 * self.factor_y, 199 * self.factor_x, 66 * self.factor_y)
+
+
+		self.simple_population_survey_button 	= GenericUtilitys.Button(1247 * self.factor_x, 14 * self.factor_y + 158 * self.factor_y, 659 * self.factor_x, 14 * self.factor_y)
+		self.extensive_population_survey_button = GenericUtilitys.Button(1247 * self.factor_x, 58 * self.factor_y + 158 * self.factor_y, 659 * self.factor_x, 14 * self.factor_y)
+
+		self.parliament_survey_button 			= GenericUtilitys.Button(1247 * self.factor_x, 107 * self.factor_y + 158 * self.factor_y, 659 * self.factor_x, 14 * self.factor_y)
+		self.senate_survey_button 				= GenericUtilitys.Button(1247 * self.factor_x, 151 * self.factor_y + 158 * self.factor_y, 659 * self.factor_x, 14 * self.factor_y)		
+
+	def get_button_by_interaction(self, mouse_rect):
+		if self.law_opinion_survey_menu_close_button.rect.colliderect(mouse_rect):
+			self.hovered_button = 'law_opinion_survey_menu_close_button'
+			return 'law_opinion_survey_menu_close_button'
+		
+		elif self.simple_population_survey_button.rect.colliderect(mouse_rect):
+			self.hovered_button = 'simple_population_survey_button'
+			return 'simple_population_survey_button'			
+		elif self.extensive_population_survey_button.rect.colliderect(mouse_rect):
+			self.hovered_button = 'extensive_population_survey_button'
+			return 'extensive_population_survey_button'			
+		elif self.parliament_survey_button.rect.colliderect(mouse_rect):
+			self.hovered_button = 'parliament_survey_button'
+			return 'parliament_survey_button'			
+		elif self.senate_survey_button.rect.colliderect(mouse_rect):
+			self.hovered_button = 'senate_survey_button'
+			return 'senate_survey_button'			
+		
+		return None
+
+	def draw(self, screen):
+		screen.blit(self.law_opinion_survey_menu, (0, 158 * self.factor_y))
+
+		if self.hovered_button == 'law_opinion_survey_menu_close_button':
+			self.hovered_button = None
+			self.pygame.draw.rect(screen, (255,0,0), self.law_opinion_survey_menu_close_button.rect, 2)
+		
+		elif self.hovered_button == 'simple_population_survey_button':
+			self.hovered_button = None
+			self.pygame.draw.rect(screen, (255,255,255), self.simple_population_survey_button.rect, 3)
+		elif self.hovered_button == 'extensive_population_survey_button':
+			self.hovered_button = None
+			self.pygame.draw.rect(screen, (255,255,255), self.extensive_population_survey_button.rect, 3)		
+		elif self.hovered_button == 'parliament_survey_button':
+			self.hovered_button = None
+			self.pygame.draw.rect(screen, (255,255,255), self.parliament_survey_button.rect, 3)		
+		elif self.hovered_button == 'senate_survey_button':
+			self.hovered_button = None
+			self.pygame.draw.rect(screen, (255,255,255), self.senate_survey_button.rect, 3)														
+
 class Bottom_HUD:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, bottom_HUD, law_opinion_survey_icon, finances_menu_background, budget_menu, debt_menu, taxation_menu, currency_menu, finance_menu,
-		government_menu_background, head_of_state_menu, cabinet_menu, parliament_menu, elections_menu, political_parties_menu):
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, bottom_HUD, law_opinion_survey_icon, law_opinion_survey_menu, finances_menu_background, budget_menu,
+		debt_menu, taxation_menu, currency_menu, finance_menu, government_menu_background, head_of_state_menu, cabinet_menu, parliament_menu, elections_menu, political_parties_menu):
 		self.factor_x, self.factor_y = factor_x, factor_y	
 		self.screen_width = screen_width 
 		self.screen_height = screen_height
@@ -6166,6 +6233,7 @@ class Bottom_HUD:
 		self.bottom_HUD 						= pygame.transform.smoothscale(bottom_HUD, (self.screen_width, bottom_HUD.get_height() * self.factor_y))
 
 		self.law_opinion_survey_icon = pygame.transform.smoothscale_by(law_opinion_survey_icon, (self.factor_x, self.factor_y))
+		self.law_opinion_survey_menu = pygame.transform.smoothscale_by(law_opinion_survey_menu, (self.factor_x, self.factor_y))
 
 		# 1 
 		self.finances_menu_background, self.budget_menu, self.debt_menu, self.taxation_menu, self.currency_menu, self.finance_menu = finances_menu_background, budget_menu, debt_menu, taxation_menu, currency_menu, finance_menu
@@ -6196,9 +6264,11 @@ class Bottom_HUD:
 		self.collided_country_legislation_button = None
 		self.open_country_legislation = None
 	
-	def start_menus(self, PlayerCountry):
+	def start_menus(self, PlayerCountry):	
+		self.Law_Opinion_survey_Menu = Law_Opinion_survey_Menu(self.factor_x, self.factor_y, self.screen_width, self.screen_height, self.pygame, self.law_opinion_survey_menu)
+
 		self.Legislative_Finances_Menu = Legislative_Finances_Menu(self.factor_x, self.factor_y, self.screen_width, self.screen_height, self.pygame, PlayerCountry, self.law_opinion_survey_icon, self.finances_menu_background, self.budget_menu, self.debt_menu, self.taxation_menu, self.currency_menu, self.finance_menu)		
-		self.Legislative_Government_Menu = Legislative_Government_Menu(self.factor_x, self.factor_y, self.screen_width, self.screen_height, self.pygame, PlayerCountry, self.law_opinion_survey_icon, self.government_menu_background, self.head_of_state_menu, self.cabinet_menu, self.parliament_menu, self.elections_menu, self.political_parties_menu)		
+		self.Legislative_Government_Menu = Legislative_Government_Menu(self.factor_x, self.factor_y, self.screen_width, self.screen_height, self.pygame, PlayerCountry, self.law_opinion_survey_icon, self.government_menu_background, self.head_of_state_menu, self.cabinet_menu, self.parliament_menu, self.elections_menu, self.political_parties_menu, self.Law_Opinion_survey_Menu)		
 
 	def get_button_by_interaction(self, mouse_rect):
 		if self.bottom_HUD_rect.colliderect(mouse_rect):
@@ -7064,15 +7134,19 @@ class Legislative_Finances_Finance_Menu:
 		screen.blit(self.finance_menu, (0, 158 * self.factor_y))	
 
 class Legislative_Government_Menu:
-	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, law_opinion_survey_icon, government_menu_background, head_of_state_menu, cabinet_menu, parliament_menu, elections_menu, political_parties_menu):
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, law_opinion_survey_icon, government_menu_background, head_of_state_menu, cabinet_menu, parliament_menu, elections_menu, political_parties_menu, Law_Opinion_survey_Menu):
 
 		self.factor_x, self.factor_y = factor_x, factor_y	
 		self.screen_width = screen_width 
 		self.screen_height = screen_height
 
-		self.pygame = pygame		
+		self.pygame = pygame	
+
+		self.Law_Opinion_survey_Menu = Law_Opinion_survey_Menu
 		
-		self.government_menu_background 			= pygame.transform.smoothscale_by(government_menu_background, (self.factor_x, self.factor_y))		
+		self.government_menu_background 			= pygame.transform.smoothscale_by(government_menu_background, (self.factor_x, self.factor_y))	
+
+		self.is_law_opinion_survey_menu_open = False
 
 		self.Legislative_Government_Head_Of_State_Menu = Legislative_Government_Head_Of_State_Menu(factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, law_opinion_survey_icon, head_of_state_menu)
 		self.head_of_state_menu_button = GenericUtilitys.Button(5 * self.factor_x, 741 * self.factor_y + 158 * self.factor_y, 380 * self.factor_x, 64 * self.factor_y)
@@ -7100,31 +7174,34 @@ class Legislative_Government_Menu:
 		self.tiny_scalable_font = GenericUtilitys.ScalableFont('Aldrich.ttf', int(13 * self.factor_y))			
 
 	def get_button_by_interaction(self, mouse_rect):
-		if self.head_of_state_menu_button.rect.colliderect(mouse_rect):
-			self.hovered_button = 'head_of_state_menu_button'
-			return 'head_of_state_menu_button'
-		elif self.cabinet_menu_button.rect.colliderect(mouse_rect):
-			self.hovered_button = 'cabinet_menu_button'
-			return 'cabinet_menu_button'
-		elif self.parliament_menu_button.rect.colliderect(mouse_rect):
-			self.hovered_button = 'parliament_menu_button'
-			return 'parliament_menu_button'	
-		elif self.elections_menu_button.rect.colliderect(mouse_rect):
-			self.hovered_button = 'elections_menu_button'
-			return 'elections_menu_button'			
-		elif self.political_parties_menu_button.rect.colliderect(mouse_rect):
-			self.hovered_button = 'political_parties_menu_button'
-			return 'political_parties_menu_button'			
+		if self.is_law_opinion_survey_menu_open == False:
+			if self.head_of_state_menu_button.rect.colliderect(mouse_rect):
+				self.hovered_button = 'head_of_state_menu_button'
+				return 'head_of_state_menu_button'
+			elif self.cabinet_menu_button.rect.colliderect(mouse_rect):
+				self.hovered_button = 'cabinet_menu_button'
+				return 'cabinet_menu_button'
+			elif self.parliament_menu_button.rect.colliderect(mouse_rect):
+				self.hovered_button = 'parliament_menu_button'
+				return 'parliament_menu_button'	
+			elif self.elections_menu_button.rect.colliderect(mouse_rect):
+				self.hovered_button = 'elections_menu_button'
+				return 'elections_menu_button'			
+			elif self.political_parties_menu_button.rect.colliderect(mouse_rect):
+				self.hovered_button = 'political_parties_menu_button'
+				return 'political_parties_menu_button'			
+			else:
+				if self.open_menu == 'head_of_state_menu_button':
+					Legislative_Government_Head_Of_State_Menu = self.Legislative_Government_Head_Of_State_Menu.get_button_by_interaction(mouse_rect)
+					if Legislative_Government_Head_Of_State_Menu:
+						return Legislative_Government_Head_Of_State_Menu
+				elif self.open_menu == 'parliament_menu_button':
+					Legislative_Government_Parliament_Menu = self.Legislative_Government_Parliament_Menu.get_button_by_interaction(mouse_rect)
+					if Legislative_Government_Parliament_Menu:
+						return Legislative_Government_Parliament_Menu
 		else:
-			if self.open_menu == 'head_of_state_menu_button':
-				Legislative_Government_Head_Of_State_Menu = self.Legislative_Government_Head_Of_State_Menu.get_button_by_interaction(mouse_rect)
-				if Legislative_Government_Head_Of_State_Menu:
-					return Legislative_Government_Head_Of_State_Menu
-			elif self.open_menu == 'parliament_menu_button':
-				Legislative_Government_Parliament_Menu = self.Legislative_Government_Parliament_Menu.get_button_by_interaction(mouse_rect)
-				if Legislative_Government_Parliament_Menu:
-					return Legislative_Government_Parliament_Menu
-				
+			return self.Law_Opinion_survey_Menu.get_button_by_interaction(mouse_rect)
+
 		self.hovered_button = None
 		return None		
 
@@ -7142,21 +7219,26 @@ class Legislative_Government_Menu:
 		elif self.hovered_button == 'political_parties_menu_button':
 			self.pygame.draw.rect(screen, (255,255,255), self.political_parties_menu_button.rect, 2)								
 
-		if self.open_menu == 'head_of_state_menu_button':
-			self.pygame.draw.rect(screen, (255,255,255), self.head_of_state_menu_button.rect, 3)
-			self.Legislative_Government_Head_Of_State_Menu.draw(screen)
-		elif self.open_menu == 'cabinet_menu_button':
-			self.pygame.draw.rect(screen, (255,255,255), self.cabinet_menu_button.rect, 3)
-			self.Legislative_Government_Cabinet_Menu.draw(screen)
-		elif self.open_menu == 'parliament_menu_button':
-			self.pygame.draw.rect(screen, (255,255,255), self.parliament_menu_button.rect, 3)
-			self.Legislative_Government_Parliament_Menu.draw(screen)		
-		elif self.open_menu == 'elections_menu_button':
-			self.pygame.draw.rect(screen, (255,255,255), self.elections_menu_button.rect, 3)
-			self.Legislative_Government_Elections_Menu.draw(screen)		
-		elif self.open_menu == 'political_parties_menu_button':
-			self.pygame.draw.rect(screen, (255,255,255), self.political_parties_menu_button.rect, 3)
-			self.Legislative_Government_Political_Parties_Menu.draw(screen)
+		if self.is_law_opinion_survey_menu_open == False:
+			if self.open_menu == 'head_of_state_menu_button':
+				self.pygame.draw.rect(screen, (255,255,255), self.head_of_state_menu_button.rect, 3)
+				self.Legislative_Government_Head_Of_State_Menu.draw(screen)
+			elif self.open_menu == 'cabinet_menu_button':
+				self.pygame.draw.rect(screen, (255,255,255), self.cabinet_menu_button.rect, 3)
+				self.Legislative_Government_Cabinet_Menu.draw(screen)
+			elif self.open_menu == 'parliament_menu_button':
+				self.pygame.draw.rect(screen, (255,255,255), self.parliament_menu_button.rect, 3)
+				self.Legislative_Government_Parliament_Menu.draw(screen)		
+			elif self.open_menu == 'elections_menu_button':
+				self.pygame.draw.rect(screen, (255,255,255), self.elections_menu_button.rect, 3)
+				self.Legislative_Government_Elections_Menu.draw(screen)		
+			elif self.open_menu == 'political_parties_menu_button':
+				self.pygame.draw.rect(screen, (255,255,255), self.political_parties_menu_button.rect, 3)
+				self.Legislative_Government_Political_Parties_Menu.draw(screen)
+
+		if self.open_menu != None and self.is_law_opinion_survey_menu_open == True:
+			self.Law_Opinion_survey_Menu.draw(screen)
+
 class Legislative_Government_Head_Of_State_Menu:
 	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, PlayerCountry, law_opinion_survey_icon, head_of_state_menu):
 		

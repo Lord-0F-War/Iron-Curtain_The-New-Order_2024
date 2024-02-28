@@ -130,6 +130,9 @@ class Law_Project:
         self.estimated_political_support = 100
         self.estimated_civilian_support = 100
 
+        self.survey_parliament_support = None
+        self.survey_senate_support = None        
+        self.survey_civilian_support = []  
 
 
 class Person:
@@ -682,6 +685,9 @@ class Country:
                         max_vote_year += 1
 
         new_law_project = Law_Project(law_group_being_voted, law_being_suggested, max_vote_day, max_vote_month, max_vote_year)
+        new_law_project.civilian_popularity = [15, 20, 10]
+        new_law_project.parliament_popularity = [50, 25, 25]
+        new_law_project.senate_popularity = [25, 50, 25]
         self.laws_being_voted.append(new_law_project)
 
     def vote_a_law(self, law):

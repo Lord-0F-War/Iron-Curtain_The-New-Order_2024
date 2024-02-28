@@ -340,6 +340,7 @@ class Main:
 		self.bottom_bar_interface_folder = os.path.join(self.game_HUD_folder, 'bottom_bar_interface')	
 
 		self.law_opinion_survey_icon			= self.pygame.image.load(os.path.join(self.bottom_bar_interface_folder, 'law_opinion_survey_icon.png')).convert_alpha()
+		self.law_opinion_survey_menu			= self.pygame.image.load(os.path.join(self.bottom_bar_interface_folder, 'law_opinion_survey_menu.png')).convert_alpha()
 
 
 		self.finances_menu_folder = os.path.join(self.bottom_bar_interface_folder, 'finances_menu')	
@@ -862,8 +863,9 @@ your shoulders.
 			self.economic_overview_background, self.poverty_rate_0, self.poverty_rate_5, self.poverty_rate_10, self.poverty_rate_15, self.poverty_rate_25, self.poverty_rate_50,
 			self.poverty_rate_80, self.credit_ratings, self.economic_warning, self.economic_freedom_index_green, self.economic_freedom_index_red, self.economic_freedom_score_green, self.economic_freedom_score_red,
 			self.small_rating_green, self.small_rating_red, self.intelligence_overview_background, self.intelligency_agencies_icons_image_dic, self.research_overview_background, self.active_research_background, self.researche_icons_image_dic,
-			self.researche_institute_icons_image_dic, self.construction_overview_background, self.production_overview_background, self.bottom_HUD, self.law_opinion_survey_icon, self.finances_menu_background, self.budget_menu, self.debt_menu, self.taxation_menu, self.currency_menu,
-			self.finance_menu, self.government_menu_background, self.head_of_state_menu, self.cabinet_menu, self.parliament_menu, self.elections_menu, self.political_parties_menu)
+			self.researche_institute_icons_image_dic, self.construction_overview_background, self.production_overview_background, self.bottom_HUD, self.law_opinion_survey_icon, self.law_opinion_survey_menu,
+			self.finances_menu_background, self.budget_menu, self.debt_menu, self.taxation_menu, self.currency_menu, self.finance_menu, self.government_menu_background, self.head_of_state_menu,
+			self.cabinet_menu, self.parliament_menu, self.elections_menu, self.political_parties_menu)
 
 
 		self.Screen_Manager = ScreenManager.Screen(self.pygame, self.display, self.screen, self.surface_alfa, self.Main_Menu, self.Country_Selection_Screen,
