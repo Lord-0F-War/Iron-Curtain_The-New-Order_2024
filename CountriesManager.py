@@ -108,8 +108,9 @@ class Laws_Group:
         self.active_law_rating = self.calculate_rating()
 
 class Law:
-    def __init__(self, name = str, description = str, description_complement = None) -> None:
+    def __init__(self, name = str, law_ideology = [], description = str, description_complement = None) -> None:
         self.name = name
+        self.law_ideology = law_ideology
         self.description = description
         self.description_complement = description_complement
 
@@ -207,7 +208,7 @@ class Country:
 
         self.country_government_gabinet = []
         
-        partie_1 = Political_Party('Test 1 party', 50, [], 50, 25, True, (255,0,0))
+        partie_1 = Political_Party('Test 1 party', 50, ['left'], 50, 25, True, (255,0,0))
         partie_2 = Political_Party('Test 2 party', 25, [], 25, 50, True, (0,255,0))
         partie_3 = Political_Party('Test 3 party', 25, [], 25, 25, True, (0,0,255))
 
@@ -452,8 +453,8 @@ class Country:
 
         self.political_laws_groups = [self.political_parties, self.religious_rights, self.trade_unions, self.public_protest, self.gun_control, self.privacy_rights, self.speach_rights, self.press_rights, self.voting_rights]
 
-        self.head_of_state_apointment_type_1 = Law('Election', description = 'desc 1') 
-        self.head_of_state_apointment_type_2 = Law('Dictatorship', description = 'Citizens are allowed to own firearms,\nbut there are significant restrictions:\n\n-Certain categories of firearms may be\nprohibited.\n\n-Citizens are allowed to carry concealed\nfirearms, but only under specific\ncircumstances and with the issuance of\na concealed carry permit.\n\n-It is mandatory for gun owners to\nregister their firearms with the\ngovernment, the registration system\nincludes detailed records of firearm\ntransactions.\n\n-All firearm transactions, including\nprivate sales, require a comprehensive\nbackground check.\n\n-A mandatory waiting period is imposed\non firearm purchases to provide a\n"cooling-off" period.\n\n-There are restrictions on the maximum\ncapacity of firearm magazines.\n\n-Red flag laws allow for the temporary\nremoval of firearms from individuals.')   
+        self.head_of_state_apointment_type_1 = Law('Election', law_ideology = ['left'], description = 'desc 1') 
+        self.head_of_state_apointment_type_2 = Law('Dictatorship', law_ideology = ['left'], description = 'Citizens are allowed to own firearms,\nbut there are significant restrictions:\n\n-Certain categories of firearms may be\nprohibited.\n\n-Citizens are allowed to carry concealed\nfirearms, but only under specific\ncircumstances and with the issuance of\na concealed carry permit.\n\n-It is mandatory for gun owners to\nregister their firearms with the\ngovernment, the registration system\nincludes detailed records of firearm\ntransactions.\n\n-All firearm transactions, including\nprivate sales, require a comprehensive\nbackground check.\n\n-A mandatory waiting period is imposed\non firearm purchases to provide a\n"cooling-off" period.\n\n-There are restrictions on the maximum\ncapacity of firearm magazines.\n\n-Red flag laws allow for the temporary\nremoval of firearms from individuals.')   
         self.head_of_state_apointment      =    Laws_Group('head_of_state_apointment', [self.head_of_state_apointment_type_1, self.head_of_state_apointment_type_2], 0)
 
         #   MILITARY LAWS

@@ -2383,9 +2383,11 @@ class Game_Screen:
 								self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Head_Of_State_Menu.law_open = clicked_button
 							else:
 								self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Head_Of_State_Menu.law_open = None
+						
 						else:
 							if clicked_button == 'law_change_close_button':
 								self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Head_Of_State_Menu.law_change_menu_open = None
+								self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.law_being_survey = None
 							elif clicked_button == 'law_change_accept_button':
 								law_group_to_be_voted = self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Head_Of_State_Menu.get_law_group()
 								law_to_be_voted = self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Head_Of_State_Menu.get_law()
@@ -2402,6 +2404,21 @@ class Game_Screen:
 
 							elif clicked_button == 'law_change_survey_button':
 								self.Bottom_HUD.Legislative_Government_Menu.is_law_opinion_survey_menu_open = True
+								law_group_to_be_voted = self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Head_Of_State_Menu.get_law_group()
+								law_to_be_voted = self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Head_Of_State_Menu.get_law()	
+
+								law_group_to_be_voted = getattr(self.PlayerCountry, law_group_to_be_voted)
+								if type(law_group_to_be_voted) == CountriesManager.Laws_Group:
+									self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.law_being_survey = law_group_to_be_voted.laws[law_to_be_voted]							
+
+							elif clicked_button == 'simple_population_survey_button':
+								self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.calculate_law_opinion_civilian('simple')
+							elif clicked_button == 'extensive_population_survey_button':
+								pass
+							elif clicked_button == 'parliament_survey_button':
+								self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.calculate_law_opinion_parliament(self.PlayerCountry)
+							elif clicked_button == 'senate_survey_button':
+								self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.calculate_law_opinion_senate(self.PlayerCountry)
 							else:
 								self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Head_Of_State_Menu.law_change_menu_open = clicked_button
 
@@ -6175,11 +6192,72 @@ class Law_Opinion_survey_Menu:
 		self.law_opinion_survey_menu_close_button = GenericUtilitys.Button(1703 * self.factor_x, 660 * self.factor_y + 158 * self.factor_y, 199 * self.factor_x, 66 * self.factor_y)
 
 
-		self.simple_population_survey_button 	= GenericUtilitys.Button(1247 * self.factor_x, 14 * self.factor_y + 158 * self.factor_y, 659 * self.factor_x, 14 * self.factor_y)
-		self.extensive_population_survey_button = GenericUtilitys.Button(1247 * self.factor_x, 58 * self.factor_y + 158 * self.factor_y, 659 * self.factor_x, 14 * self.factor_y)
+		self.simple_population_survey_button 	= GenericUtilitys.Button(1247 * self.factor_x, 14 * self.factor_y + 158 * self.factor_y, 659 * self.factor_x, 40 * self.factor_y)
+		self.extensive_population_survey_button = GenericUtilitys.Button(1247 * self.factor_x, 58 * self.factor_y + 158 * self.factor_y, 659 * self.factor_x, 40 * self.factor_y)
 
-		self.parliament_survey_button 			= GenericUtilitys.Button(1247 * self.factor_x, 107 * self.factor_y + 158 * self.factor_y, 659 * self.factor_x, 14 * self.factor_y)
-		self.senate_survey_button 				= GenericUtilitys.Button(1247 * self.factor_x, 151 * self.factor_y + 158 * self.factor_y, 659 * self.factor_x, 14 * self.factor_y)		
+		self.parliament_survey_button 			= GenericUtilitys.Button(1247 * self.factor_x, 107 * self.factor_y + 158 * self.factor_y, 659 * self.factor_x, 40 * self.factor_y)
+		self.senate_survey_button 				= GenericUtilitys.Button(1247 * self.factor_x, 151 * self.factor_y + 158 * self.factor_y, 659 * self.factor_x, 40 * self.factor_y)	
+
+		self.law_being_survey = None	
+
+		self.law_opinion_civilian = None
+		self.law_opinion_parliament = None
+		self.law_opinion_senate = None
+
+		self.parliament_pie_chart_surface = pygame.Surface((603 * self.factor_x, 301 * self.factor_y), pygame.SRCALPHA)		
+		self.senate_pie_chart_surface = pygame.Surface((603 * self.factor_x, 301 * self.factor_y), pygame.SRCALPHA)			
+
+	def calculate_law_opinion_civilian(self, complexity = 'simple'):
+		if complexity == 'simple':
+			if 'left' in self.law_being_survey.law_ideology:
+				self.law_opinion_civilian = ([10, 25, 12], [23, 8, 22])
+
+	def calculate_law_opinion_parliament(self, PlayerCountry):
+		self.parliament_pie_chart_surface.fill((0, 0, 0, 0))
+		
+		last_parliament_angle = 180
+		for official_party in PlayerCountry.country_official_parties:
+
+			law_disaproval_parliament = 0
+			law_approval_parliament = 0
+			
+			if self.law_being_survey.law_ideology[0] in official_party.ideology:
+				law_approval_parliament = 1
+			else:
+				law_disaproval_parliament = 1
+
+			red_amount = int(255 * law_disaproval_parliament)
+			green_amount = int(255 * law_approval_parliament)
+			seats_color = (red_amount,green_amount,0)
+			parliament_end_angle = 180 * (official_party.parliament_seats / PlayerCountry.total_parliament_seats)
+			GenericUtilitys.draw_pie(self.parliament_pie_chart_surface, seats_color, (302 * self.factor_x, 300 * self.factor_y), 300 * self.factor_x, last_parliament_angle, parliament_end_angle + last_parliament_angle)
+			last_parliament_angle = parliament_end_angle + last_parliament_angle
+
+		self.law_opinion_parliament = 'Done'
+	
+	def calculate_law_opinion_senate(self, PlayerCountry):
+		self.senate_pie_chart_surface.fill((0, 0, 0, 0))
+
+		last_senate_angle = 180
+		for official_party in PlayerCountry.country_official_parties:
+			
+			law_disaproval_senate = 0
+			law_approval_senate = 0
+			
+			if self.law_being_survey.law_ideology[0] in official_party.ideology:
+				law_approval_senate = 1
+			else:
+				law_disaproval_senate = 1
+
+			red_amount = int(255 * law_disaproval_senate)
+			green_amount = int(255 * law_approval_senate)
+			seats_color = (red_amount,green_amount,0)	
+
+			senate_end_angle = 180 * (official_party.senate_seats / PlayerCountry.total_senate_seats)
+			GenericUtilitys.draw_pie(self.senate_pie_chart_surface, seats_color, (302 * self.factor_x, 300 * self.factor_y), 300 * self.factor_x, last_senate_angle, senate_end_angle + last_senate_angle)
+			last_senate_angle = senate_end_angle + last_senate_angle
+
+		self.law_opinion_senate = 'Done'												
 
 	def get_button_by_interaction(self, mouse_rect):
 		if self.law_opinion_survey_menu_close_button.rect.colliderect(mouse_rect):
@@ -6219,7 +6297,31 @@ class Law_Opinion_survey_Menu:
 			self.pygame.draw.rect(screen, (255,255,255), self.parliament_survey_button.rect, 3)		
 		elif self.hovered_button == 'senate_survey_button':
 			self.hovered_button = None
-			self.pygame.draw.rect(screen, (255,255,255), self.senate_survey_button.rect, 3)														
+			self.pygame.draw.rect(screen, (255,255,255), self.senate_survey_button.rect, 3)	
+
+
+		if self.law_opinion_civilian != None:
+			# CIVILIAN CHART
+			chart_position = (932 * self.factor_x, 456 * self.factor_y) 
+			chart_radius = 249 * self.factor_y
+
+			popularities = self.law_opinion_civilian[1].copy()
+			popularities.extend(self.law_opinion_civilian[0].copy())
+
+			GenericUtilitys.draw_pie_chart(screen, chart_position, chart_radius, popularities, [
+			(255, 0, 0),
+			(200, 0, 0),
+			(150, 0, 0),
+			(0, 255, 0),
+			(0, 200, 0),
+			(0, 150, 0)])	
+			
+		if self.law_opinion_parliament == 'Done':
+			screen.blit(self.parliament_pie_chart_surface, (12 * self.factor_x, 223 * self.factor_y))	
+
+		if self.law_opinion_senate == 'Done':
+			screen.blit(self.senate_pie_chart_surface, (12 * self.factor_x, 587 * self.factor_y))				
+
 
 class Bottom_HUD:
 	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame, bottom_HUD, law_opinion_survey_icon, law_opinion_survey_menu, finances_menu_background, budget_menu,
