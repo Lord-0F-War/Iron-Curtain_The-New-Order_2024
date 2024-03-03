@@ -128,12 +128,9 @@ class Law_Project:
 
         self.opinion_surveyed = False
 
-        self.estimated_political_support = 100
-        self.estimated_civilian_support = 100
-
         self.survey_parliament_support = None
         self.survey_senate_support = None        
-        self.survey_civilian_support = []  
+        self.survey_civilian_support = None 
 
 
 class Person:

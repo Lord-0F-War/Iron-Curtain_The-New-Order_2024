@@ -2372,12 +2372,18 @@ class Game_Screen:
 				if clicked_button in ['head_of_state_menu_button', 'cabinet_menu_button', 'parliament_menu_button', 'elections_menu_button', 'political_parties_menu_button']:
 					if clicked_button != self.Bottom_HUD.Legislative_Government_Menu.open_menu:
 						self.Bottom_HUD.Legislative_Government_Menu.open_menu = clicked_button
+						self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.law_opinion_civilian = None
+						self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.law_opinion_parliament = None
+						self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.law_opinion_senate = None							
 					else:
 						self.Bottom_HUD.Legislative_Government_Menu.open_menu = None
 				else:
 					if self.Bottom_HUD.Legislative_Government_Menu.open_menu == 'head_of_state_menu_button':
 						if clicked_button == 'law_opinion_survey_menu_close_button':
 							self.Bottom_HUD.Legislative_Government_Menu.is_law_opinion_survey_menu_open = False
+							self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.law_opinion_civilian = None
+							self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.law_opinion_parliament = None
+							self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.law_opinion_senate = None							
 						elif clicked_button in ['law_change_nomination_of_head_of_state_button']:
 							if clicked_button != self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Head_Of_State_Menu.law_open:
 								self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Head_Of_State_Menu.law_open = clicked_button
@@ -2414,7 +2420,7 @@ class Game_Screen:
 							elif clicked_button == 'simple_population_survey_button':
 								self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.calculate_law_opinion_civilian('simple')
 							elif clicked_button == 'extensive_population_survey_button':
-								pass
+								self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.calculate_law_opinion_civilian('extensive')
 							elif clicked_button == 'parliament_survey_button':
 								self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.calculate_law_opinion_parliament(self.PlayerCountry)
 							elif clicked_button == 'senate_survey_button':
@@ -2425,6 +2431,9 @@ class Game_Screen:
 					elif self.Bottom_HUD.Legislative_Government_Menu.open_menu == 'parliament_menu_button':	
 						if clicked_button == 'law_opinion_survey_menu_close_button':
 							self.Bottom_HUD.Legislative_Government_Menu.is_law_opinion_survey_menu_open = False
+							self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.law_opinion_civilian = None
+							self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.law_opinion_parliament = None
+							self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.law_opinion_senate = None							
 						
 						elif type(clicked_button) == CountriesManager.Law_Project:
 							self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Parliament_Menu.open_law = clicked_button
@@ -2440,7 +2449,25 @@ class Game_Screen:
 							self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Parliament_Menu.open_law = None
 						
 						elif clicked_button == 'law_change_survey_button':
-							self.Bottom_HUD.Legislative_Government_Menu.is_law_opinion_survey_menu_open = True
+							self.Bottom_HUD.Legislative_Government_Menu.is_law_opinion_survey_menu_open = True	
+
+							law_group_to_be_voted = getattr(self.PlayerCountry, self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Parliament_Menu.open_law.law_group_being_voted)
+
+							self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.law_being_survey = law_group_to_be_voted.laws[self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Parliament_Menu.open_law.law_being_suggested]
+							self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.law_opinion_civilian = self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Parliament_Menu.open_law.survey_civilian_support
+							if self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Parliament_Menu.open_law.survey_parliament_support != None:
+								self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.calculate_law_opinion_parliament(self.PlayerCountry, self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Parliament_Menu.open_law)
+							if self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Parliament_Menu.open_law.survey_senate_support != None:
+								self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.calculate_law_opinion_senate(self.PlayerCountry, self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Parliament_Menu.open_law)
+
+						elif clicked_button == 'simple_population_survey_button':
+							self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.calculate_law_opinion_civilian('simple', self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Parliament_Menu.open_law)
+						elif clicked_button == 'extensive_population_survey_button':
+							self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.calculate_law_opinion_civilian('extensive', self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Parliament_Menu.open_law)
+						elif clicked_button == 'parliament_survey_button':
+							self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.calculate_law_opinion_parliament(self.PlayerCountry, self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Parliament_Menu.open_law)
+						elif clicked_button == 'senate_survey_button':
+							self.Bottom_HUD.Legislative_Government_Menu.Law_Opinion_survey_Menu.calculate_law_opinion_senate(self.PlayerCountry, self.Bottom_HUD.Legislative_Government_Menu.Legislative_Government_Parliament_Menu.open_law)															
 
 			self.generic_hover_over_button_sound.fadeout(100)
 			self.generic_click_button_sound.play()
@@ -6207,12 +6234,22 @@ class Law_Opinion_survey_Menu:
 		self.parliament_pie_chart_surface = pygame.Surface((603 * self.factor_x, 301 * self.factor_y), pygame.SRCALPHA)		
 		self.senate_pie_chart_surface = pygame.Surface((603 * self.factor_x, 301 * self.factor_y), pygame.SRCALPHA)			
 
-	def calculate_law_opinion_civilian(self, complexity = 'simple'):
+	def calculate_law_opinion_civilian(self, complexity = 'simple', law_project_being_survey = None):
 		if complexity == 'simple':
+			if law_project_being_survey != None:
+				law_project_being_survey.opinion_surveyed = True
+			
 			if 'left' in self.law_being_survey.law_ideology:
 				self.law_opinion_civilian = ([10, 25, 12], [23, 8, 22])
 
-	def calculate_law_opinion_parliament(self, PlayerCountry):
+				if law_project_being_survey != None:
+					law_project_being_survey.survey_civilian_support = ([10, 25, 12], [23, 8, 22])
+
+	def calculate_law_opinion_parliament(self, PlayerCountry, law_project_being_survey = None):
+		if law_project_being_survey != None:
+			law_project_being_survey.opinion_surveyed = True
+			law_project_being_survey.survey_parliament_support = 0
+
 		self.parliament_pie_chart_surface.fill((0, 0, 0, 0))
 		
 		last_parliament_angle = 180
@@ -6233,9 +6270,16 @@ class Law_Opinion_survey_Menu:
 			GenericUtilitys.draw_pie(self.parliament_pie_chart_surface, seats_color, (302 * self.factor_x, 300 * self.factor_y), 300 * self.factor_x, last_parliament_angle, parliament_end_angle + last_parliament_angle)
 			last_parliament_angle = parliament_end_angle + last_parliament_angle
 
+			if law_project_being_survey != None:
+				law_project_being_survey.survey_parliament_support += (law_approval_parliament*100)/len(PlayerCountry.country_official_parties)
+
 		self.law_opinion_parliament = 'Done'
 	
-	def calculate_law_opinion_senate(self, PlayerCountry):
+	def calculate_law_opinion_senate(self, PlayerCountry, law_project_being_survey = None):
+		if law_project_being_survey != None:
+			law_project_being_survey.opinion_surveyed = True
+			law_project_being_survey.survey_senate_support = 0			
+
 		self.senate_pie_chart_surface.fill((0, 0, 0, 0))
 
 		last_senate_angle = 180
@@ -6256,6 +6300,9 @@ class Law_Opinion_survey_Menu:
 			senate_end_angle = 180 * (official_party.senate_seats / PlayerCountry.total_senate_seats)
 			GenericUtilitys.draw_pie(self.senate_pie_chart_surface, seats_color, (302 * self.factor_x, 300 * self.factor_y), 300 * self.factor_x, last_senate_angle, senate_end_angle + last_senate_angle)
 			last_senate_angle = senate_end_angle + last_senate_angle
+
+			if law_project_being_survey != None:
+				law_project_being_survey.survey_senate_support += (law_approval_senate*100)/len(PlayerCountry.country_official_parties)
 
 		self.law_opinion_senate = 'Done'												
 
@@ -7715,15 +7762,26 @@ class Legislative_Government_Parliament_Menu:
 
 				if law.opinion_surveyed == False:
 					accuracy_color = (255,90,90)
-					accuracy_text =  'ESTIMATED  '
 				else:
 					accuracy_color = (90,255,90)
-					accuracy_text =  'SURVEYED  '
 
-				Law_political_support_text = self.small_scalable_font.render(accuracy_text + 'P.S.: ' + str(law.estimated_political_support) + '%  /  ', True, accuracy_color)
+				if law.survey_parliament_support != None and law.survey_senate_support != None:
+					law_survey_political_support = round((law.survey_parliament_support + law.survey_senate_support)/2, 1)
+				elif law.survey_parliament_support != None:
+					law_survey_political_support = round(law.survey_parliament_support, 1)
+				elif law.survey_senate_support != None:
+					law_survey_political_support = round(law.survey_senate_support, 1)
+				else:
+					law_survey_political_support = 'None'
+
+				law_survey_civilian_support = law.survey_civilian_support
+				if law.survey_civilian_support == None:
+					law_survey_civilian_support = ['None']					
+
+				Law_political_support_text = self.small_scalable_font.render('P.S.: ' + str(law_survey_political_support) + '%  /  ', True, accuracy_color)
 				self.law_being_voted_surface.blit(Law_political_support_text, (135 * self.factor_x + Law_name_text.get_width(), 15 * self.factor_y + height_offset))
 
-				Law_civilian_support_text = self.small_scalable_font.render('C.S.: ' + str(law.estimated_civilian_support) + '%', True, accuracy_color)
+				Law_civilian_support_text = self.small_scalable_font.render('C.S.: ' + str(law_survey_civilian_support[0]) + '%', True, accuracy_color)
 				self.law_being_voted_surface.blit(Law_civilian_support_text, (135 * self.factor_x + Law_name_text.get_width() + Law_political_support_text.get_width(), 15 * self.factor_y + height_offset))
 
 			screen.blit(self.law_being_voted_surface, (1264 * self.factor_x, 404 * self.factor_y))
