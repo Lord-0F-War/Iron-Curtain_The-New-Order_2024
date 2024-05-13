@@ -343,7 +343,7 @@ class Main_Menu:
 		back_button_y_offset = 162 * self.factor_y
 		self.back_button = GenericUtilitys.Button(self.new_game_menu_background_middle_x + back_button_x_offset, self.new_game_menu_background_middle_y + back_button_y_offset, back_button_width, back_button_height)
 
-		self.main_menu_intro_video = Video("Know Your History.mp4", size=(936 * self.factor_x, 378 * self.factor_y))
+		self.main_menu_intro_video = Video("game_intro.mp4", size=(936 * self.factor_x, 378 * self.factor_y))
 		self.main_menu_intro_video.set_volume(0)
 
 
@@ -411,12 +411,12 @@ class Main_Menu:
 	def draw(self, screen):
 		screen.blit(self.python_logo, (0, self.screen_height - self.python_logo.get_height()))
 
-		screen.blit(self.game_logo, (60 * self.factor_x, 0))	
+		screen.blit(self.game_logo, (60 * self.factor_x, 20 * self.factor_y))	
 		
 		if self.is_in_new_game_menu == False:
 			self.main_menu_intro_video.draw(screen, (self.menu_gui_middle_x + 2 * self.factor_x, self.menu_gui_middle_y + 2 * self.factor_y))
 
-			if self.main_menu_intro_video.frames >= 1674:
+			if self.main_menu_intro_video.frames >= 608:
 				self.main_menu_intro_video.restart()	
 
 			screen.blit(self.menu_gui, (self.menu_gui_middle_x, self.menu_gui_middle_y))
@@ -524,7 +524,7 @@ class Scenario_Selection_Menu:
 
 		screen.blit(self.python_logo, (0, self.screen_height - self.python_logo.get_height()))		
 
-		screen.blit(self.game_logo, (60 * self.factor_x, 0))
+		screen.blit(self.game_logo, (60 * self.factor_x,  20 * self.factor_y))
 
 		if self.hovered_button != 'none':
 			if self.hovered_button == 'start':
