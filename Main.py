@@ -183,9 +183,9 @@ class Main:
 
 		self.map_folder = os.path.join(self.exe_folder, 'map')
 
-		self.earth_daymap 						= self.pygame.image.load(os.path.join(self.map_folder, 'earth_daymap.png')).convert_alpha()	
+		self.earth_daymap 						= self.pygame.image.load(os.path.join(self.map_folder, 'earth_daymap.jpg')).convert_alpha()	
 		self.earth_political_map 				= self.pygame.image.load(os.path.join(self.map_folder, 'earth_political_map.png')).convert_alpha()
-		self.earth_political_map_filled 		= self.pygame.image.load(os.path.join(self.map_folder, 'earth_political_map_filled1.png')).convert_alpha()
+		self.earth_political_map_filled 		= self.pygame.image.load(os.path.join(self.map_folder, 'earth_political_map_filled.png')).convert_alpha()
 
 
 		self.gfx_folder = os.path.join(self.exe_folder, 'gfx')
@@ -1153,7 +1153,7 @@ your shoulders.
 
 									self.Game_Screen.Clock_UI.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
 
-									self.Game_Screen.Earth_Map.scale_map(zoom_factor_change = -0.75, fps_freezing_avoidance = round(clock.get_fps(), 2), zoom_type = 'zoom_out')
+									self.Game_Screen.Earth_Map.scale_map(zoom_factor_change = -0.60, fps_freezing_avoidance = round(clock.get_fps(), 2), zoom_type = 'zoom_out')
 
 									self.Game_Screen.Earth_Map.map_position[0] -= 900
 

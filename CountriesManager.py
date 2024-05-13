@@ -132,6 +132,10 @@ class Law_Project:
         self.survey_senate_support = None        
         self.survey_civilian_support = None 
 
+        self.exact_parliament_support = 0
+        self.exact_senate_support = 0        
+        self.exact_civilian_support = None         
+
 
 class Person:
     def __init__(self, name, portrait):
@@ -454,6 +458,10 @@ class Country:
         self.head_of_state_apointment_type_2 = Law('Dictatorship', law_ideology = ['left'], description = 'Citizens are allowed to own firearms,\nbut there are significant restrictions:\n\n-Certain categories of firearms may be\nprohibited.\n\n-Citizens are allowed to carry concealed\nfirearms, but only under specific\ncircumstances and with the issuance of\na concealed carry permit.\n\n-It is mandatory for gun owners to\nregister their firearms with the\ngovernment, the registration system\nincludes detailed records of firearm\ntransactions.\n\n-All firearm transactions, including\nprivate sales, require a comprehensive\nbackground check.\n\n-A mandatory waiting period is imposed\non firearm purchases to provide a\n"cooling-off" period.\n\n-There are restrictions on the maximum\ncapacity of firearm magazines.\n\n-Red flag laws allow for the temporary\nremoval of firearms from individuals.')   
         self.head_of_state_apointment      =    Laws_Group('head_of_state_apointment', [self.head_of_state_apointment_type_1, self.head_of_state_apointment_type_2], 0)
 
+        self.head_of_state_election_type_1 = Law('1', law_ideology = ['left'], description = 'desc 1') 
+        self.head_of_state_election_type_2 = Law('2', law_ideology = ['left'], description = 'aaa')   
+        self.head_of_state_election     =    Laws_Group('head_of_state_apointment', [self.head_of_state_election_type_1, self.head_of_state_election_type_2], 0)        
+
         #   MILITARY LAWS
 
         self.conscription_1 = Law('Mandatory Conscription\nUniversal Service',              description = 'All citizens, regardless of gender or\nbackground, are required to undergo\nmandatory military service for a\ndesignated period.') 
@@ -675,7 +683,8 @@ class Country:
             if law_group_being_voted == law.law_group_being_voted and law_being_suggested == law.law_being_suggested:
                 return
 
-            if law.voting_day > max_vote_day and law.voting_month == max_vote_month and law.voting_year == max_vote_year:
+            print(law.voting_day, law.voting_month, law.voting_year, max_vote_day, max_vote_month, max_vote_year)
+            if law.voting_day >= max_vote_day and law.voting_month == max_vote_month and law.voting_year == max_vote_year:
                 max_vote_day = law.voting_day + 5
                 if max_vote_day > 28:
                     max_vote_month += 1
@@ -691,14 +700,16 @@ class Country:
     def vote_a_law(self, law):
         index = self.laws_being_voted.index(law)
 
-        law_group = getattr(self, self.laws_being_voted[index].law_group_being_voted)
+        if self.laws_being_voted[index].exact_parliament_support >= 50 and self.laws_being_voted[index].exact_senate_support >= 50:
 
-        if type(law_group) == Laws_Group:
-            law_group.set_active_law(law.law_being_suggested)
-        elif type(law_group) == dict:
-            law_group[law.law_being_suggested['key']] = law.law_being_suggested['value']
+            law_group = getattr(self, self.laws_being_voted[index].law_group_being_voted)
 
-        try:
-            self.laws_being_voted.remove(law)
-        except:
-            pass
+            if type(law_group) == Laws_Group:
+                law_group.set_active_law(law.law_being_suggested)
+            elif type(law_group) == dict:
+                law_group[law.law_being_suggested['key']] = law.law_being_suggested['value']
+
+            try:
+                self.laws_being_voted.remove(law)
+            except:
+                pass
