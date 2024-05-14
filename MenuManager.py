@@ -2473,7 +2473,7 @@ class Game_Screen:
 			self.generic_hover_over_button_sound.fadeout(100)
 			self.generic_click_button_sound.play()
 			return clicked_button	
-
+	
 	def get_hovered_button(self, mouse_rect):
 		any_button_was_hovered = False
 
@@ -3013,10 +3013,10 @@ class Earth_Map:
 	def scale_map(self, zoom_factor_change, fps_freezing_avoidance, zoom_type):
 		if fps_freezing_avoidance > 10:
 			self.zoom_factor += zoom_factor_change
-			if self.zoom_factor < 0.40:
-				self.zoom_factor = 0.40
-			if self.zoom_factor > 1:
-				self.zoom_factor = 1
+			if self.zoom_factor < 0.30:
+				self.zoom_factor = 0.30
+			if self.zoom_factor > 1.10:
+				self.zoom_factor = 1.10
 
 			if self.last_zoom_factor != self.zoom_factor:
 				self.update_map()

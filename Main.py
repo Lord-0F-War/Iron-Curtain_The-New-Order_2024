@@ -1,6 +1,7 @@
 import sys
 import os
 from json import load as json_load, dump as json_dump
+import pandas as pd
 
 
 exe_folder = os.path.dirname(sys.argv[0])
@@ -60,6 +61,9 @@ class Main:
 		self.create_national_spirits()
 		self.create_classes()
 		self.setup_variables()
+
+		self.counties_data = pd.DataFrame(self.read_counties_data_from_file(location = os.path.join(os.path.join(self.map_folder, 'counties'), 'USA_counties')))
+
 		self.pygame.event.clear()
 		self.main_loop()
 
@@ -182,6 +186,8 @@ class Main:
 		self.factor = self.factor_x * self.factor_y
 
 		self.map_folder = os.path.join(self.exe_folder, 'map')
+
+		self.map_counties_color 					= self.pygame.image.load(os.path.join(self.map_folder, 'counties_color.png')).convert_alpha()
 
 		self.earth_daymap 						= self.pygame.image.load(os.path.join(self.map_folder, 'earth_daymap.jpg')).convert_alpha()	
 		self.earth_political_map 				= self.pygame.image.load(os.path.join(self.map_folder, 'earth_political_map.png')).convert_alpha()
@@ -372,6 +378,19 @@ class Main:
 
 		self.music_folder = os.path.join(self.exe_folder, 'Music')
 		self.load_music_files(self.music_folder)
+
+	def read_counties_data_from_file(self, location):
+		file_path = f'{location}.json'
+
+		try:
+			with open(file_path, 'r') as file:
+				counties_data = json_load(file)
+
+			return counties_data
+
+		except FileNotFoundError:
+			print(f'Error: File {file_path} not found.')
+			return []
 
 	def read_focus_from_file(self, location):
 		file_path = f'{location}.json'
@@ -1153,7 +1172,7 @@ your shoulders.
 
 									self.Game_Screen.Clock_UI.PlayerCountry = self.Country_Selection_Screen.Flag_Selection_Menu.selected_country
 
-									self.Game_Screen.Earth_Map.scale_map(zoom_factor_change = -0.60, fps_freezing_avoidance = round(clock.get_fps(), 2), zoom_type = 'zoom_out')
+									#self.Game_Screen.Earth_Map.scale_map(zoom_factor_change = -0.70, fps_freezing_avoidance = round(clock.get_fps(), 2), zoom_type = 'zoom_out')
 
 									self.Game_Screen.Earth_Map.map_position[0] -= 900
 
@@ -1295,9 +1314,9 @@ your shoulders.
 					
 					if event.type == self.pygame.MOUSEWHEEL:
 						if event.y > 0:	
-							self.Game_Screen.Earth_Map.scale_map(zoom_factor_change = 0.05, fps_freezing_avoidance = round(clock.get_fps(), 2), zoom_type = 'zoom_in')
+							self.Game_Screen.Earth_Map.scale_map(zoom_factor_change = 0.20, fps_freezing_avoidance = round(clock.get_fps(), 2), zoom_type = 'zoom_in')
 						elif event.y < 0:
-							self.Game_Screen.Earth_Map.scale_map(zoom_factor_change = -0.05, fps_freezing_avoidance = round(clock.get_fps(), 2), zoom_type = 'zoom_out')
+							self.Game_Screen.Earth_Map.scale_map(zoom_factor_change = -0.20, fps_freezing_avoidance = round(clock.get_fps(), 2), zoom_type = 'zoom_out')
 					else:
 						if keys[self.pygame.K_w]:																												
 							self.Game_Screen.Earth_Map.map_position[1] += 10 if self.Game_Screen.Earth_Map.map_position[1] < 0 else 0
@@ -1321,6 +1340,10 @@ your shoulders.
 
 						if self.is_in_esc_menu == False:
 							self.clicked_button = self.Game_Screen.get_clicked_button(self.mouse_rect)
+
+							if self.clicked_button == None:
+								clicked_map_location = (self.mouse_pos[0] - self.Game_Screen.Earth_Map.map_position[0], self.mouse_pos[1] - self.Game_Screen.Earth_Map.map_position[1])
+								print(clicked_map_location)
 
 						else:
 							self.clicked_button = self.ESC_Menu.get_clicked_button(self.mouse_rect, self.is_options_menu_open)
@@ -1371,8 +1394,8 @@ your shoulders.
 				#--------------------------------------------------------------------------------------------------------#
 				if self.Game_Screen.Game_Introduction_Menu.is_menu_open == False:
 					mouse_buttons = pygame.mouse.get_pressed()
-					# Check if the left mouse button is being held down
-					if mouse_buttons[0]:	
+					# Check if the right mouse button is being held down
+					if mouse_buttons[2]:	
 						self.mouse_end_pos = self.mouse_pos
 						
 						difference_x = self.mouse_start_pos[0] - self.mouse_end_pos[0]
@@ -1413,8 +1436,7 @@ your shoulders.
 				self.mouse_rect = self.pygame.Rect(self.mouse_pos, (1, 1))
 
 				if self.is_in_esc_menu == False:
-					if self.Game_Screen.Country_Overview.is_menu_open == True:
-						self.hovered_rect = self.Game_Screen.Country_Overview.get_hovered_rect(self.mouse_rect)
+					self.hovered_rect = self.Game_Screen.Country_Overview.get_hovered_rect(self.mouse_rect)
 
 					self.hovered_top_bar_button = self.Game_Screen.get_hovered_button(self.mouse_rect)
 				else:
@@ -1433,4 +1455,4 @@ your shoulders.
 
 Main(screen_width, screen_height, Pygame_Manager, pygame, clock, QUIT, date_tick, FPS_update, key_delay, display, screen, surface_alfa)
 
-#American Civil War v0.001
+#American Civil War v0.003
