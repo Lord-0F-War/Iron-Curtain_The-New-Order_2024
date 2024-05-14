@@ -2011,6 +2011,8 @@ class Game_Screen:
 		
 		self.Game_Introduction_Menu = Game_Introduction_Menu(self.factor_x, self.factor_y, screen_width, screen_height, pygame, game_logo)
 
+		self.County_Overview = County_Overview(self.factor_x, self.factor_y, screen_width, screen_height, pygame)
+
 		#-----------#
 
 		self.Clock_UI.Player_Country_Research_Menu = self.Research_Menu
@@ -2772,6 +2774,7 @@ class Game_Screen:
 		self.Stockpile_Menu.draw(screen)
 
 		self.Game_Introduction_Menu.draw(screen)
+		self.County_Overview.draw(screen)
 
 # TIME
 class Clock_UI:
@@ -6379,7 +6382,7 @@ class Bottom_HUD:
 
 		self.pygame = pygame
 
-		self.bottom_HUD 						= pygame.transform.smoothscale(bottom_HUD, (self.screen_width, bottom_HUD.get_height() * self.factor_y))
+		self.bottom_HUD 			 = pygame.transform.smoothscale(bottom_HUD, (self.screen_width, bottom_HUD.get_height() * self.factor_y))
 
 		self.law_opinion_survey_icon = pygame.transform.smoothscale_by(law_opinion_survey_icon, (self.factor_x, self.factor_y))
 		self.law_opinion_survey_menu = pygame.transform.smoothscale_by(law_opinion_survey_menu, (self.factor_x, self.factor_y))
@@ -8156,6 +8159,20 @@ Western world.
 
 		if self.highlight_button == True:
 			self.pygame.draw.rect(screen, (255,0,0), self.close_introduction_button.rect, 3)
+
+class County_Overview:
+	def __init__(self, factor_x, factor_y, screen_width, screen_height, pygame):
+		self.factor_x, self.factor_y = factor_x, factor_y	
+		self.screen_width = screen_width 
+		self.screen_height = screen_height
+
+		self.pygame = pygame
+
+		self.is_menu_open = False
+
+	def draw(self, screen):
+		if self.is_menu_open == True:
+			self.pygame.draw.rect(screen, (255,0,0), (500, 500, 100, 100))  # (x, y, width, height)
 
 #----------------------------------------------------#
 

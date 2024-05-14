@@ -1340,10 +1340,24 @@ your shoulders.
 
 						if self.is_in_esc_menu == False:
 							self.clicked_button = self.Game_Screen.get_clicked_button(self.mouse_rect)
+							
+							if event.button == 1:
 
-							if self.clicked_button == None:
-								clicked_map_location = (self.mouse_pos[0] - self.Game_Screen.Earth_Map.map_position[0], self.mouse_pos[1] - self.Game_Screen.Earth_Map.map_position[1])
-								print(clicked_map_location)
+								#--------------------------------------------------------------------------------------------------------#
+								#--------------------------------------------------------------------------------------------------------#
+								# GET CLICKED COUNTY
+
+								if pygame.Rect(0, self.Game_Screen.Country_Overview.top_bar_left_background_rect[3], self.screen_width, (self.screen_height - (self.Game_Screen.Country_Overview.top_bar_left_background_rect[3] + self.Game_Screen.Bottom_HUD.bottom_HUD.get_height()))).colliderect(self.mouse_rect):
+
+									clicked_map_location = (self.mouse_pos[0] - self.Game_Screen.Earth_Map.map_position[0], self.mouse_pos[1] - self.Game_Screen.Earth_Map.map_position[1])
+									county_color = self.map_counties_color.get_at(clicked_map_location)
+
+									county_id = self.counties_data[(self.counties_data['R'] == county_color[0]) & (self.counties_data['G'] == county_color[1]) & (self.counties_data['B'] == county_color[2])]
+									if not county_id.empty:
+										self.Game_Screen.County_Overview.is_menu_open != self.Game_Screen.County_Overview.is_menu_open
+
+								#--------------------------------------------------------------------------------------------------------#
+								#--------------------------------------------------------------------------------------------------------#								
 
 						else:
 							self.clicked_button = self.ESC_Menu.get_clicked_button(self.mouse_rect, self.is_options_menu_open)
@@ -1455,4 +1469,4 @@ your shoulders.
 
 Main(screen_width, screen_height, Pygame_Manager, pygame, clock, QUIT, date_tick, FPS_update, key_delay, display, screen, surface_alfa)
 
-#American Civil War v0.003
+#American Civil War v0.004
